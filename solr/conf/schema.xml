@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="example" version="1.2">
+<schema name="joomla" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -429,7 +429,7 @@
 	<field name="title" type="text" indexed="true" stored="true"/>
 	<field name="author" type="text" indexed="true" stored="true"/>
 	<field name="content" type="text" indexed="true" stored="true"/>
-	<field name="text" type="text" indexed="true" stored="true"/>
+	<field name="text" type="text" indexed="true" stored="true" multiValued="true"/>
 	<field name="section" type="text" indexed="true" stored="true" multiValued="true"/>
 	<field name="category" type="text" indexed="true" stored="true" multiValued="true"/>
 	<field name="option" type="text" indexed="true" stored="true" required="true"/>

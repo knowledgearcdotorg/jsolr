@@ -2,9 +2,9 @@
 /**
  * A model that provides configuration options for JSolr.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2009 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
 
    The JSword component for Joomla! is free software: you can redistribute it 
@@ -86,7 +86,9 @@ class JSolrModelConfiguration extends JModel
 		$options = array(
 			'hostname' => $this->configuration->host,
 			'port'     => $this->configuration->port,
-			'path'     => $this->configuration->path
+			'path'     => $this->configuration->path,
+			'login'	   => $this->configuration->username,
+			'password' => $this->configuration->password
 		);
 
 		$client = new SolrClient($options);

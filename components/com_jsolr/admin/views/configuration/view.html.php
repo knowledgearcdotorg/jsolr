@@ -2,9 +2,9 @@
 /**
  * A view for configuring the JSolr component's settings.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2009 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
 
    The JSolr component for Joomla! is free software: you can redistribute it 

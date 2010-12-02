@@ -6,7 +6,7 @@
 	<author>Wijiti</author>
 	<authorEmail>development@wijiti.com</authorEmail>
 	<authorUrl>http://www.wijiti.com</authorUrl>
-	<copyright>>Copyright (C) 2009 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<copyright>>Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>0.1.0</version>
 	<description>The JSolr component provides configuration and administration functionality for managing the Solr indexes and search.</description>
@@ -43,6 +43,7 @@
 	    	<filename>controller.php</filename>
 	    	<filename>jsolr.php</filename>
 	    	<filename>configuration.php</filename>
+	    	<filename>cli.php</filename>
 	    </files>
 	</administration>
 	

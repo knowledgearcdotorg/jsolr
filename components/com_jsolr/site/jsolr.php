@@ -2,8 +2,8 @@
 /**
  * A script for intercepting calls to this component and handling them appropriately.
  * 
- * @author		$LastChangedBy: spauldingsmails $
- * @copyright	Copyright (C) 2009 Wijiti Pty Ltd. All rights reserved.
+ * @author		$LastChangedBy$
+ * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSword component for Joomla!.
 
    The JSword component for Joomla! is free software: you can redistribute it 

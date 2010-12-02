@@ -2,9 +2,9 @@
 /**
  * A form view for adding/editing JSolr configuration.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2009 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
 
    The JSolr component for Joomla! is free software: you can redistribute it 
@@ -115,10 +115,10 @@ JToolBarHelper::cancel();
 											<td>
 												<button id="testButton"><?php echo JText::_("Test connection"); ?></button>
 											</td>
-											<td>
-												<div id="testMessage" style="vertical-align: middle;"></div>
+											<td style="vertical-align: middle;">
+												<div id="testMessage"></div>
 											</td>
-										</tr>									
+										</tr>
 									</tbody>
 								</table>
 							</fieldset>							

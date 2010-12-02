@@ -13,16 +13,13 @@ define('_JEXEC', 1);
 // Setup the path related constants.
 define('DS', DIRECTORY_SEPARATOR);
 define('JPATH_BASE', dirname( __FILE__ ));
-define('JPATH_ROOT', JPATH_BASE);
-define('JPATH_CONFIGURATION', JPATH_BASE);
-define('JPATH_LIBRARIES', JPATH_BASE.DS.'libraries');
-define('JPATH_METHODS', JPATH_ROOT.DS.'methods');
-define('JPATH_PLUGINS', JPATH_ROOT.DS.'plugins');
+
+require_once(JPATH_BASE.'/includes/defines.php');
  
 // Load the library importer.
 require_once (JPATH_LIBRARIES.'/joomla/import.php');
 require_once (JPATH_CONFIGURATION.'/configuration.php');
- 
+
 // Import library dependencies.
 jimport('joomla.application.application');
 jimport('joomla.utilities.utility');
@@ -32,6 +29,7 @@ jimport('joomla.factory');
 jimport('joomla.event.dispatcher');
 jimport('joomla.plugin.helper');
 jimport('joomla.error.log');
+jimport('joomla.user.user');
  
 /**
  * Simple command line interface application class.
@@ -102,14 +100,19 @@ class JApplicationCLI extends JApplication
  
         // Get the current directory.
         $this->cwd = getcwd();
- 
+
+		$jconfig = new JConfig();
+    	$config = JFactory::getConfig();
+    	$config->loadObject($jconfig);
+    	
+    	$application = JFactory::getApplication("site");
     }
  
-    public function index()
-    {
+    public function execute()
+    {	
 		$dispatcher =& JDispatcher::getInstance();
 		
-		JPluginHelper::importPlugin("index", "providerlabels", true, $dispatcher);
+		JPluginHelper::importPlugin("index", null, true, $dispatcher);
 
 		$array = $dispatcher->trigger('onIndex');		
     }
@@ -197,4 +200,4 @@ JError::setErrorHandling(E_ALL, 'echo');
 $app = new JApplicationCLI();
  
 // Execute the application.
-$app->index();
+$app->execute();

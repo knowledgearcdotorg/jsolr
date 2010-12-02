@@ -2,7 +2,7 @@
 /**
  * A script for intercepting calls to this component and handling them appropriately.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
 

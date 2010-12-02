@@ -2,7 +2,7 @@
 /**
  * Installation scripts.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
