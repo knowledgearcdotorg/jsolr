@@ -107,12 +107,13 @@ class plgSearchJSolrContent extends JPlugin
 			
 			$query->addHighlightField("title");
 			$query->addHighlightField("content");
+			$query->addHighlightField("metadescription");
 
 			$query->setHighlightFragsize(200, "content");
 
-			$query_response = $this->_client->query($query);
+			$queryResponse = $this->_client->query($query);
 
-			$response = $query_response->getResponse();
+			$response = $queryResponse->getResponse();
 
 			if(count($response->response->docs)) {
 				$i = 0;
@@ -122,27 +123,6 @@ class plgSearchJSolrContent extends JPlugin
 					$id = JArrayHelper::getValue($parts, 0, 0);
 					
 					$highlighting = JArrayHelper::getValue($response->highlighting, $document->id);
-					
-        			
-					if ($highlighting->offsetExists("content")) {
-						$hlContent = JArrayHelper::getValue($highlighting->content, 0);
-
-        				$parts = explode($document->content, $hlContent);
-
-				        if (count($parts) > 1) {
-                			$hlContent = "..." . $hlContent . "...";
-        				}
-
-        				if (count($parts) == 1) {
-                			if (strpos($document->content[0], $hlContent) === 0) {
-                				$hlContent = "..." . $hlContent;
-                			} else {
-                        		$hlContent = $hlContent . "...";
-                			}
-        				}
-					} else {
-						$hlContent = substr($document->content, 0, $query->getHighlightFragsize());
-					}
 
 					if ($highlighting->offsetExists("title")) {
         				$hlTitle = JArrayHelper::getValue($highlighting->title, 0);
@@ -154,7 +134,7 @@ class plgSearchJSolrContent extends JPlugin
 					
 					$list[$i]->href = ContentHelperRoute::getArticleRoute($id);
 					
-					$list[$i]->text = $hlContent;
+					$list[$i]->text = $this->_getHlContent($document, $highlighting, $query->getHighlightFragsize());
 					$list[$i]->created = $document->created;
 					$list[$i]->section = JArrayHelper::getValue($document->section, 0) . "/" . JArrayHelper::getValue($document->category, 0);
 					$list[$i]->browsernav = 2;
@@ -174,5 +154,23 @@ class plgSearchJSolrContent extends JPlugin
 		);
 	
 		return $areas;		
+	}
+	
+	function _getHlContent($solrDocument, $highlighting, $fragSize)
+	{
+		$hlContent = null;
+
+		if ($this->_params->get("jsolr_use_hl_metadescription") == 1 && 
+			$highlighting->offsetExists("metadescription")) {
+			$hlContent = substr(JArrayHelper::getValue($highlighting->metadescription, 0), 0, $fragSize);
+		} else {		
+			if ($highlighting->offsetExists("content")) {
+				$hlContent = JArrayHelper::getValue($highlighting->content, 0);
+			} else {
+				$hlContent = substr($solrDocument->content, 0, $fragSize);
+			}
+		}
+		
+		return $hlContent;
 	}
 }

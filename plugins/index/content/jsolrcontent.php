@@ -85,12 +85,16 @@ class plgIndexJSolrContent extends JPlugin
 		$created = JFactory::getDate($article->created);
 		$modified = JFactory::getDate($article->modified);
 		
+		$author = JFactory::getUser($article->created_by);
+		
 		$doc->addField('id',  "$this->_option." . $article->id);
 		$doc->addField('created', $created->toISO8601());
 		$doc->addField('modified', $modified->toISO8601());
 		$doc->addField('title', $article->title);
 		$doc->addField('content', strip_tags($article->introtext . $article->fulltext));
-		$doc->addField('author', $article->created_by);
+		$doc->addField('metakeywords', $article->metakey);
+		$doc->addField('metadescription', $article->metadesc);
+		$doc->addField('author', $author->get("name"));
 		$doc->addField('option', $this->_option);
 		
 		$section = new JTableSection(JFactory::getDBO());
@@ -114,14 +118,14 @@ class plgIndexJSolrContent extends JPlugin
 	{
 		$i = 0;
 		
-		$query = "";
+		$query = null;
 		
 		foreach ($ids as $id) {
-			$query .= "-id:$id";
-			
 			if ($i > 0) {
 				$query .= " OR ";	
 			}
+			
+			$query .= "-id:$id";
 			
 			$i++;	
 		}
@@ -131,7 +135,7 @@ class plgIndexJSolrContent extends JPlugin
 	
 	function onIndex()
 	{
-		$query = "SELECT a.id, a.created, a.modified, a.title, a.introtext, a.fulltext, a.created_by, a.sectionid, a.catid " .
+		$query = "SELECT a.id, a.created, a.modified, a.title, a.introtext, a.fulltext, a.created_by, a.sectionid, a.catid, a.metakey, a.metadesc " .
 				 "FROM #__content AS a WHERE a.state = 1 AND a.checked_out = 0;";
 		
 		$database = JFactory::getDBO();
@@ -153,6 +157,8 @@ class plgIndexJSolrContent extends JPlugin
 			$this->_client->addDocuments($documents);
 		
 			$this->_client->deleteByQuery($this->_getDeleteQueryById($ids));
+			
+			$this->_client->commit();
 		} catch (SolrClientException $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));

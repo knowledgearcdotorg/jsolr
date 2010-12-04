@@ -435,6 +435,8 @@
 	<field name="option" type="text" indexed="true" stored="true" required="true"/>
 	<field name="created" type="date" indexed="true" stored="true"/>
 	<field name="modified" type="date" indexed="true" stored="true"/>
+	<field name="metadescription" type="text" indexed="true" stored="true"/>
+	<field name="metakeywords" type="textgen" indexed="true" stored="true"/>	
  </fields>
 
  <!-- Field to use to determine and enforce document uniqueness. 
@@ -453,7 +455,6 @@
         or to add multiple fields to the same field for easier/faster searching.  -->
 
 <copyField source="title" dest="text"/>
-<copyField source="author" dest="text"/>
 <copyField source="content" dest="text"/>
 	
    <!-- Above, multiple source fields are copied to the [text] field. 

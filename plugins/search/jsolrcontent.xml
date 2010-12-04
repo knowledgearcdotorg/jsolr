@@ -15,4 +15,11 @@
 	<files>
 		<filename plugin="jsolrcontent">jsolrcontent.php</filename>
 	</files>
+	
+	<params>
+		<param name="jsolr_use_hl_metadescription" type="radio" default="0" label="Use highlighted metadescription in search results" description="Use the highlighted metadesciption in the search results instead of the content fragment when available.">
+			<option value="0">No</option> 
+			<option value="1">Yes</option> 
+		</param>
+	</params>
 </install>
