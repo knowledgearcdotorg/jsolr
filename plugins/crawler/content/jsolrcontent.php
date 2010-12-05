@@ -35,7 +35,7 @@ jimport("joomla.filesystem.file");
 require_once JPATH_LIBRARIES."/joomla/database/table/section.php";
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
 
-class plgIndexJSolrContent extends JPlugin 
+class plgCrawlerJSolrContent extends JPlugin 
 {
 	var $_plugin;
 	
@@ -57,7 +57,7 @@ class plgIndexJSolrContent extends JPlugin
 		parent::__construct($subject, $config);
 
 		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('index', 'jsolrcontent');
+		$this->_plugin = & JPluginHelper::getPlugin('crawler', 'jsolrcontent');
 		$this->_params = new JParameter($this->_plugin->params);
 		
 		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."configuration.php");

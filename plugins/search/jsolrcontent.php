@@ -33,7 +33,7 @@ class plgSearchJSolrContent extends JPlugin
 		parent::__construct($subject);
 
 		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('index', 'jsolrcontent');
+		$this->_plugin = & JPluginHelper::getPlugin('search', 'jsolrcontent');
 		$this->_params = new JParameter($this->_plugin->params);
 		
 		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."configuration.php");
@@ -115,13 +115,13 @@ class plgSearchJSolrContent extends JPlugin
 
 			$response = $queryResponse->getResponse();
 
-			if(count($response->response->docs)) {
+			if(intval($response->response->numFound) > 0) {
 				$i = 0;
 				
 				foreach ($response->response->docs as $document) {
-					$parts = explode($document->id, ".");
-					$id = JArrayHelper::getValue($parts, 0, 0);
-					
+					$parts = explode(".", $document->id);
+					$id = JArrayHelper::getValue($parts, 1, 0);
+
 					$highlighting = JArrayHelper::getValue($response->highlighting, $document->id);
 
 					if ($highlighting->offsetExists("title")) {
@@ -162,7 +162,7 @@ class plgSearchJSolrContent extends JPlugin
 
 		if ($this->_params->get("jsolr_use_hl_metadescription") == 1 && 
 			$highlighting->offsetExists("metadescription")) {
-			$hlContent = substr(JArrayHelper::getValue($highlighting->metadescription, 0), 0, $fragSize);
+			$hlContent = JArrayHelper::getValue($highlighting->metadescription, 0);
 		} else {		
 			if ($highlighting->offsetExists("content")) {
 				$hlContent = JArrayHelper::getValue($highlighting->content, 0);

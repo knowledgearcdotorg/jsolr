@@ -43,7 +43,7 @@
 	    	<filename>controller.php</filename>
 	    	<filename>jsolr.php</filename>
 	    	<filename>configuration.php</filename>
-	    	<filename>cli.php</filename>
+	    	<filename>crawler.php</filename>
 	    </files>
 	</administration>
 	

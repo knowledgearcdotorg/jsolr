@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE install PUBLIC 
   "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://dev.joomla.org/xml/1.5/plugin-install.dtd">
-<install version="1.5" type="plugin" group="index">
-	<name>JSolr Index - Content</name>
+<install version="1.5" type="plugin" group="crawler">
+	<name>JSolr Crawler - Content</name>
 	<creationDate>2010-11-29</creationDate>
 	<author>Wijiti</author>
 	<authorEmail>development@wijiti.com</authorEmail>

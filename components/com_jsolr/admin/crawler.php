@@ -34,17 +34,17 @@ jimport('joomla.user.user');
 /**
  * Simple command line interface application class.
  *
- * @package inwardXpat
+ * @package Wijiti
  * @subpackage CLI
  */
-class JApplicationCLI extends JApplication
+class JSolrCrawler extends JApplication
 {
     /**
      * The name of the application
      *
      * @var array
      */
-    public $_name = 'JApplicationCLI';
+    public $_name = 'cli';
  
     /**
      * The client identifier.
@@ -112,7 +112,7 @@ class JApplicationCLI extends JApplication
     {	
 		$dispatcher =& JDispatcher::getInstance();
 		
-		JPluginHelper::importPlugin("index", null, true, $dispatcher);
+		JPluginHelper::importPlugin("crawler", null, true, $dispatcher);
 
 		$array = $dispatcher->trigger('onIndex');		
     }
@@ -197,7 +197,7 @@ class JApplicationCLI extends JApplication
 JError::setErrorHandling(E_ALL, 'echo');
  
 // Create the application object.
-$app = new JApplicationCLI();
+$crawler = new JSolrCrawler();
  
 // Execute the application.
-$app->execute();
+$crawler->execute();
