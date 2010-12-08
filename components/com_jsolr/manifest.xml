@@ -11,8 +11,8 @@
 	<version>0.1.0</version>
 	<description>The JSolr component provides configuration and administration functionality for managing the Solr indexes and search.</description>
 
-	<installfile>install/install.php</installfile>
-	<uninstallfile>install/uninstall.php</uninstallfile>
+	<installfile>install.jsolr.php</installfile>
+	<uninstallfile>uninstall.jsolr.php</uninstallfile>
 	
     <install><sql></sql></install>
     <uninstall><sql></sql></uninstall>
