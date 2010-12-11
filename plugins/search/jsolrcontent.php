@@ -111,6 +111,8 @@ class plgSearchJSolrContent extends JPlugin
 
 			$query->setHighlightFragsize(200, "content");
 
+			$query->setRows($this->_params->def('search_limit', 50));
+			
 			$queryResponse = $this->_client->query($query);
 
 			$response = $queryResponse->getResponse();
