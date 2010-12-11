@@ -428,7 +428,7 @@
 	<field name="id" type="string" indexed="true" stored="true" required="true"/>
 	<field name="title" type="text" indexed="true" stored="true" termVectors="true"/>
 	<field name="author" type="text" indexed="true" stored="true" termVectors="true"/>
-	<field name="content" type="text" indexed="false" stored="true" termVectors="true"/>
+	<field name="content" type="text" indexed="true" stored="true" termVectors="true"/>
 	<field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
 	<field name="section" type="text" indexed="true" stored="true" multiValued="true"/>
 	<field name="category" type="text" indexed="true" stored="true" multiValued="true"/>
