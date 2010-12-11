@@ -9,6 +9,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @copyright   Copyright (C) 2010 inwardXpat Pty Ltd
  */
 
+jimport('joomla.error.log');
+
 require_once JPATH_LIBRARIES."/joomla/database/table/content.php";
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
@@ -97,53 +99,58 @@ class plgSearchJSolrContent extends JPlugin
 	                	break;
 	        }
 	        
-			$query = new SolrQuery();
-			
-			$query->setQuery($queryStr);
-			
-			$query->setHighlight(true);
-			
-			$query->addField('*')->addField('score');
-			
-			$query->addHighlightField("title");
-			$query->addHighlightField("content");
-			$query->addHighlightField("metadescription");
-
-			$query->setHighlightFragsize(200, "content");
-
-			$query->setRows($this->_params->def('search_limit', 50));
-			
-			$queryResponse = $this->_client->query($query);
-
-			$response = $queryResponse->getResponse();
-
-			if(intval($response->response->numFound) > 0) {
-				$i = 0;
+	        try {
+				$query = new SolrQuery();
 				
-				foreach ($response->response->docs as $document) {
-					$parts = explode(".", $document->id);
-					$id = JArrayHelper::getValue($parts, 1, 0);
-
-					$highlighting = JArrayHelper::getValue($response->highlighting, $document->id);
-
-					if ($highlighting->offsetExists("title")) {
-        				$hlTitle = JArrayHelper::getValue($highlighting->title, 0);
-					} else {
-						$hlTitle = $document->title;
+				$query->setQuery($queryStr);
+				
+				$query->setHighlight(true);
+				
+				$query->addField('*')->addField('score');
+				
+				$query->addHighlightField("title");
+				$query->addHighlightField("content");
+				$query->addHighlightField("metadescription");
+	
+				$query->setHighlightFragsize(200, "content");
+	
+				$query->setRows($this->_params->def('search_limit', 50));
+				
+				$queryResponse = $this->_client->query($query);
+	
+				$response = $queryResponse->getResponse();
+	
+				if(intval($response->response->numFound) > 0) {
+					$i = 0;
+					
+					foreach ($response->response->docs as $document) {
+						$parts = explode(".", $document->id);
+						$id = JArrayHelper::getValue($parts, 1, 0);
+	
+						$highlighting = JArrayHelper::getValue($response->highlighting, $document->id);
+	
+						if ($highlighting->offsetExists("title")) {
+	        				$hlTitle = JArrayHelper::getValue($highlighting->title, 0);
+						} else {
+							$hlTitle = $document->title;
+						}
+						
+						$list[$i]->title = strip_tags($hlTitle);
+						
+						$list[$i]->href = ContentHelperRoute::getArticleRoute($id);
+						
+						$list[$i]->text = $this->_getHlContent($document, $highlighting, $query->getHighlightFragsize());
+						$list[$i]->created = $document->created;
+						$list[$i]->section = JArrayHelper::getValue($document->section, 0) . "/" . JArrayHelper::getValue($document->category, 0);
+						$list[$i]->browsernav = 2;
+						
+						$i++;
 					}
-					
-					$list[$i]->title = strip_tags($hlTitle);
-					
-					$list[$i]->href = ContentHelperRoute::getArticleRoute($id);
-					
-					$list[$i]->text = $this->_getHlContent($document, $highlighting, $query->getHighlightFragsize());
-					$list[$i]->created = $document->created;
-					$list[$i]->section = JArrayHelper::getValue($document->section, 0) . "/" . JArrayHelper::getValue($document->category, 0);
-					$list[$i]->browsernav = 2;
-					
-					$i++;
 				}
-			}		
+	        } catch (SolrClientException $e) {
+				$log = JLog::getInstance();
+				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			}						
 		}
 		
 		return $list;

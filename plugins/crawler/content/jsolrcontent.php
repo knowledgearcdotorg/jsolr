@@ -30,7 +30,7 @@
 // no direct access
 defined('_JEXEC') or die();
 
-jimport("joomla.filesystem.file");
+jimport('joomla.error.log');
 
 require_once JPATH_LIBRARIES."/joomla/database/table/section.php";
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
@@ -151,9 +151,7 @@ class plgCrawlerJSolrContent extends JPlugin
 			$ids[] = $article->id;
 		}
 
-		try {
-			$this->_client->ping();
-			
+		try {		
 			$this->_client->addDocuments($documents);
 		
 			$this->_client->deleteByQuery($this->_getDeleteQueryById($ids));
