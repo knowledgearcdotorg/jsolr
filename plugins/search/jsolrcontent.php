@@ -4,7 +4,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Search the contents of articles using a Solr server.
  *
  * @version     $LastChangedBy$
- * @package     JSolr
+ * @paackage	Wijiti
+ * @subpackage	JSolr
  * @subpackage  Search
  * @copyright   Copyright (C) 2010 inwardXpat Pty Ltd
  */

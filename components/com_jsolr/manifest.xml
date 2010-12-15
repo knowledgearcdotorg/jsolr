@@ -8,7 +8,7 @@
 	<authorUrl>http://www.wijiti.com</authorUrl>
 	<copyright>>Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 	<description>The JSolr component provides configuration and administration functionality for managing the Solr indexes and search.</description>
 
 	<installfile>install.jsolr.php</installfile>
@@ -22,9 +22,7 @@
 	</files>
 
  	<languages folder="language/site">
- 		<language tag="en-AU">en-AU.com_jsolr.ini</language>
  		<language tag="en-GB">en-GB.com_jsolr.ini</language>
- 		<language tag="en-US">en-US.com_jsolr.ini</language>
  	</languages>	
 	    
     <media destination="com_jsolr">

@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Id$
+ * @version		$LastChangedBy$
  * @package		Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.

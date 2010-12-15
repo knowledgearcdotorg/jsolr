@@ -1,7 +1,8 @@
 <?php
 /**
- * @author		$LastChangedBy: spauldingsmails $
- * @package		JSolr
+ * @author		$LastChangedBy$
+ * @paackage	Wijiti
+ * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr Content Index plugin for Joomla!.
 

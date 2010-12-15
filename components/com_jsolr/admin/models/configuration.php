@@ -3,11 +3,12 @@
  * A model that provides configuration options for JSolr.
  * 
  * @author		$LastChangedBy$
- * @package		JSolr
+ * @package	Wijiti
+ * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
 
-   The JSword component for Joomla! is free software: you can redistribute it 
+   The JSolr component for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.

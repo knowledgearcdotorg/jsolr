@@ -4,5 +4,5 @@ class JSolrConfig {
 	var $username = "";
 	var $password = "";
 	var $port = "8080";
-	var $path = "/solr/core0";
+	var $path = "/solr";
 }
