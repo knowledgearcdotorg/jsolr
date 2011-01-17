@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD component 1.0//EN" "http://dev.joomla.org/xml/1.5/component-install.dtd">
+<install type="component" version="1.5.0">
+	<name>JSolrSearch</name>
+	<creationDate>2010-12-15</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.1.0</version>
+	<description>The JSolrSearch component provides a framework for executing searches against a Solr server.</description>
+
+	<installfile>install.jsolrsearch.php</installfile>
+	<uninstallfile>uninstall.jsolrsearch.php</uninstallfile>
+	
+    <install><sql></sql></install>
+    <uninstall><sql></sql></uninstall>
+	
+	<files folder="site">	
+    	<folder>models</folder>
+    	<folder>views</folder>
+    	<filename>controller.php</filename>
+    	<filename>jsolrsearch.php</filename>
+	</files>
+
+ 	<languages folder="language/site">
+ 		<language tag="en-GB">en-GB.com_jsolrsearch.ini</language>
+ 	</languages>
+
+    <media destination="com_jsolrsearch">
+    	<filename>js/jsolrsearch.js</filename>
+    </media>
+
+	<administration>
+		<menu>JSolr Search</menu>
+		<submenu>
+			<menu view="configuration">Configuration</menu>
+		</submenu>
+
+	    <files folder="admin">
+	    	<folder>models</folder>
+	    	<folder>views</folder>
+	    	<filename>controller.php</filename>
+	    	<filename>jsolrsearch.php</filename>
+	    	<filename>configuration.php</filename>
+	    </files>
+	</administration>
+	
+    <params>
+    </params>	
+</install>
