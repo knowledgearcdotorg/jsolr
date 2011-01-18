@@ -32,11 +32,15 @@
 
 defined('_JEXEC') or die('Restricted access');
 
+jimport('joomla.error.log');
+
 require_once JPATH_LIBRARIES."/joomla/database/table/section.php";
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
 require_once JPATH_LIBRARIES."/joomla/database/table/content.php";
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 require_once(JPATH_ROOT.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'pagination.php');
+
+require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
 
 class JSolrSearchModelSearch extends JModel
 {
@@ -45,6 +49,8 @@ class JSolrSearchModelSearch extends JModel
 	var $total;
 	
 	var $pagination;
+	
+	var $dateRange;
 	
 	public function __construct()
 	{
@@ -55,12 +61,35 @@ class JSolrSearchModelSearch extends JModel
 		$config = JFactory::getConfig();
 				
 		$this->setState('limit', $application->getUserStateFromRequest('com_jsolrsearch.limit', 'limit', $config->getValue('config.list_limit'), 'int'));
-		$this->setState('limitstart', JRequest::getVar('start', 0, '', 'int'));		
+		$this->setState('limitstart', JRequest::getVar('start', 0, '', 'int'));	
+
+		$this->dateRange = null;
 	}
 	
-	public function setQuery($q)
+	public function setQueryParams($params)
 	{
-		$this->query = $q;
+		$this->query = JArrayHelper::getValue($params, "q", "", "string");
+		
+		$from = null;
+		$to = null;
+		
+		if (JArrayHelper::getValue($params, "dmin") || 
+			JArrayHelper::getValue($params, "dmax"))  {
+			$from = JArrayHelper::getValue($params, "dmin", "*", "string");
+			$to = JArrayHelper::getValue($params, "dmax", "NOW", "string");
+		} else if (JArrayHelper::getValue($params, "qdr")) {
+			$from = JArrayHelper::getValue($params, "qdr", "*", "string");
+			$to = "NOW";
+		}
+		
+		$this->_setDateRange($from, $to);
+	}
+
+	private function _setDateRange($from = null, $to = null)
+	{
+		$this->dateRange = new stdClass();
+		$this->dateRange->from = $from;
+		$this->dateRange->to = $to;
 	}
 	
 	public function getQuery()
@@ -68,11 +97,14 @@ class JSolrSearchModelSearch extends JModel
 		return $this->query;
 	}
 	
-	function getResults()
+	public function getDateRange()
 	{
-		try {
-			require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
+		return $this->dateRange;
+	}
 	
+	function getResults()
+	{		
+		try {
 			$configuration = new JSolrSearchConfig();
 			
 			$options = array(
@@ -89,6 +121,12 @@ class JSolrSearchModelSearch extends JModel
 			
 			$query->setQuery($this->getQuery());
 			
+			$filter = $this->getDateQuery();
+
+			if ($filter) {
+				$query->addFilterQuery($filter);
+			}
+
 			$query->setHighlight(true);
 			
 			$query->addField('*')->addField('score');
@@ -161,6 +199,55 @@ class JSolrSearchModelSearch extends JModel
 		}
 
 		return $this->pagination;
+	}
+	
+	function getDateQuery()
+	{	
+		$query = "";
+		if ($this->dateRange != null) {
+			if ($this->dateRange->from) {
+				$query = "modified:";
+		
+				switch ($this->dateRange->from) {
+					case "d":
+						$query .= "[NOW-1DAY TO NOW]";
+						break;
+						
+					case "w":
+						$query .= "[NOW-7DAY TO NOW]";
+						break;
+						
+					case "m":
+						$query .= "[NOW-1MONTH TO NOW]";
+						break;
+						
+					case "y":
+						$query .= "[NOW-1YEAR TO NOW]";
+						break;
+						
+					default:
+						$query .= "[";
+
+						if ($this->dateRange->from != "*") {
+							$from = JFactory::getDate($this->dateRange->from);
+							$query .= $from->toISO8601();
+						} else {
+							$query .= "*";	
+						}
+						
+						$query .= " TO ";
+						
+						$to = JFactory::getDate($this->dateRange->to);
+						$query .= $to->toISO8601();
+						
+						$query .= "]";
+						
+						break;
+				}
+			}
+		}
+
+		return $query;
 	}
 	
 	function _getHlContent($solrDocument, $highlighting, $fragSize)

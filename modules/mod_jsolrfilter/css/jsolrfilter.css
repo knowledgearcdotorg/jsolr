@@ -1,0 +1,48 @@
+.jsolr-show {
+	display: block;
+	margin: 10px 0;
+}
+
+.jsolr-hide {
+	display: none;
+}
+
+.jsolr-range {
+	margin: 4px 0; 	
+}
+
+a.jsolr-custom-range-selected {
+	color: inherit !important;
+	text-decoration: inherit !important;
+	font-weight: bold !important;
+	cursor: inherit;
+}
+
+.jsolr-range-selected a {
+	color: inherit !important;
+	text-decoration: inherit !important;
+	font-weight: bold !important;
+	cursor: inherit;
+}
+
+.jsolr-range-selected a:hover {
+	color: inherit !important;
+	text-decoration: inherit !important;
+	cursor: inherit;
+}
+
+#jSolrDateRange label {
+	display: inline-block;
+	width: 30px;
+}
+
+#jSolrDateRange button {
+	margin-left: 32px;
+}
+
+.jsolr-example {
+	color: #666666;
+	size: 90%;
+	font-style: italic;
+	margin: 2px 0 2px 34px;
+}

@@ -54,13 +54,13 @@ class JSolrSearchController extends JController
 		$url->setVar("option", "com_jsolrsearch");
 		$url->setVar("view", "basic");
 		
-		foreach (JRequest::get("post") as $key=>$value) {
-			if ($key == "task") {
-				$url->delVar($key);
-			}
-				
+		foreach (JRequest::get() as $key=>$value) {
 			if ($value != "com_jsolrsearch") {
-				$url->setVar($key, $value);
+				if ($key == "task") {
+					$url->delVar($key);
+				} else {
+					$url->setVar($key, $value);
+				}
 			}
 		}
 
@@ -77,7 +77,7 @@ class JSolrSearchController extends JController
 		$view->setModel($model, true);
 		
 		if (trim(JRequest::getString("q", null))) {
-			$model->setQuery(JRequest::getString("q"));
+			$model->setQueryParams(JRequest::get("get"));
 			$view->setLayout("results");
 		}
 		
