@@ -34,9 +34,6 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.error.log');
 
-require_once JPATH_LIBRARIES."/joomla/database/table/section.php";
-require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
-require_once JPATH_LIBRARIES."/joomla/database/table/content.php";
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 require_once(JPATH_ROOT.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'pagination.php');
 
@@ -51,6 +48,8 @@ class JSolrSearchModelSearch extends JModel
 	var $pagination;
 	
 	var $dateRange;
+	
+	var $filterOption;
 	
 	public function __construct()
 	{
@@ -83,6 +82,8 @@ class JSolrSearchModelSearch extends JModel
 		}
 		
 		$this->_setDateRange($from, $to);
+		
+		$this->_setFilterOption(JArrayHelper::getValue($params, "o"));
 	}
 
 	private function _setDateRange($from = null, $to = null)
@@ -90,6 +91,11 @@ class JSolrSearchModelSearch extends JModel
 		$this->dateRange = new stdClass();
 		$this->dateRange->from = $from;
 		$this->dateRange->to = $to;
+	}
+	
+	private function _setFilterOption($option)
+	{
+		$this->filterOption = $option;
 	}
 	
 	public function getQuery()
@@ -102,8 +108,15 @@ class JSolrSearchModelSearch extends JModel
 		return $this->dateRange;
 	}
 	
+	public function getFilterOption()
+	{
+		return $this->filterOption;
+	}
+	
 	function getResults()
 	{		
+		$list = array();
+		
 		try {
 			$configuration = new JSolrSearchConfig();
 			
@@ -126,6 +139,12 @@ class JSolrSearchModelSearch extends JModel
 			if ($filter) {
 				$query->addFilterQuery($filter);
 			}
+			
+			$filter = $this->getFilterOptionQuery();
+			
+			if ($filter) {
+				$query->addFilterQuery($filter);
+			}
 
 			$query->setHighlight(true);
 			
@@ -145,33 +164,25 @@ class JSolrSearchModelSearch extends JModel
 			$response = $queryResponse->getResponse();
 			
 			$this->setTotal($response->response->numFound);
-
-			$list = array();
 			
 			if(intval($response->response->numFound) > 0) {
 				$i = 0;
 				
 				foreach ($response->response->docs as $document) {
-					$parts = explode(".", $document->id);
-					$id = JArrayHelper::getValue($parts, 1, 0);
+					JPluginHelper::importPlugin("jsolrsearch");
+					$dispatcher =& JDispatcher::getInstance();
 
-					$highlighting = JArrayHelper::getValue($response->highlighting, $document->id);
-
-					if ($highlighting->offsetExists("title")) {
-        				$hlTitle = JArrayHelper::getValue($highlighting->title, 0);
-					} else {
-						$hlTitle = $document->title;
+					$array = $dispatcher->trigger('onFormatResult', array(
+						$document, 
+						$response->highlighting, 
+						$query->getHighlightFragsize())
+					);
+					
+					if (JArrayHelper::getValue($array, 0)) {
+						$list[$i] = JArrayHelper::getValue($array, 0);
+					
+						$i++;
 					}
-					
-					$list[$i]->title = strip_tags($hlTitle);
-					
-					$list[$i]->href = ContentHelperRoute::getArticleRoute($id);
-					
-					$list[$i]->text = $this->_getHlContent($document, $highlighting, $query->getHighlightFragsize());
-					$list[$i]->created = $document->created;
-					$list[$i]->section = JArrayHelper::getValue($document->section, 0) . "/" . JArrayHelper::getValue($document->category, 0);
-					
-					$i++;
 				}
 			}
         } catch (SolrClientException $e) {
@@ -250,25 +261,14 @@ class JSolrSearchModelSearch extends JModel
 		return $query;
 	}
 	
-	function _getHlContent($solrDocument, $highlighting, $fragSize)
+	function getFilterOptionQuery()
 	{
-		$hlContent = null;
-
-		$application = JFactory::getApplication("site");
+		$query = "";
 		
-		$params = $application->getParams();
-		
-		if ($params->get("jsolr_use_hl_metadescription") == 1 && 
-			$highlighting->offsetExists("metadescription")) {
-			$hlContent = JArrayHelper::getValue($highlighting->metadescription, 0);
-		} else {		
-			if ($highlighting->offsetExists("content")) {
-				$hlContent = JArrayHelper::getValue($highlighting->content, 0);
-			} else {
-				$hlContent = substr($solrDocument->content, 0, $fragSize);
-			}
+		if ($this->getFilterOption()) {
+			$query = "option:".$this->getFilterOption();
 		}
 		
-		return $hlContent;
-	}	
+		return $query;
+	}
 }

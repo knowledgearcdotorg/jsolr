@@ -37,16 +37,26 @@ $document->addScript(JURI::base()."/modules/mod_jsolrfilter/js/jsolrfilter.js");
 $document->addStyleSheet(JURI::base()."/modules/mod_jsolrfilter/css/jsolrfilter.css");
 ?>
 <div id="jSolrOptions">
-
+	<ul>
+	<?php 
+	foreach ($helper->getFilterOptions() as $key=>$value) : 
+	?>
+		<li class="jsolr-filter-item jsolr-filter-option"><?php echo $value; ?></li>
+	<?php 
+	endforeach;
+	?>
+	</ul>
 </div>
 
 <div id="jSolrSearchDates">
-	<div id="jSolrAnytime" class="jsolr-range<?php if ($helper->isDateRangeSelected("ANYTIME")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("ANYTIME"); ?></div>
-	<div id="jSolr1d" class="jsolr-range<?php if ($helper->isDateRangeSelected("1D")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1D"); ?></div>
-	<div id="jSolr1w" class="jsolr-range<?php if ($helper->isDateRangeSelected("1W")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1W"); ?></div>
-	<div id="jSolr1m" class="jsolr-range<?php if ($helper->isDateRangeSelected("1M")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1M"); ?></div>
-	<div id="jSolr1y" class="jsolr-range<?php if ($helper->isDateRangeSelected("1Y")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1Y"); ?></div>
-	<div id="jSolrCustom" class="jsolr-range"><?php echo $helper->getCustomRangeLink(); ?></div>
+	<ul>
+		<li id="jSolrAnytime" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("ANYTIME")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("ANYTIME"); ?></li>
+		<li id="jSolr1d" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1D")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1D"); ?></li>
+		<li id="jSolr1w" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1W")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1W"); ?></li>
+		<li id="jSolr1m" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1M")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1M"); ?></li>
+		<li id="jSolr1y" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1Y")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1Y"); ?></li>
+		<li id="jSolrCustom" class="jsolr-filter-item jsolr-range"><?php echo $helper->getCustomRangeLink(); ?></li>
+	</ul>
 	<form 
 		id="jSolrDateRange" 
 		name="jSolrDateRange"

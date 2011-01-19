@@ -45,7 +45,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<div class="jsolr-result-title"><?php echo $item->title; ?></div>
 		<div class="jsolr-result-date"><?php echo $item->created; ?></div>
 		<div class="jsolr-result-description"><?php echo $item->text; ?></div>
-		<div class="jsolr-result-location"><?php echo $item->section; ?></div>
+		<div class="jsolr-result-location"><?php echo $item->location; ?></div>
 	</div>
 </div>
 <?php endforeach; ?>

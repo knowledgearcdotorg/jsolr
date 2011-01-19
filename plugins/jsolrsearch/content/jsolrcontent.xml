@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE install PUBLIC 
+  "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://dev.joomla.org/xml/1.5/plugin-install.dtd">
+<install version="1.5" type="plugin" group="jsolrsearch">
+	<name>JSolr Search - Content</name>
+	<creationDate>2011-01-19</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.1.0</version>
+	<description>The JSolr Content Search maps a content search item to a generic result.</description>
+	<files>
+		<filename plugin="jsolrcontent">jsolrcontent.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrcontent.ini</language>
+	</languages>
+	<params>
+		<param name="jsolr_use_hl_metadescription" type="radio" default="0" label="Use highlighted metadescription in search results" description="Use the highlighted metadesciption in the search results instead of the content fragment when available.">
+			<option value="0">No</option> 
+			<option value="1">Yes</option> 
+		</param>
+	</params>
+</install>

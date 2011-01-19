@@ -145,4 +145,42 @@ class modJSolrFilterHelper
 		
 		return JRoute::_($url->toString());
 	}
+	
+	/**
+	 * Gets a filter options array from each of the enabled JSolrSearch plugins.
+	 * 
+	 * @return array An array of filter option anchor tags.
+	 */
+	function getFilterOptions()
+	{
+		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
+		
+		JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();
+
+		$array = $dispatcher->trigger('onFilterOptions', array());
+		
+		$options = array("everything"=>JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
+		
+		$options = array_merge($options, JArrayHelper::getValue($array, 0, array()));
+		
+		$links = array();
+		
+		$selected = $url->getVar("o");
+		
+		foreach ($options as $key=>$value) {
+			if ((!$selected && $key == "everything") || $key == $selected) {
+				$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
+			} else {
+				if ($key == "everything") {
+					$url->delVar("o");		
+				} else {
+					$url->setVar("o", $key);
+				}				
+				$links[] = JHTML::_("link", $url->toString(), $value);
+			}
+		}
+		
+		return $links;
+	}
 }

@@ -7,11 +7,25 @@
 	display: none;
 }
 
-.jsolr-range {
+.jsolr-filter-item {
 	margin: 4px 0; 	
 }
 
-a.jsolr-custom-range-selected {
+#jSolrOptions {
+	margin: 0 0 5px 0;
+	border-bottom: 1px solid #666666;
+}
+
+#jSolrOptions ul, #jSolrSearchDates ul {
+	padding-left: 0;
+	list-style-type: none;	
+}
+
+.jsolr-filter-option {
+	font-size: 120%;	
+}
+
+a.jsolr-fo-selected, a.jsolr-custom-range-selected {
 	color: inherit !important;
 	text-decoration: inherit !important;
 	font-weight: bold !important;
