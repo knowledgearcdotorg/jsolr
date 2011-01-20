@@ -34,7 +34,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->get("Query")); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-result-button">Search</button>
 	</div>
 	<div>
-		<a href="<?php echo JRoute::_("index.php?option=com_jsolrsearch&view=advanced"); ?>" class="jsolr-advanced-link"><?php echo JText::_("Advanced search"); ?></a>	
+		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>" class="jsolr-advanced-link"><?php echo JText::_("Advanced search"); ?></a>	
 	</div>
 	<?php echo JHTML::_('form.token'); ?>
 </form>

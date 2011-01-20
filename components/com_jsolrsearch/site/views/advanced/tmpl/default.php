@@ -10,89 +10,89 @@ defined('_JEXEC') or die('Restricted access');
 	<table cellpadding="0" cellspacing="0" border="0" width="100%" class="contentpane">
 		<tr>
 			<td width="30%" height="40">
-				<label id="andPhraseLbl" for="andPhrase">
-					<?php echo JText::_( 'All of these words' ); ?>:
+				<label id="aqLbl" for="aq">
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_AQ"); ?>:
 				</label>
 			</td>
 		  	<td>
-		  		<input type="text" name="andPhrase" id="andPhrase" size="40" value="" class="inputbox required" maxlength="50" />
+		  		<input type="text" name="aq" id="aq" size="40" value="<?php echo $this->get("AndQuery"); ?>" class="inputbox required" maxlength="50" />
 		  	</td>
 		</tr>
 		<tr>
 			<td height="40">
-				<label id="exactPhraseLbl" for="exactPhrase">
-					<?php echo JText::_( 'This exact phrase' ); ?>:
+				<label id="eqLbl" for="eq">
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_EQ"); ?>:
 				</label>
 			</td>
 			<td>
-				<input type="text" id="exactPhrase" name="exactPhrase" size="40" value="" class="inputbox required validate-email" maxlength="100" />
+				<input type="text" id="eq" name="eq" size="40" value="<?php echo $this->get("ExactQuery"); ?>" class="inputbox required validate-email" maxlength="100"/>
 			</td>
 		</tr>
 		<tr>
 			<td height="40">
-				<label id="orPhraseLbl" for="orPhrase">
-					<?php echo JText::_( 'One or more of these words' ); ?>:
+				<label id="oqLbl" for="oq">
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_OQ"); ?>:
 				</label>
 			</td>
 		  	<td>
-		  		<div><input class="inputbox" type="text" id="orPhrase" name="orPhrase" size="10" value="" />
-		  		or <input class="inputbox" type="text" id="orPhrase" name="orPhrase" size="10" value="" />
-		  		or <input class="inputbox" type="text" id="orPhrase" name="orPhrase" size="10" value="" /></div>
+		  		<div>
+					<input class="inputbox" type="text" id="oq0" name="oq0" size="10" value=""/>
+		  			<span><?php echo JText::_("COM_JSOLRSEARCH_OR"); ?></span>
+		  			<input class="inputbox" type="text" id="oq1" name="oq1" size="10" value=""/>
+					<span><?php echo JText::_("COM_JSOLRSEARCH_OR"); ?></span>
+					<input class="inputbox" type="text" id="oq2" name="oq2" size="10" value=""/>
+				</div>
 		  	</td>
 		</tr>
 		<tr>
 			<td height="40">
-				<label id="notPhrase" for="notPhrase">
-					<?php echo JText::_( "Don't show results containing" ); ?>:
+				<label id="nq" for="nq">
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_NQ"); ?>:
 				</label>
 			</td>
 			<td>
-				<input class="inputbox" type="text" id="notPhrase" name="notPhrase" size="40" value="" />
+				<input class="inputbox" type="text" id="nq" name="nq" size="40" value="<?php echo $this->get("NotQuery"); ?>"/>
 			</td>
 		</tr>
 		<tr>
 			<td height="40">
-				<label id="optionsLbl">
-					<?php echo JText::_( "Search in" ); ?>:
+				<label id="oLbl" for="o">
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_O"); ?>:
 				</label>
 			</td>
 			<td>
-				<div><label><input class="inputbox" type="checkbox" id="optionsEverything" name="options[]" size="40" value="" /><?php echo JText::_("Everything"); ?></label></div>
-				<div><label><input class="inputbox" type="checkbox" id="optionsContent" name="options[]" size="40" value="" /><?php echo JText::_("Articles"); ?></label></div>
-				<div><label><input class="inputbox" type="checkbox" id="optionsWebLink" name="options[]" size="40" value="" /><?php echo JText::_("Web Links"); ?></label></div>
+				<?php
+				echo JHTML::_("select.genericlist", $this->get("FilterOptions"), "o", "class=\"inputbox\"", "value", "text", $this->get("FilterOption"), "o");
+				?>
 			</td>
 		</tr>
 		<tr>
 			<td height="40">
-				<label id="langLbl">
-					<?php echo JText::_( "Language" ); ?>:
+				<label id="lrLbl">
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_LR"); ?>:
 				</label>
 			</td>
 			<td>
-				<select id="lang" name="lang">
-					<option value="en-GB">English - GB</option>
-				</select>
+			<?php
+			echo JHTML::_("select.genericlist", $this->get("Languages"), "lr", "class=\"inputbox\"", "value", "text", $this->get("Language"), "lr");
+			?>
 			</td>
 		</tr>
 		<tr>
 			<td height="40">
-				<label id="dateLbl">
-					<?php echo JText::_( "Date" ); ?>:
+				<label id="qdrLbl" for="qdr">				
+					<?php echo JText::_("COM_JSOLRSEARCH_LABEL_QDR"); ?>:
 				</label>
 			</td>
 			<td>
-				<select id="date" name="date">
-					<option value="0">Anytime</option>
-					<option value="1">Last 24 hours</option>
-					<option value="2">Last week</option>
-					<option value="3">Last month</option>
-					<option value="4">Last year</option>
-				</select>
+				<?php 
+				echo JHTML::_("select.genericlist", $this->get("DateRanges"), "qdr", "class=\"inputbox\"", "value", "text", $this->get("DateRange"), "qdr");
+				?>
 			</td>
 		</tr>
 	</table>
 
-	<button class="button validate" type="submit"><?php echo JText::_('Advanced Search'); ?></button>
+	<button class="button validate" type="submit"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_ADVANCED_SEARCH_SUBMIT"); ?></button>
 	<input type="hidden" name="task" value="advanced" />
 	<?php echo JHTML::_( 'form.token' ); ?>
 </form>

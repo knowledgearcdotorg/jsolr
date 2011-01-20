@@ -47,36 +47,37 @@ class JSolrSearchController extends JController
 		parent::__construct();
 	}
 	
+	function advanced()
+	{
+		$model = $this->getModel("advanced");
+		
+		$this->setRedirect($model->buildQueryURL(JRequest::get()));
+	}
+	
 	function search()
 	{
-		$url = new JURI("index.php");
-
-		$url->setVar("option", "com_jsolrsearch");
-		$url->setVar("view", "basic");
-		
-		foreach (JRequest::get() as $key=>$value) {
-			if ($value != "com_jsolrsearch") {
-				if ($key == "task") {
-					$url->delVar($key);
-				} else {
-					$url->setVar($key, $value);
-				}
-			}
-		}
-
-		$this->setRedirect(JRoute::_($url->toString(), false));
+		$model = $this->getModel("search");
+		$this->setRedirect($model->buildQueryURL(JRequest::get()));
 	}
 
 	function display()
 	{
 		$default = "basic";
+		
+		$viewName = JRequest::getWord("view", $default);
+		
+		$modelName = $viewName;
+		
+		if ($modelName == $default) {
+			$modelName = "search";
+		}
 
-		$model = $this->getModel("search");
+		$model = $this->getModel($modelName);
 		
-		$view = $this->getView(JRequest::getWord("view", $default), JRequest::getWord("format", "html"));		
+		$view = $this->getView($viewName, JRequest::getWord("format", "html"));		
 		$view->setModel($model, true);
-		
-		if (trim(JRequest::getString("q", null))) {
+
+		if (($viewName == "" || $viewName == $default) && trim(JRequest::getString("q", null))) {
 			$model->setQueryParams(JRequest::get("get"));
 			$view->setLayout("results");
 		}

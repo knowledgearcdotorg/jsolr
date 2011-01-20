@@ -64,6 +64,27 @@ class JSolrSearchModelSearch extends JModel
 
 		$this->dateRange = null;
 	}
+
+	public function buildQueryURL($params)
+	{
+		$url = new JURI("index.php");
+
+		$url->setVar("option", "com_jsolrsearch");
+		$url->setVar("view", "basic");
+		
+		foreach ($params as $key=>$value) {
+			if ($value != "com_jsolrsearch") {
+				if ($key == "task") {
+					$url->delVar($key);
+				} else {
+					$url->setVar($key, $value);
+				}
+			}
+		}
+		
+		return JRoute::_($url->toString(), false);
+	}
+	
 	
 	public function setQueryParams($params)
 	{
@@ -268,7 +289,15 @@ class JSolrSearchModelSearch extends JModel
 		if ($this->getFilterOption()) {
 			$query = "option:".$this->getFilterOption();
 		}
-		
+
 		return $query;
+	}
+	
+	function getAdvancedSearchURL()
+	{
+		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));		
+		$url->setVar("view", "advanced");
+
+		return JRoute::_($url->toString(), false);
 	}
 }
