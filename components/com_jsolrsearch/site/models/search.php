@@ -151,9 +151,12 @@ class JSolrSearchModelSearch extends JModel
 						
 			$client = new SolrClient($options);
 			
+			JPluginHelper::importPlugin("jsolrsearch");
+			$dispatcher =& JDispatcher::getInstance();
+			
 			$query = new SolrQuery();
 			
-			$query->setQuery($this->getQuery());
+			$query->setQuery($this->getQuery() . "&qf=title_en-GB");
 			
 			$filter = $this->getDateQuery();
 
@@ -170,6 +173,10 @@ class JSolrSearchModelSearch extends JModel
 			$query->setHighlight(true);
 			
 			$query->addField('*')->addField('score');
+
+			$dispatcher->trigger('onAddQF', array());
+			
+			$dispatcher->trigger('onAddHL', array());
 			
 			$query->addHighlightField("title");
 			$query->addHighlightField("content");
@@ -190,9 +197,6 @@ class JSolrSearchModelSearch extends JModel
 				$i = 0;
 				
 				foreach ($response->response->docs as $document) {
-					JPluginHelper::importPlugin("jsolrsearch");
-					$dispatcher =& JDispatcher::getInstance();
-
 					$array = $dispatcher->trigger('onFormatResult', array(
 						$document, 
 						$response->highlighting, 
