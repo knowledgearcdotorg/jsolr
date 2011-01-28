@@ -1,0 +1,1737 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- $LastChangedBy$ -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<config>
+
+	<!-- Set this to 'false' if you want solr to continue working after it has 
+		 encountered an severe configuration error.  In a production environment, 
+		 you may want solr to keep working even if one handler is mis-configured.
+		
+		 You may also set this to false using by setting the system property:
+		   -Dsolr.abortOnConfigurationError=false
+	-->
+	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
+
+	<!-- Used to specify an alternate directory to hold all index data
+		 other than the default ./data under the Solr home.
+		 If replication is in use, this should match the replication configuration. -->
+		 <!-- disabled for multicore setup 
+	<dataDir>${solr.data.dir:./solr/data}</dataDir> -->
+
+	<indexDefaults>
+		<!-- Values here affect all index writers and act as a default unless overridden. -->
+		<useCompoundFile>false</useCompoundFile>
+
+		<mergeFactor>10</mergeFactor>
+		<!--
+			 If both ramBufferSizeMB and maxBufferedDocs is set, then Lucene will flush based on whichever limit is hit first.
+		
+		-->
+		<!--<maxBufferedDocs>1000</maxBufferedDocs>-->
+		<!-- Tell Lucene when to flush documents to disk.
+			 Giving Lucene more memory for indexing means faster indexing at the cost of more RAM
+			
+			 If both ramBufferSizeMB and maxBufferedDocs is set, then Lucene will flush based on whichever limit is hit first.
+		-->
+
+		<ramBufferSizeMB>32</ramBufferSizeMB>
+		<maxMergeDocs>2147483647</maxMergeDocs>
+		<maxFieldLength>10000</maxFieldLength>
+		<writeLockTimeout>1000</writeLockTimeout>
+		<commitLockTimeout>10000</commitLockTimeout>
+		
+		<!--
+			 Expert: Turn on Lucene's auto commit capability.
+			 This causes intermediate segment flushes to write a new lucene
+			 index descriptor, enabling it to be opened by an external
+			 IndexReader.
+			 NOTE: Despite the name, this value does not have any relation to Solr's autoCommit functionality
+		-->
+
+		<!--<luceneAutoCommit>false</luceneAutoCommit>-->
+		<!--
+			 Expert:
+			 The Merge Policy in Lucene controls how merging is handled by Lucene.  The default in 2.3 is the LogByteSizeMergePolicy, previous
+			 versions used LogDocMergePolicy.
+			
+			 LogByteSizeMergePolicy chooses segments to merge based on their size.  The Lucene 2.2 default, LogDocMergePolicy chose when
+			 to merge based on number of documents
+			
+			 Other implementations of MergePolicy must have a no-argument constructor
+		-->
+		<!--<mergePolicy>org.apache.lucene.index.LogByteSizeMergePolicy</mergePolicy>-->
+
+		<!--
+			 Expert:
+			 The Merge Scheduler in Lucene controls how merges are performed.  The ConcurrentMergeScheduler (Lucene 2.3 default)
+			 can perform merges in the background using separate threads.  The SerialMergeScheduler (Lucene 2.2 default) does not.
+		-->
+		<!--<mergeScheduler>org.apache.lucene.index.ConcurrentMergeScheduler</mergeScheduler>-->
+
+		<!--
+			 This option specifies which Lucene LockFactory implementation to use.
+			
+			 single = SingleInstanceLockFactory - suggested for a read-only index
+			          or when there is no possibility of another process trying
+			          to modify the index.
+			 native = NativeFSLockFactory
+			 simple = SimpleFSLockFactory
+			
+			 (For backwards compatibility with Solr 1.2, 'simple' is the default
+			  if not specified.)
+		-->
+		<lockType>single</lockType>
+
+	</indexDefaults>
+
+	<mainIndex>
+		<!-- options specific to the main on-disk lucene index -->
+		<useCompoundFile>false</useCompoundFile>
+		<ramBufferSizeMB>32</ramBufferSizeMB>
+		<mergeFactor>4</mergeFactor>
+		<!-- Deprecated -->
+
+		<!--<maxBufferedDocs>1000</maxBufferedDocs>-->
+		<maxMergeDocs>2147483647</maxMergeDocs>
+		<maxFieldLength>10000</maxFieldLength>
+		
+		<!-- If true, unlock any held write or commit locks on startup. 
+			 This defeats the locking mechanism that allows multiple
+			 processes to safely access a lucene index, and should be
+			 used with care.
+			 This is not needed if lock type is 'none' or 'single'
+		-->
+		<unlockOnStartup>false</unlockOnStartup>
+
+		<!--
+			 Custom deletion policies can specified here. The class must
+			 implement org.apache.lucene.index.IndexDeletionPolicy.
+			
+			 http://lucene.apache.org/java/2_3_2/api/org/apache/lucene/index/IndexDeletionPolicy.html
+			
+			 The standard Solr IndexDeletionPolicy implementation supports deleting
+			 index commit points on number of commits, age of commit point and
+			 optimized status.
+			
+			 The latest commit point should always be preserved regardless
+			 of the criteria.
+		-->
+
+		<deletionPolicy class="solr.SolrDeletionPolicy">
+			<!-- Keep only optimized commit points -->
+			<str name="keepOptimizedOnly">false</str>
+			<!-- The maximum number of commit points to be kept -->
+			<str name="maxCommitsToKeep">1</str>
+			<!--
+				 Delete all commit points once they have reached the given age.
+				 Supports DateMathParser syntax e.g.
+			
+			<str name="maxCommitAge">30MINUTES</str>
+			<str name="maxCommitAge">1DAY</str>
+			-->
+		</deletionPolicy>
+
+	</mainIndex>
+
+	<!--	Enables JMX if and only if an existing MBeanServer is found, use 
+			this if you want to configure JMX through JVM parameters. Remove
+			this to disable exposing Solr configuration and statistics to JMX.
+	
+		 If you want to connect to a particular server, specify the agentId
+		 e.g. <jmx agentId="myAgent" />
+	
+		 If you want to start a new MBeanServer, specify the serviceUrl
+		 e.g <jmx serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:9999/solr" />
+	
+		 For more details see http://wiki.apache.org/solr/SolrJmx
+	-->
+	<jmx />
+
+	<!-- the default high-performance update handler -->
+	<updateHandler class="solr.DirectUpdateHandler2">
+
+		<!-- A prefix of "solr." for class names is an alias that
+			 causes solr to search appropriate packages, including
+			 org.apache.solr.(search|update|request|core|analysis)
+		-->
+	
+		<!-- Perform a <commit/> automatically under certain conditions:
+			 maxDocs - number of updates since last commit is greater than this
+			 maxTime - oldest uncommited update (in ms) is this long ago
+		-->
+	
+		<autoCommit> 
+			<maxDocs>2000</maxDocs>
+			<maxTime>120000</maxTime> 
+		</autoCommit>
+	
+	
+		<!-- The RunExecutableListener executes an external command.
+		     exe - the name of the executable to run
+		     dir - dir to use as the current working directory. default="."
+		     wait - the calling thread waits until the executable returns. default="true"
+		     args - the arguments to pass to the program.  default=nothing
+		     env - environment variables to set.  default=nothing
+		  -->
+	    <!-- A postCommit event is fired after every commit or optimize command
+	    <listener event="postCommit" class="solr.RunExecutableListener">
+	      <str name="exe">solr/bin/snapshooter</str>
+	      <str name="dir">.</str>
+	      <bool name="wait">true</bool>
+	      <arr name="args"> <str>arg1</str> <str>arg2</str> </arr>
+	      <arr name="env"> <str>MYVAR=val1</str> </arr>
+	    </listener>
+	    -->
+	    <!-- A postOptimize event is fired only after every optimize command, useful
+	         in conjunction with index distribution to only distribute optimized indicies 
+	    <listener event="postOptimize" class="solr.RunExecutableListener">
+	      <str name="exe">snapshooter</str>
+	      <str name="dir">solr/bin</str>
+	      <bool name="wait">true</bool>
+	    </listener>
+	    -->
+
+	</updateHandler>
+
+
+	<query>
+		<!-- Maximum number of clauses in a boolean query... can affect
+		    range or prefix queries that expand to big boolean
+		    queries.  An exception is thrown if exceeded.  -->
+		<maxBooleanClauses>1024</maxBooleanClauses>
+
+
+		<!-- There are two implementations of cache available for Solr,
+		     LRUCache, based on a synchronized LinkedHashMap, and
+		     FastLRUCache, based on a ConcurrentHashMap.  FastLRUCache has faster gets
+		     and slower puts in single threaded operation and thus is generally faster
+		     than LRUCache when the hit ratio of the cache is high (> 75%), and may be
+		     faster under other scenarios on multi-cpu systems. -->
+		<!-- Cache used by SolrIndexSearcher for filters (DocSets),
+		     unordered sets of *all* documents that match a query.
+		     When a new searcher is opened, its caches may be prepopulated
+		     or "autowarmed" using data from caches in the old searcher.
+		     autowarmCount is the number of items to prepopulate.  For LRUCache,
+		     the autowarmed items will be the most recently accessed items.
+		   Parameters:
+		     class - the SolrCache implementation LRUCache or FastLRUCache
+		     size - the maximum number of entries in the cache
+		     initialSize - the initial capacity (number of entries) of
+		       the cache.  (seel java.util.HashMap)
+		     autowarmCount - the number of entries to prepopulate from
+		       and old cache.
+		     -->
+
+		<filterCache
+			class="solr.FastLRUCache"
+			size="512"
+			initialSize="512"
+			autowarmCount="128"/>
+
+		<!-- Cache used to hold field values that are quickly accessible
+		     by document id.  The fieldValueCache is created by default
+		     even if not configured here.
+		  <fieldValueCache
+		    class="solr.FastLRUCache"
+		    size="512"
+		    autowarmCount="128"
+		    showItems="32"
+		  />
+		-->
+
+		<!-- queryResultCache caches results of searches - ordered lists of
+		      document ids (DocList) based on a query, a sort, and the range
+		      of documents requested.  -->
+		<queryResultCache
+			class="solr.LRUCache"
+			size="512"
+			initialSize="512"
+			autowarmCount="32"/>
+
+		<!-- documentCache caches Lucene Document objects (the stored fields for each document).
+		     Since Lucene internal document ids are transient, this cache will not be autowarmed.  -->
+		<documentCache
+			class="solr.LRUCache"
+			size="512"
+			initialSize="512"
+			autowarmCount="0"/>
+
+		<!-- If true, stored fields that are not requested will be loaded lazily.
+		
+		This can result in a significant speed improvement if the usual case is to
+		not load all stored fields, especially if the skipped fields are large compressed
+		text fields.
+		-->
+		
+		<enableLazyFieldLoading>true</enableLazyFieldLoading>
+
+		<!-- Example of a generic cache.  These caches may be accessed by name
+		     through SolrIndexSearcher.getCache(),cacheLookup(), and cacheInsert().
+		     The purpose is to enable easy caching of user/application level data.
+		     The regenerator argument should be specified as an implementation
+		     of solr.search.CacheRegenerator if autowarming is desired.  -->
+		<!--
+		<cache name="myUserCache"
+		  class="solr.LRUCache"
+		  size="4096"
+		  initialSize="1024"
+		  autowarmCount="1024"
+		  regenerator="org.mycompany.mypackage.MyRegenerator"
+		  />
+		-->
+
+		<!-- An optimization that attempts to use a filter to satisfy a search.
+		      If the requested sort does not include score, then the filterCache
+		      will be checked for a filter matching the query. If found, the filter
+		      will be used as the source of document ids, and then the sort will be
+		      applied to that.
+		 <useFilterForSortedQuery>true</useFilterForSortedQuery>
+		-->
+
+		<!-- An optimization for use with the queryResultCache.  When a search
+		      is requested, a superset of the requested number of document ids
+		      are collected.  For example, if a search for a particular query
+		      requests matching documents 10 through 19, and queryWindowSize is 50,
+		      then documents 0 through 49 will be collected and cached.  Any further
+		      requests in that range can be satisfied via the cache.  -->
+		<queryResultWindowSize>50</queryResultWindowSize>
+
+		<!-- Maximum number of documents to cache for any entry in the
+		     queryResultCache. -->
+		<queryResultMaxDocsCached>200</queryResultMaxDocsCached>
+
+		<!-- This entry enables an int hash representation for filters (DocSets)
+		     when the number of items in the set is less than maxSize.  For smaller
+		     sets, this representation is more memory efficient, more efficient to
+		     iterate over, and faster to take intersections.  -->
+		<HashDocSet maxSize="3000" loadFactor="0.75"/>
+
+		<!-- a newSearcher event is fired whenever a new searcher is being prepared
+		     and there is a current searcher handling requests (aka registered). -->
+		<!-- QuerySenderListener takes an array of NamedList and executes a
+		     local query request for each NamedList in sequence. -->
+		<listener event="newSearcher" class="solr.QuerySenderListener">
+
+			<arr name="queries">
+				<lst> <str name="q">solr</str> <str name="start">0</str> <str name="rows">10</str> </lst>
+				<lst> <str name="q">rocks</str> <str name="start">0</str> <str name="rows">10</str> </lst>
+				
+				<lst><str name="q">static newSearcher warming query from solrconfig.xml</str></lst>
+			</arr>
+		</listener>
+
+		<!-- a firstSearcher event is fired whenever a new searcher is being
+		     prepared but there is no current registered searcher to handle
+		     requests or to gain autowarming data from. -->
+		<listener event="firstSearcher" class="solr.QuerySenderListener">
+			<arr name="queries">
+				<lst> <str name="q">fast_warm</str> <str name="start">0</str> <str name="rows">10</str> </lst>
+				
+				<lst><str name="q">static firstSearcher warming query from solrconfig.xml</str></lst>
+			</arr>
+		</listener>
+
+		<!-- If a search request comes in and there is no current registered searcher,
+		     then immediately register the still warming searcher and use it.  If
+		     "false" then all requests will block until the first searcher is done
+		     warming. -->
+		<useColdSearcher>false</useColdSearcher>
+
+		<!-- Maximum number of searchers that may be warming in the background
+		  concurrently.  An error is returned if this limit is exceeded. Recommend
+		  1-2 for read-only slaves, higher for masters w/o cache warming. -->
+		<maxWarmingSearchers>2</maxWarmingSearchers>
+
+	</query>
+
+	<!-- 
+	  Let the dispatch filter handler /select?qt=XXX
+	  handleSelect=true will use consistent error handling for /select and /update
+	  handleSelect=false will use solr1.1 style error formatting
+	  -->
+	<requestDispatcher handleSelect="true" >
+		<!--Make sure your system has some authentication before enabling remote streaming!  -->
+		<requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" />
+
+		<!-- Set HTTP caching related parameters (for proxy caches and clients).
+		      
+		     To get the behaviour of Solr 1.2 (ie: no caching related headers)
+		     use the never304="true" option and do not specify a value for
+		     <cacheControl>
+		-->
+		<!-- <httpCaching never304="true"> -->
+
+		<httpCaching lastModifiedFrom="openTime" etagSeed="Solr">
+		   <!-- lastModFrom="openTime" is the default, the Last-Modified value
+		        (and validation against If-Modified-Since requests) will all be
+		        relative to when the current Searcher was opened.
+		        You can change it to lastModFrom="dirLastMod" if you want the
+		        value to exactly corrispond to when the physical index was last
+		        modified.
+		
+		        etagSeed="..." is an option you can change to force the ETag
+		        header (and validation against If-None-Match requests) to be
+		        differnet even if the index has not changed (ie: when making
+		        significant changes to your config file)
+		
+		        lastModifiedFrom and etagSeed are both ignored if you use the
+		        never304="true" option.
+		   -->
+			<!-- If you include a <cacheControl> directive, it will be used to
+			     generate a Cache-Control header, as well as an Expires header
+			     if the value contains "max-age="
+			
+			     By default, no Cache-Control header is generated.
+			
+			     You can use the <cacheControl> option even if you have set
+			     never304="true"
+			-->
+			<!-- <cacheControl>max-age=30, public</cacheControl> -->
+		</httpCaching>
+	</requestDispatcher>
+
+
+	<!-- requestHandler plugins... incoming queries will be dispatched to the
+	   correct handler based on the path or the qt (query type) param.
+	   Names starting with a '/' are accessed with the a path equal to the 
+	   registered name.  Names without a leading '/' are accessed with:
+	    http://host/app/select?qt=name
+	   If no qt is defined, the requestHandler that declares default="true"
+	   will be used.
+	-->
+	<requestHandler name="standard" class="solr.SearchHandler">
+
+		<!-- default values for query parameters -->
+		<lst name="defaults">
+			<str name="echoParams">explicit</str>
+			<!--
+			<int name="rows">10</int>
+			<str name="fl">*</str>
+			<str name="version">2.1</str>
+			 -->
+		</lst>
+	</requestHandler>
+
+	<!-- Please refer to http://wiki.apache.org/solr/SolrReplication for details on configuring replication -->
+	<!-- MASTER_REPLICATION_START
+	<requestHandler name="/replication" class="solr.ReplicationHandler" >
+		<lst name="master">
+			<str name="replicateAfter">commit</str>
+			<str name="replicateAfter">startup</str>
+			<str name="confFiles">schema.xml,stopwords.txt,elevate.xml</str>
+		</lst>
+	</requestHandler>
+ 	MASTER_REPLICATION_END -->
+
+	<!-- SLAVE_REPLICATION_START
+	<requestHandler name="/replication" class="solr.ReplicationHandler" >
+		<lst name="slave">
+			<str name="masterUrl">$MASTER_CORE_ur-PKL/replication</str> 
+			<str name="pollInterval">$POLL_TIME</str>  
+		</lst>
+	</requestHandler>
+	SLAVE_REPLICATION_END -->
+
+	<!-- DisMaxRequestHandler allows easy searching across multiple fields
+	     for simple user-entered phrases.  It's implementation is now
+	     just the standard SearchHandler with a default query type
+	     of "dismax". 
+	     see http://wiki.apache.org/solr/DisMaxRequestHandler
+	 -->
+	<requestHandler name="dismax" class="solr.SearchHandler">
+		<lst name="defaults">
+			<str name="defType">dismax</str>
+			<str name="echoParams">explicit</str>
+		</lst>
+	</requestHandler>
+
+	<!-- Note how you can register the same handler multiple times with
+	     different names (and different init parameters)
+	  -->
+	<requestHandler name="partitioned" class="solr.SearchHandler" default="true">
+		<lst name="defaults">
+			<str name="defType">dismax</str>
+			<str name="echoParams">explicit</str>
+			<float name="tie">0.01</float>
+			<str name="qf">
+			content^40.0 title^5.0 tags_h1^5.0 tags_h2_h3^3.0 tags_h4_h5_h6^2.0
+			</str>
+			<str name="pf">content^2.0</str>
+			<int name="ps">15</int>
+			<!-- Abort any searches longer than 4 seconds -->
+			<!-- <int name="timeAllowed">4000</int>  -->
+			<str name="mm">2&lt;-35%</str>
+			<str name="q.alt">*:*</str>
+
+			<!-- example highlighter config, enable per-query with hl=true -->
+			<str name="hl">true</str>
+			<str name="hl.fl">content</str>
+			<int name="hl.snippets">3</int>
+
+			<str name="hl.mergeContiguous">true</str>
+			<!-- instructs Solr to return the field itself if no query terms are
+			     found -->
+			<str name="f.body.hl.alternateField">metadescription</str>
+			<str name="f.body.hl.maxAlternateFieldLength">256</str>
+			<!-- JS: I wasn't getting good results here... I'm turning off for now
+			because I was getting periods (.) by themselves at the begining of
+			snippets and don't feel like deubgging anymore.  Without the regex is
+			faster too -->
+			<!--<str name="f.content_result.hl.fragmenter">regex</str>--> <!-- defined below -->
+
+			<!-- By default, don't spell check -->
+			<str name="spellcheck">false</str>
+			<!-- Defaults for the spell checker when used -->
+			<str name="spellcheck.onlyMorePopular">true</str>
+			<str name="spellcheck.extendedResults">false</str>
+			<!--  The number of suggestions to return -->
+			<str name="spellcheck.count">1</str>
+
+		</lst>
+		<arr name="last-components">
+			<str>spellcheck</str>
+		</arr>
+	</requestHandler>
+
+	<!-- The more like this handler offers many advantages over the standard handler,
+	  when performing moreLikeThis requests.-->
+	<requestHandler name="mlt" class="solr.MoreLikeThisHandler">
+
+		<lst name="defaults">
+			<str name="mlt.mintf">1</str>
+			<str name="mlt.mindf">1</str>
+			<str name="mlt.minwl">3</str>
+			<str name="mlt.maxwl">15</str>
+			<str name="mlt.maxqt">20</str>
+			
+			<str name="mlt.match.include">false</str>
+			<!-- Abort any searches longer than 1.5 seconds -->
+			<!-- <int name="timeAllowed">1500</int> -->
+		</lst>
+	</requestHandler>
+
+
+	<!--
+	 Search components are registered to SolrCore and used by Search Handlers
+	 
+	 By default, the following components are avaliable:
+	  
+	 <searchComponent name="query"     class="org.apache.solr.handler.component.QueryComponent" />
+	 <searchComponent name="facet"     class="org.apache.solr.handler.component.FacetComponent" />
+	 <searchComponent name="mlt"       class="org.apache.solr.handler.component.MoreLikeThisComponent" />
+	 <searchComponent name="highlight" class="org.apache.solr.handler.component.HighlightComponent" />
+	 <searchComponent name="stats"     class="org.apache.solr.handler.component.StatsComponent" />
+	 <searchComponent name="debug"     class="org.apache.solr.handler.component.DebugComponent" />
+	 
+	 Default configuration in a requestHandler would look like:
+	  <arr name="components">
+	    <str>query</str>
+	    <str>facet</str>
+	    <str>mlt</str>
+	    <str>highlight</str>
+	    <str>stats</str>
+	    <str>debug</str>
+	  </arr>
+	
+	  If you register a searchComponent to one of the standard names, that will be used instead.
+	  To insert components before or after the 'standard' components, use:
+	  
+	  <arr name="first-components">
+	    <str>myFirstComponentName</str>
+	  </arr>
+	  
+	  <arr name="last-components">
+	    <str>myLastComponentName</str>
+	  </arr>
+	-->
+
+	<!-- The spell check component can return a list of alternative spelling
+	suggestions.  -->
+
+	<searchComponent name="spellcheck" class="solr.SpellCheckComponent">
+
+		<str name="queryAnalyzerFieldType">textSpell</str>
+
+		<lst name="spellchecker">
+			<str name="name">default</str>
+			<str name="field">spell</str>
+			<str name="spellcheckIndexDir">./spellchecker1</str>
+			
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		<lst name="spellchecker">
+			<str name="name">jarowinkler</str>
+			<str name="field">spell</str>
+			<!-- Use a different Distance Measure -->
+			<str name="distanceMeasure">org.apache.lucene.search.spell.JaroWinklerDistance</str>
+			
+			<str name="spellcheckIndexDir">./spellchecker2</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- lst_spellchecker_LANGUAGE -->
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_vi-VN</str>
+			
+			<str name="field">spell_vi-VN</str>
+			<str name="spellcheckIndexDir">./spellchecker_vi-VN</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ur-PK</str>
+			
+			<str name="field">spell_ur-PK</str>
+			<str name="spellcheckIndexDir">./spellchecker_ur-PK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_uk-UA</str>
+			
+			<str name="field">spell_uk-UA</str>
+			<str name="spellcheckIndexDir">./spellchecker_uk-UA</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_tr-TR</str>
+			
+			<str name="field">spell_tr-TR</str>
+			<str name="spellcheckIndexDir">./spellchecker_tr-TR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_th-TH</str>
+			
+			<str name="field">spell_th-TH</str>
+			<str name="spellcheckIndexDir">./spellchecker_th-TH</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ta-LK</str>
+			
+			<str name="field">spell_ta-LK</str>
+			<str name="spellcheckIndexDir">./spellchecker_ta-LK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_tl-PH</str>
+			
+			<str name="field">spell_tl-PH</str>
+			<str name="spellcheckIndexDir">./spellchecker_tl-PH</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sy-IQ</str>
+			
+			<str name="field">spell_sy-IQ</str>
+			<str name="spellcheckIndexDir">./spellchecker_sy-IQ</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sv-SE</str>
+			
+			<str name="field">spell_sv-SE</str>
+			<str name="spellcheckIndexDir">./spellchecker_sv-SE</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_es-ES</str>
+			
+			<str name="field">spell_es-ES</str>
+			<str name="spellcheckIndexDir">./spellchecker_es-ES</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sl-SI</str>
+		
+			<str name="field">spell_sl-SI</str>
+			<str name="spellcheckIndexDir">./spellchecker_sl-SI</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sk-SK</str>
+			
+			<str name="field">spell_sk-SK</str>
+			<str name="spellcheckIndexDir">./spellchecker_sk-SK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_si-LK</str>
+			
+			<str name="field">spell_si-LK</str>
+			<str name="spellcheckIndexDir">./spellchecker_si-LK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sd-PK</str>
+			
+			<str name="field">spell_sd-PK</str>
+			<str name="spellcheckIndexDir">./spellchecker_sd-PK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sr-RS</str>
+			
+			<str name="field">spell_sr-RS</str>
+			<str name="spellcheckIndexDir">./spellchecker_sr-RS</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sr-YU</str>
+			
+			<str name="field">spell_sr-YU</str>
+			<str name="spellcheckIndexDir">./spellchecker_sr-YU</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>		
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ru-RU</str>
+			
+			<str name="field">spell_ru-RU</str>
+			<str name="spellcheckIndexDir">./spellchecker_ru-RU</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ro-RO</str>
+			
+			<str name="field">spell_ro-RO</str>
+			<str name="spellcheckIndexDir">./spellchecker_ro-RO</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_pt-PT</str>
+			
+			<str name="field">spell_pt-PT</str>
+			<str name="spellcheckIndexDir">./spellchecker_pt-PT</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_pt-BR</str>
+			
+			<str name="field">spell_pt-BR</str>
+			<str name="spellcheckIndexDir">./spellchecker_pt-BR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_pl-PL</str>
+			
+			<str name="field">spell_pl-PL</str>
+			<str name="spellcheckIndexDir">./spellchecker_pl-PL</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_fa-IR</str>
+			
+			<str name="field">spell_fa-IR</str>
+			<str name="spellcheckIndexDir">./spellchecker_fa-IR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ps</str>
+			
+			<str name="field">spell_ps</str>
+			<str name="spellcheckIndexDir">./spellchecker_ps</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_nb-NO</str>
+			
+			<str name="field">spell_nb-NO</str>
+			<str name="spellcheckIndexDir">./spellchecker_nb-NO</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sr-RS</str>
+			
+			<str name="field">spell_sr-ME</str>
+			<str name="spellcheckIndexDir">./spellchecker_sr-ME</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_mn-MN</str>
+			
+			<str name="field">spell_mn-MN</str>
+			<str name="spellcheckIndexDir">./spellchecker_mn-MN</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ml-IN</str>
+			
+			<str name="field">spell_ml-IN</str>
+			<str name="spellcheckIndexDir">./spellchecker_ml-IN</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ms-MY</str>
+			
+			<str name="field">spell_ms-MY</str>
+			<str name="spellcheckIndexDir">./spellchecker_ms-MY</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_mk-MK</str>
+			
+			<str name="field">spell_mk-MK</str>
+			<str name="spellcheckIndexDir">./spellchecker_mk-MK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_lt-LT</str>
+			
+			<str name="field">spell_lt-LT</str>
+			<str name="spellcheckIndexDir">./spellchecker_lt-LT</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_lv-LV</str>
+			
+			<str name="field">spell_lv-LV</str>
+			<str name="spellcheckIndexDir">./spellchecker_lv-LV</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_lo-LA</str>
+			
+			<str name="field">spell_lo-LA</str>
+			<str name="spellcheckIndexDir">./spellchecker_lo-LA</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ko-KR</str>
+			
+			<str name="field">spell_ko-KR</str>
+			<str name="spellcheckIndexDir">./spellchecker_ko-KR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ja-JP</str>
+			
+			<str name="field">spell_ja-JP</str>
+			<str name="spellcheckIndexDir">./spellchecker_ja-JP</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_it-IT</str>
+			
+			<str name="field">spell_it-IT</str>
+			<str name="spellcheckIndexDir">./spellchecker_it-IT</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_id-ID</str>
+			
+			<str name="field">spell_id-ID</str>
+			<str name="spellcheckIndexDir">./spellchecker_id-ID</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_is-IS</str>
+			
+			<str name="field">spell_is-IS</str>
+			<str name="spellcheckIndexDir">./spellchecker_is-IS</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_hu-HU</str>
+			
+			<str name="field">spell_hu-HU</str>
+			<str name="spellcheckIndexDir">./spellchecker_hu-HU</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_hi-IN</str>
+			
+			<str name="field">spell_hi-IN</str>
+			<str name="spellcheckIndexDir">./spellchecker_hi-IN</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_he-IL</str>
+			
+			<str name="field">spell_he-IL</str>
+			<str name="spellcheckIndexDir">./spellchecker_he-IL</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_gu-IN</str>
+			
+			<str name="field">spell_gu-IN</str>
+			<str name="spellcheckIndexDir">./spellchecker_gu-IN</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_el-GR</str>
+			
+			<str name="field">spell_el-GR</str>
+			<str name="spellcheckIndexDir">./spellchecker_el-GR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_de-DE</str>
+			
+			<str name="field">spell_de-DE</str>
+			<str name="spellcheckIndexDir">./spellchecker_de-DE</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ka-GE</str>
+			
+			<str name="field">spell_ka-GE</str>
+			<str name="spellcheckIndexDir">./spellchecker_ka-GE</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_gl-ES</str>
+			
+			<str name="field">spell_gl-ES</str>
+			<str name="spellcheckIndexDir">./spellchecker_gl-ES</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_fr-FR</str>
+			
+			<str name="field">spell_fr-FR</str>
+			<str name="spellcheckIndexDir">./spellchecker_fr-FR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_fi-FI</str>
+			
+			<str name="field">spell_fi-FI</str>
+			<str name="spellcheckIndexDir">./spellchecker_fi-FI</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_et-EE</str>
+			
+			<str name="field">spell_et-EE</str>
+			<str name="spellcheckIndexDir">./spellchecker_et-EE</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_eo-XX</str>
+			
+			<str name="field">spell_eo-XX</str>
+			<str name="spellcheckIndexDir">./spellchecker_eo-XX</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_en-AU</str>
+			
+			<str name="field">spell_en-AU</str>
+			<str name="spellcheckIndexDir">./spellchecker_en-AU</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_en-CA</str>
+			
+			<str name="field">spell_en-CA</str>
+			<str name="spellcheckIndexDir">./spellchecker_en-CA</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_en-GB</str>
+			
+			<str name="field">spell_en-GB</str>
+			<str name="spellcheckIndexDir">./spellchecker_en-GB</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_en-US</str>
+			
+			<str name="field">spell_en-US</str>
+			<str name="spellcheckIndexDir">./spellchecker_en-US</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_nl-NL</str>
+			
+			<str name="field">spell_nl-NL</str>
+			<str name="spellcheckIndexDir">./spellchecker_nl-NL</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_da-DK</str>
+			
+			<str name="field">spell_da-DK</str>
+			<str name="spellcheckIndexDir">./spellchecker_da-DK</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_cs-CZ</str>
+			
+			<str name="field">spell_cs-CZ</str>
+			<str name="spellcheckIndexDir">./spellchecker_cs-CZ</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_hr-HR</str>
+			
+			<str name="field">spell_hr-HR</str>
+			<str name="spellcheckIndexDir">./spellchecker_hr-HR</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_zh-TW</str>
+			
+			<str name="field">spell_zh-TW</str>
+			<str name="spellcheckIndexDir">./spellchecker_zh-TW</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_zh-CN</str>
+			
+			<str name="field">spell_zh-CN</str>
+			<str name="spellcheckIndexDir">./spellchecker_zh-CN</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ca-ES</str>
+			
+			<str name="field">spell_ca-ES</str>
+			<str name="spellcheckIndexDir">./spellchecker_ca-ES</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_km-KH</str>
+			
+			<str name="field">spell_km-KH</str>
+			<str name="spellcheckIndexDir">./spellchecker_km-KH</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_bg-BG</str>
+			
+			<str name="field">spell_bg-BG</str>
+			<str name="spellcheckIndexDir">./spellchecker_bg-BG</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_bs-BA</str>
+			
+			<str name="field">spell_bs-BA</str>
+			<str name="spellcheckIndexDir">./spellchecker_bs-BA</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_bn-BD</str>
+			
+			<str name="field">spell_bn-BD</str>
+			<str name="spellcheckIndexDir">./spellchecker_bn-BD</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_be-BY</str>
+			
+			<str name="field">spell_be-BY</str>
+			<str name="spellcheckIndexDir">./spellchecker_be-BY</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_eu-ES</str>
+			
+			<str name="field">spell_eu-ES</str>
+			<str name="spellcheckIndexDir">./spellchecker_eu-ES</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_az-AZ</str>
+			
+			<str name="field">spell_az-AZ</str>
+			<str name="spellcheckIndexDir">./spellchecker_az-AZ</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_ar-AA</str>
+			
+			<str name="field">spell_ar-AA</str>
+			<str name="spellcheckIndexDir">./spellchecker_ar-AA</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_sq-AL</str>
+			
+			<str name="field">spell_sq-AL</str>
+			<str name="spellcheckIndexDir">./spellchecker_sq-AL</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+		
+		<!-- $LastChangedBy$ -->
+		<lst name="spellchecker">
+			<str name="name">spellchecker_af-ZA</str>
+			
+			<str name="field">spell_af-ZA</str>
+			<str name="spellcheckIndexDir">./spellchecker_af-ZA</str>
+			<str name="buildOnOptimize">true</str>
+		</lst>
+	</searchComponent>
+
+	<!-- a search component that enables you to configure the top results for
+	     a given query regardless of the normal lucene scoring.-->
+
+	<searchComponent name="elevator" class="solr.QueryElevationComponent" >
+		<!-- pick a fieldType to analyze queries -->
+		<str name="queryFieldType">string</str>
+		<str name="config-file">elevate.xml</str>
+	</searchComponent>
+
+	<!-- a request handler utilizing the elevator component -->
+	<requestHandler name="/elevate" class="solr.SearchHandler" startup="lazy">
+
+		<lst name="defaults">
+			<str name="echoParams">explicit</str>
+		</lst>
+		<arr name="last-components">
+			<str>elevator</str>
+		</arr>
+	</requestHandler>
+
+	<!-- Update request handler.  
+	
+	     Note: Since solr1.1 requestHandlers requires a valid content type header if posted in
+	     the body. For example, curl now requires: -H 'Content-type:text/xml; charset=utf-8'
+	     The response format differs from solr1.1 formatting and returns a standard error code.
+	
+	     To enable solr1.1 behavior, remove the /update handler or change its path
+	  -->
+	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler" />
+
+	<!--
+	 	 Analysis request handler.  Since Solr 1.3.  Use to returnhow a document is analyzed.  Useful
+	 	 for debugging and as a token server for other types of applications
+	 -->
+	<requestHandler name="/analysis" class="solr.AnalysisRequestHandler" />
+
+
+	<!-- CSV update handler, loaded on demand -->
+	<requestHandler name="/update/csv" class="solr.CSVRequestHandler" startup="lazy" />
+
+	<!-- 
+	 Admin Handlers - This will register all the standard admin RequestHandlers.  Adding 
+	 this single handler is equivalent to registering:
+	 
+	<requestHandler name="/admin/luke"       class="org.apache.solr.handler.admin.LukeRequestHandler" />
+	<requestHandler name="/admin/system"     class="org.apache.solr.handler.admin.SystemInfoHandler" />
+	<requestHandler name="/admin/plugins"    class="org.apache.solr.handler.admin.PluginInfoHandler" />
+	<requestHandler name="/admin/threads"    class="org.apache.solr.handler.admin.ThreadDumpHandler" />
+	<requestHandler name="/admin/properties" class="org.apache.solr.handler.admin.PropertiesRequestHandler" />
+	<requestHandler name="/admin/file"       class="org.apache.solr.handler.admin.ShowFileRequestHandler" >
+	
+	If you wish to hide files under ${solr.home}/conf, explicitly register the ShowFileRequestHandler using:
+	<requestHandler name="/admin/file" class="org.apache.solr.handler.admin.ShowFileRequestHandler" >
+	  <lst name="invariants">
+	   <str name="hidden">synonyms.txt</str> 
+	   <str name="hidden">anotherfile.txt</str> 
+	  </lst>
+	</requestHandler>
+	-->
+	<requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
+
+	<!-- ping/healthcheck -->
+	<requestHandler name="/admin/ping" class="PingRequestHandler">
+		<lst name="defaults">
+			<str name="qt">standard</str>
+			<str name="q">solrpingquery</str>
+			
+			<str name="echoParams">all</str>
+		</lst>
+	</requestHandler>
+
+	<!-- Echo the request contents back to the client -->
+	<requestHandler name="/debug/dump" class="solr.DumpRequestHandler" >
+		<lst name="defaults">
+			<str name="echoParams">explicit</str> <!-- for all params (including the default etc) use: 'all' -->
+			
+			<str name="echoHandler">true</str>
+		</lst>
+	</requestHandler>
+
+	<highlighting>
+		<!-- Configure the standard fragmenter -->
+		<!-- This could most likely be commented out in the "default" case -->
+		<fragmenter name="gap" class="org.apache.solr.highlight.GapFragmenter" default="true">
+			<lst name="defaults">
+				<int name="hl.fragsize">100</int>
+			</lst>
+		</fragmenter>
+
+		<!-- A regular-expression-based fragmenter (f.i., for sentence extraction) -->
+		<fragmenter name="regex" class="org.apache.solr.highlight.RegexFragmenter">
+			<lst name="defaults">
+				<!-- slightly smaller fragsizes work better because of slop -->
+				<int name="hl.fragsize">70</int>
+		
+				<!-- allow 50% slop on fragment sizes -->
+				<float name="hl.regex.slop">0.5</float>
+				<!-- a basic sentence pattern -->
+				<str name="hl.regex.pattern">[-\w ,/\n\"']{20,200}</str>
+			</lst>
+		</fragmenter>
+		
+		<!-- Configure the standard formatter -->
+		
+		<formatter name="html" class="org.apache.solr.highlight.HtmlFormatter" default="true">
+			<lst name="defaults">
+				<str name="hl.simple.pre"><![CDATA[<strong>]]></str>
+				<str name="hl.simple.post"><![CDATA[</strong>]]></str>
+			</lst>
+		</formatter>
+	</highlighting>
+
+
+	<!-- queryResponseWriter plugins... query responses will be written using the
+	  writer specified by the 'wt' request parameter matching the name of a registered
+	  writer.
+	  The "default" writer is the default and will be used if 'wt' is not specified 
+	  in the request. XMLResponseWriter will be used if nothing is specified here.
+	  The json, python, and ruby writers are also available by default.
+	
+	  <queryResponseWriter name="xml" class="org.apache.solr.request.XMLResponseWriter" default="true"/>
+	  <queryResponseWriter name="json" class="org.apache.solr.request.JSONResponseWriter"/>
+	  <queryResponseWriter name="python" class="org.apache.solr.request.PythonResponseWriter"/>
+	  <queryResponseWriter name="ruby" class="org.apache.solr.request.RubyResponseWriter"/>
+	  <queryResponseWriter name="php" class="org.apache.solr.request.PHPResponseWriter"/>
+	  <queryResponseWriter name="phps" class="org.apache.solr.request.PHPSerializedResponseWriter"/>
+	
+	  <queryResponseWriter name="custom" class="com.example.MyResponseWriter"/>
+	-->
+
+	<!-- XSLT response writer transforms the XML output by any xslt file found
+	     in Solr's conf/xslt directory.  Changes to xslt files are checked for
+	     every xsltCacheLifetimeSeconds.  
+	 -->
+	<queryResponseWriter name="xslt" class="org.apache.solr.request.XSLTResponseWriter">
+		<int name="xsltCacheLifetimeSeconds">5</int>
+	</queryResponseWriter>
+
+
+  <!-- example of registering a query parser
+  <queryParser name="lucene" class="org.apache.solr.search.LuceneQParserPlugin"/>
+  -->
+
+	<!-- example of registering a custom function parser 
+	<valueSourceParser name="myfunc" class="com.mycompany.MyValueSourceParser" />
+	-->
+
+	<!-- config for the admin interface -->
+	<admin>
+		<defaultQuery>solr</defaultQuery>
+
+		<gettableFiles>
+		solrconfig.xml
+		schema.xml
+		elevate.xml
+		mapping-ISOLatin1Accent.txt
+		protwords.txt
+		stopwords.txt
+		synonyms.txt
+		<!-- gettableFiles_LANGUAGE  -->
+		stopwords_spell_vi-VN.txt
+		compoundwords_vi-VN.txt
+		protwords_vi-VN.txt
+		synonyms_vi-VN.txt
+		stopwords_vi-VN.txt
+		stopwords_spell_ur-PK.txt
+		compoundwords_ur-PK.txt
+		protwords_ur-PK.txt
+		synonyms_ur-PK.txt
+		stopwords_ur-PK.txt
+		stopwords_spell_uk-UA.txt
+		compoundwords_uk-UA.txt
+		protwords_uk-UA.txt
+		synonyms_uk-UA.txt
+		stopwords_uk-UA.txt
+		stopwords_spell_tr-TR.txt
+		compoundwords_tr-TR.txt
+		protwords_tr-TR.txt
+		synonyms_tr-TR.txt
+		stopwords_tr-TR.txt
+		stopwords_spell_th-TH.txt
+		compoundwords_th-TH.txt
+		protwords_th-TH.txt
+		synonyms_th-TH.txt
+		stopwords_th-TH.txt
+		stopwords_spell_ta-LK.txt
+		compoundwords_ta-LK.txt
+		protwords_ta-LK.txt
+		synonyms_ta-LK.txt
+		stopwords_ta-LK.txt
+		stopwords_spell_tl-PH.txt
+		compoundwords_tl-PH.txt
+		protwords_tl-PH.txt
+		synonyms_tl-PH.txt
+		stopwords_tl-PH.txt
+		stopwords_spell_sy-IQ.txt
+		compoundwords_sy-IQ.txt
+		protwords_sy-IQ.txt
+		synonyms_sy-IQ.txt
+		stopwords_sy-IQ.txt
+		stopwords_spell_sv-SE.txt
+		compoundwords_sv-SE.txt
+		protwords_sv-SE.txt
+		synonyms_sv-SE.txt
+		stopwords_sv-SE.txt
+		stopwords_spell_es-ES.txt
+		compoundwords_es-ES.txt
+		protwords_es-ES.txt
+		synonyms_es-ES.txt
+		stopwords_es-ES.txt
+		stopwords_spell_sl-SI.txt
+		compoundwords_sl-SI.txt
+		protwords_sl-SI.txt
+		synonyms_sl-SI.txt
+		stopwords_sl-SI.txt
+		stopwords_spell_sk-SK.txt
+		compoundwords_sk-SK.txt
+		protwords_sk-SK.txt
+		synonyms_sk-SK.txt
+		stopwords_sk-SK.txt
+		stopwords_spell_si-LK.txt
+		compoundwords_si-LK.txt
+		protwords_si-LK.txt
+		synonyms_si-LK.txt
+		stopwords_si-LK.txt
+		stopwords_spell_sd-PK.txt
+		compoundwords_sd-PK.txt
+		protwords_sd-PK.txt
+		synonyms_sd-PK.txt
+		stopwords_sd-PK.txt
+		stopwords_spell_ru-RU.txt
+		compoundwords_ru-RU.txt
+		protwords_ru-RU.txt
+		synonyms_ru-RU.txt
+		stopwords_ru-RU.txt
+		stopwords_spell_ro-RO.txt
+		compoundwords_ro-RO.txt
+		protwords_ro-RO.txt
+		synonyms_ro-RO.txt
+		stopwords_ro-RO.txt
+		stopwords_spell_pt-PT.txt
+		compoundwords_pt-PT.txt
+		protwords_pt-PT.txt
+		synonyms_pt-PT.txt
+		stopwords_pt-PT.txt
+		stopwords_spell_pt-BR.txt
+		compoundwords_pt-BR.txt
+		protwords_pt-BR.txt
+		synonyms_pt-BR.txt
+		stopwords_pt-BR.txt
+		stopwords_spell_pl-PL.txt
+		compoundwords_pl-PL.txt
+		protwords_pl-PL.txt
+		synonyms_pl-PL.txt
+		stopwords_pl-PL.txt
+		stopwords_spell_fa-IR.txt
+		compoundwords_fa-IR.txt
+		protwords_fa-IR.txt
+		synonyms_fa-IR.txt
+		stopwords_fa-IR.txt
+		stopwords_spell_sr-ME.txt
+		compoundwords_sr-ME.txt
+		protwords_sr-ME.txt
+		synonyms_sr-ME.txt
+		stopwords_sr-ME.txt		
+		stopwords_spell_ps.txt
+		compoundwords_ps.txt
+		protwords_ps.txt
+		synonyms_ps.txt
+		stopwords_ps.txt
+		stopwords_spell_nb-NO.txt
+		compoundwords_nb-NO.txt
+		protwords_nb-NO.txt
+		synonyms_nb-NO.txt
+		stopwords_nb-NO.txt
+		stopwords_spell_sr-RS.txt
+		compoundwords_sr-RS.txt
+		protwords_sr-RS.txt
+		synonyms_sr-RS.txt
+		stopwords_sr-RS.txt
+		stopwords_spell_sr-YU.txt
+		compoundwords_sr-YU.txt
+		protwords_sr-YU.txt
+		synonyms_sr-YU.txt
+		stopwords_sr-YU.txt		
+		stopwords_spell_mn-MN.txt
+		compoundwords_mn-MN.txt
+		protwords_mn-MN.txt
+		synonyms_mn-MN.txt
+		stopwords_mn-MN.txt
+		stopwords_spell_ml-IN.txt
+		compoundwords_ml-IN.txt
+		protwords_ml-IN.txt
+		synonyms_ml-IN.txt
+		stopwords_ml-IN.txt
+		stopwords_spell_ms-MY.txt
+		compoundwords_ms-MY.txt
+		protwords_ms-MY.txt
+		synonyms_ms-MY.txt
+		stopwords_ms-MY.txt
+		stopwords_spell_mk-MK.txt
+		compoundwords_mk-MK.txt
+		protwords_mk-MK.txt
+		synonyms_mk-MK.txt
+		stopwords_mk-MK.txt
+		stopwords_spell_lt-LT.txt
+		compoundwords_lt-LT.txt
+		protwords_lt-LT.txt
+		synonyms_lt-LT.txt
+		stopwords_lt-LT.txt
+		stopwords_spell_lv-LV.txt
+		compoundwords_lv-LV.txt
+		protwords_lv-LV.txt
+		synonyms_lv-LV.txt
+		stopwords_lv-LV.txt
+		stopwords_spell_lo-LA.txt
+		compoundwords_lo-LA.txt
+		protwords_lo-LA.txt
+		synonyms_lo-LA.txt
+		stopwords_lo-LA.txt
+		stopwords_spell_ko-KR.txt
+		compoundwords_ko-KR.txt
+		protwords_ko-KR.txt
+		synonyms_ko-KR.txt
+		stopwords_ko-KR.txt
+		stopwords_spell_ja-JP.txt
+		compoundwords_ja-JP.txt
+		protwords_ja-JP.txt
+		synonyms_ja-JP.txt
+		stopwords_ja-JP.txt
+		stopwords_spell_it-IT.txt
+		compoundwords_it-IT.txt
+		protwords_it-IT.txt
+		synonyms_it-IT.txt
+		stopwords_it-IT.txt
+		stopwords_spell_id-ID.txt
+		compoundwords_id-ID.txt
+		protwords_id-ID.txt
+		synonyms_id-ID.txt
+		stopwords_id-ID.txt
+		stopwords_spell_is-IS.txt
+		compoundwords_is-IS.txt
+		protwords_is-IS.txt
+		synonyms_is-IS.txt
+		stopwords_is-IS.txt
+		stopwords_spell_hu-HU.txt
+		compoundwords_hu-HU.txt
+		protwords_hu-HU.txt
+		synonyms_hu-HU.txt
+		stopwords_hu-HU.txt
+		stopwords_spell_hi-IN.txt
+		compoundwords_hi-IN.txt
+		protwords_hi-IN.txt
+		synonyms_hi-IN.txt
+		stopwords_hi-IN.txt
+		stopwords_spell_he-IL.txt
+		compoundwords_he-IL.txt
+		protwords_he-IL.txt
+		synonyms_he-IL.txt
+		stopwords_he-IL.txt
+		stopwords_spell_gu-IN.txt
+		compoundwords_gu-IN.txt
+		protwords_gu-IN.txt
+		synonyms_gu-IN.txt
+		stopwords_gu-IN.txt
+		stopwords_spell_el-GR.txt
+		compoundwords_el-GR.txt
+		protwords_el-GR.txt
+		synonyms_el-GR.txt
+		stopwords_el-GR.txt
+		stopwords_spell_de-DE.txt
+		compoundwords_de-DE.txt
+		protwords_de-DE.txt
+		synonyms_de-DE.txt
+		stopwords_de-DE.txt
+		stopwords_spell_ka-GE.txt
+		compoundwords_ka-GE.txt
+		protwords_ka-GE.txt
+		synonyms_ka-GE.txt
+		stopwords_ka-GE.txt
+		stopwords_spell_gl-ES.txt
+		compoundwords_gl-ES.txt
+		protwords_gl-ES.txt
+		synonyms_gl-ES.txt
+		stopwords_gl-ES.txt
+		stopwords_spell_fr-FR.txt
+		compoundwords_fr-FR.txt
+		protwords_fr-FR.txt
+		synonyms_fr-FR.txt
+		stopwords_fr-FR.txt
+		stopwords_spell_fi-FI.txt
+		compoundwords_fi-FI.txt
+		protwords_fi-FI.txt
+		synonyms_fi-FI.txt
+		stopwords_fi-FI.txt
+		stopwords_spell_et-EE.txt
+		compoundwords_et-EE.txt
+		protwords_et-EE.txt
+		synonyms_et-EE.txt
+		stopwords_et-EE.txt
+		stopwords_spell_eo-XX.txt
+		compoundwords_eo-XX.txt
+		protwords_eo-XX.txt
+		synonyms_eo-XX.txt
+		stopwords_eo-XX.txt
+		stopwords_spell_en-AU.txt
+		compoundwords_en-AU.txt
+		protwords_en-AU.txt
+		synonyms_en-AU.txt
+		stopwords_en-AU.txt
+		stopwords_spell_en-CA.txt
+		compoundwords_en-CA.txt
+		protwords_en-CA.txt
+		synonyms_en-CA.txt
+		stopwords_en-CA.txt
+		stopwords_spell_en-GB.txt
+		compoundwords_en-GB.txt
+		protwords_en-GB.txt
+		synonyms_en-GB.txt
+		stopwords_en-GB.txt
+		stopwords_spell_en-US.txt
+		compoundwords_en-US.txt
+		protwords_en-US.txt
+		synonyms_en-US.txt
+		stopwords_en-US.txt		
+		stopwords_spell_nl-NL.txt
+		compoundwords_nl-NL.txt
+		protwords_nl-NL.txt
+		synonyms_nl-NL.txt
+		stopwords_nl-NL.txt
+		stopwords_spell_da-DK.txt
+		compoundwords_da-DK.txt
+		protwords_da-DK.txt
+		synonyms_da-DK.txt
+		stopwords_da-DK.txt
+		stopwords_spell_cs-CZ.txt
+		compoundwords_cs-CZ.txt
+		protwords_cs-CZ.txt
+		synonyms_cs-CZ.txt
+		stopwords_cs-CZ.txt
+		stopwords_spell_hr-HR.txt
+		compoundwords_hr-HR.txt
+		protwords_hr-HR.txt
+		synonyms_hr-HR.txt
+		stopwords_hr-HR.txt
+		stopwords_spell_zh-TW.txt
+		compoundwords_zh-TW.txt
+		protwords_zh-TW.txt
+		synonyms_zh-TW.txt
+		stopwords_zh-TW.txt
+		stopwords_spell_zh-CN.txt
+		compoundwords_zh-CN.txt
+		protwords_zh-CN.txt
+		synonyms_zh-CN.txt
+		stopwords_zh-CN.txt
+		stopwords_spell_ca-ES.txt
+		compoundwords_ca-ES.txt
+		protwords_ca-ES.txt
+		synonyms_ca-ES.txt
+		stopwords_ca-ES.txt
+		stopwords_spell_km-KH.txt
+		compoundwords_km-KH.txt
+		protwords_km-KH.txt
+		synonyms_km-KH.txt
+		stopwords_km-KH.txt
+		stopwords_spell_bg-BG.txt
+		compoundwords_bg-BG.txt
+		protwords_bg-BG.txt
+		synonyms_bg-BG.txt
+		stopwords_bg-BG.txt
+		stopwords_spell_bs-BA.txt
+		compoundwords_bs-BA.txt
+		protwords_bs-BA.txt
+		synonyms_bs-BA.txt
+		stopwords_bs-BA.txt
+		stopwords_spell_bn-BD.txt
+		compoundwords_bn-BD.txt
+		protwords_bn-BD.txt
+		synonyms_bn-BD.txt
+		stopwords_bn-BD.txt
+		stopwords_spell_be-BY.txt
+		compoundwords_be-BY.txt
+		protwords_be-BY.txt
+		synonyms_be-BY.txt
+		stopwords_be-BY.txt
+		stopwords_spell_eu-ES.txt
+		compoundwords_eu-ES.txt
+		protwords_eu-ES.txt
+		synonyms_eu-ES.txt
+		stopwords_eu-ES.txt
+		stopwords_spell_az-AZ.txt
+		compoundwords_az-AZ.txt
+		protwords_az-AZ.txt
+		synonyms_az-AZ.txt
+		stopwords_az-AZ.txt
+		stopwords_spell_ar-AA.txt
+		compoundwords_ar-AA.txt
+		protwords_ar-AA.txt
+		synonyms_ar-AA.txt
+		stopwords_ar-AA.txt
+		stopwords_spell_sq-AL.txt
+		compoundwords_sq-AL.txt
+		protwords_sq-AL.txt
+		synonyms_sq-AL.txt
+		stopwords_sq-AL.txt
+		stopwords_spell_af-ZA.txt
+		compoundwords_af-ZA.txt
+		protwords_af-ZA.txt
+		synonyms_af-ZA.txt
+		stopwords_af-ZA.txt
+		</gettableFiles>   
+
+		<!-- configure a healthcheck file for servers behind a loadbalancer
+		<healthcheck type="file">server-enabled</healthcheck>
+		-->
+
+	</admin>
+</config>
