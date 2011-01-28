@@ -5261,9 +5261,9 @@
 	<field name="metadescription" type="text" indexed="true" stored="true"/>
 	<field name="metakeywords" type="textgen" indexed="true" stored="false"/>
 	
-	<field name="tags_h1" type="text" indexed="true" stored="false" omitNorms="true"/>
-	<field name="tags_h2_h3" type="text" indexed="true" stored="false" omitNorms="true"/>
-	<field name="tags_h4_h5_h6" type="text" indexed="true" stored="false" omitNorms="true"/>
+	<field name="tags_h1" type="text" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
+	<field name="tags_h2_h3" type="text" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
+	<field name="tags_h4_h5_h6" type="text" indexed="true" stored="false" omitNorms="true" multiValued="true"/>
 	
 	<!-- Field indicating when each document was indexed.-->
 	<field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
