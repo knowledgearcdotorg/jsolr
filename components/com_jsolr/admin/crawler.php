@@ -30,6 +30,7 @@ jimport('joomla.event.dispatcher');
 jimport('joomla.plugin.helper');
 jimport('joomla.error.log');
 jimport('joomla.user.user');
+jimport('joomla.filesystem.file');
  
 /**
  * Simple command line interface application class.
@@ -107,14 +108,21 @@ class JSolrCrawler extends JApplication
     	
     	$application = JFactory::getApplication("site");
     }
+    
+    public function getRobotsFile()
+    {
+    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."ignore.txt";
+    }
  
     public function execute()
     {	
-		$dispatcher =& JDispatcher::getInstance();
+    	$rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
+
+    	$dispatcher =& JDispatcher::getInstance();
 		
 		JPluginHelper::importPlugin("crawler", null, true, $dispatcher);
 
-		$array = $dispatcher->trigger('onIndex');		
+		$array = $dispatcher->trigger('onIndex', array($rules));
     }
  
     /**

@@ -1,0 +1,3 @@
+option=com_content;section=1
+option=com_content;category=1,3
+option=com_content;article=1,3,5,7

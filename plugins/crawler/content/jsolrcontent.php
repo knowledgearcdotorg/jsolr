@@ -183,22 +183,52 @@ class plgCrawlerJSolrContent extends JPlugin
 		    }
 		}
 
-		return $text;		
+		return $text;
 	}
 	
-	public function onIndex()
+	private function _parseRules($rules)
 	{
-		$query = "SELECT a.id, a.created, a.modified, a.title, a.introtext, a.fulltext, a.created_by, a.sectionid, a.catid, a.metakey, a.metadesc, a.attribs " .
-				 "FROM #__content AS a WHERE a.state = 1 AND a.checked_out = 0;";
+		$array = array();
 		
+		foreach ($rules as $rule) {
+			if (strpos($rule, "content") === 0) {
+				$item = JArrayHelper::getValue(explode(";", $rule), 1);
+				$array[JArrayHelper::getValue(explode("=", $item), 0)] = JArrayHelper::getValue(explode("=", $item), 1);
+			}
+		}
+		
+		return $array;
+	}
+	
+	public function onIndex($rules)
+	{
+		$array = $this->_parseRules($rules);
+
+		$query = "SELECT a.id, a.created, a.modified, a.title, a.introtext, a.fulltext, a.created_by, a.sectionid, a.catid, a.metakey, a.metadesc, a.attribs " .
+				 "FROM #__content AS a WHERE a.state = 1 AND a.checked_out = 0"; 
+
+		if (JArrayHelper::getValue($array, "article", null)) {
+			$query .= " AND a.id NOT IN (" . JArrayHelper::getValue($array, "article", null) . ")";
+		}
+
+		if (JArrayHelper::getValue($array, "section", null)) {
+			$query .= " AND a.sectionid NOT IN (" . JArrayHelper::getValue($array, "section", null) . ")";
+		}
+
+		if (JArrayHelper::getValue($array, "category", null)) {
+			$query .= " AND a.catid NOT IN (" . JArrayHelper::getValue($array, "category", null) . ")";
+		}
+
+		$query .= ";";
+
 		$database = JFactory::getDBO();
 		$database->setQuery($query);
 
 		$articles = $database->loadObjectList("id");
-		
+
 		$ids = array();
 		$documents = array();
-		
+
 		foreach ($articles as $article) {
 			$documents[] = $this->_getDocument($article);
 			$ids[] = $article->id;
