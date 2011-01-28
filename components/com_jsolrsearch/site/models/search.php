@@ -33,6 +33,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.error.log');
+jimport('joomla.language.helper');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 require_once(JPATH_ROOT.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'pagination.php');
@@ -50,6 +51,8 @@ class JSolrSearchModelSearch extends JModel
 	var $dateRange;
 	
 	var $filterOption;
+	
+	var $lang;
 	
 	public function __construct()
 	{
@@ -105,6 +108,14 @@ class JSolrSearchModelSearch extends JModel
 		$this->_setDateRange($from, $to);
 		
 		$this->_setFilterOption(JArrayHelper::getValue($params, "o"));
+
+		$lang = JArrayHelper::getValue($params, "lr", null);
+		
+		if (!$lang) {
+			$lang = JArrayHelper::getValue($params, "lang");
+		}
+		
+		$this->_setLang($lang);
 	}
 
 	private function _setDateRange($from = null, $to = null)
@@ -117,6 +128,11 @@ class JSolrSearchModelSearch extends JModel
 	private function _setFilterOption($option)
 	{
 		$this->filterOption = $option;
+	}
+	
+	private function _setLang($lang)
+	{
+		$this->lang = $lang;
 	}
 	
 	public function getQuery()
@@ -134,7 +150,7 @@ class JSolrSearchModelSearch extends JModel
 		return $this->filterOption;
 	}
 	
-	function getResults()
+	public function getResults()
 	{		
 		$list = array();
 		
@@ -148,15 +164,15 @@ class JSolrSearchModelSearch extends JModel
 	    		'port'     => $configuration->port,
 				'path'	   => $configuration->path
 			);
-						
-			$client = new SolrClient($options);
-			
+
 			JPluginHelper::importPlugin("jsolrsearch");
 			$dispatcher =& JDispatcher::getInstance();
+					
+			$client = new SolrClient($options);
 			
 			$query = new SolrQuery();
 			
-			$query->setQuery($this->getQuery() . "&qf=title_en-GB");
+			$query->setQuery($this->getQuery());
 			
 			$filter = $this->getDateQuery();
 
@@ -174,14 +190,16 @@ class JSolrSearchModelSearch extends JModel
 			
 			$query->addField('*')->addField('score');
 
-			$dispatcher->trigger('onAddQF', array());
+			// get query filter params and boosts from plugin.
+			$query->addParam("qf", $this->getQFQuery($dispatcher->trigger('onAddQF', array())));
 			
-			$dispatcher->trigger('onAddHL', array());
+			foreach ($dispatcher->trigger('onAddHL', array()) as $result) {
+				foreach ($result as $item) {
+					$query->addHighlightField($item.$this->_getLang());
+				}
+			}
 			
-			$query->addHighlightField("title");
-			$query->addHighlightField("content");
-			$query->addHighlightField("metadescription");
-
+			// get highlighted fields from plugin.
 			$query->setHighlightFragsize(200, "content");
 
 			$query->setStart($this->getState("limitstart"));
@@ -190,7 +208,7 @@ class JSolrSearchModelSearch extends JModel
 			$queryResponse = $client->query($query);
 
 			$response = $queryResponse->getResponse();
-			
+
 			$this->setTotal($response->response->numFound);
 			
 			if(intval($response->response->numFound) > 0) {
@@ -200,7 +218,8 @@ class JSolrSearchModelSearch extends JModel
 					$array = $dispatcher->trigger('onFormatResult', array(
 						$document, 
 						$response->highlighting, 
-						$query->getHighlightFragsize())
+						$query->getHighlightFragsize(),
+						$this->_getLang())
 					);
 					
 					if (JArrayHelper::getValue($array, 0)) {
@@ -218,17 +237,17 @@ class JSolrSearchModelSearch extends JModel
 		return $list;
 	}
 	
-	function setTotal($total)
+	public function setTotal($total)
 	{
 		$this->total = $total;
 	}
 	
-	function getTotal()
+	public function getTotal()
 	{
 		return $this->total;
 	}
 	
-	function getPagination()
+	public function getPagination()
 	{
 		if (empty($this->pagination)) {
 			$this->pagination = new JSolrSearchPagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit'));
@@ -237,7 +256,7 @@ class JSolrSearchModelSearch extends JModel
 		return $this->pagination;
 	}
 	
-	function getDateQuery()
+	public function getDateQuery()
 	{	
 		$query = "";
 		if ($this->dateRange != null) {
@@ -286,7 +305,51 @@ class JSolrSearchModelSearch extends JModel
 		return $query;
 	}
 	
-	function getFilterOptionQuery()
+	/**
+	 * Get an array of query filter values.
+	 * 
+	 * Query filters that have multiple values are re-weighted and the boosts 
+	 * are updated. 
+	 * 
+	 * @param mixed $qf
+	 */
+	private function _getQF($qf)
+	{
+		$array = array();
+		
+		foreach ($qf as $key=>$value) {
+			if (!array_key_exists($key, $array)) {
+				$array[$key . $this->_getLang()] = array();
+			}
+
+			$array[$key . $this->_getLang()][] = $value;
+		}
+		
+		return $array;
+	}
+	
+	/**
+	 * Gets the modified language code for use by the Solr search engine.
+	 * 
+	 * The code will look like; _xx_XX.
+	 */
+	private function _getLang()
+	{
+		$lang = $this->lang;
+
+		// Language code must take the form xx-XX.
+		if (!$lang || count(explode("-", $lang)) < 2) {
+			$lang = JLanguageHelper::detectLanguage();
+		}
+
+		if ($lang) {
+			$lang = "_" . $lang;
+		}
+		
+		return str_replace("-", "_", $lang);
+	}
+	
+	public function getFilterOptionQuery()
 	{
 		$query = "";
 		
@@ -297,7 +360,30 @@ class JSolrSearchModelSearch extends JModel
 		return $query;
 	}
 	
-	function getAdvancedSearchURL()
+	public function getQFQuery($qf)
+	{
+		$array = array();
+
+		foreach ($qf as $item) {
+			$array = array_merge($array, $this->_getQF(JArrayHelper::getValue($qf, 0)));
+		}
+		
+		$reweighted = "";
+		
+		foreach ($array as $key=>$value) {
+			$boost = 0;
+			
+			foreach ($array[$key] as $item) {
+				$boost += $item;
+			}
+			
+			$reweighted .= " " . $key . "^" . $boost;
+		}
+		
+		return trim($reweighted);
+	}
+	
+	public function getAdvancedSearchURL()
 	{
 		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));		
 		$url->setVar("view", "advanced");

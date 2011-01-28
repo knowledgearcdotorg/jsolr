@@ -28,6 +28,8 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+$results = $this->get("Results");
 ?>
 <form action="index.php?option=com_jsolrsearch&task=search" method="post" name="adminForm" class="jsolr-search-result-form">
 	<div>
@@ -39,7 +41,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<?php echo JHTML::_('form.token'); ?>
 </form>
 
-<?php foreach ($this->get("Results") as $item) : ?>
+<?php if ($this->get("Total") == 0) : ?>
+<div class="jsolr-no-results"><?php echo JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></div>
+<?php endif; ?>
+
+<?php foreach ($results as $item) : ?>
 <div class="jsolr-results">
 	<div class="jsolr-result">
 		<div class="jsolr-result-title"><?php echo $item->title; ?></div>
