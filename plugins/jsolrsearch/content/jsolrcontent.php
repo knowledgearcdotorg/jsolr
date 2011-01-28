@@ -42,6 +42,22 @@ class plgJSolrSearchJSolrContent extends JPlugin
 		$this->_params = new JParameter($this->_plugin->params);	
 	}
 
+	function onAddQF()
+	{
+		$qf = array();
+		
+		$qf["title"] = $this->_params->get("jsolr_title");
+		
+		return $qf;
+	}
+	
+	function onAddHL()
+	{
+		$hl = array("title", "content", "metadescription");
+		
+		return $hl;
+	}	
+	
 	function onFilterOptions()
 	{		
 		static $options = array();
@@ -57,13 +73,18 @@ class plgJSolrSearchJSolrContent extends JPlugin
 	* @param mixed $document
 	* @param mixed $hl
 	* @param int $hlFragSize
+	* @param string $lang
 	*/
-	function onFormatResult($document, $hl, $hlFragSize) 
+	function onFormatResult($document, $hl, $hlFragSize, $lang) 
 	{
 		$result = null;
 		
 		$option = $this->onFilterOptions();
 		$keys = array_keys($option);
+		
+		$title = "title$lang";
+		$section = "section$lang";
+		$category = "category$lang";
 
 		if ($document->option == JArrayHelper::getValue($keys, 0)) {
 			$result = new stdClass();
@@ -72,37 +93,43 @@ class plgJSolrSearchJSolrContent extends JPlugin
 			$id = JArrayHelper::getValue($parts, 1, 0);
 
 			$highlighting = JArrayHelper::getValue($hl, $document->id);
-
-			if ($highlighting->offsetExists("title")) {
-        		$hlTitle = JArrayHelper::getValue($highlighting->title, 0);
+			
+			if ($highlighting->offsetExists($title)) {
+        		$hlTitle = JArrayHelper::getValue($highlighting->$title, 0);
 			} else {
-				$hlTitle = $document->title;
+				$hlTitle = $document->$title;
 			}
 			
-			$result->title = strip_tags($hlTitle);
+			$result->title = $hlTitle;
 			
 			$result->href = ContentHelperRoute::getArticleRoute($id);
 			
-			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize);
+			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->created = $document->created;
-			$result->location = JArrayHelper::getValue($document->section, 0) . "/" . JArrayHelper::getValue($document->category, 0);			
+
+			$result->location = $document->$section . "/" . $document->$category;			
 		}
 		
 		return $result;
 	}
 	
-	function _getHlContent($solrDocument, $highlighting, $fragSize)
+	function _getHlContent($solrDocument, $highlighting, $fragSize, $lang)
 	{
 		$hlContent = null;
 
+		$metadescription = "metadescription$lang";
+		$content = "content$lang";
+
 		if ($this->_params->get("jsolr_use_hl_metadescription") == 1 && 
-			$highlighting->offsetExists("metadescription")) {
-			$hlContent = JArrayHelper::getValue($highlighting->metadescription, 0);
-		} else {		
-			if ($highlighting->offsetExists("content")) {
-				$hlContent = JArrayHelper::getValue($highlighting->content, 0);
-			} else {
-				$hlContent = substr($solrDocument->content, 0, $fragSize);
+			$highlighting->offsetExists($metadescription)) {
+			$hlContent = JArrayHelper::getValue($highlighting->$metadescription, 0);
+		} else {
+			if ($highlighting->offsetExists($content)) {
+				foreach ($highlighting->$content as $item) {
+					$hlContent .= "<span class=\"jsolr-separator\">...</span>".$item;	
+				}
+
+				$hlContent .= "<span class=\"jsolr-separator\">...</span>";
 			}
 		}
 		
