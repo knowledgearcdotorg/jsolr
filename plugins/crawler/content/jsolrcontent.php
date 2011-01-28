@@ -92,7 +92,7 @@ class plgCrawlerJSolrContent extends JPlugin
 		$lang = $this->_getLang($article);
 		
 		if ($lang) {
-			$lang = "_$lang";
+			$lang = "_".str_replace("-", "_", $lang);
 		}
 		
 		$doc->addField('id',  "$this->_option." . $article->id);
