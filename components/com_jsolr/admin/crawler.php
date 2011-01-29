@@ -120,7 +120,7 @@ class JSolrCrawler extends JApplication
 
     	$dispatcher =& JDispatcher::getInstance();
 		
-		JPluginHelper::importPlugin("crawler", null, true, $dispatcher);
+		JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
 
 		$array = $dispatcher->trigger('onIndex', array($rules));
     }
