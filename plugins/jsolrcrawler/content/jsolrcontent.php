@@ -138,17 +138,19 @@ class plgJSolrCrawlerJSolrContent extends JPlugin
 	{
 		$i = 0;
 		
-		$query = null;
+		$query = "*:* AND -id:(";
 		
 		foreach ($ids as $id) {
 			if ($i > 0) {
 				$query .= " OR ";	
 			}
 			
-			$query .= "-id:$id";
+			$query .= "com_content.$id";
 			
 			$i++;	
 		}
+		
+		$query .= ")";
 		
 		return $query;
 	}
@@ -236,7 +238,7 @@ class plgJSolrCrawlerJSolrContent extends JPlugin
 
 		try {		
 			$this->_client->addDocuments($documents);
-		
+
 			$this->_client->deleteByQuery($this->_getDeleteQueryById($ids));
 			
 			$this->_client->commit();
