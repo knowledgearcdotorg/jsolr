@@ -41,14 +41,16 @@ $results = $this->get("Results");
 	<?php echo JHTML::_('form.token'); ?>
 </form>
 
-<?php if ($this->get("Total") == 0) : ?>
+<?php if ($this->get("Total") > 0) : ?>
+<div class="jsolr-total-results"><?php echo JText::sprintf("COM_JSOLRSEARCH_TOTAL_RESULTS", $this->get("Total")); ?></div>
+<?php else: ?>
 <div class="jsolr-no-results"><?php echo JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></div>
 <?php endif; ?>
 
 <?php foreach ($results as $item) : ?>
 <div class="jsolr-results">
 	<div class="jsolr-result">
-		<div class="jsolr-result-title"><?php echo $item->title; ?></div>
+		<div class="jsolr-result-title"><a href="<?php echo $item->href; ?>"><?php echo $item->title; ?></a></div>
 		<div class="jsolr-result-date"><?php echo $item->created; ?></div>
 		<div class="jsolr-result-description"><?php echo $item->text; ?></div>
 		<div class="jsolr-result-location"><?php echo $item->location; ?></div>

@@ -101,13 +101,10 @@ class plgJSolrSearchJSolrContent extends JPlugin
 			}
 			
 			$result->title = $hlTitle;
-			
 			$result->href = ContentHelperRoute::getArticleRoute($id);
-			
 			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->created = $document->created;
-
-			$result->location = $document->$section . "/" . $document->$category;			
+			$result->location = $document->$section . "/" . $document->$category;
 		}
 		
 		return $result;
