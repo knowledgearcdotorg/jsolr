@@ -20,6 +20,7 @@
 	<files folder="site">	
     	<folder>models</folder>
     	<folder>views</folder>
+    	<folder>helpers</folder>
     	<filename>controller.php</filename>
     	<filename>jsolrsearch.php</filename>
 	</files>
@@ -30,6 +31,7 @@
 
     <media destination="com_jsolrsearch">
     	<filename>js/jsolrsearch.js</filename>
+    	<filename>css/jsolrsearch.css</filename>
     </media>
 
 	<administration>

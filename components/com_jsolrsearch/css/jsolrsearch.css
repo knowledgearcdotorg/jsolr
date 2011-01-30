@@ -1,0 +1,79 @@
+.jsolr-search-form .jsolr-query {
+	margin-top: 20px;
+	margin-left: 20%;	
+	width: 60%;
+}
+
+.jsolr-search-form .jsolr-query input {
+	width: 80%;
+}
+
+.jsolr-search-form .jsolr-search-button {
+	
+}
+
+.jsolr-search-form .jsolr-advanced-link {
+	margin-left: 20%;
+	padding-left: 2px;
+	font-size: 90%;
+}
+
+.jsolr-search-result-form .jsolr-query {
+	width: 100%;
+	white-space: nowrap;
+}
+
+.jsolr-search-result-form .jsolr-query input {
+	width: 90%;
+}
+
+.jsolr-search-result-form .jsolr-search-button {
+	width: 10%;
+}
+
+.jsolr-search-result-form .jsolr-advanced-link {
+	float: right;
+	font-size: 90%;
+	margin-right: -4px;
+}
+
+.jsolr-total-results {
+	left: 0;
+	display: inline;
+	font-size: 90%;
+}
+
+.jsolr-no-results {
+	padding-top: 20px;
+	clear: right;
+}
+
+.jsolr-results {
+	padding-top: 20px;
+	clear: right;
+}
+
+.jsolr-result {
+	margin-bottom: 8px;
+}
+
+.jsolr-result-title {
+	font-size: 140%;
+	margin-bottom: 2px;
+}
+
+.jsolr-result-date {
+	color: #666;
+}
+
+.jsolr-date-label {
+	margin-right: 8px;	
+}
+
+.jsolr-result-description {
+
+}
+
+.jsolr-result-location {
+
+}

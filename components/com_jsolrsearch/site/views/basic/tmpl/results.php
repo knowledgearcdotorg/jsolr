@@ -32,32 +32,41 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 $results = $this->get("Results");
 ?>
 <form action="index.php?option=com_jsolrsearch&task=search" method="post" name="adminForm" class="jsolr-search-result-form">
-	<div>
-		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->get("Query")); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-result-button">Search</button>
+	<div class="jsolr-query">
+		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->get("Query")); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-button">Search</button>
 	</div>
-	<div>
-		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>" class="jsolr-advanced-link"><?php echo JText::_("Advanced search"); ?></a>	
+	
+	<div class="jsolr-advanced-link">
+		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>"><?php echo JText::_("Advanced search"); ?></a>	
+	</div>	
+
+	<?php if ($this->get("Total") > 0) : ?>
+	<div class="jsolr-total-results"><?php echo JText::sprintf("COM_JSOLRSEARCH_TOTAL_RESULTS", $this->get("Total"), $this->get("QTime")); ?></div>
+	<?php endif; ?>
+	
+	<?php if ($this->get("Total") == 0) : ?>
+	<div class="jsolr-no-results"><?php echo JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></div>
+	<?php endif; ?>
+	
+	<div class="jsolr-results">
+	<?php foreach ($results as $item) : ?>
+		<div class="jsolr-result">
+			<div class="jsolr-result-title"><a href="<?php echo $item->href; ?>"><?php echo $item->title; ?></a></div>
+			<div class="jsolr-result-date">
+				<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?>:</span><?php echo $item->created; ?>
+			</div>
+			<div class="jsolr-result-date">			
+				<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?>:</span><?php echo $item->modified; ?>
+			</div>
+			<div class="jsolr-result-description"><?php echo $item->text; ?></div>
+			<div class="jsolr-result-location"><?php echo $item->location; ?></div>
+		</div>
+	<?php endforeach; ?>
 	</div>
+	
 	<?php echo JHTML::_('form.token'); ?>
-</form>
-
-<?php if ($this->get("Total") > 0) : ?>
-<div class="jsolr-total-results"><?php echo JText::sprintf("COM_JSOLRSEARCH_TOTAL_RESULTS", $this->get("Total")); ?></div>
-<?php else: ?>
-<div class="jsolr-no-results"><?php echo JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></div>
-<?php endif; ?>
-
-<?php foreach ($results as $item) : ?>
-<div class="jsolr-results">
-	<div class="jsolr-result">
-		<div class="jsolr-result-title"><a href="<?php echo $item->href; ?>"><?php echo $item->title; ?></a></div>
-		<div class="jsolr-result-date"><?php echo $item->created; ?></div>
-		<div class="jsolr-result-description"><?php echo $item->text; ?></div>
-		<div class="jsolr-result-location"><?php echo $item->location; ?></div>
-	</div>
-</div>
-<?php endforeach; ?>
-
+</form>	
+	
 <div class="jsolr-pagination">
 	<?php echo $this->get("Pagination")->getPagesLinks(); ?>
 </div>

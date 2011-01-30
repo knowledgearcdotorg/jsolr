@@ -46,6 +46,8 @@ class JSolrSearchModelSearch extends JModel
 	
 	var $total;
 	
+	var $qTime = 0;
+	
 	var $pagination;
 	
 	var $dateRange;
@@ -209,7 +211,8 @@ class JSolrSearchModelSearch extends JModel
 
 			$response = $queryResponse->getResponse();
 
-			$this->setTotal($response->response->numFound);
+			$this->_setTotal($response->response->numFound);
+			$this->_setQTime($response->responseHeader->QTime);
 			
 			if(intval($response->response->numFound) > 0) {
 				$i = 0;
@@ -224,9 +227,10 @@ class JSolrSearchModelSearch extends JModel
 					
 					if (JArrayHelper::getValue($array, 0)) {
 						$list[$i] = JArrayHelper::getValue($array, 0);
-					
+						$list[$i]->created = $this->_localizeDateTime($list[$i]->created);
+						$list[$i]->modified = $this->_localizeDateTime($list[$i]->modified);
 						$i++;
-					}
+					}					
 				}
 			}
         } catch (SolrClientException $e) {
@@ -237,14 +241,24 @@ class JSolrSearchModelSearch extends JModel
 		return $list;
 	}
 	
-	public function setTotal($total)
+	private function _setTotal($total)
 	{
 		$this->total = $total;
+	}
+	
+	private function _setQTime($qTime)
+	{
+		$this->qTime = $qTime;
 	}
 	
 	public function getTotal()
 	{
 		return $this->total;
+	}
+	
+	public function getQTime()
+	{
+		return floatval($this->qTime / 1000);
 	}
 	
 	public function getPagination()
@@ -347,6 +361,13 @@ class JSolrSearchModelSearch extends JModel
 		}
 		
 		return str_replace("-", "_", $lang);
+	}
+	
+	private function _localizeDateTime($dateTime)
+	{
+		$date = JFactory::getDate($dateTime);
+		
+		return $date->toFormat(JText::_("DATE_FORMAT_LC2"));
 	}
 	
 	public function getFilterOptionQuery()

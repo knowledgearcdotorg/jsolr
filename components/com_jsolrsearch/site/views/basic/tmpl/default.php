@@ -30,11 +30,11 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <form action="<?php echo JRoute::_("index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-form">
-	<div>
-		<input type="text" name="q" id="q" class="jsolr-query"/><button type="submit" class="jsolr-search-button">Search</button>
+	<div class="jsolr-query">
+		<input type="text" name="q" id="q" class="inputbox"/><button type="submit" class="jsolr-search-button">Search</button>
 	</div>
-	<div>
-		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>" class="jsolr-advanced-link"><?php echo JText::_("Advanced search"); ?></a>	
+	<div class="jsolr-advanced-link">
+		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>"><?php echo JText::_("Advanced search"); ?></a>	
 	</div>
 	<?php echo JHTML::_('form.token'); ?>
 	<input type="hidden" name="lr" value="<?php echo JRequest::getWord("lr", ""); ?>"/>

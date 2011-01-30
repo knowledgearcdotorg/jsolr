@@ -35,6 +35,10 @@ class JSolrSearchViewBasic extends JView
 {
     function display($tpl = null)
     {
+    	$document = JFactory::getDocument();
+
+    	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
+    	
         parent::display($tpl);
     }
 }
