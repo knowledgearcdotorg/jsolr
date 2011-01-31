@@ -30,7 +30,6 @@ jimport('joomla.event.dispatcher');
 jimport('joomla.plugin.helper');
 jimport('joomla.error.log');
 jimport('joomla.user.user');
-jimport('joomla.filesystem.file');
  
 /**
  * Simple command line interface application class.
@@ -115,7 +114,7 @@ class JSolrCrawler extends JApplication
     }
  
     public function execute()
-    {	
+    {
     	$rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
 
     	$dispatcher =& JDispatcher::getInstance();
