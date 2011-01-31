@@ -158,29 +158,28 @@ class modJSolrFilterHelper
 		JPluginHelper::importPlugin("jsolrsearch");
 		$dispatcher =& JDispatcher::getInstance();
 
-		$array = $dispatcher->trigger('onFilterOptions', array());
-		
-		$options = array("everything"=>JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
-		
-		$options = array_merge($options, JArrayHelper::getValue($array, 0, array()));
-		
 		$links = array();
 		
 		$selected = $url->getVar("o");
 		
-		foreach ($options as $key=>$value) {
-			if ((!$selected && $key == "everything") || $key == $selected) {
-				$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
-			} else {
-				if ($key == "everything") {
-					$url->delVar("o");		
-				} else {
-					$url->setVar("o", $key);
-				}				
-				$links[] = JHTML::_("link", $url->toString(), $value);
-			}
+		if (!$selected) {
+			$links[] = JHTML::_("link", "#", JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"), array("class"=>"jsolr-fo-selected"));
+		} else {
+			$url->delVar("o");
+			$links[] = JHTML::_("link", $url->toString(), JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
 		}
 		
+		foreach ($dispatcher->trigger('onFilterOptions', array()) as $options) {
+			foreach ($options as $key=>$value) {
+				if ($key == $selected) {
+					$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
+				} else {
+					$url->setVar("o", $key);				
+					$links[] = JHTML::_("link", $url->toString(), $value);
+				}
+			}
+		}
+
 		return $links;
 	}
 }

@@ -224,12 +224,24 @@ class JSolrSearchModelSearch extends JModel
 						$query->getHighlightFragsize(),
 						$this->_getLang())
 					);
-					
-					if (JArrayHelper::getValue($array, 0)) {
-						$list[$i] = JArrayHelper::getValue($array, 0);
-						$list[$i]->created = $this->_localizeDateTime($list[$i]->created);
-						$list[$i]->modified = $this->_localizeDateTime($list[$i]->modified);
-						$i++;
+
+					// When a plugin and the document's option value match, 
+					// the plugin will return a result. Therefore, only one 
+					// result should be returned per document.  
+					foreach ($array as $result) {
+						if (count($result)) {
+							$list[$i] = $result;
+
+							if ($list[$i]->created) {
+								$list[$i]->created = $this->_localizeDateTime($list[$i]->created);
+							}
+							
+							if ($list[$i]->modified) {
+								$list[$i]->modified = $this->_localizeDateTime($list[$i]->modified);
+							}
+	
+							$i++;
+						}
 					}					
 				}
 			}

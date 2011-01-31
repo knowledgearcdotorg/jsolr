@@ -108,7 +108,7 @@ class plgJSolrCrawlerJSolrNewsfeeds extends JPlugin
 	{
 		$i = 0;
 		
-		$query = "*:* AND -id:(";
+		$query = "option:".$this->_option." AND -id:(";
 		
 		foreach ($ids as $id) {
 			if ($i > 0) {

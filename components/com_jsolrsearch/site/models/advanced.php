@@ -163,20 +163,22 @@ class JSolrSearchModelAdvanced extends JModel
 		JPluginHelper::importPlugin("jsolrsearch");
 		$dispatcher =& JDispatcher::getInstance();
 
-		$default = array("everything"=>JText::_("COM_JSOLRSEARCH_OPTION_EVERYTHING"));
-		
-		$array = $dispatcher->trigger('onFilterOptions', array());
-
-		$array = array_merge($default, JArrayHelper::getValue($array, 0, array()));
-
 		$options = array();
 		
-		foreach ($array as $key=>$value) {
-			$option = new stdClass();
-			$option->value = $key;
-			$option->text = $value;
-			
-			$options[] = $option;
+		$option = new stdClass();
+		$option->value = "everything";
+		$option->text = JText::_("COM_JSOLRSEARCH_OPTION_EVERYTHING");
+		
+		$options[] = $option;
+
+		foreach ($dispatcher->trigger('onFilterOptions', array()) as $array) {
+			foreach ($array as $key=>$value) {	
+				$option = new stdClass();			
+				$option->value = $key;
+				$option->text = $value;
+				
+				$options[] = $option;
+			}
 		}
 		
 		return $options;

@@ -52,12 +52,19 @@ $results = $this->get("Results");
 	<?php foreach ($results as $item) : ?>
 		<div class="jsolr-result">
 			<div class="jsolr-result-title"><a href="<?php echo $item->href; ?>"><?php echo $item->title; ?></a></div>
+			
+			<?php if ($item->created) : ?>
 			<div class="jsolr-result-date">
 				<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?>:</span><?php echo $item->created; ?>
 			</div>
+			<?php endif; ?>
+			
+			<?php if ($item->modified) : ?>
 			<div class="jsolr-result-date">			
 				<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?>:</span><?php echo $item->modified; ?>
 			</div>
+			<?php endif; ?>
+			
 			<div class="jsolr-result-description"><?php echo $item->text; ?></div>
 			<div class="jsolr-result-location"><?php echo $item->location; ?></div>
 		</div>
