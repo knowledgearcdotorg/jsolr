@@ -2,7 +2,7 @@
 /**
  * A view for configuring the JSolr robots.txt.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.

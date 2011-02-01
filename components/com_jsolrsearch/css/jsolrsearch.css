@@ -54,7 +54,7 @@
 }
 
 .jsolr-result {
-	margin-bottom: 8px;
+	margin-bottom: 16px;
 }
 
 .jsolr-result-title {
@@ -67,7 +67,7 @@
 }
 
 .jsolr-date-label {
-	margin-right: 8px;	
+	margin-right: 8px;
 }
 
 .jsolr-result-description {
@@ -75,5 +75,5 @@
 }
 
 .jsolr-result-location {
-
+	color: #999999;
 }

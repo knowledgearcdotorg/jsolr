@@ -58,7 +58,7 @@ $results = $this->get("Results");
 				<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?>:</span><?php echo $item->created; ?>
 			</div>
 			<?php endif; ?>
-			
+
 			<?php if ($item->modified) : ?>
 			<div class="jsolr-result-date">			
 				<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?>:</span><?php echo $item->modified; ?>
@@ -72,6 +72,9 @@ $results = $this->get("Results");
 	</div>
 	
 	<?php echo JHTML::_('form.token'); ?>
+	<input type="hidden" name="lr" value="<?php echo JRequest::getWord("lr", ""); ?>"/>
+	<input type="hidden" name="o" value="<?php echo JRequest::getWord("o", ""); ?>"/>
+	<input type="hidden" name="qdr" value="<?php echo JRequest::getWord("qdr", ""); ?>"/>
 </form>	
 	
 <div class="jsolr-pagination">

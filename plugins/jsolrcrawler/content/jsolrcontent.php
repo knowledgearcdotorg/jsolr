@@ -31,21 +31,17 @@
 // no direct access
 defined('_JEXEC') or die();
 
-jimport('joomla.error.log');
-jimport('joomla.language.helper');
-
 require_once JPATH_LIBRARIES."/joomla/database/table/section.php";
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
+require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."helpers".DS."plugin.php");
 
-class plgJSolrCrawlerJSolrContent extends JPlugin 
+class plgJSolrCrawlerJSolrContent extends JSolrCrawlerPlugin
 {
 	var $_plugin;
 	
 	var $_params;
 	
 	var $_client;
-	
-	var $_option = 'com_content';
 	
 	/**
 	 * Constructor
@@ -56,108 +52,81 @@ class plgJSolrCrawlerJSolrContent extends JPlugin
 	 */
 	public function __construct(&$subject, $config = array())
 	{
-		parent::__construct($subject, $config);
-
-		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('jsolrcrawler', 'jsolrcontent');
-		$this->_params = new JParameter($this->_plugin->params);
-		
-		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."configuration.php");
-
-		$configuration = new JSolrConfig();
-		
-		$options = array(
-    		'hostname' => $configuration->host,
-    		'login'    => $configuration->username,
-    		'password' => $configuration->password,
-    		'port'     => $configuration->port,
-			'path'	   => $configuration->path
-		);
-		
-		$this->_client = new SolrClient($options);
+		parent::__construct("content", $subject, $config);
 	}
 
 	/**
 	* Prepares an article for indexing.
 	*/
-	private function _getDocument(&$article)
+	protected function getDocument(&$record)
 	{
 		$doc = new SolrInputDocument();
 		
-		$created = JFactory::getDate($article->created);
-		$modified = JFactory::getDate($article->modified);
+		$created = JFactory::getDate($record->created);
+		$modified = JFactory::getDate($record->modified);
 		
-		$author = JFactory::getUser($article->created_by);
+		$author = JFactory::getUser($record->created_by);
 		
-		$lang = $this->_getLang($article);
+		$lang = $this->getLang($record);
 		
 		if ($lang) {
 			$lang = "_".str_replace("-", "_", $lang);
 		}
 		
-		$doc->addField('id',  "$this->_option." . $article->id);
+		$doc->addField('id',  "$this->_option." . $record->id);
 		$doc->addField('created', $created->toISO8601());
 		$doc->addField('modified', $modified->toISO8601());
-		$doc->addField("title$lang", $article->title);
-		$doc->addField("content$lang", strip_tags($article->introtext . $article->fulltext));
-		$doc->addField("metakeywords$lang", $article->metakey);
-		$doc->addField("metadescription$lang", $article->metadesc);
+		$doc->addField("title", $record->title);		
+		$doc->addField("title$lang", $record->title);
+		$doc->addField("content", strip_tags($record->introtext . " " . $record->fulltext));
+		$doc->addField("content$lang", strip_tags($record->introtext . " " . $record->fulltext));
+		$doc->addField("metakeywords", $record->metakey);
+		$doc->addField("metakeywords$lang", $record->metakey);
+		$doc->addField("metadescription", $record->metadesc);
+		$doc->addField("metadescription$lang", $record->metadesc);
+		$doc->addField("author", $author->get("name"));		
 		$doc->addField("author$lang", $author->get("name"));
 		$doc->addField('option', $this->_option);
 		
-		foreach ($this->_getTags($article, array("h1")) as $item) {
+		foreach ($this->_getTags($record, array("h1")) as $item) {
+			$doc->addField("tags_h1", $item);
 			$doc->addField("tags_h1$lang", $item);
 		}
 
-		foreach ($this->_getTags($article, array("h2", "h3")) as $item) {
+		foreach ($this->_getTags($record, array("h2", "h3")) as $item) {
+			$doc->addField("tags_h2_h3", $item);
 			$doc->addField("tags_h2_h3$lang", $item);
 		}
 		
-		foreach ($this->_getTags($article, array("h4", "h5", "h6")) as $item) {
+		foreach ($this->_getTags($record, array("h4", "h5", "h6")) as $item) {
+			$doc->addField("tags_h4_h5_h6", $item);
 			$doc->addField("tags_h4_h5_h6$lang", $item);
 		}		
 		
 		$section = new JTableSection(JFactory::getDBO());
-		if ($section->load($article->sectionid)) {
+		if ($section->load($record->sectionid)) {
+			$doc->addField("section", $section->title);
 			$doc->addField("section$lang", $section->title);
 		} else {
+			$doc->addField("section", JText::_("Uncategorised"));
 			$doc->addField("section$lang", JText::_("Uncategorised"));
 		}
 		
 		$category = new JTableCategory(JFactory::getDBO());
-		if ($category->load($article->catid)) {
+		if ($category->load($record->catid)) {
+			$doc->addField("category", $category->title);
 			$doc->addField("category$lang", $category->title);
 		} else {
+			$doc->addField("category", JText::_("Uncategorised"));
 			$doc->addField("category$lang", JText::_("Uncategorised"));
 		}
 		
 		return $doc;
 	}
 	
-	private function _getDeleteQueryById($ids)
+	protected function getLang(&$item)
 	{
-		$i = 0;
-		
-		$query = "option:".$this->_option." AND -id:(";
-		
-		foreach ($ids as $id) {
-			if ($i > 0) {
-				$query .= " OR ";	
-			}
-			
-			$query .= "com_content.$id";
-			
-			$i++;	
-		}
-		
-		$query .= ")";
-		
-		return $query;
-	}
-	
-	private function _getLang(&$article)
-	{
-		$params = new JParameter($article->attribs);
+		$params = new JParameter($item->attribs);
 		
 		$lang = $params->get("language", JLanguageHelper::detectLanguage());
 	
@@ -172,7 +141,7 @@ class plgJSolrCrawlerJSolrContent extends JPlugin
 	private function _getTags(&$article, $tags)
 	{	
 		$dom = new DOMDocument();
-		@$dom->loadHTML(strip_tags($article->introtext . $article->fulltext, implode(",", $tags)));
+		@$dom->loadHTML(strip_tags($article->introtext . " " . $article->fulltext, implode(",", $tags)));
 		$dom->preserveWhiteSpace = false;
 	
 		$text = array();		
@@ -187,64 +156,30 @@ class plgJSolrCrawlerJSolrContent extends JPlugin
 
 		return $text;
 	}
-	
-	private function _parseRules($rules)
-	{
-		$array = array();
-		
-		foreach ($rules as $rule) {
-			if (strpos($rule, "content") === 0) {
-				$item = JArrayHelper::getValue(explode(";", $rule), 1);
-				$array[JArrayHelper::getValue(explode("=", $item), 0)] = JArrayHelper::getValue(explode("=", $item), 1);
-			}
-		}
-		
-		return $array;
-	}
-	
-	public function onIndex($rules)
-	{
-		$array = $this->_parseRules($rules);
 
+	protected function buildQuery($rules)
+	{
+		$array = $this->parseRules($rules);
+
+		$database = JFactory::getDBO();
+		
 		$query = "SELECT a.id, a.created, a.modified, a.title, a.introtext, a.fulltext, a.created_by, a.sectionid, a.catid, a.metakey, a.metadesc, a.attribs " .
 				 "FROM #__content AS a WHERE a.state = 1 AND a.checked_out = 0"; 
 
 		if (JArrayHelper::getValue($array, "article", null)) {
-			$query .= " AND a.id NOT IN (" . JArrayHelper::getValue($array, "article", null) . ")";
+			$query .= " AND a.id NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "article", null)) . ")";
 		}
 
 		if (JArrayHelper::getValue($array, "section", null)) {
-			$query .= " AND a.sectionid NOT IN (" . JArrayHelper::getValue($array, "section", null) . ")";
+			$query .= " AND a.sectionid NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "section", null)) . ")";
 		}
 
 		if (JArrayHelper::getValue($array, "category", null)) {
-			$query .= " AND a.catid NOT IN (" . JArrayHelper::getValue($array, "category", null) . ")";
+			$query .= " AND a.catid NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "category", null)) . ")";
 		}
 
 		$query .= ";";
-
-		$database = JFactory::getDBO();
-		$database->setQuery($query);
-
-		$articles = $database->loadObjectList("id");
-
-		$ids = array();
-		$documents = array();
-
-		foreach ($articles as $article) {
-			$documents[] = $this->_getDocument($article);
-			$ids[] = $article->id;
-		}
-
-		try {		
-			$this->_client->addDocuments($documents);
-
-			$this->_client->deleteByQuery($this->_getDeleteQueryById($ids));
-			
-			$this->_client->commit();
-		} catch (SolrClientException $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-		}
+		
+		return $query;
 	}
 }

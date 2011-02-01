@@ -30,7 +30,7 @@
 /** 
  * A controller for managing content sharing.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		Wijiti
  * @subpackage	JSolrSearch
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.

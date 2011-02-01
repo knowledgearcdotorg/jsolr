@@ -2,7 +2,7 @@
 /**
  * A view for configuring the JSolrSearch component's settings.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		Wijiti
  * @subpackage	JSolrSearch
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.

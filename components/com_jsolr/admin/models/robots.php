@@ -2,7 +2,7 @@
 /**
  * A model that provides configuration options for JSolr.
  * 
- * @author		$LastChangedBy: spauldingsmails $
+ * @author		$LastChangedBy$
  * @package		Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.

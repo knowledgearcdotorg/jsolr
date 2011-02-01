@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE install PUBLIC 
+  "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://dev.joomla.org/xml/1.5/plugin-install.dtd">
+<install version="1.5" type="plugin" group="jsolrsearch">
+	<name>JSolr Search - Virtuemart</name>
+	<creationDate>2011-02-01</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.1.0</version>
+	<description>The JSolr Virtuemart Search maps a virtuemart product to a generic result.</description>
+	<files>
+		<filename plugin="jsolrvirtuemart">jsolrvirtuemart.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrvirtuemart.ini</language>
+	</languages>
+	<params>		
+		<param name="jsolr_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
+		<param name="jsolr_content" type="text" default="15.0" label="Content Boost" description="Boost the content field's relevancy."/>
+		<param name="jsolr_category" type="text" default="2.0" label="Category Boost" description="Boost the category's relevancy."/>
+	</params>
+</install>

@@ -105,7 +105,7 @@ class plgJSolrSearchJSolrContent extends JPlugin
 			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->created = $document->created;
 			$result->modified = $document->modified;
-			$result->location = $document->$section . "/" . $document->$category;
+			$result->location = implode(", ", $document->$section) . "/" . implode(", ", $document->$category);
 		}
 		
 		return $result;

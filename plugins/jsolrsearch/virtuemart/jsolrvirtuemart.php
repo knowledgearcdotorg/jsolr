@@ -11,13 +11,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.error.log');
 
-class plgJSolrSearchJSolrNewsfeeds extends JPlugin 
+class plgJSolrSearchJSolrVirtuemart extends JPlugin 
 {
 	var $_plugin;
 	
 	var $_params;
 	
-	var $_option = 'com_newsfeeds';
+	var $_option = 'com_virtuemart';
 		
 	/**
 	 * Constructor
@@ -34,7 +34,7 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 		$this->loadLanguage(null, JPATH_ADMINISTRATOR);
 		
 		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrnewsfeeds');
+		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrvirtuemart');
 		$this->_params = new JParameter($this->_plugin->params);	
 	}
 
@@ -57,7 +57,7 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 	function onFilterOptions()
 	{		
 		static $options = array();
-		$options[$this->_option] = JText::_("PLG_JSOLRSEARCH_JSOLRNEWSFEEDS_COM_NEWSFEEDS");
+		$options[$this->_option] = JText::_("PLG_JSOLRSEARCH_JSOLRVIRTUEMART_COM_VIRTUEMART");
 	
 		return $options;
 	}
@@ -96,7 +96,7 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 			}
 			
 			$result->title = $hlTitle;
-			$result->href = "index.php?option=".$this->_option."&id=".$id;
+			$result->href = JRoute::_("index.php?option=".$this->_option."&id=".$id);
 			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->location = implode(", ", $document->$category);
 			$result->created = null;
