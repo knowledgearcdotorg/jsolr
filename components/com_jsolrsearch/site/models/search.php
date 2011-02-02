@@ -56,6 +56,8 @@ class JSolrSearchModelSearch extends JModel
 	
 	var $lang;
 	
+	var $category;
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -118,6 +120,8 @@ class JSolrSearchModelSearch extends JModel
 		}
 		
 		$this->_setLang($lang);
+		
+		$this->_setCategory(JArrayHelper::getValue($params, "fcat"));
 	}
 
 	private function _setDateRange($from = null, $to = null)
@@ -135,6 +139,11 @@ class JSolrSearchModelSearch extends JModel
 	private function _setLang($lang)
 	{
 		$this->lang = $lang;
+	}
+	
+	private function _setCategory($category)
+	{
+		$this->category = $category;
 	}
 	
 	public function getQuery()
@@ -188,6 +197,10 @@ class JSolrSearchModelSearch extends JModel
 				$query->addFilterQuery($filter);
 			}
 
+			if ($this->getCategory()) {
+				$query->addFilterQuery("{!raw f=category".$this->_getLang()."}".trim($this->getCategory()));
+			}
+			
 			$query->setHighlight(true);
 			
 			$query->addField('*')->addField('score');
@@ -412,7 +425,7 @@ class JSolrSearchModelSearch extends JModel
 			
 			$reweighted .= " " . $key . "^" . $boost;
 		}
-		echo $reweighted;
+
 		return trim($reweighted);
 	}
 	
@@ -422,5 +435,10 @@ class JSolrSearchModelSearch extends JModel
 		$url->setVar("view", "advanced");
 
 		return JRoute::_($url->toString(), false);
+	}
+	
+	public function getCategory()
+	{
+		return $this->category;
 	}
 }

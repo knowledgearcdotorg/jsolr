@@ -40,6 +40,15 @@ class modJSolrFilterHelper
 		$this->params = $params;
 	}
 	
+	public function showFilter()
+	{
+		if (trim(JRequest::getString("q", null))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	function getDateLink($range)
 	{
 		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
@@ -48,6 +57,9 @@ class modJSolrFilterHelper
 		// in case the custom range is set.
 		$url->delVar("dmin");
 		$url->delVar("dmax");
+		$url->delVar("fcat");
+		$url->delVar("pmin");
+		$url->delVar("pmax");		
 		
 		switch ($range) {
 			case "1D":
@@ -138,7 +150,10 @@ class modJSolrFilterHelper
 	function getCustomRangeFormURL()
 	{
 		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
-		
+
+		$url->delVar("fcat");
+		$url->delVar("pmin");
+		$url->delVar("pmax");
 		$url->delVar("view");		
 		$url->delVar("qdr");
 		$url->setVar("task", "search");
@@ -159,6 +174,10 @@ class modJSolrFilterHelper
 		$dispatcher =& JDispatcher::getInstance();
 
 		$links = array();
+		
+		$url->delVar("fcat");
+		$url->delVar("pmin");
+		$url->delVar("pmax");
 		
 		$selected = $url->getVar("o");
 		
@@ -181,5 +200,88 @@ class modJSolrFilterHelper
 		}
 
 		return $links;
+	}
+
+	/**
+	 * Gets a filter options array from each of the enabled JSolrSearch plugins.
+	 * 
+	 * @return array An array of filter option anchor tags.
+	 */
+	function getCategoryLink($value)
+	{
+		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
+
+		$links = array();
+		
+		$selected = $url->getVar("o");
+
+		if (!$selected) {
+			$links[] = JHTML::_("link", "#", JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"), array("class"=>"jsolr-fo-selected"));
+		} else {
+			$url->delVar("o");
+			$links[] = JHTML::_("link", $url->toString(), JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
+		}
+
+		foreach ($dispatcher->trigger('onFilterOptions', array()) as $options) {
+			foreach ($options as $key=>$value) {
+				if ($key == $selected) {
+					$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
+				} else {
+					$url->setVar("o", $key);				
+					$links[] = JHTML::_("link", $url->toString(), $value);
+				}
+			}
+		}
+
+		return $links;
+	}
+	
+	function getSolrClient()
+	{
+		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
+		
+		$configuration = new JSolrSearchConfig();
+		
+		$options = array(
+    		'hostname' => $configuration->host,
+    		'login'    => $configuration->username,
+    		'password' => $configuration->password,
+    		'port'     => $configuration->port,
+			'path'	   => $configuration->path
+		);
+				
+		$client = new SolrClient($options);
+		
+		return $client;
+	}
+	
+	/**
+	 * Gets the modified language code for use by the Solr search engine.
+	 * 
+	 * The code will look like; _xx_XX.
+	 */
+	public function getLang()
+	{
+		$lang = JRequest::getString("lr", null);
+
+		if (!trim($lang)) {
+			$lang = JRequest::getString("lang");
+		}
+
+		// Language code must take the form xx-XX.
+		if (!$lang || count(explode("-", $lang)) < 2) {
+			$lang = JLanguageHelper::detectLanguage();
+		}
+
+		if ($lang) {
+			$lang = "_" . $lang;
+		}
+		
+		return str_replace("-", "_", $lang);
+	}
+	
+	public function getSearchURL()
+	{
+		return JURI::current()."?".http_build_query(JRequest::get('get'));
 	}
 }

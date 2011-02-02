@@ -48,30 +48,12 @@ $document->addStyleSheet(JURI::base()."/modules/mod_jsolrfilter/css/jsolrfilter.
 	</ul>
 </div>
 
-<div id="jSolrSearchDates">
-	<ul>
-		<li id="jSolrAnytime" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("ANYTIME")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("ANYTIME"); ?></li>
-		<li id="jSolr1d" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1D")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1D"); ?></li>
-		<li id="jSolr1w" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1W")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1W"); ?></li>
-		<li id="jSolr1m" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1M")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1M"); ?></li>
-		<li id="jSolr1y" class="jsolr-filter-item jsolr-range<?php if ($helper->isDateRangeSelected("1Y")) : echo " jsolr-range-selected"; endif; ?>"><?php echo $helper->getDateLink("1Y"); ?></li>
-		<li id="jSolrCustom" class="jsolr-filter-item jsolr-range"><?php echo $helper->getCustomRangeLink(); ?></li>
-	</ul>
-	<form 
-		id="jSolrDateRange" 
-		name="jSolrDateRange"
-		method="post"
-		action="<?php echo $helper->getCustomRangeFormURL(); ?>"
-		class="<?php echo $helper->isCustomRangeSelected() ? "jsolr-show" : "jsolr-hide"; ?>">
-		<div>
-			<label>From:</label>
-			<?php echo JHTML::_('calendar', JRequest::getVar("dmin"), 'dmin', 'dmin', '%Y-%m-%d', array("size"=>10)); ?>
-		</div>
-		<div>
-			<label>To:</label>
-			<?php echo JHTML::_('calendar', JRequest::getVar("dmax"), 'dmax', 'dmax', '%Y-%m-%d', array("size"=>10)); ?>
-		</div>
-		<div class="jsolr-example">eg. 2010-01-26</div>
-		<button type="submit"><?php echo JText::_("MOD_JSOLRFILTER_SEARCH"); ?></button>
-	</form>
-</div>
+<?php
+if (JRequest::getString("o")) {
+	if (JFile::exists(JModuleHelper::getLayoutPath('mod_jsolrfilter', JRequest::getString("o")))) {
+		require_once(JModuleHelper::getLayoutPath('mod_jsolrfilter', JRequest::getString("o")));
+	}
+} else {
+	require_once(JModuleHelper::getLayoutPath('mod_jsolrfilter', "com_content"));	
+}
+?>

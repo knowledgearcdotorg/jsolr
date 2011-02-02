@@ -77,3 +77,23 @@
 .jsolr-result-location {
 	color: #999999;
 }
+
+.jsolr-virtuemart-results {
+	width: 100%;
+	padding-top: 20px;
+	clear: right;
+}
+
+.jsolr-virtuemart-result {
+	padding-bottom: 16px;
+	vertical-align: top;
+}
+
+.jsolr-virtuemart-thumb {
+	width: 100px;
+}
+
+.jsolr-virtuemart-price {
+	text-align: right;
+	font-weight: bold;
+}

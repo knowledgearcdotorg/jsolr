@@ -105,13 +105,16 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->location = implode(", ", $document->$category);
 			$result->created = null;
-			$result->modified = null;
+			$result->modified = null;			
+			$result->attribs["price"] = $document->price;
+			$result->attribs["currency"] = $document->currency;
+			$result->attribs["thumbnail"] = $this->_getThumbnail($id);
 		}
 
 		return $result;
 	}
 	
-	function _getHlContent($solrDocument, $highlighting, $fragSize, $lang)
+	private function _getHlContent($solrDocument, $highlighting, $fragSize, $lang)
 	{
 		$hlContent = null;
 
@@ -124,5 +127,22 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		}
 		
 		return $hlContent;
+	}
+	
+	private function _getThumbnail($id)
+	{
+		$query = "SELECT product_thumb_image FROM #__vm_product WHERE product_id = " . $id . ";";
+		
+		$database = JFactory::getDBO();
+		$database->setQuery($query);
+		$thumb = $database->loadResult();
+
+		$url = "";
+		
+		if ($thumb) {
+			$url = JURI::base()."components/com_virtuemart/shop_image/product/".$thumb;
+		}
+		
+		return $url;
 	}
 }

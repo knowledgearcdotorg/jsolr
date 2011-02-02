@@ -34,5 +34,9 @@ require_once (dirname(__FILE__).DS.'helper.php');
 
 $helper = new modJSolrFilterHelper($params);
 
-require(JModuleHelper::getLayoutPath('mod_jsolrfilter'));
+// Don't show the filter module contents unless the user has specified 
+// something to search for.
+if ($helper->showFilter()) {
+	require(JModuleHelper::getLayoutPath('mod_jsolrfilter'));
+}
 ?>
