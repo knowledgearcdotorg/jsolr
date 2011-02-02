@@ -412,7 +412,7 @@ class JSolrSearchModelSearch extends JModel
 			
 			$reweighted .= " " . $key . "^" . $boost;
 		}
-		
+		echo $reweighted;
 		return trim($reweighted);
 	}
 	

@@ -41,9 +41,14 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 	function onAddQF()
 	{
 		$qf = array();
-		
-		$qf["title"] = $this->_params->get("jsolr_title");
-		
+
+		foreach ($this->_params->toArray() as $key=>$value) {
+				if (strpos($key, "jsolr_boost") === 0) {
+					$qfKey = str_replace("jsolr_boost_", "", $key);
+					$qf[$qfKey] = floatval($value);
+				}
+		}
+
 		return $qf;
 	}
 	
