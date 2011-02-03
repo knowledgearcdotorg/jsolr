@@ -14,6 +14,8 @@
 		<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
 		<filename>helper.php</filename>
 		<filename>tmpl/default.php</filename>
+		<filename>tmpl/com_content.php</filename>
+		<filename>tmpl/com_virtuemart.php</filename>
 		<filename>js/jsolrfilter.js</filename>
 		<filename>css/jsolrfilter.css</filename>
 	</files>
