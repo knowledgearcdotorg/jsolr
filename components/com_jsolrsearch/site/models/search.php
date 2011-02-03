@@ -206,8 +206,12 @@ class JSolrSearchModelSearch extends JModel
 			$query->addField('*')->addField('score');
 
 			// get query filter params and boosts from plugin.
-			$query->addParam("qf", $this->getQFQuery($dispatcher->trigger('onAddQF', array())));
+			$qf = $dispatcher->trigger('onAddQF', array());
 			
+			if (count($qf)) {
+				$query->addParam("qf", $this->getQFQuery($qf));
+			}
+
 			foreach ($dispatcher->trigger('onAddHL', array()) as $result) {
 				foreach ($result as $item) {
 					$query->addHighlightField($item.$this->_getLang());
