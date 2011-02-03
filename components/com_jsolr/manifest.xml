@@ -33,13 +33,16 @@
 		<menu>JSolr</menu>
 		<submenu>
 			<menu view="configuration">Configuration</menu>
+			<menu view="robots">Robots</menu>
 		</submenu>
 
 	    <files folder="admin">
 	    	<folder>models</folder>
 	    	<folder>views</folder>
+	    	<folder>helpers</folder>	    	
 	    	<filename>controller.php</filename>
 	    	<filename>jsolr.php</filename>
+	    	<filename>ignore.txt</filename>	    	
 	    	<filename>configuration.php</filename>
 	    	<filename>crawler.php</filename>
 	    </files>
