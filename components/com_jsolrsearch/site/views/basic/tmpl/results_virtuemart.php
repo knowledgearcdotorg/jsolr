@@ -44,7 +44,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	
 	<?php if ($this->get("Total") == 0) : ?>
 	<div class="jsolr-no-results"><?php echo JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></div>
-	<?php endif; ?>
+	<?php else : ?>
 	
 	<table class="jsolr-virtuemart-results">
 		<thead>
@@ -68,6 +68,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<?php endforeach; ?>
 		</tbody>
 	</table>
+	<?php endif; ?>
 	
 	<?php echo JHTML::_('form.token'); ?>
 	<input type="hidden" name="lr" value="<?php echo JRequest::getWord("lr", ""); ?>"/>
