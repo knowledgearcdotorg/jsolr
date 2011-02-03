@@ -79,7 +79,7 @@ class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 		$doc->addField("content$lang", strip_tags($record->product_s_desc." ".$record->product_desc));
 		$doc->addField('option', $this->_option);
 		$doc->addField('currency', $record->product_currency);
-		$doc->addField('price', number_format($record->product_price, 2));
+		$doc->addField('price', number_format($record->product_price, 2, ".", ""));
 		
 		foreach ($this->_getTags($record, array("h1")) as $item) {
 			$doc->addField("tags_h1", $item);
@@ -146,6 +146,10 @@ class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 				 "FROM #__vm_product AS a " . 
 				 "INNER JOIN #__vm_product_price AS b ON (a.product_id = b.product_id)"; 
 
+		if (JArrayHelper::getValue($array, "product", null)) {
+			$query .= " AND a.product_id NOT IN (" . $database->getEscaped(JArrayHelper::getValue($array, "product", null)) . ")";
+		}
+		
 		$query .= ";";
 
 		return $query;
