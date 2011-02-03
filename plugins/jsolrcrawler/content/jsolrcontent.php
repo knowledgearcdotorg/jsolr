@@ -167,15 +167,15 @@ class plgJSolrCrawlerJSolrContent extends JSolrCrawlerPlugin
 				 "FROM #__content AS a WHERE a.state = 1 AND a.checked_out = 0"; 
 
 		if (JArrayHelper::getValue($array, "article", null)) {
-			$query .= " AND a.id NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "article", null)) . ")";
+			$query .= " AND a.id NOT IN (" . $database->getEscaped(JArrayHelper::getValue($array, "article", null)) . ")";
 		}
 
 		if (JArrayHelper::getValue($array, "section", null)) {
-			$query .= " AND a.sectionid NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "section", null)) . ")";
+			$query .= " AND a.sectionid NOT IN (" . $database->getEscaped(JArrayHelper::getValue($array, "section", null)) . ")";
 		}
 
 		if (JArrayHelper::getValue($array, "category", null)) {
-			$query .= " AND a.catid NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "category", null)) . ")";
+			$query .= " AND a.catid NOT IN (" . $database->getEscaped(JArrayHelper::getValue($array, "category", null)) . ")";
 		}
 
 		$query .= ";";
