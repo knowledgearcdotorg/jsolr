@@ -13,6 +13,8 @@ jimport('joomla.error.log');
 
 class plgJSolrSearchJSolrVirtuemart extends JPlugin 
 {
+	var $_thumbnailRelPath;
+	
 	var $_plugin;
 	
 	var $_params;
@@ -35,7 +37,10 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		
 		// load plugin parameters
 		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrvirtuemart');
-		$this->_params = new JParameter($this->_plugin->params);	
+		$this->_params = new JParameter($this->_plugin->params);
+
+		$this->_imageURL = JURI::base()."components/com_virtuemart/shop_image/product";
+		$this->_vmNoImageURL = JURI::base()."components/com_virtuemart/themes/default/images/noimage.gif";
 	}
 
 	function onAddQF()
@@ -129,6 +134,11 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		return $hlContent;
 	}
 	
+	/**
+	 * Gets the thumbnail image associated with a particular product.
+	 * 
+	 * @param int $id The product id.
+	 */
 	private function _getThumbnail($id)
 	{
 		$query = "SELECT product_thumb_image FROM #__vm_product WHERE product_id = " . $id . ";";
@@ -140,7 +150,9 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		$url = "";
 		
 		if ($thumb) {
-			$url = JURI::base()."components/com_virtuemart/shop_image/product/".$thumb;
+			$url = $this->_imageURL."/".$thumb;
+		} else {
+			$url = $this->_vmNoImageURL;
 		}
 		
 		return $url;
