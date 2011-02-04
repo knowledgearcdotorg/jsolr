@@ -54,7 +54,7 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 	
 	function onAddHL()
 	{
-		$hl = array("title", "content");
+		$hl = array("title", "link");
 		
 		return $hl;
 	}	
@@ -115,11 +115,11 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 	{
 		$hlContent = null;
 
-		$content = "content$lang";
+		$link = "link$lang";
 
-		if ($highlighting->offsetExists($content)) {
-			foreach ($highlighting->$content as $item) {
-				$hlContent .= $item;	
+		if ($highlighting->offsetExists($link)) {
+			foreach ($highlighting->$link as $item) {
+				$hlContent .= $item;
 			}
 		}
 		

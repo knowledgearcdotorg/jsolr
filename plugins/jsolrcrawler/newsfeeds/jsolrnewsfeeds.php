@@ -69,8 +69,8 @@ class plgJSolrCrawlerJSolrNewsfeeds extends JSolrCrawlerPlugin
 		$doc->addField('id',  "$this->_option." . $item->id);
 		$doc->addField("title", $item->name);
 		$doc->addField("title$lang", $item->name);
-		$doc->addField("content", $item->link);
-		$doc->addField("content$lang", $item->link);
+		$doc->addField("link", $item->link);
+		$doc->addField("link$lang", $item->link);
 		$doc->addField('option', $this->_option);
 		
 		$category = new JTableCategory(JFactory::getDBO());
