@@ -20,6 +20,10 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	var $_params;
 	
 	var $_option = 'com_virtuemart';
+	
+	var $_id = 0;
+	
+	var $_data = null;
 		
 	/**
 	 * Constructor
@@ -105,13 +109,15 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 				$hlTitle = $document->$title;
 			}
 			
+			$this->_setId($id);
+			
 			$result->title = $hlTitle;
 			$result->href = JRoute::_("index.php?option=".$this->_option."&id=".$id);
 			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->location = implode(", ", $document->$category);
 			$result->created = null;
 			$result->modified = null;			
-			$result->attribs["price"] = $document->price;
+			$result->attribs["price"] = $this->_formatCurrency($document->price);
 			$result->attribs["currency"] = $document->currency;
 			$result->attribs["thumbnail"] = $this->_getThumbnail($id);
 		}
@@ -141,20 +147,68 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	 */
 	private function _getThumbnail($id)
 	{
-		$query = "SELECT product_thumb_image FROM #__vm_product WHERE product_id = " . $id . ";";
-		
-		$database = JFactory::getDBO();
-		$database->setQuery($query);
-		$thumb = $database->loadResult();
-
 		$url = "";
-		
-		if ($thumb) {
-			$url = $this->_imageURL."/".$thumb;
+
+		if (isset($this->_getData()->product_thumb_image) && 
+			$this->_getData()->product_thumb_image) {
+			$url = $this->_imageURL."/".$this->_getData()->product_thumb_image;
 		} else {
 			$url = $this->_vmNoImageURL;
 		}
 		
 		return $url;
+	}
+	
+	private function _formatCurrency($amount)
+	{
+		if (isset($this->_getData()->vendor_currency_display_style) && 
+			$this->_getData()->vendor_currency_display_style) {
+			$array = explode( "|", $this->_getData()->vendor_currency_display_style);
+			
+			$display = Array();
+			$display["id"] = @$array[0];
+			$display["symbol"] = @$array[1];
+			$display["nbdecimal"] = @$array[2];
+			$display["sdecimal"] = @$array[3];
+			$display["thousands"] = @$array[4];
+			$display["positive"] = @$array[5];
+			$display["negative"] = @$array[6];
+				
+			return number_format($amount, 
+				JArrayHelper::getValue($display, "nbdecimal"), 
+				JArrayHelper::getValue($display, "sdecimal"), 
+				JArrayHelper::getValue($display, "thousands"));
+				
+		}
+		
+		return $amount;
+	}
+	
+	private function _setId($id)
+	{
+		$this->_id = $id;
+		$this->_data = null;
+	}
+	
+	private function _getId()
+	{
+		return $this->_id;
+	}
+	
+	private function _getData()
+	{
+		if (!$this->_data) {
+			$query = "SELECT a.*, b.vendor_currency_display_style " . 
+						 "FROM #__vm_product AS a " . 
+						 "INNER JOIN #__vm_vendor AS b " . 
+						 "WHERE a.product_id = " . intval($this->_getId()) . ";";
+			
+			$database = JFactory::getDBO();
+			$database->setQuery($query);
+
+			$this->_data = $database->loadObject();
+		}
+		
+		return $this->_data;
 	}
 }
