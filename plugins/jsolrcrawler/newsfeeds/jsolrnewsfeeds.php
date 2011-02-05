@@ -90,7 +90,7 @@ class plgJSolrCrawlerJSolrNewsfeeds extends JSolrCrawlerPlugin
 		$database = JFactory::getDBO();
 		
 		$query = "SELECT id, name, link, catid " .
-				 "FROM jos_newsfeeds AS a WHERE published = 1 AND a.checked_out = 0"; 
+				 "FROM #__newsfeeds AS a WHERE published = 1 AND a.checked_out = 0"; 
 
 		if (JArrayHelper::getValue($array, "newsfeed", null)) {
 			$query .= " AND a.id NOT IN (" . $database->Quote(JArrayHelper::getValue($array, "newsfeed", null)) . ")";
