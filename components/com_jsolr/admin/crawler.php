@@ -14,11 +14,11 @@ define('_JEXEC', 1);
 define('DS', DIRECTORY_SEPARATOR);
 define('JPATH_BASE', dirname( __FILE__ ));
 
-require_once(JPATH_BASE.'/includes/defines.php');
+require_once(JPATH_BASE.DS.'includes'.DS.'defines.php');
  
 // Load the library importer.
-require_once (JPATH_LIBRARIES.'/joomla/import.php');
-require_once (JPATH_CONFIGURATION.'/configuration.php');
+require_once (JPATH_LIBRARIES.DS.'joomla'.DS.'import.php');
+require_once (JPATH_BASE.DS.'configuration.php');
 
 // Import library dependencies.
 jimport('joomla.application.application');
@@ -82,7 +82,7 @@ class JSolrCrawler extends JApplication
      */
     private $options = null;
  
-    private $shortargs = 'i:o:hflp';
+    private $shortargs = 'q';
  
     // Need to wait for PHP 5.3
     private $longargs = array('help');
@@ -91,7 +91,7 @@ class JSolrCrawler extends JApplication
     {
         // Initialize the execution arguments.
         $this->_initializeOptions();
- 
+
         // If the help screen has been requested, print it and exit.
         if (isset($this->options->h)) {
             $this->help();
@@ -118,10 +118,16 @@ class JSolrCrawler extends JApplication
     	$rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
 
     	$dispatcher =& JDispatcher::getInstance();
-		
+    	
 		JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
 
-		$array = $dispatcher->trigger('onIndex', array($rules));
+		try {
+			$array = $dispatcher->trigger('onIndex', array($rules));
+		} catch (Exception $e) {
+			if (!isset($this->options->q)) {
+				$this->out($e->getMessage());
+			}
+		}
     }
  
     /**

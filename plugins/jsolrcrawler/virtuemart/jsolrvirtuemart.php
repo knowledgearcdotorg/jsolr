@@ -31,6 +31,8 @@
 // no direct access
 defined('_JEXEC') or die();
 
+jimport("joomla.filesystem.file");
+
 require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."helpers".DS."plugin.php");
 
 class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
@@ -153,5 +155,15 @@ class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 		$query .= ";";
 
 		return $query;
+	}
+	
+	public function onIndex($rules)
+	{
+		if (!is_dir(JPATH_ROOT.DS."components".DS."com_virtuemart")) {
+			throw new Exception("Virtuemart not installed. Cannot index virtuemart data.");
+			return;
+		}
+		
+		return parent::onIndex($rules);
 	}
 }
