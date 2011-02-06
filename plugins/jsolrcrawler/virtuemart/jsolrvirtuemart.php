@@ -83,6 +83,8 @@ class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 		$doc->addField('currency', $record->product_currency);
 		$doc->addField('price', number_format($record->product_price, 2, ".", ""));
 		
+		$doc->addField('thumbnail', $record->product_thumb_image);
+		
 		foreach ($this->_getTags($record, array("h1")) as $item) {
 			$doc->addField("tags_h1", $item);
 			$doc->addField("tags_h1$lang", $item);
@@ -144,7 +146,7 @@ class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 
 		$database = JFactory::getDBO();
 		
-		$query = "SELECT a.product_id AS id, a.cdate, a.mdate, a.product_sku, a.product_name, a.product_s_desc, a.product_desc, b.product_price, b.product_currency " .
+		$query = "SELECT a.product_id AS id, a.cdate, a.mdate, a.product_sku, a.product_name, a.product_s_desc, a.product_desc, a.product_thumb_image, b.product_price, b.product_currency " .
 				 "FROM #__vm_product AS a " . 
 				 "INNER JOIN #__vm_product_price AS b ON (a.product_id = b.product_id)"; 
 

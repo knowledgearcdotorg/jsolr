@@ -119,7 +119,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$result->modified = null;			
 			$result->attribs["price"] = $this->_formatCurrency($document->price);
 			$result->attribs["currency"] = $document->currency;
-			$result->attribs["thumbnail"] = $this->_getThumbnail($id);
+			$result->attribs["thumbnail"] = $this->_buildThumbnailURL($document);
 		}
 
 		return $result;
@@ -145,13 +145,12 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	 * 
 	 * @param int $id The product id.
 	 */
-	private function _getThumbnail($id)
+	private function _buildThumbnailURL($document)
 	{
 		$url = "";
 
-		if (isset($this->_getData()->product_thumb_image) && 
-			$this->_getData()->product_thumb_image) {
-			$url = $this->_imageURL."/".$this->_getData()->product_thumb_image;
+		if ($document->thumbnail) {
+			$url = $this->_imageURL."/".$document->thumbnail;
 		} else {
 			$url = $this->_vmNoImageURL;
 		}
@@ -161,9 +160,19 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	
 	private function _formatCurrency($amount)
 	{
-		if (isset($this->_getData()->vendor_currency_display_style) && 
-			$this->_getData()->vendor_currency_display_style) {
-			$array = explode( "|", $this->_getData()->vendor_currency_display_style);
+		$query = "SELECT b.vendor_currency_display_style " . 
+					 "FROM #__vm_product AS a " . 
+					 "INNER JOIN #__vm_vendor AS b " . 
+					 "WHERE a.product_id = " . intval($this->_getId()) . ";";
+		
+		$database = JFactory::getDBO();
+		$database->setQuery($query);
+
+		$data = $database->loadObject();
+		
+		if (isset($data->vendor_currency_display_style) && 
+			$data->vendor_currency_display_style) {
+			$array = explode( "|", $data->vendor_currency_display_style);
 			
 			$display = Array();
 			$display["id"] = @$array[0];
@@ -193,22 +202,5 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	private function _getId()
 	{
 		return $this->_id;
-	}
-	
-	private function _getData()
-	{
-		if (!$this->_data) {
-			$query = "SELECT a.*, b.vendor_currency_display_style " . 
-						 "FROM #__vm_product AS a " . 
-						 "INNER JOIN #__vm_vendor AS b " . 
-						 "WHERE a.product_id = " . intval($this->_getId()) . ";";
-			
-			$database = JFactory::getDBO();
-			$database->setQuery($query);
-
-			$this->_data = $database->loadObject();
-		}
-		
-		return $this->_data;
 	}
 }
