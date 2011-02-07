@@ -44,12 +44,15 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		$this->_imageURL = JURI::base()."components/com_virtuemart/shop_image/product";
 		$this->_vmNoImageURL = JURI::base()."components/com_virtuemart/themes/default/images/noimage.gif";
 	}
-	
-	public function getFilterQuery()
-	{
-		
-	}
 
+	/**
+	 * Adds a custom query filter if the filter option associated 
+	 * with this plugin is selected.
+	 * 
+	 * The method returns a value associcated with the Solr query string qf.
+	 * 
+	 * @return array A list of filter query fields and boost values.
+	 */
 	function onAddQF()
 	{
 		$qf = array();
@@ -64,14 +67,29 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		return $qf;
 	}
 	
-	function onAddHL()
+	/**
+	 * Adds a list of fields to highlight.
+	 * 
+	 * The method returns a value associated with the Solr query string hl.fl.
+	 * 
+	 * @return array A list of fields to highlight.
+	 */
+	public function onAddHL()
 	{
 		$hl = array("title", "content");
 		
 		return $hl;
 	}	
 	
-	function onFilterOptions()
+	/**
+	 * Gets the option associated with this plugin.
+	 * 
+	 * The returned result takes the form 
+	 * $array[option] = OPTION_TRANSLATED_TO_TEXT.
+	 * 
+	 * @return array The option associated with this plugin.
+	 */
+	public function onFilterOptions()
 	{		
 		static $options = array();
 		$options[$this->_option] = JText::_("PLG_JSOLRSEARCH_JSOLRVIRTUEMART_COM_VIRTUEMART");
@@ -79,7 +97,19 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		return $options;
 	}
 	
-	public function onAddQueryFilter($params, $lang)
+	/**
+	 * Adds a custom filter query if the filter option associated 
+	 * with this plugin is selected.
+	 * 
+	 * The method returns a value associcated with the Solr query string fq.
+	 * 
+	 * @param array $params A list of query params.
+	 * @param string $lang The current environment language.
+	 * 
+	 * @return string A filter query if the current filter option is 
+	 * com_virtuemart, empty otherwise. 
+	 */
+	public function onAddFilterQuery($params, $lang)
 	{
 		if (JArrayHelper::getValue($params, "o") == $this->_option) {			
 			$category = JArrayHelper::getValue($params, "fcat");
@@ -92,6 +122,58 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		return "";
 	}
 	
+	/**
+	 * Retrieves a list of virtuemart category facets. 
+	 * 
+	 * @param string $lang
+	 * 
+	 * @return array A list of category facets with associated counts.
+	 */
+	public function onPrepareFacets($lang)
+	{
+		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
+		
+		$configuration = new JSolrSearchConfig();
+		
+		$options = array(
+    		'hostname' => $configuration->host,
+    		'login'    => $configuration->username,
+    		'password' => $configuration->password,
+    		'port'     => $configuration->port,
+			'path'	   => $configuration->path
+		);
+		
+		$facetField = "category".$lang;
+		
+		$array = array();
+		
+		try {
+			$client = new SolrClient($options);
+			$query = new SolrQuery();
+					
+			$query->setQuery(JRequest::getString("q"));
+		
+			$query->addFilterQuery("option:".$this->_option);
+			
+			$query->setFacet(true);
+			$query->addFacetField($facetField);
+			$query->setFacetLimit(10);
+			$query->setFacetMinCount(1);
+			
+			$queryResponse = $client->query($query);
+		
+			$response = $queryResponse->getResponse();
+			
+			$array = JArrayHelper::getValue($response->facet_counts->facet_fields, $facetField, array());
+		
+		} catch (SolrClientException $e) {
+			$log = JLog::getInstance();
+			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+		}
+		
+		return $array;
+	}
+
 	/**
 	* Search method
 	*

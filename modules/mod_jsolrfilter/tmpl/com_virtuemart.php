@@ -29,33 +29,12 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-$client = $helper->getSolrClient();
-$facetField = "category".$helper->getLang();
 
-$array = array();
-
-try {
-	$query = new SolrQuery();
+JPluginHelper::importPlugin("jsolrsearch", "jsolrvirtuemart");
+$dispatcher =& JDispatcher::getInstance();
 			
-	$query->setQuery(JRequest::getString("q"));
-
-	$query->addFilterQuery("option:com_virtuemart");
-	
-	$query->setFacet(true);
-	$query->addFacetField($facetField);
-	$query->setFacetLimit(10);
-	$query->setFacetMinCount(1);
-	
-	$queryResponse = $client->query($query);
-
-	$response = $queryResponse->getResponse();
-	
-	$array = JArrayHelper::getValue($response->facet_counts->facet_fields, $facetField, array());
-
-} catch (SolrClientException $e) {
-	$log = JLog::getInstance();
-	$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-}
+$array = $dispatcher->trigger('onPrepareFacets', array($helper->getLang()));
+$facets = JArrayHelper::getValue($array, 0);
 ?>
 
 <div id="jSolrSearchCategories" class="jsolr-context-filter">
@@ -77,14 +56,14 @@ try {
 		}
 		?>	
 		<li class="jsolr-filter-item"><a href="<?php echo $link; ?>" class="<?php echo $class ?>"><?php echo JText::_("MOD_JSOLRFILTER_OPTION_ALL_CATEOGORIES"); ?></a></li>
-		<?php foreach ($array as $key=>$value) : ?>
+		<?php foreach ($facets as $key=>$value) : ?>
 			<?php
 			if ($key == JRequest::getString("fcat")) {
 				$link = "#";
-				$class = "jsolr-fo-selected";	
+				$class = "jsolr-fo-selected";
 			} else {
 				$url = new JURI($helper->getSearchURL());
-				$url->delVar("qdr");	
+				$url->delVar("qdr");
 				$url->delVar("dmin");
 				$url->delVar("dmax");
 				$url->setVar("fcat", $key);

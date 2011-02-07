@@ -201,59 +201,6 @@ class modJSolrFilterHelper
 
 		return $links;
 	}
-
-	/**
-	 * Gets a filter options array from each of the enabled JSolrSearch plugins.
-	 * 
-	 * @return array An array of filter option anchor tags.
-	 */
-	function getCategoryLink($value)
-	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
-
-		$links = array();
-		
-		$selected = $url->getVar("o");
-
-		if (!$selected) {
-			$links[] = JHTML::_("link", "#", JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"), array("class"=>"jsolr-fo-selected"));
-		} else {
-			$url->delVar("o");
-			$links[] = JHTML::_("link", $url->toString(), JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
-		}
-
-		foreach ($dispatcher->trigger('onFilterOptions', array()) as $options) {
-			foreach ($options as $key=>$value) {
-				if ($key == $selected) {
-					$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
-				} else {
-					$url->setVar("o", $key);				
-					$links[] = JHTML::_("link", $url->toString(), $value);
-				}
-			}
-		}
-
-		return $links;
-	}
-	
-	function getSolrClient()
-	{
-		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
-		
-		$configuration = new JSolrSearchConfig();
-		
-		$options = array(
-    		'hostname' => $configuration->host,
-    		'login'    => $configuration->username,
-    		'password' => $configuration->password,
-    		'port'     => $configuration->port,
-			'path'	   => $configuration->path
-		);
-				
-		$client = new SolrClient($options);
-		
-		return $client;
-	}
 	
 	/**
 	 * Gets the modified language code for use by the Solr search engine.

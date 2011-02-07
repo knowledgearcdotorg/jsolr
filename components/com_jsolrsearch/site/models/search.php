@@ -198,7 +198,7 @@ class JSolrSearchModelSearch extends JModel
 				$query->addFilterQuery($filter);
 			}
 
-			foreach ($dispatcher->trigger("onAddQueryFilter", array($this->getParams(), $this->getLang())) as $result) {
+			foreach ($dispatcher->trigger("onAddFilterQuery", array($this->getParams(), $this->getLang())) as $result) {
 				if ($result) {
 					$query->addFilterQuery($result);
 				}				
