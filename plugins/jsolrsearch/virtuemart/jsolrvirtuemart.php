@@ -22,8 +22,6 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	var $_option = 'com_virtuemart';
 	
 	var $_id = 0;
-	
-	var $_data = null;
 		
 	/**
 	 * Constructor
@@ -45,6 +43,11 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 
 		$this->_imageURL = JURI::base()."components/com_virtuemart/shop_image/product";
 		$this->_vmNoImageURL = JURI::base()."components/com_virtuemart/themes/default/images/noimage.gif";
+	}
+	
+	public function getFilterQuery()
+	{
+		
 	}
 
 	function onAddQF()
@@ -74,6 +77,19 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		$options[$this->_option] = JText::_("PLG_JSOLRSEARCH_JSOLRVIRTUEMART_COM_VIRTUEMART");
 	
 		return $options;
+	}
+	
+	public function onAddQueryFilter($params, $lang)
+	{
+		if (JArrayHelper::getValue($params, "o") == $this->_option) {			
+			$category = JArrayHelper::getValue($params, "fcat");
+			
+			if ($category) {
+				return "{!raw f=category".$lang."}".trim($category);
+			}
+		}
+		
+		return "";
 	}
 	
 	/**
@@ -169,7 +185,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		$database->setQuery($query);
 
 		$data = $database->loadObject();
-		
+
 		if (isset($data->vendor_currency_display_style) && 
 			$data->vendor_currency_display_style) {
 			$array = explode( "|", $data->vendor_currency_display_style);
@@ -196,7 +212,6 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	private function _setId($id)
 	{
 		$this->_id = $id;
-		$this->_data = null;
 	}
 	
 	private function _getId()

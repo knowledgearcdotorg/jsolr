@@ -3,7 +3,7 @@
  * A model that provides search capabilities.
  * 
  * @author		$LastChangedBy$
- * @package	Wijiti
+ * @package		Wijiti
  * @subpackage	JSolrSearch
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
@@ -57,6 +57,8 @@ class JSolrSearchModelSearch extends JModel
 	var $lang;
 	
 	var $category;
+	
+	var $params;
 	
 	public function __construct()
 	{
@@ -119,9 +121,8 @@ class JSolrSearchModelSearch extends JModel
 			$lang = JArrayHelper::getValue($params, "lang");
 		}
 		
+		$this->_setParams($params);
 		$this->_setLang($lang);
-		
-		$this->_setCategory(JArrayHelper::getValue($params, "fcat"));
 	}
 
 	private function _setDateRange($from = null, $to = null)
@@ -136,14 +137,14 @@ class JSolrSearchModelSearch extends JModel
 		$this->filterOption = $option;
 	}
 	
+	private function _setParams($params)
+	{
+		$this->params = $params;
+	}
+	
 	private function _setLang($lang)
 	{
 		$this->lang = $lang;
-	}
-	
-	private function _setCategory($category)
-	{
-		$this->category = $category;
 	}
 	
 	public function getQuery()
@@ -197,10 +198,12 @@ class JSolrSearchModelSearch extends JModel
 				$query->addFilterQuery($filter);
 			}
 
-			if ($this->getCategory()) {
-				$query->addFilterQuery("{!raw f=category".$this->_getLang()."}".trim($this->getCategory()));
+			foreach ($dispatcher->trigger("onAddQueryFilter", array($this->getParams(), $this->getLang())) as $result) {
+				if ($result) {
+					$query->addFilterQuery($result);
+				}				
 			}
-			
+
 			$query->setHighlight(true);
 			
 			$query->addField('*')->addField('score');
@@ -214,7 +217,7 @@ class JSolrSearchModelSearch extends JModel
 
 			foreach ($dispatcher->trigger('onAddHL', array()) as $result) {
 				foreach ($result as $item) {
-					$query->addHighlightField($item.$this->_getLang());
+					$query->addHighlightField($item.$this->getLang());
 				}
 			}
 			
@@ -239,7 +242,7 @@ class JSolrSearchModelSearch extends JModel
 						$document, 
 						$response->highlighting, 
 						$query->getHighlightFragsize(),
-						$this->_getLang())
+						$this->getLang())
 					);
 
 					// When a plugin and the document's option value match, 
@@ -362,10 +365,10 @@ class JSolrSearchModelSearch extends JModel
 		
 		foreach ($qf as $key=>$value) {
 			if (!array_key_exists($key, $array)) {
-				$array[$key . $this->_getLang()] = array();
+				$array[$key . $this->getLang()] = array();
 			}
 
-			$array[$key . $this->_getLang()][] = $value;
+			$array[$key . $this->getLang()][] = $value;
 		}
 		
 		return $array;
@@ -376,7 +379,7 @@ class JSolrSearchModelSearch extends JModel
 	 * 
 	 * The code will look like; _xx_XX.
 	 */
-	private function _getLang()
+	public function getLang()
 	{
 		$lang = $this->lang;
 
@@ -441,8 +444,8 @@ class JSolrSearchModelSearch extends JModel
 		return JRoute::_($url->toString(), false);
 	}
 	
-	public function getCategory()
+	public function getParams()
 	{
-		return $this->category;
+		return $this->params;
 	}
 }
