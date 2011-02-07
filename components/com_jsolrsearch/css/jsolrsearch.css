@@ -97,3 +97,7 @@
 	text-align: right;
 	font-weight: bold;
 }
+
+.jsolr-virtuemart-currency {
+	padding-right: 4px;
+}

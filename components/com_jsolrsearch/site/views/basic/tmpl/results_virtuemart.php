@@ -63,7 +63,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 					<div><?php echo $item->text; ?></div>
 					<div class="jsolr-result-location"><?php echo $item->location; ?></div>
 				</td>
-				<td class="jsolr-virtuemart-result jsolr-virtuemart-price"><?php echo JArrayHelper::getValue($item->attribs, "currency"); ?><?php echo JArrayHelper::getValue($item->attribs, "price"); ?></td>
+				<td class="jsolr-virtuemart-result jsolr-virtuemart-price"><span class="jsolr-virtuemart-currency"><?php echo JArrayHelper::getValue($item->attribs, "currency"); ?></span><?php echo JArrayHelper::getValue($item->attribs, "price"); ?></td>
 			</tr>
 		<?php endforeach; ?>
 		</tbody>
