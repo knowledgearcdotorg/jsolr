@@ -51,15 +51,8 @@ class modJSolrFilterHelper
 	
 	function getDateLink($range)
 	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
-		$text = JText::_("MOD_JSOLRFILTER_".$range);
-
-		// in case the custom range is set.
-		$url->delVar("dmin");
-		$url->delVar("dmax");
-		$url->delVar("fcat");
-		$url->delVar("pmin");
-		$url->delVar("pmax");		
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid"));
+		$text = JText::_("MOD_JSOLRFILTER_".$range);	
 		
 		switch ($range) {
 			case "1D":
@@ -79,7 +72,6 @@ class modJSolrFilterHelper
 				break;
 
 			default:
-				$url->delVar("qdr");
 				break;				
 		}
 
@@ -94,7 +86,7 @@ class modJSolrFilterHelper
 	{
 		$text = JText::_("MOD_JSOLRFILTER_CUSTOM_RANGE");
 		
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get'))); 
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
 		
 		if (trim($url->getVar("dmin")) || trim($url->getVar("dmax"))) {
 			return $text;		
@@ -105,7 +97,7 @@ class modJSolrFilterHelper
 	
 	function isCustomRangeSelected()
 	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get'))); 
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
 		
 		if (trim($url->getVar("dmin")) || trim($url->getVar("dmax"))) {
 			return true;		
@@ -116,7 +108,7 @@ class modJSolrFilterHelper
 	
 	function isDateRangeSelected($range)
 	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
 
 		$selected = false;
 		
@@ -149,13 +141,8 @@ class modJSolrFilterHelper
 	
 	function getCustomRangeFormURL()
 	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "Itemid"));
 
-		$url->delVar("fcat");
-		$url->delVar("pmin");
-		$url->delVar("pmax");
-		$url->delVar("view");		
-		$url->delVar("qdr");
 		$url->setVar("task", "search");
 		
 		return JRoute::_($url->toString());
@@ -168,16 +155,12 @@ class modJSolrFilterHelper
 	 */
 	function getFilterOptions()
 	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid"));
 		
 		JPluginHelper::importPlugin("jsolrsearch");
 		$dispatcher =& JDispatcher::getInstance();
 
 		$links = array();
-		
-		$url->delVar("fcat");
-		$url->delVar("pmin");
-		$url->delVar("pmax");
 		
 		$selected = $url->getVar("o");
 		
@@ -231,4 +214,25 @@ class modJSolrFilterHelper
 	{
 		return JURI::current()."?".http_build_query(JRequest::get('get'));
 	}
+	
+	/**
+	 * Gets the current search url cleaned of any unnecessary query string 
+	 * values.
+	 * 
+	 * @param array $allowed
+	 * 
+	 * @return JURI A url cleaned of any unnecessary query string values.
+	 */
+	public function getCleanedSearchURL($allowed)
+	{
+		$url = new JURI($this->getSearchURL());
+		
+		foreach (JRequest::get('get') as $key=>$value) {
+			if (array_search($key, $allowed) === false) {
+				$url->delVar($key);
+			}
+		}
+
+		return $url;
+	} 
 }
