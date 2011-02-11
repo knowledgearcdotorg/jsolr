@@ -41,7 +41,7 @@
 		id="jSolrDateRange" 
 		name="jSolrDateRange"
 		method="post"
-		action="<?php echo $helper->getCustomRangeFormURL(); ?>"
+		action="<?php echo $helper->getFormURL(); ?>"
 		class="<?php echo $helper->isCustomRangeSelected() ? "jsolr-show" : "jsolr-hide"; ?>">
 		<div>
 			<label>From:</label>

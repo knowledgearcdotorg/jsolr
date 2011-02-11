@@ -199,8 +199,10 @@ class JSolrSearchModelSearch extends JModel
 			}
 
 			foreach ($dispatcher->trigger("onAddFilterQuery", array($this->getParams(), $this->getLang())) as $result) {
-				if ($result) {
-					$query->addFilterQuery($result);
+				foreach ($result as $item) {
+					if ($item) {
+						$query->addFilterQuery($item);
+					}
 				}				
 			}
 
@@ -215,6 +217,7 @@ class JSolrSearchModelSearch extends JModel
 				$query->addParam("qf", $this->getQFQuery($qf));
 			}
 
+			// Get Highlight fields for results. 
 			foreach ($dispatcher->trigger('onAddHL', array()) as $result) {
 				foreach ($result as $item) {
 					$query->addHighlightField($item.$this->getLang());

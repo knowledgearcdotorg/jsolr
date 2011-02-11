@@ -139,9 +139,15 @@ class modJSolrFilterHelper
 		return $selected;
 	}
 	
-	function getCustomRangeFormURL()
+	function getFormURL($allowed = null)
 	{
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "Itemid"));
+		$array = array("q", "lr", "option", "o", "Itemid");
+		
+		if ($allowed) {
+			$array = $allowed;
+		}
+		
+		$url = $this->getCleanedSearchURL($array);
 
 		$url->setVar("task", "search");
 		
@@ -186,9 +192,9 @@ class modJSolrFilterHelper
 	}
 	
 	/**
-	 * Gets the modified language code for use by the Solr search engine.
+	 * Gets the language code.
 	 * 
-	 * The code will look like; _xx_XX.
+	 * The code will look like; xx-XX.
 	 */
 	public function getLang()
 	{
@@ -203,11 +209,7 @@ class modJSolrFilterHelper
 			$lang = JLanguageHelper::detectLanguage();
 		}
 
-		if ($lang) {
-			$lang = "_" . $lang;
-		}
-		
-		return str_replace("-", "_", $lang);
+		return $lang;
 	}
 	
 	public function getSearchURL()

@@ -45,13 +45,17 @@ a.jsolr-fo-selected, a.jsolr-custom-range-selected {
 	cursor: inherit;
 }
 
-#jSolrDateRange label {
+#jSolrDateRange label, #jSolrPriceRange label {
 	display: inline-block;
 	width: 30px;
 }
 
 #jSolrDateRange button {
 	margin-left: 32px;
+}
+
+#jSolrPriceRange button {
+	margin-left: 62px;
 }
 
 .jsolr-example {

@@ -106,20 +106,43 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	 * @param array $params A list of query params.
 	 * @param string $lang The current environment language.
 	 * 
-	 * @return string A filter query if the current filter option is 
-	 * com_virtuemart, empty otherwise. 
+	 * @return array A list of filter queries if the current filter option is 
+	 * com_virtuemart, empty otherwise.
 	 */
 	public function onAddFilterQuery($params, $lang)
 	{
+		$array = array();
+		
 		if (JArrayHelper::getValue($params, "o") == $this->_option) {			
-			$category = JArrayHelper::getValue($params, "fcat");
+			$category = JArrayHelper::getValue($params, "fcat");			
 			
 			if ($category) {
-				return "{!raw f=category".$lang."}".trim($category);
+				$array[] = "{!raw f=category".$lang."}".trim($category);	
+			}
+			
+			$min = floatval(JArrayHelper::getValue($params, "pmin"));
+			$max = floatval(JArrayHelper::getValue($params, "pmax"));
+			
+			if ($min && $max) {
+				$array[] = "price:[$min TO $max]";	
+			}
+			
+			if ($min && !$max) {
+				$array[] = "price:[$min TO *]";
+			}
+			
+			if (!$min && $max) {
+				$array[] = "price:[* TO $max]";
 			}
 		}
-		
-		return "";
+
+		if (!$this->_params->get("jsolr_show_all_currencies") != 1) {
+			if ($this->onPrepareCurrency($lang)) {
+				$array[] = "currency:".JArrayHelper::getValue($params, "ccode")." OR currency:(*:* AND -currency:[* TO *])";
+			}
+		}
+
+		return $array;
 	}
 	
 	/**
@@ -142,9 +165,15 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
     		'port'     => $configuration->port,
 			'path'	   => $configuration->path
 		);
+
+				
+		if ($lang) {
+			$lang = str_replace("-", "_", $lang);		
+			$lang = "_" . $lang;
+		}
 		
 		$facetField = "category".$lang;
-		
+
 		$array = array();
 		
 		try {
@@ -153,7 +182,34 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 					
 			$query->setQuery(JRequest::getString("q"));
 		
-			$query->addFilterQuery("option:".$this->_option);
+			$query->addFacetQuery("option:".$this->_option);
+			
+			$min = JRequest::getString("pmin", null);
+			$max = JRequest::getString("pmax", null);
+
+			if (is_numeric($min)) {
+				$min = floatval($min);
+			}
+			
+			if (!$min) {
+				$min = "*";	
+			}
+			
+			if (is_numeric($max)) {
+				$max = floatval($max);
+			}
+					
+			if (!$max) {
+				$max = "*";	
+			}
+						
+			$query->addFilterQuery("price:[$min TO $max]");
+		
+			if (!$this->_params->get("jsolr_show_all_currencies") != 1) {
+				if ($this->onPrepareCurrency($lang)) {
+					$query->addFilterQuery("currency:".$this->onPrepareCurrency($lang));
+				}
+			}
 			
 			$query->setFacet(true);
 			$query->addFacetField($facetField);
@@ -161,7 +217,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$query->setFacetMinCount(1);
 			
 			$queryResponse = $client->query($query);
-		
+
 			$response = $queryResponse->getResponse();
 			
 			$array = JArrayHelper::getValue($response->facet_counts->facet_fields, $facetField, array());
@@ -172,6 +228,29 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		}
 		
 		return $array;
+	}
+	
+	public function onPrepareCurrency($lang)
+	{
+		$array = preg_split('/\R/', $this->_params->get("jsolr_currency_mapping"));
+
+		$currency = null;
+		
+		while (!$currency && current($array)) {
+			$item = explode("=", current($array));
+
+			if (JArrayHelper::getValue($item, 0) == $lang) {
+				$currency = JArrayHelper::getValue($item, 1);
+			}
+
+			next($array);
+		}
+		
+		if ($currency == null) {
+			$currency = $this->_params->get("jsolr_default_currency");
+		}
+		
+		return $currency;
 	}
 
 	/**
