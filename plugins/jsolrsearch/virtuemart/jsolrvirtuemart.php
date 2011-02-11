@@ -136,12 +136,6 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			}
 		}
 
-		if (!$this->_params->get("jsolr_show_all_currencies") != 1) {
-			if ($this->onPrepareCurrency($lang)) {
-				$array[] = "currency:".JArrayHelper::getValue($params, "ccode")." OR currency:(*:* AND -currency:[* TO *])";
-			}
-		}
-
 		return $array;
 	}
 	
@@ -204,12 +198,6 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			}
 						
 			$query->addFilterQuery("price:[$min TO $max]");
-		
-			if (!$this->_params->get("jsolr_show_all_currencies") != 1) {
-				if ($this->onPrepareCurrency($lang)) {
-					$query->addFilterQuery("currency:".$this->onPrepareCurrency($lang));
-				}
-			}
 			
 			$query->setFacet(true);
 			$query->addFacetField($facetField);
@@ -230,27 +218,9 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		return $array;
 	}
 	
-	public function onPrepareCurrency($lang)
+	public function onPrepareCurrency()
 	{
-		$array = preg_split('/\R/', $this->_params->get("jsolr_currency_mapping"));
-
-		$currency = null;
-		
-		while (!$currency && current($array)) {
-			$item = explode("=", current($array));
-
-			if (JArrayHelper::getValue($item, 0) == $lang) {
-				$currency = JArrayHelper::getValue($item, 1);
-			}
-
-			next($array);
-		}
-		
-		if ($currency == null) {
-			$currency = $this->_params->get("jsolr_default_currency");
-		}
-		
-		return $currency;
+		return $this->_params->get("jsolr_default_currency");
 	}
 
 	/**
@@ -295,7 +265,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$result->created = null;
 			$result->modified = null;			
 			$result->attribs["price"] = $this->_formatCurrency($document->price);
-			$result->attribs["currency"] = $document->currency;
+			$result->attribs["currency"] = $this->_params->get("jsolr_default_currency");
 			$result->attribs["thumbnail"] = $this->_buildThumbnailURL($document);
 		}
 

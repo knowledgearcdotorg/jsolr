@@ -55,7 +55,7 @@ a.jsolr-fo-selected, a.jsolr-custom-range-selected {
 }
 
 #jSolrPriceRange button {
-	margin-left: 62px;
+	margin-left: 44px;
 }
 
 .jsolr-example {
@@ -67,4 +67,8 @@ a.jsolr-fo-selected, a.jsolr-custom-range-selected {
 
 .jsolr-filter-item .jsolr-cat-count {
 	padding-left: 5px;
+}
+
+.jsolrfilter-virtuemart-currency {
+	padding: 2px;
 }

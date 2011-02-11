@@ -36,24 +36,4 @@ class JSolrVirtuemartTest extends PHPUnit_Framework_TestCase {
 	{
 
 	}
-	
-	public function testOnPrepareCurrency()
-	{
-		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();
-
-		$array = $dispatcher->trigger("onPrepareCurrency", array("en-US"));
-
-		$this->assertEquals("USD", JArrayHelper::getValue($array, 0), 'Currencies are not equal.');
-	}
-	
-	public function testOnPrepareCurrencyGeneric()
-	{
-		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();
-
-		$array = $dispatcher->trigger("onPrepareCurrency", array("en-NZ"));
-
-		$this->assertEquals("USD", JArrayHelper::getValue($array, 0), 'Currencies are not equal.');
-	}
 }

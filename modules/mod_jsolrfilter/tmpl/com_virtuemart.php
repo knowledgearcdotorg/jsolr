@@ -36,7 +36,7 @@ $dispatcher =& JDispatcher::getInstance();
 $array = $dispatcher->trigger('onPrepareFacets', array($helper->getLang()));
 $facets = JArrayHelper::getValue($array, 0);
 
-$array = $dispatcher->trigger('onPrepareCurrency', array($helper->getLang()));
+$array = $dispatcher->trigger('onPrepareCurrency', array());
 $currency = JArrayHelper::getValue($array, 0);
 ?>
 
@@ -136,11 +136,11 @@ $currency = JArrayHelper::getValue($array, 0);
 		action="<?php echo $helper->getFormURL(array("q", "lr", "option", "o", "view", "fcat", "Itemid")); ?>">
 		<div>
 			<label><?php echo JText::_("MOD_JSOLRFILTER_PRICE_MIN"); ?>:</label>
-			<span class="jsolr-virtuemart-currency"><?php echo $currency; ?></span><input type="text" name="pmin" id="pmin" value="<?php echo JRequest::getString("pmin", ""); ?>" size="6"/>
+			<span class="jsolrfilter-virtuemart-currency"><?php echo $currency; ?></span><input type="text" name="pmin" id="pmin" value="<?php echo JRequest::getString("pmin", ""); ?>" size="6"/>
 		</div>
 		<div>
 			<label><?php echo JText::_("MOD_JSOLRFILTER_PRICE_MAX"); ?>:</label>
-			<span class="jsolr-virtuemart-currency"><?php echo $currency; ?></span><input type="text" name="pmax" id="pmax" value="<?php echo JRequest::getString("pmax", ""); ?>" size="6"/>
+			<span class="jsolrfilter-virtuemart-currency"><?php echo $currency; ?></span><input type="text" name="pmax" id="pmax" value="<?php echo JRequest::getString("pmax", ""); ?>" size="6"/>
 		</div>
 		<button type="submit"><?php echo JText::_("MOD_JSOLRFILTER_SEARCH"); ?></button>
 
