@@ -74,7 +74,13 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 			'path'	   => $configuration->path
 		);
 		
-		$this->_client = new SolrClient($options);
+		try {
+			$this->_client = new SolrClient($options);
+		} catch (SolrClientException $e) {
+			$log = JLog::getInstance();
+			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			throw $e;
+		}
 	}
 
 	/**
@@ -134,7 +140,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 	}
 	
 	public function onIndex($rules)
-	{
+	{	
 		$items = $this->getItems($rules);
 
 		$ids = array();
@@ -145,7 +151,9 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 			$ids[] = $item->id;
 		}
 
-		try {		
+		try {
+			$response = @ $this->_client->ping();
+			
 			$this->_client->addDocuments($documents);
 
 			$this->_client->deleteByQuery($this->getDeleteQueryById($ids));
@@ -154,6 +162,8 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 		} catch (SolrClientException $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			
+			throw $e;
 		}
 	}
 }

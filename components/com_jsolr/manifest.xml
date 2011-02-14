@@ -27,6 +27,7 @@
 	    
     <media destination="com_jsolr">
     	<filename>js/jsolr.js</filename>
+    	<filename>css/jsolr.css</filename>
     </media>
     	
 	<administration>

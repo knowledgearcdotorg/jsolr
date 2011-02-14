@@ -69,6 +69,32 @@ class JSolrController extends JController
 		echo json_encode(array("success"=>$success, "message"=>$msg));
 	}
 	
+	public function index()
+	{
+		$model = $this->getModel("configuration");
+		
+		if ($success = $model->index()) {
+			$msg = JText::_("Index successful");
+		} else {
+			$msg = JText::_($model->getError());
+		}
+		
+		echo json_encode(array("success"=>$success, "message"=>$msg));		
+	}
+
+	public function purge()
+	{
+		$model = $this->getModel("configuration");
+		
+		if ($success = $model->index()) {
+			$msg = JText::_("Index purged successfully");
+		} else {
+			$msg = JText::_($model->getError());
+		}
+		
+		echo json_encode(array("success"=>$success, "message"=>$msg));		
+	}
+	
 	function display()
 	{
 		$model = $this->getModel(JRequest::getWord("view"));

@@ -105,4 +105,54 @@ class JSolrModelConfiguration extends JModel
 			return false;
 		}
 	}
+	
+	public function index()
+	{
+	    $rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
+
+    	$dispatcher =& JDispatcher::getInstance();
+    	
+		JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
+
+		try {
+			$array = $dispatcher->trigger('onIndex', array($rules));
+			
+			return true;
+		} catch (Exception $e) {
+			$this->setError($e->getMessage());
+			
+			return false;
+		}	
+	}
+	
+	public function purge()
+	{
+		$options = array(
+			'hostname' => $this->configuration->host,
+			'port'     => $this->configuration->port,
+			'path'     => $this->configuration->path,
+			'login'	   => $this->configuration->username,
+			'password' => $this->configuration->password
+		);
+
+		try {
+			$client = new SolrClient($options);
+			
+			$response = @ $client->ping();
+			
+			$client->deleteByQuery("*:*");
+			$this->_client->commit();
+			
+			return true;
+		} catch (SolrClientException $e) {
+			$this->setError($e->getMessage());
+
+			return false;
+		}		
+	}
+	
+    public function getRobotsFile()
+    {
+    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."ignore.txt";
+    }
 }

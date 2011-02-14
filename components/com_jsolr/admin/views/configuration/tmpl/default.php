@@ -39,7 +39,10 @@ $document = JFactory::getDocument();
 $document->addScriptDeclaration(
 "
 var adminOptions = new Object({
-	testURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=test&format=raw\"
+	pleaseWait : \"".JText::_("Please wait...")."\",
+	testURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=test&format=raw\",
+	indexURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=index&format=raw\",
+	purgeURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=purge&format=raw\"
 });
 ");
 
@@ -118,6 +121,22 @@ JToolBarHelper::cancel();
 											</td>
 											<td style="vertical-align: middle;">
 												<div id="testMessage"></div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<button id="indexButton"><?php echo JText::_("Start indexing"); ?></button>
+											</td>
+											<td style="vertical-align: middle;">
+												<div id="indexMessage"></div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<button id="purgeButton"><?php echo JText::_("Purge index"); ?></button>
+											</td>
+											<td style="vertical-align: middle;">
+												<div id="purgeMessage"></div>
 											</td>
 										</tr>
 									</tbody>

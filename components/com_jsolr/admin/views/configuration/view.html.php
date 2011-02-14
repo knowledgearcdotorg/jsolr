@@ -40,6 +40,10 @@ class JSolrViewConfiguration extends JView
     {
     	JHTML::_('behavior.mootools');
 
-        parent::display($tpl);
+    	$document = JFactory::getDocument();
+
+    	$document->addStyleSheet(JURI::base()."media/com_jsolr/css/jsolr.css");
+        
+    	parent::display($tpl);
     }
 }
