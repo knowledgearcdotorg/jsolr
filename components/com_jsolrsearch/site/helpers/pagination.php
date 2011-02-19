@@ -49,7 +49,7 @@ class JSolrSearchPagination extends JPagination
 		// Initialize variables
 		$data = new stdClass();
 
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));
+		$url = new JURI("index.php?".http_build_query(JRequest::get('get')));
 		
 		$data->all	= new JPaginationObject(JText::_('View All'));
 		if (!$this->_viewall) {

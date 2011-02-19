@@ -37,7 +37,4 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>"><?php echo JText::_("Advanced search"); ?></a>	
 	</div>
 	<?php echo JHTML::_('form.token'); ?>
-	<input type="hidden" name="lr" value="<?php echo JRequest::getWord("lr", ""); ?>"/>
-	<input type="hidden" name="o" value="<?php echo JRequest::getWord("o", ""); ?>"/>
-	<input type="hidden" name="qdr" value="<?php echo JRequest::getWord("qdr", ""); ?>"/>
 </form>

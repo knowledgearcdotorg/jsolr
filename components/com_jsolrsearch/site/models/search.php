@@ -441,7 +441,7 @@ class JSolrSearchModelSearch extends JModel
 	
 	public function getAdvancedSearchURL()
 	{
-		$url = new JURI(JURI::current()."?".http_build_query(JRequest::get('get')));		
+		$url = new JURI("index.php?".http_build_query(JRequest::get('get')));		
 		$url->setVar("view", "advanced");
 
 		return JRoute::_($url->toString(), false);

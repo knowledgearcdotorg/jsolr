@@ -108,7 +108,7 @@ class modJSolrFilterHelper
 	
 	function isDateRangeSelected($range)
 	{
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
+		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax", "qdr"));
 
 		$selected = false;
 		
@@ -174,7 +174,7 @@ class modJSolrFilterHelper
 			$links[] = JHTML::_("link", "#", JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"), array("class"=>"jsolr-fo-selected"));
 		} else {
 			$url->delVar("o");
-			$links[] = JHTML::_("link", $url->toString(), JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
+			$links[] = JHTML::_("link", JRoute::_($url->toString()), JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
 		}
 		
 		foreach ($dispatcher->trigger('onFilterOptions', array()) as $options) {
@@ -183,7 +183,7 @@ class modJSolrFilterHelper
 					$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
 				} else {
 					$url->setVar("o", $key);				
-					$links[] = JHTML::_("link", $url->toString(), $value);
+					$links[] = JHTML::_("link", JRoute::_($url->toString()), $value);
 				}
 			}
 		}
@@ -214,7 +214,7 @@ class modJSolrFilterHelper
 	
 	public function getSearchURL()
 	{
-		return JURI::current()."?".http_build_query(JRequest::get('get'));
+		return "index.php?".http_build_query(JRequest::get('get'));
 	}
 	
 	/**

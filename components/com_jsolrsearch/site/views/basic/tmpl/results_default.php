@@ -68,11 +68,20 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		</div>
 	<?php endforeach; ?>
 	</div>
+
+	<?php if (JRequest::getWord("lr")) : ?>
+	<input type="hidden" name="lr" value="<?php echo JRequest::getWord("lr", ""); ?>"/>
+	<?php endif; ?>
+	
+	<?php if (JRequest::getWord("o")) : ?>
+	<input type="hidden" name="o" value="<?php echo JRequest::getWord("o", ""); ?>"/>
+	<?php endif; ?>
+	
+	<?php if (JRequest::getWord("qdr")) : ?>
+	<input type="hidden" name="qdr" value="<?php echo JRequest::getWord("qdr", ""); ?>"/>
+	<?php endif; ?>
 	
 	<?php echo JHTML::_('form.token'); ?>
-	<input type="hidden" name="lr" value="<?php echo JRequest::getWord("lr", ""); ?>"/>
-	<input type="hidden" name="o" value="<?php echo JRequest::getWord("o", ""); ?>"/>
-	<input type="hidden" name="qdr" value="<?php echo JRequest::getWord("qdr", ""); ?>"/>
 </form>	
 	
 <div class="jsolr-pagination">

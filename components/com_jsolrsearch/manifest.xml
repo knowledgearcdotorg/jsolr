@@ -23,6 +23,7 @@
     	<folder>helpers</folder>
     	<filename>controller.php</filename>
     	<filename>jsolrsearch.php</filename>
+		<filename>router.php</filename>
 	</files>
 
  	<languages folder="language/site">
