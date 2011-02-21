@@ -230,7 +230,7 @@ class JSolrSearchModelSearch extends JModel
 			$query->setStart($this->getState("limitstart"));
 			$query->setRows($this->getState("limit"));
 			
-			$queryResponse = $client->query($query);
+			$queryResponse =@ $client->query($query);
 
 			$response = $queryResponse->getResponse();
 
@@ -421,7 +421,7 @@ class JSolrSearchModelSearch extends JModel
 		$array = array();
 
 		foreach ($qf as $item) {
-			$array = array_merge($array, $this->_getQF(JArrayHelper::getValue($qf, 0)));
+			$array = array_merge($array, $this->_getQF($item));
 		}
 		
 		$reweighted = "";
