@@ -101,7 +101,7 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 			}
 			
 			$result->title = $hlTitle;
-			$result->href = "index.php?option=".$this->_option."&id=".$id;
+			$result->href = JRoute::_("index.php?option=".$this->_option."&view=newsfeed&id=".$id);
 			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
 			$result->location = implode(", ", $document->$category);
 			$result->created = null;
