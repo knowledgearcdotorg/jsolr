@@ -31,7 +31,7 @@
 // no direct access
 defined('_JEXEC') or die();
 
-require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."helpers".DS."plugin.php");
+require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."helpers".DS."plugin.php");
 
 class plgJSolrCrawlerJSolrNewsfeeds extends JSolrCrawlerPlugin 
 {

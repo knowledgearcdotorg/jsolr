@@ -47,6 +47,7 @@
 	    	<filename>controller.php</filename>
 	    	<filename>jsolrsearch.php</filename>
 	    	<filename>configuration.php</filename>
+	    	<folder>extensions</folder>
 	    </files>
 	</administration>
 	

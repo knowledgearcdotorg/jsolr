@@ -1,25 +1,25 @@
 <?php 
 /**
- * A model that provides configuration options for JSolr.
+ * A model that provides configuration options for JSolrIndex.
  * 
  * @author		$LastChangedBy$
- * @package	Wijiti
+ * @package		Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolr component for Joomla!.
+ * @license     This file is part of the JSolrIndex component for Joomla!.
 
-   The JSolr component for Joomla! is free software: you can redistribute it 
+   The JSolrIndex component for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolr component for Joomla! is distributed in the hope that it will be 
+   The JSolrIndex component for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolr component for Joomla!.  If not, see 
+   along with the JSolrIndex component for Joomla!.  If not, see 
    <http://www.gnu.org/licenses/>.
 
  * Contributors
@@ -35,7 +35,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.registry.registry');
 jimport('joomla.filesystem.file');
 
-class JSolrModelConfiguration extends JModel
+class JSolrIndexModelConfiguration extends JModel
 {	
 	var $configuration;
 	
@@ -45,7 +45,7 @@ class JSolrModelConfiguration extends JModel
 
 		require_once($this->getConfig());
 		
-		$this->configuration = new JSolrConfig();		
+		$this->configuration = new JSolrIndexConfig();		
 	}
 	
 	/**
@@ -55,7 +55,7 @@ class JSolrModelConfiguration extends JModel
 	 */
 	public function getConfig()
 	{
-		return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."configuration.php";
+		return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."configuration.php";
 	}
 
 	public function getParam($name)
@@ -67,7 +67,7 @@ class JSolrModelConfiguration extends JModel
 	{	
 		require_once($this->getConfig());
 		
-		$config = new JRegistry('solrconfig');
+		$config = new JRegistry('solrindexconfig');
 		$config_array = array();
 
 		$config_array["host"] = JArrayHelper::getValue($array, "host");
@@ -77,9 +77,9 @@ class JSolrModelConfiguration extends JModel
 		$config_array["path"] = JArrayHelper::getValue($array, "path");
 		$config->loadArray($config_array);
 		
-		JFile::write($this->getConfig(), $config->toString("PHP", "solrconfig", array("class"=>"JSolrConfig")));
+		JFile::write($this->getConfig(), $config->toString("PHP", "solrindexconfig", array("class"=>"JSolrIndexConfig")));
 
-		$this->configuration = new JSolrConfig();
+		$this->configuration = new JSolrIndexConfig();
 	}
 	
 	public function test()
@@ -141,7 +141,7 @@ class JSolrModelConfiguration extends JModel
 			$response = @ $client->ping();
 			
 			$client->deleteByQuery("*:*");
-			$this->_client->commit();
+			$client->commit();
 			
 			return true;
 		} catch (SolrClientException $e) {
@@ -153,6 +153,6 @@ class JSolrModelConfiguration extends JModel
 	
     public function getRobotsFile()
     {
-    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."ignore.txt";
+    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."ignore.txt";
     }
 }

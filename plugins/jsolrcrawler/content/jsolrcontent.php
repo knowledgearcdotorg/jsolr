@@ -33,7 +33,7 @@ defined('_JEXEC') or die();
 
 require_once JPATH_LIBRARIES."/joomla/database/table/section.php";
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
-require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."helpers".DS."plugin.php");
+require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."helpers".DS."plugin.php");
 
 class plgJSolrCrawlerJSolrContent extends JSolrCrawlerPlugin
 {

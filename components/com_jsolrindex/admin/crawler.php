@@ -37,7 +37,7 @@ jimport('joomla.user.user');
  * @package Wijiti
  * @subpackage CLI
  */
-class JSolrCrawler extends JApplication
+class JSolrIndexCrawler extends JApplication
 {
     /**
      * The name of the application
@@ -110,7 +110,7 @@ class JSolrCrawler extends JApplication
     
     public function getRobotsFile()
     {
-    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."ignore.txt";
+    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."ignore.txt";
     }
  
     public function execute()
@@ -210,7 +210,7 @@ class JSolrCrawler extends JApplication
 JError::setErrorHandling(E_ALL, 'echo');
  
 // Create the application object.
-$crawler = new JSolrCrawler();
+$crawler = new JSolrIndexCrawler();
  
 // Execute the application.
 $crawler->execute();

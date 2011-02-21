@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD component 1.0//EN" "http://dev.joomla.org/xml/1.5/component-install.dtd">
 <install type="component" version="1.5.0">
-	<name>JSolr</name>
+	<name>JSolrIndex</name>
 	<creationDate>2010-01-31</creationDate>
 	<author>Wijiti</author>
 	<authorEmail>development@wijiti.com</authorEmail>
@@ -9,29 +9,29 @@
 	<copyright>>Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>0.2.0</version>
-	<description>The JSolr component provides configuration and administration functionality for managing the Solr indexes and search.</description>
+	<description>The JSolrIndex component provides configuration and administration functionality for managing the Solr indexes and search.</description>
 
-	<installfile>install.jsolr.php</installfile>
-	<uninstallfile>uninstall.jsolr.php</uninstallfile>
+	<installfile>install.jsolrindex.php</installfile>
+	<uninstallfile>uninstall.jsolrindex.php</uninstallfile>
 	
     <install><sql></sql></install>
     <uninstall><sql></sql></uninstall>
 	
 	<files folder="site">	
-		<filename>jsolr.php</filename>
+		<filename>jsolrindex.php</filename>
 	</files>
 
  	<languages folder="language/site">
- 		<language tag="en-GB">en-GB.com_jsolr.ini</language>
+ 		<language tag="en-GB">en-GB.com_jsolrindex.ini</language>
  	</languages>	
 	    
-    <media destination="com_jsolr">
-    	<filename>js/jsolr.js</filename>
-    	<filename>css/jsolr.css</filename>
+    <media destination="com_jsolrindex">
+    	<filename>js/jsolrindex.js</filename>
+    	<filename>css/jsolrindex.css</filename>
     </media>
     	
 	<administration>
-		<menu>JSolr</menu>
+		<menu>JSolr Index</menu>
 		<submenu>
 			<menu view="configuration">Configuration</menu>
 			<menu view="robots">Robots</menu>
@@ -42,10 +42,11 @@
 	    	<folder>views</folder>
 	    	<folder>helpers</folder>	    	
 	    	<filename>controller.php</filename>
-	    	<filename>jsolr.php</filename>
+	    	<filename>jsolrindex.php</filename>
 	    	<filename>ignore.txt</filename>	    	
 	    	<filename>configuration.php</filename>
 	    	<filename>crawler.php</filename>
+	    	<folder>extensions</folder>
 	    </files>
 	</administration>
 	

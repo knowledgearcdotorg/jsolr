@@ -1,25 +1,25 @@
 <?php 
 /**
- * A form view for adding/editing JSolr configuration.
+ * A form view for adding/editing JSolrIndex configuration.
  * 
  * @author		$LastChangedBy$
  * @package	Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolr component for Joomla!.
+ * @license     This file is part of the JSolrIndex component for Joomla!.
 
-   The JSolr component for Joomla! is free software: you can redistribute it 
+   The JSolrIndex component for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolr component for Joomla! is distributed in the hope that it will be 
+   The JSolrIndex component for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolr component for Joomla!.  If not, see 
+   along with the JSolrIndex component for Joomla!.  If not, see 
    <http://www.gnu.org/licenses/>.
 
  * Contributors
@@ -40,15 +40,13 @@ $document->addScriptDeclaration(
 "
 var adminOptions = new Object({
 	pleaseWait : \"".JText::_("Please wait...")."\",
-	testURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=test&format=raw\",
-	indexURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=index&format=raw\",
-	purgeURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolr&task=purge&format=raw\"
+	testURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrindex&task=test&format=raw\",
+	indexURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrindex&task=index&format=raw\",
+	purgeURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrindex&task=purge&format=raw\"
 });
 ");
 
-$document->addScript($application->getSiteURL() . "media/com_jsolr/js/jsolr.js");
-
-JToolBarHelper::title(JText::_('JSolr Configuration'), 'config.png');
+JToolBarHelper::title(JText::_('JSolr Index Configuration'), 'config.png');
 
 JToolBarHelper::save();
 JToolBarHelper::cancel();
@@ -150,7 +148,7 @@ JToolBarHelper::cancel();
 	</div>
 	<div class="clr"></div>
 	
-	<input type="hidden" value="com_jsolr" name="option"/>
+	<input type="hidden" value="com_jsolrindex" name="option"/>
 	<input type="hidden" value="" name="task"/>
 	<input type="hidden" value="configuration" name="view"/>
 </form>

@@ -1,5 +1,5 @@
 <?php
-class JSolrConfig {
+class JSolrIndexConfig {
 	var $host = "www.domain.tld";
 	var $username = "";
 	var $password = "";

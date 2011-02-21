@@ -4,20 +4,20 @@
  * @paackage	Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolr component for Joomla!.
+ * @license     This file is part of the JSolrIndex component for Joomla!.
 
-   The JSolr component for Joomla! is free software: you can redistribute it 
+   The JSolrIndex component for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolr component for Joomla! is distributed in the hope that it will be 
+   The JSolrIndex component for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolr component for Joomla!.  If not, see 
+   along with the JSolrIndex component for Joomla!.  If not, see 
    <http://www.gnu.org/licenses/>.
 
  * Contributors
@@ -62,9 +62,9 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 		
 		$this->_option = "com_".$name;
 		
-		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."configuration.php");
+		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."configuration.php");
 
-		$configuration = new JSolrConfig();
+		$configuration = new JSolrIndexConfig();
 		
 		$options = array(
     		'hostname' => $configuration->host,

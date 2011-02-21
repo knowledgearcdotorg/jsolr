@@ -3,23 +3,23 @@
  * Installation scripts.
  * 
  * @author		$LastChangedBy$
- * @package		Wijiti
+ * @package	Wijiti
  * @subpackage	JSolr
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolrSearch component for Joomla!.
+ * @license     This file is part of the JSolrIndex component for Joomla!.
 
-   The JSolrSearch component for Joomla! is free software: you can redistribute it 
+   The JSolrIndex component for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
+   The JSolrIndex component for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolrSearch component for Joomla!.  If not, see 
+   along with the JSolrIndex component for Joomla!.  If not, see 
    <http://www.gnu.org/licenses/>.
 
  * Contributors
@@ -36,14 +36,12 @@ jimport('joomla.installer.helper');
 
 function com_install()
 {
-	$installer = new JSolrSearchInstaller();
+	$installer = new JSolrIndexInstaller();
 	$installer->install();
 }
 
-class JSolrSearchInstaller
+class JSolrIndexInstaller
 {
-	const COM_JSOLRSEARCH = "com_jsolrsearch";
-	
 	public function __construct()
 	{
 	
@@ -51,10 +49,19 @@ class JSolrSearchInstaller
 	
 	public function install()
 	{
+		$src = "administrator".DS."components".DS."com_jsolrindex".DS."crawler.php";
+		$dest = "crawler.php";
+		
+		if (JFile::move($src, $dest, JPATH_ROOT)) {
+			echo "<p>Crawler installed in ".JPATH_ROOT." successfully. Use the crawler file to run an indexing cron job across your Joomla! site.</p>";
+		} else {
+			echo "<p>Crawler failed to install in ".JPATH_ROOT.". You will need to copy it manually from ".JPATH_COMPONENT_ADMINISTRATOR.".</p>";
+		}
+
 		$installer = new JInstaller();
 		$installer->_overwrite = true;
 		
-		$pkg_path = JPATH_ADMINISTRATOR.DS.'components'.DS.self::COM_JSOLRSEARCH.DS.'extensions'.DS;
+		$pkg_path = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jsolrindex'.DS.'extensions'.DS;
 		
 		if ($handle = opendir($pkg_path)) {
 			while ($pkg = readdir($handle)) {

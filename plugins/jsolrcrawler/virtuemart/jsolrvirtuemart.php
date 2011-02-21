@@ -33,7 +33,7 @@ defined('_JEXEC') or die();
 
 jimport("joomla.filesystem.file");
 
-require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolr".DS."helpers".DS."plugin.php");
+require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."helpers".DS."plugin.php");
 
 class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 {
