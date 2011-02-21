@@ -470,7 +470,7 @@
 			<str name="echoParams">explicit</str>
 			<float name="tie">0.01</float>
 			<str name="qf">
-			content^40.0 title^5.0 tags_h1^5.0 tags_h2_h3^3.0 tags_h4_h5_h6^2.0
+			title^25.0 content^15.0 tags_h1^5.0 tags_h2_h3^3.0 tags_h4_h5_h6^2.0
 			</str>
 			<str name="pf">content^2.0</str>
 			<int name="ps">15</int>
@@ -586,173 +586,21 @@
 		</lst>
 
 		<!-- lst_spellchecker_LANGUAGE -->
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_vi-VN</str>
-			
-			<str name="field">spell_vi-VN</str>
-			<str name="spellcheckIndexDir">./spellchecker_vi-VN</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
 
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ur-PK</str>
-			
-			<str name="field">spell_ur-PK</str>
-			<str name="spellcheckIndexDir">./spellchecker_ur-PK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_uk-UA</str>
-			
-			<str name="field">spell_uk-UA</str>
-			<str name="spellcheckIndexDir">./spellchecker_uk-UA</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_tr-TR</str>
-			
-			<str name="field">spell_tr-TR</str>
-			<str name="spellcheckIndexDir">./spellchecker_tr-TR</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_th-TH</str>
-			
-			<str name="field">spell_th-TH</str>
-			<str name="spellcheckIndexDir">./spellchecker_th-TH</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ta-LK</str>
-			
-			<str name="field">spell_ta-LK</str>
-			<str name="spellcheckIndexDir">./spellchecker_ta-LK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_tl-PH</str>
-			
-			<str name="field">spell_tl-PH</str>
-			<str name="spellcheckIndexDir">./spellchecker_tl-PH</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sy-IQ</str>
-			
-			<str name="field">spell_sy-IQ</str>
-			<str name="spellcheckIndexDir">./spellchecker_sy-IQ</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sv-SE</str>
-			
-			<str name="field">spell_sv-SE</str>
-			<str name="spellcheckIndexDir">./spellchecker_sv-SE</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
 		<!-- $LastChangedBy$ -->
 		<lst name="spellchecker">
 			<str name="name">spellchecker_es-ES</str>
 			
-			<str name="field">spell_es-ES</str>
+			<str name="field">spell_es_ES</str>
 			<str name="spellcheckIndexDir">./spellchecker_es-ES</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sl-SI</str>
-		
-			<str name="field">spell_sl-SI</str>
-			<str name="spellcheckIndexDir">./spellchecker_sl-SI</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sk-SK</str>
-			
-			<str name="field">spell_sk-SK</str>
-			<str name="spellcheckIndexDir">./spellchecker_sk-SK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_si-LK</str>
-			
-			<str name="field">spell_si-LK</str>
-			<str name="spellcheckIndexDir">./spellchecker_si-LK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sd-PK</str>
-			
-			<str name="field">spell_sd-PK</str>
-			<str name="spellcheckIndexDir">./spellchecker_sd-PK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sr-RS</str>
-			
-			<str name="field">spell_sr-RS</str>
-			<str name="spellcheckIndexDir">./spellchecker_sr-RS</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sr-YU</str>
-			
-			<str name="field">spell_sr-YU</str>
-			<str name="spellcheckIndexDir">./spellchecker_sr-YU</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>		
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ru-RU</str>
-			
-			<str name="field">spell_ru-RU</str>
-			<str name="spellcheckIndexDir">./spellchecker_ru-RU</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ro-RO</str>
-			
-			<str name="field">spell_ro-RO</str>
-			<str name="spellcheckIndexDir">./spellchecker_ro-RO</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
+
 		<!-- $LastChangedBy$ -->
 		<lst name="spellchecker">
 			<str name="name">spellchecker_pt-PT</str>
 			
-			<str name="field">spell_pt-PT</str>
+			<str name="field">spell_pt_PT</str>
 			<str name="spellcheckIndexDir">./spellchecker_pt-PT</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
@@ -761,116 +609,8 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_pt-BR</str>
 			
-			<str name="field">spell_pt-BR</str>
+			<str name="field">spell_pt_BR</str>
 			<str name="spellcheckIndexDir">./spellchecker_pt-BR</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_pl-PL</str>
-			
-			<str name="field">spell_pl-PL</str>
-			<str name="spellcheckIndexDir">./spellchecker_pl-PL</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_fa-IR</str>
-			
-			<str name="field">spell_fa-IR</str>
-			<str name="spellcheckIndexDir">./spellchecker_fa-IR</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ps</str>
-			
-			<str name="field">spell_ps</str>
-			<str name="spellcheckIndexDir">./spellchecker_ps</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_nb-NO</str>
-			
-			<str name="field">spell_nb-NO</str>
-			<str name="spellcheckIndexDir">./spellchecker_nb-NO</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sr-RS</str>
-			
-			<str name="field">spell_sr-ME</str>
-			<str name="spellcheckIndexDir">./spellchecker_sr-ME</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_mn-MN</str>
-			
-			<str name="field">spell_mn-MN</str>
-			<str name="spellcheckIndexDir">./spellchecker_mn-MN</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ml-IN</str>
-			
-			<str name="field">spell_ml-IN</str>
-			<str name="spellcheckIndexDir">./spellchecker_ml-IN</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ms-MY</str>
-			
-			<str name="field">spell_ms-MY</str>
-			<str name="spellcheckIndexDir">./spellchecker_ms-MY</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_mk-MK</str>
-			
-			<str name="field">spell_mk-MK</str>
-			<str name="spellcheckIndexDir">./spellchecker_mk-MK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_lt-LT</str>
-			
-			<str name="field">spell_lt-LT</str>
-			<str name="spellcheckIndexDir">./spellchecker_lt-LT</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_lv-LV</str>
-			
-			<str name="field">spell_lv-LV</str>
-			<str name="spellcheckIndexDir">./spellchecker_lv-LV</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_lo-LA</str>
-			
-			<str name="field">spell_lo-LA</str>
-			<str name="spellcheckIndexDir">./spellchecker_lo-LA</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
 		
@@ -878,7 +618,7 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_ko-KR</str>
 			
-			<str name="field">spell_ko-KR</str>
+			<str name="field">spell_ko_KR</str>
 			<str name="spellcheckIndexDir">./spellchecker_ko-KR</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
@@ -887,80 +627,8 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_ja-JP</str>
 			
-			<str name="field">spell_ja-JP</str>
+			<str name="field">spell_ja_JP</str>
 			<str name="spellcheckIndexDir">./spellchecker_ja-JP</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_it-IT</str>
-			
-			<str name="field">spell_it-IT</str>
-			<str name="spellcheckIndexDir">./spellchecker_it-IT</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_id-ID</str>
-			
-			<str name="field">spell_id-ID</str>
-			<str name="spellcheckIndexDir">./spellchecker_id-ID</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_is-IS</str>
-			
-			<str name="field">spell_is-IS</str>
-			<str name="spellcheckIndexDir">./spellchecker_is-IS</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_hu-HU</str>
-			
-			<str name="field">spell_hu-HU</str>
-			<str name="spellcheckIndexDir">./spellchecker_hu-HU</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_hi-IN</str>
-			
-			<str name="field">spell_hi-IN</str>
-			<str name="spellcheckIndexDir">./spellchecker_hi-IN</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_he-IL</str>
-			
-			<str name="field">spell_he-IL</str>
-			<str name="spellcheckIndexDir">./spellchecker_he-IL</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_gu-IN</str>
-			
-			<str name="field">spell_gu-IN</str>
-			<str name="spellcheckIndexDir">./spellchecker_gu-IN</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_el-GR</str>
-			
-			<str name="field">spell_el-GR</str>
-			<str name="spellcheckIndexDir">./spellchecker_el-GR</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
 		
@@ -968,26 +636,8 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_de-DE</str>
 			
-			<str name="field">spell_de-DE</str>
+			<str name="field">spell_de_DE</str>
 			<str name="spellcheckIndexDir">./spellchecker_de-DE</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ka-GE</str>
-			
-			<str name="field">spell_ka-GE</str>
-			<str name="spellcheckIndexDir">./spellchecker_ka-GE</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_gl-ES</str>
-			
-			<str name="field">spell_gl-ES</str>
-			<str name="spellcheckIndexDir">./spellchecker_gl-ES</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
 		
@@ -995,35 +645,8 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_fr-FR</str>
 			
-			<str name="field">spell_fr-FR</str>
+			<str name="field">spell_fr_FR</str>
 			<str name="spellcheckIndexDir">./spellchecker_fr-FR</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_fi-FI</str>
-			
-			<str name="field">spell_fi-FI</str>
-			<str name="spellcheckIndexDir">./spellchecker_fi-FI</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_et-EE</str>
-			
-			<str name="field">spell_et-EE</str>
-			<str name="spellcheckIndexDir">./spellchecker_et-EE</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_eo-XX</str>
-			
-			<str name="field">spell_eo-XX</str>
-			<str name="spellcheckIndexDir">./spellchecker_eo-XX</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
 		
@@ -1031,7 +654,7 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_en-AU</str>
 			
-			<str name="field">spell_en-AU</str>
+			<str name="field">spell_en_AU</str>
 			<str name="spellcheckIndexDir">./spellchecker_en-AU</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
@@ -1040,7 +663,7 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_en-CA</str>
 			
-			<str name="field">spell_en-CA</str>
+			<str name="field">spell_en_CA</str>
 			<str name="spellcheckIndexDir">./spellchecker_en-CA</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
@@ -1049,7 +672,7 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_en-GB</str>
 			
-			<str name="field">spell_en-GB</str>
+			<str name="field">spell_en_GB</str>
 			<str name="spellcheckIndexDir">./spellchecker_en-GB</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
@@ -1058,44 +681,8 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_en-US</str>
 			
-			<str name="field">spell_en-US</str>
+			<str name="field">spell_en_US</str>
 			<str name="spellcheckIndexDir">./spellchecker_en-US</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_nl-NL</str>
-			
-			<str name="field">spell_nl-NL</str>
-			<str name="spellcheckIndexDir">./spellchecker_nl-NL</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_da-DK</str>
-			
-			<str name="field">spell_da-DK</str>
-			<str name="spellcheckIndexDir">./spellchecker_da-DK</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_cs-CZ</str>
-			
-			<str name="field">spell_cs-CZ</str>
-			<str name="spellcheckIndexDir">./spellchecker_cs-CZ</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_hr-HR</str>
-			
-			<str name="field">spell_hr-HR</str>
-			<str name="spellcheckIndexDir">./spellchecker_hr-HR</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
 		
@@ -1103,7 +690,7 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_zh-TW</str>
 			
-			<str name="field">spell_zh-TW</str>
+			<str name="field">spell_zh_TW</str>
 			<str name="spellcheckIndexDir">./spellchecker_zh-TW</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
@@ -1112,80 +699,8 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_zh-CN</str>
 			
-			<str name="field">spell_zh-CN</str>
+			<str name="field">spell_zh_CN</str>
 			<str name="spellcheckIndexDir">./spellchecker_zh-CN</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_ca-ES</str>
-			
-			<str name="field">spell_ca-ES</str>
-			<str name="spellcheckIndexDir">./spellchecker_ca-ES</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_km-KH</str>
-			
-			<str name="field">spell_km-KH</str>
-			<str name="spellcheckIndexDir">./spellchecker_km-KH</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_bg-BG</str>
-			
-			<str name="field">spell_bg-BG</str>
-			<str name="spellcheckIndexDir">./spellchecker_bg-BG</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_bs-BA</str>
-			
-			<str name="field">spell_bs-BA</str>
-			<str name="spellcheckIndexDir">./spellchecker_bs-BA</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_bn-BD</str>
-			
-			<str name="field">spell_bn-BD</str>
-			<str name="spellcheckIndexDir">./spellchecker_bn-BD</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_be-BY</str>
-			
-			<str name="field">spell_be-BY</str>
-			<str name="spellcheckIndexDir">./spellchecker_be-BY</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_eu-ES</str>
-			
-			<str name="field">spell_eu-ES</str>
-			<str name="spellcheckIndexDir">./spellchecker_eu-ES</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_az-AZ</str>
-			
-			<str name="field">spell_az-AZ</str>
-			<str name="spellcheckIndexDir">./spellchecker_az-AZ</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
 		
@@ -1193,28 +708,11 @@
 		<lst name="spellchecker">
 			<str name="name">spellchecker_ar-AA</str>
 			
-			<str name="field">spell_ar-AA</str>
+			<str name="field">spell_ar_AA</str>
 			<str name="spellcheckIndexDir">./spellchecker_ar-AA</str>
 			<str name="buildOnOptimize">true</str>
 		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_sq-AL</str>
-			
-			<str name="field">spell_sq-AL</str>
-			<str name="spellcheckIndexDir">./spellchecker_sq-AL</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
-		
-		<!-- $LastChangedBy$ -->
-		<lst name="spellchecker">
-			<str name="name">spellchecker_af-ZA</str>
-			
-			<str name="field">spell_af-ZA</str>
-			<str name="spellcheckIndexDir">./spellchecker_af-ZA</str>
-			<str name="buildOnOptimize">true</str>
-		</lst>
+
 	</searchComponent>
 
 	<!-- a search component that enables you to configure the top results for
@@ -1234,6 +732,19 @@
 		</lst>
 		<arr name="last-components">
 			<str>elevator</str>
+		</arr>
+	</requestHandler>
+	
+	<!-- A component to return terms and document frequency of those terms.
+	     This component does not yet support distributed search. -->
+	<searchComponent name="termsComponent" class="org.apache.solr.handler.component.TermsComponent"/>
+
+	<requestHandler name="/terms" class="org.apache.solr.handler.component.SearchHandler">
+		<lst name="defaults">
+			<bool name="terms">true</bool>
+		</lst>
+		<arr name="components">
+			<str>termsComponent</str>
 		</arr>
 	</requestHandler>
 
@@ -1377,86 +888,11 @@
 		stopwords.txt
 		synonyms.txt
 		<!-- gettableFiles_LANGUAGE  -->
-		stopwords_spell_vi-VN.txt
-		compoundwords_vi-VN.txt
-		protwords_vi-VN.txt
-		synonyms_vi-VN.txt
-		stopwords_vi-VN.txt
-		stopwords_spell_ur-PK.txt
-		compoundwords_ur-PK.txt
-		protwords_ur-PK.txt
-		synonyms_ur-PK.txt
-		stopwords_ur-PK.txt
-		stopwords_spell_uk-UA.txt
-		compoundwords_uk-UA.txt
-		protwords_uk-UA.txt
-		synonyms_uk-UA.txt
-		stopwords_uk-UA.txt
-		stopwords_spell_tr-TR.txt
-		compoundwords_tr-TR.txt
-		protwords_tr-TR.txt
-		synonyms_tr-TR.txt
-		stopwords_tr-TR.txt
-		stopwords_spell_th-TH.txt
-		compoundwords_th-TH.txt
-		protwords_th-TH.txt
-		synonyms_th-TH.txt
-		stopwords_th-TH.txt
-		stopwords_spell_ta-LK.txt
-		compoundwords_ta-LK.txt
-		protwords_ta-LK.txt
-		synonyms_ta-LK.txt
-		stopwords_ta-LK.txt
-		stopwords_spell_tl-PH.txt
-		compoundwords_tl-PH.txt
-		protwords_tl-PH.txt
-		synonyms_tl-PH.txt
-		stopwords_tl-PH.txt
-		stopwords_spell_sy-IQ.txt
-		compoundwords_sy-IQ.txt
-		protwords_sy-IQ.txt
-		synonyms_sy-IQ.txt
-		stopwords_sy-IQ.txt
-		stopwords_spell_sv-SE.txt
-		compoundwords_sv-SE.txt
-		protwords_sv-SE.txt
-		synonyms_sv-SE.txt
-		stopwords_sv-SE.txt
 		stopwords_spell_es-ES.txt
 		compoundwords_es-ES.txt
 		protwords_es-ES.txt
 		synonyms_es-ES.txt
 		stopwords_es-ES.txt
-		stopwords_spell_sl-SI.txt
-		compoundwords_sl-SI.txt
-		protwords_sl-SI.txt
-		synonyms_sl-SI.txt
-		stopwords_sl-SI.txt
-		stopwords_spell_sk-SK.txt
-		compoundwords_sk-SK.txt
-		protwords_sk-SK.txt
-		synonyms_sk-SK.txt
-		stopwords_sk-SK.txt
-		stopwords_spell_si-LK.txt
-		compoundwords_si-LK.txt
-		protwords_si-LK.txt
-		synonyms_si-LK.txt
-		stopwords_si-LK.txt
-		stopwords_spell_sd-PK.txt
-		compoundwords_sd-PK.txt
-		protwords_sd-PK.txt
-		synonyms_sd-PK.txt
-		stopwords_sd-PK.txt
-		stopwords_spell_ru-RU.txt
-		compoundwords_ru-RU.txt
-		protwords_ru-RU.txt
-		synonyms_ru-RU.txt
-		stopwords_ru-RU.txt
-		stopwords_spell_ro-RO.txt
-		compoundwords_ro-RO.txt
-		protwords_ro-RO.txt
-		synonyms_ro-RO.txt
-		stopwords_ro-RO.txt
 		stopwords_spell_pt-PT.txt
 		compoundwords_pt-PT.txt
 		protwords_pt-PT.txt
@@ -1467,76 +903,6 @@
 		protwords_pt-BR.txt
 		synonyms_pt-BR.txt
 		stopwords_pt-BR.txt
-		stopwords_spell_pl-PL.txt
-		compoundwords_pl-PL.txt
-		protwords_pl-PL.txt
-		synonyms_pl-PL.txt
-		stopwords_pl-PL.txt
-		stopwords_spell_fa-IR.txt
-		compoundwords_fa-IR.txt
-		protwords_fa-IR.txt
-		synonyms_fa-IR.txt
-		stopwords_fa-IR.txt
-		stopwords_spell_sr-ME.txt
-		compoundwords_sr-ME.txt
-		protwords_sr-ME.txt
-		synonyms_sr-ME.txt
-		stopwords_sr-ME.txt		
-		stopwords_spell_ps.txt
-		compoundwords_ps.txt
-		protwords_ps.txt
-		synonyms_ps.txt
-		stopwords_ps.txt
-		stopwords_spell_nb-NO.txt
-		compoundwords_nb-NO.txt
-		protwords_nb-NO.txt
-		synonyms_nb-NO.txt
-		stopwords_nb-NO.txt
-		stopwords_spell_sr-RS.txt
-		compoundwords_sr-RS.txt
-		protwords_sr-RS.txt
-		synonyms_sr-RS.txt
-		stopwords_sr-RS.txt
-		stopwords_spell_sr-YU.txt
-		compoundwords_sr-YU.txt
-		protwords_sr-YU.txt
-		synonyms_sr-YU.txt
-		stopwords_sr-YU.txt		
-		stopwords_spell_mn-MN.txt
-		compoundwords_mn-MN.txt
-		protwords_mn-MN.txt
-		synonyms_mn-MN.txt
-		stopwords_mn-MN.txt
-		stopwords_spell_ml-IN.txt
-		compoundwords_ml-IN.txt
-		protwords_ml-IN.txt
-		synonyms_ml-IN.txt
-		stopwords_ml-IN.txt
-		stopwords_spell_ms-MY.txt
-		compoundwords_ms-MY.txt
-		protwords_ms-MY.txt
-		synonyms_ms-MY.txt
-		stopwords_ms-MY.txt
-		stopwords_spell_mk-MK.txt
-		compoundwords_mk-MK.txt
-		protwords_mk-MK.txt
-		synonyms_mk-MK.txt
-		stopwords_mk-MK.txt
-		stopwords_spell_lt-LT.txt
-		compoundwords_lt-LT.txt
-		protwords_lt-LT.txt
-		synonyms_lt-LT.txt
-		stopwords_lt-LT.txt
-		stopwords_spell_lv-LV.txt
-		compoundwords_lv-LV.txt
-		protwords_lv-LV.txt
-		synonyms_lv-LV.txt
-		stopwords_lv-LV.txt
-		stopwords_spell_lo-LA.txt
-		compoundwords_lo-LA.txt
-		protwords_lo-LA.txt
-		synonyms_lo-LA.txt
-		stopwords_lo-LA.txt
 		stopwords_spell_ko-KR.txt
 		compoundwords_ko-KR.txt
 		protwords_ko-KR.txt
@@ -1547,81 +913,16 @@
 		protwords_ja-JP.txt
 		synonyms_ja-JP.txt
 		stopwords_ja-JP.txt
-		stopwords_spell_it-IT.txt
-		compoundwords_it-IT.txt
-		protwords_it-IT.txt
-		synonyms_it-IT.txt
-		stopwords_it-IT.txt
-		stopwords_spell_id-ID.txt
-		compoundwords_id-ID.txt
-		protwords_id-ID.txt
-		synonyms_id-ID.txt
-		stopwords_id-ID.txt
-		stopwords_spell_is-IS.txt
-		compoundwords_is-IS.txt
-		protwords_is-IS.txt
-		synonyms_is-IS.txt
-		stopwords_is-IS.txt
-		stopwords_spell_hu-HU.txt
-		compoundwords_hu-HU.txt
-		protwords_hu-HU.txt
-		synonyms_hu-HU.txt
-		stopwords_hu-HU.txt
-		stopwords_spell_hi-IN.txt
-		compoundwords_hi-IN.txt
-		protwords_hi-IN.txt
-		synonyms_hi-IN.txt
-		stopwords_hi-IN.txt
-		stopwords_spell_he-IL.txt
-		compoundwords_he-IL.txt
-		protwords_he-IL.txt
-		synonyms_he-IL.txt
-		stopwords_he-IL.txt
-		stopwords_spell_gu-IN.txt
-		compoundwords_gu-IN.txt
-		protwords_gu-IN.txt
-		synonyms_gu-IN.txt
-		stopwords_gu-IN.txt
-		stopwords_spell_el-GR.txt
-		compoundwords_el-GR.txt
-		protwords_el-GR.txt
-		synonyms_el-GR.txt
-		stopwords_el-GR.txt
 		stopwords_spell_de-DE.txt
 		compoundwords_de-DE.txt
 		protwords_de-DE.txt
 		synonyms_de-DE.txt
 		stopwords_de-DE.txt
-		stopwords_spell_ka-GE.txt
-		compoundwords_ka-GE.txt
-		protwords_ka-GE.txt
-		synonyms_ka-GE.txt
-		stopwords_ka-GE.txt
-		stopwords_spell_gl-ES.txt
-		compoundwords_gl-ES.txt
-		protwords_gl-ES.txt
-		synonyms_gl-ES.txt
-		stopwords_gl-ES.txt
 		stopwords_spell_fr-FR.txt
 		compoundwords_fr-FR.txt
 		protwords_fr-FR.txt
 		synonyms_fr-FR.txt
 		stopwords_fr-FR.txt
-		stopwords_spell_fi-FI.txt
-		compoundwords_fi-FI.txt
-		protwords_fi-FI.txt
-		synonyms_fi-FI.txt
-		stopwords_fi-FI.txt
-		stopwords_spell_et-EE.txt
-		compoundwords_et-EE.txt
-		protwords_et-EE.txt
-		synonyms_et-EE.txt
-		stopwords_et-EE.txt
-		stopwords_spell_eo-XX.txt
-		compoundwords_eo-XX.txt
-		protwords_eo-XX.txt
-		synonyms_eo-XX.txt
-		stopwords_eo-XX.txt
 		stopwords_spell_en-AU.txt
 		compoundwords_en-AU.txt
 		protwords_en-AU.txt
@@ -1641,27 +942,7 @@
 		compoundwords_en-US.txt
 		protwords_en-US.txt
 		synonyms_en-US.txt
-		stopwords_en-US.txt		
-		stopwords_spell_nl-NL.txt
-		compoundwords_nl-NL.txt
-		protwords_nl-NL.txt
-		synonyms_nl-NL.txt
-		stopwords_nl-NL.txt
-		stopwords_spell_da-DK.txt
-		compoundwords_da-DK.txt
-		protwords_da-DK.txt
-		synonyms_da-DK.txt
-		stopwords_da-DK.txt
-		stopwords_spell_cs-CZ.txt
-		compoundwords_cs-CZ.txt
-		protwords_cs-CZ.txt
-		synonyms_cs-CZ.txt
-		stopwords_cs-CZ.txt
-		stopwords_spell_hr-HR.txt
-		compoundwords_hr-HR.txt
-		protwords_hr-HR.txt
-		synonyms_hr-HR.txt
-		stopwords_hr-HR.txt
+		stopwords_en-US.txt
 		stopwords_spell_zh-TW.txt
 		compoundwords_zh-TW.txt
 		protwords_zh-TW.txt
@@ -1672,61 +953,11 @@
 		protwords_zh-CN.txt
 		synonyms_zh-CN.txt
 		stopwords_zh-CN.txt
-		stopwords_spell_ca-ES.txt
-		compoundwords_ca-ES.txt
-		protwords_ca-ES.txt
-		synonyms_ca-ES.txt
-		stopwords_ca-ES.txt
-		stopwords_spell_km-KH.txt
-		compoundwords_km-KH.txt
-		protwords_km-KH.txt
-		synonyms_km-KH.txt
-		stopwords_km-KH.txt
-		stopwords_spell_bg-BG.txt
-		compoundwords_bg-BG.txt
-		protwords_bg-BG.txt
-		synonyms_bg-BG.txt
-		stopwords_bg-BG.txt
-		stopwords_spell_bs-BA.txt
-		compoundwords_bs-BA.txt
-		protwords_bs-BA.txt
-		synonyms_bs-BA.txt
-		stopwords_bs-BA.txt
-		stopwords_spell_bn-BD.txt
-		compoundwords_bn-BD.txt
-		protwords_bn-BD.txt
-		synonyms_bn-BD.txt
-		stopwords_bn-BD.txt
-		stopwords_spell_be-BY.txt
-		compoundwords_be-BY.txt
-		protwords_be-BY.txt
-		synonyms_be-BY.txt
-		stopwords_be-BY.txt
-		stopwords_spell_eu-ES.txt
-		compoundwords_eu-ES.txt
-		protwords_eu-ES.txt
-		synonyms_eu-ES.txt
-		stopwords_eu-ES.txt
-		stopwords_spell_az-AZ.txt
-		compoundwords_az-AZ.txt
-		protwords_az-AZ.txt
-		synonyms_az-AZ.txt
-		stopwords_az-AZ.txt
 		stopwords_spell_ar-AA.txt
 		compoundwords_ar-AA.txt
 		protwords_ar-AA.txt
 		synonyms_ar-AA.txt
 		stopwords_ar-AA.txt
-		stopwords_spell_sq-AL.txt
-		compoundwords_sq-AL.txt
-		protwords_sq-AL.txt
-		synonyms_sq-AL.txt
-		stopwords_sq-AL.txt
-		stopwords_spell_af-ZA.txt
-		compoundwords_af-ZA.txt
-		protwords_af-ZA.txt
-		synonyms_af-ZA.txt
-		stopwords_af-ZA.txt
 		</gettableFiles>   
 
 		<!-- configure a healthcheck file for servers behind a loadbalancer
