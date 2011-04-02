@@ -151,7 +151,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 			$this->_client->deleteByQuery($this->getDeleteQueryById($ids));
 			
 			$this->_client->commit();
-		} catch (SolrClientException $e) {
+		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 			
