@@ -66,21 +66,13 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 
 		$configuration = new JSolrIndexConfig();
 		
-		$options = array(
-    		'hostname' => $configuration->host,
-    		'login'    => $configuration->username,
-    		'password' => $configuration->password,
-    		'port'     => $configuration->port,
-			'path'	   => $configuration->path
-		);
+		$url = $configuration->host;
 		
-		try {
-			$this->_client = new SolrClient($options);
-		} catch (SolrClientException $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-			throw $e;
+		if ($configuration->username && $configuration->password) {
+			$url = $configuration->username . ":" . $configuration->password . "@" . $url;
 		}
+		
+		$this->_client = new Apache_Solr_Service($url, $configuration->port, $configuration->path);
 	}
 
 	/**

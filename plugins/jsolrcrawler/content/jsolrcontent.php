@@ -60,7 +60,7 @@ class plgJSolrCrawlerJSolrContent extends JSolrCrawlerPlugin
 	*/
 	protected function getDocument(&$record)
 	{
-		$doc = new SolrInputDocument();
+		$doc = new Apache_Solr_Document();
 		
 		$created = JFactory::getDate($record->created);
 		$modified = JFactory::getDate($record->modified);

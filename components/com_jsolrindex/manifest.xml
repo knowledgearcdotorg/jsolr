@@ -48,6 +48,10 @@
 	    	<filename>crawler.php</filename>
 	    	<folder>extensions</folder>
 	    </files>
+	    
+		<languages folder="language/admin">
+			<language tag="en-GB">en-GB.com_jsolrindex.ini</language>
+		</languages>
 	</administration>
 	
     <params>

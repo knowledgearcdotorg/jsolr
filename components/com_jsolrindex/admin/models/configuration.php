@@ -35,6 +35,8 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.registry.registry');
 jimport('joomla.filesystem.file');
 
+require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
+
 class JSolrIndexModelConfiguration extends JModel
 {	
 	var $configuration;
@@ -56,6 +58,17 @@ class JSolrIndexModelConfiguration extends JModel
 	public function getConfig()
 	{
 		return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."configuration.php";
+	}
+	
+	public function getHost()
+	{
+		$url = $this->configuration->host;
+		
+		if ($this->configuration->username && $this->configuration->password) {
+			$url = $this->configuration->username . ":" . $this->configuration->password . "@" . $url;
+		}
+		
+		return $url;
 	}
 
 	public function getParam($name)
@@ -84,30 +97,24 @@ class JSolrIndexModelConfiguration extends JModel
 	
 	public function test()
 	{
-		$options = array(
-			'hostname' => $this->configuration->host,
-			'port'     => $this->configuration->port,
-			'path'     => $this->configuration->path,
-			'login'	   => $this->configuration->username,
-			'password' => $this->configuration->password
-		);
+		$client = new Apache_Solr_Service($this->getHost(), $this->configuration->port, $this->configuration->path);
 
-		$client = new SolrClient($options);
-
-		try {
-			$response = @ $client->ping();
-
-			if ($response->getHTTPStatus() == "200") {
-				return true;
-			}
-		} catch (SolrClientException $e) {
-			$this->setError($e->getMessage());
+		$response = $client->ping();
+		
+		if ($response === false) {
+			$this->setError(JText::_("COM_JSOLRINDEX_PING_FAILED"));
 			return false;
 		}
+
+		return true;
 	}
 	
 	public function index()
 	{
+		if (!$this->test()) {
+			return false;
+		}
+		
 	    $rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
 
     	$dispatcher =& JDispatcher::getInstance();
@@ -127,24 +134,17 @@ class JSolrIndexModelConfiguration extends JModel
 	
 	public function purge()
 	{
-		$options = array(
-			'hostname' => $this->configuration->host,
-			'port'     => $this->configuration->port,
-			'path'     => $this->configuration->path,
-			'login'	   => $this->configuration->username,
-			'password' => $this->configuration->password
-		);
-
+		if (!$this->test()) {
+			return false;
+		}
+		
+		$client = new Apache_Solr_Service($this->getHost(), $this->configuration->port, $this->configuration->path);;
+		
 		try {
-			$client = new SolrClient($options);
-			
-			$response = @ $client->ping();
-			
 			$client->deleteByQuery("*:*");
 			$client->commit();
-			
 			return true;
-		} catch (SolrClientException $e) {
+		} catch (Exception $e) {
 			$this->setError($e->getMessage());
 
 			return false;

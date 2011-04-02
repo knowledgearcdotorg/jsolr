@@ -58,7 +58,7 @@ class plgJSolrCrawlerJSolrNewsfeeds extends JSolrCrawlerPlugin
 	*/
 	protected function getDocument(&$item)
 	{
-		$doc = new SolrInputDocument();
+		$doc = new Apache_Solr_Document();
 		
 		$lang = $this->getLang($item);
 		

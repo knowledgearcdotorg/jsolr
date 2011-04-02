@@ -60,7 +60,7 @@ class plgJSolrCrawlerJSolrVirtuemart extends JSolrCrawlerPlugin
 	*/
 	protected function getDocument(&$record)
 	{
-		$doc = new SolrInputDocument();
+		$doc = new Apache_Solr_Document();
 		
 		$created = JFactory::getDate($record->cdate);
 		$modified = JFactory::getDate($record->mdate);
