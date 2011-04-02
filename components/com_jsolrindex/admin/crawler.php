@@ -13,6 +13,7 @@ define('_JEXEC', 1);
 // Setup the path related constants.
 define('DS', DIRECTORY_SEPARATOR);
 define('JPATH_BASE', dirname( __FILE__ ));
+define('JPATH_COMPONENT_ADMINISTRATOR', JPATH_BASE.DS."administrator".DS."components".DS."com_jsolrindex");
 
 require_once(JPATH_BASE.DS.'includes'.DS.'defines.php');
  
@@ -30,6 +31,8 @@ jimport('joomla.event.dispatcher');
 jimport('joomla.plugin.helper');
 jimport('joomla.error.log');
 jimport('joomla.user.user');
+
+require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
  
 /**
  * Simple command line interface application class.
