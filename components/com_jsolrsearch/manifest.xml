@@ -49,6 +49,10 @@
 	    	<filename>configuration.php</filename>
 	    	<folder>extensions</folder>
 	    </files>
+	    
+		<languages folder="language/admin">
+			<language tag="en-GB">en-GB.com_jsolrsearch.ini</language>
+		</languages>
 	</administration>
 	
     <params>

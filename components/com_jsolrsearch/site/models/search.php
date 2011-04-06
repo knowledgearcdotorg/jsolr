@@ -40,6 +40,9 @@ require_once(JPATH_ROOT.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'pa
 
 require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
 
+require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
+require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."query.php");
+
 class JSolrSearchModelSearch extends JModel
 {
 	var $query;
@@ -73,7 +76,7 @@ class JSolrSearchModelSearch extends JModel
 
 		$this->dateRange = null;
 	}
-
+	
 	public function buildQueryURL($params)
 	{
 		$url = new JURI("index.php");
@@ -168,74 +171,69 @@ class JSolrSearchModelSearch extends JModel
 		
 		try {
 			$configuration = new JSolrSearchConfig();
-			
-			$options = array(
-	    		'hostname' => $configuration->host,
-	    		'login'    => $configuration->username,
-	    		'password' => $configuration->password,
-	    		'port'     => $configuration->port,
-				'path'	   => $configuration->path
-			);
 
 			JPluginHelper::importPlugin("jsolrsearch");
 			$dispatcher =& JDispatcher::getInstance();
-					
-			$client = new SolrClient($options);
-			
-			$query = new SolrQuery();
-			
-			$query->setQuery($this->getQuery());
+
+
+			$filters = array();
+			$hl = array("content");
 			
 			$filter = $this->getDateQuery();
 
 			if ($filter) {
-				$query->addFilterQuery($filter);
+				$filters[] = $filter;
 			}
 			
 			$filter = $this->getFilterOptionQuery();
 			
 			if ($filter) {
-				$query->addFilterQuery($filter);
+				$filters[] = $filter;
 			}
 
 			foreach ($dispatcher->trigger("onAddFilterQuery", array($this->getParams(), $this->getLang())) as $result) {
 				foreach ($result as $item) {
 					if ($item) {
-						$query->addFilterQuery($item);
+						$filters[] = $item;
 					}
 				}				
-			}
-
-			$query->setHighlight(true);
-			
-			$query->addField('*')->addField('score');
-
-			// get query filter params and boosts from plugin.
-			$qf = $dispatcher->trigger('onAddQF', array());
-			
-			if (count($qf)) {
-				$query->addParam("qf", $this->getQFQuery($qf));
 			}
 
 			// Get Highlight fields for results. 
 			foreach ($dispatcher->trigger('onAddHL', array()) as $result) {
 				foreach ($result as $item) {
-					$query->addHighlightField($item.$this->getLang());
+					$hl[] = $item.$this->getLang();
 				}
 			}
 			
-			// get highlighted fields from plugin.
-			$query->setHighlightFragsize(200, "content");
+			// get query filter params and boosts from plugin.
+			$qf = $dispatcher->trigger('onAddQF', array());
 
-			$query->setStart($this->getState("limitstart"));
-			$query->setRows($this->getState("limit"));
+			$host = $configuration->host;
 			
-			$queryResponse =@ $client->query($query);
+			if ($configuration->username && $configuration->password) {
+				$host = $configuration->username . ":" . $configuration->password . "@" . $url;
+			}
 
-			$response = $queryResponse->getResponse();
+			$client = new Apache_Solr_Service($host, $configuration->port, $configuration->path);
+			$query = Apache_Solr_Query_Factory($this->getQuery(), $client)
+				->useQueryParser("dismax")
+				->retrieveFields("*,score")
+				->filters($filters)
+				->highlight(200, "<strong>", "</strong>", 1, implode(" ", $hl))
+				->limit($this->getState("limit"))
+				->offset($this->getState("limitstart"));
+
+			if (count($qf)) {
+				$query->queryFields($this->getQFQuery($qf));
+			}		
+			
+			$response = $query->search();
+
+			$headers = json_decode($response->getRawResponse())->responseHeader;
 
 			$this->_setTotal($response->response->numFound);
-			$this->_setQTime($response->responseHeader->QTime);
+			$this->_setQTime($headers->QTime);
 			
 			if(intval($response->response->numFound) > 0) {
 				$i = 0;
@@ -244,7 +242,7 @@ class JSolrSearchModelSearch extends JModel
 					$array = $dispatcher->trigger('onFormatResult', array(
 						$document, 
 						$response->highlighting, 
-						$query->getHighlightFragsize(),
+						JArrayHelper::getValue($query->getParams(), "fl.fragsize"),
 						$this->getLang())
 					);
 
@@ -268,7 +266,7 @@ class JSolrSearchModelSearch extends JModel
 					}					
 				}
 			}
-        } catch (SolrClientException $e) {
+        } catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 		}
