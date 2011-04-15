@@ -207,20 +207,7 @@ class JSolrSearchModelAdvanced extends JModel
 	
 	public function getTitle()
 	{
-		$path = null;
-
-		if (JRequest::getWord("o")) {
-			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
-			$path = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."views".DS."advanced.xml";
-
-			if (!JFile::exists($path)) {
-				$path = null;
-			}
-		}
-		
-		if (!$path) {
-			$path = JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH;
-		}
+		$path = $this->_getCustomFormPath();
 
 		$xml = & JFactory::getXMLParser('Simple');
 
@@ -238,14 +225,30 @@ class JSolrSearchModelAdvanced extends JModel
 	
 	public function getForm()
 	{
+		$path = $this->_getCustomFormPath();
+		
+		$form = new JParameter('', $path);
+		return $form;
+	}
+	
+	private function _getCustomFormPath()
+	{
 		$path = null;
 
-		if (JRequest::getWord("o")) {
+		if (JRequest::getString("o")) {
+			$application = JFactory::getApplication("site");
+			
 			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
-			$path = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."views".DS."advanced.xml";
-
-			if (!JFile::exists($path)) {
-				$path = null;
+			$themePath = JPATH_THEMES.DS.$application->getTemplate().DS."html".DS."com_jsolrsearch";	
+		
+			$overridePath = $themePath.DS."plugins".DS."jsolr".$option.DS."advanced.xml";
+			$plgPath = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."views".DS."advanced.xml";
+		
+			// check the html override path first.
+			if (JFile::exists($overridePath)) {
+				$path = $overridePath;
+			} else if (JFile::exists($plgPath)) {
+				$path = $plgPath;
 			}
 		}
 		
@@ -253,7 +256,6 @@ class JSolrSearchModelAdvanced extends JModel
 			$path = JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH;
 		}
 		
-		$form = new JParameter('', $path);
-		return $form;
+		return $path;
 	}
 }

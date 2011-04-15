@@ -49,11 +49,5 @@ $document->addStyleSheet(JURI::base()."/modules/mod_jsolrfilter/css/jsolrfilter.
 </div>
 
 <?php
-if (JRequest::getString("o")) {
-	if (JFile::exists(JModuleHelper::getLayoutPath('mod_jsolrfilter', JRequest::getString("o")))) {
-		require_once(JModuleHelper::getLayoutPath('mod_jsolrfilter', JRequest::getString("o")));
-	}
-} else {
-	require_once(JModuleHelper::getLayoutPath('mod_jsolrfilter', "com_content"));	
-}
+$helper->renderFilterContext();
 ?>
