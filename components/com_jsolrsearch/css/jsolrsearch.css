@@ -106,8 +106,11 @@ jsolr-advanced-search {
 		
 }
 
-jsolr-advanced-search fieldset {
-		
+.jsolr-advanced-search #query {
+    margin: 2px;
+    padding: 5px 15px;
+    border: 1px solid #000;
+    height: 1.2em;                                                        
 }
 
 .jsolr-advanced-search .field {

@@ -114,7 +114,7 @@ class JSolrSearchModelAdvanced extends JModel
 		}
 
 		if (count($oq)) {
-			$q .= " " . implode(" or ", $oq);
+			$q .= " " . implode(" OR ", $oq);
 		}
 
 		if (JArrayHelper::getValue($params, "nq")) {
