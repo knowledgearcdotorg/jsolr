@@ -82,28 +82,27 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 
 		$option = $this->onFilterOptions();
 		$keys = array_keys($option);
-		
+
+		$id = $document->id;
 		$title = "title$lang";
 		$category = "category$lang";
 
 		if ($document->option == JArrayHelper::getValue($keys, 0)) {
 			$result = new stdClass();
 			
-			$parts = explode(".", $document->id);
-			$id = JArrayHelper::getValue($parts, 1, 0);
+			$parts = explode(".", $id);
+			$newsFeedId = JArrayHelper::getValue($parts, 1, 0);
 
-			$highlighting = JArrayHelper::getValue($hl, $document->id);
-			
-			if ($highlighting->offsetExists($title)) {
-        		$hlTitle = JArrayHelper::getValue($highlighting->$title, 0);
+			if (isset($hl->$id->$title)) {
+        		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
 			} else {
 				$hlTitle = $document->$title;
 			}
 			
 			$result->title = $hlTitle;
-			$result->href = JRoute::_("index.php?option=".$this->_option."&view=newsfeed&id=".$id);
-			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
-			$result->location = implode(", ", $document->$category);
+			$result->href = JRoute::_("index.php?option=".$this->_option."&view=newsfeed&id=".$newsFeedId);
+			$result->text = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
+			$result->location = $document->$category;
 			$result->created = null;
 			$result->modified = null;
 		}
@@ -111,14 +110,15 @@ class plgJSolrSearchJSolrNewsfeeds extends JPlugin
 		return $result;
 	}
 	
-	function _getHlContent($solrDocument, $highlighting, $fragSize, $lang)
+	function _getHlContent($document, $highlighting, $fragSize, $lang)
 	{
+		$id = $document->id;
 		$hlContent = null;
 
 		$link = "link$lang";
 
-		if ($highlighting->offsetExists($link)) {
-			foreach ($highlighting->$link as $item) {
+		if (isset($highlighting->$id->$link)) {
+			foreach ($highlighting->$id->$link as $item) {
 				$hlContent .= $item;
 			}
 		}

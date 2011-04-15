@@ -101,3 +101,42 @@
 .jsolr-virtuemart-currency {
 	padding-right: 0;
 }
+
+jsolr-advanced-search {
+		
+}
+
+jsolr-advanced-search fieldset {
+		
+}
+
+.jsolr-advanced-search .field {
+	overflow: hidden;
+	padding: 5px 0;
+}
+
+.jsolr-advanced-search .field .label {
+	float: left; 
+	width: 30%;
+}
+
+.jsolr-advanced-search .field .control {
+	float: left;
+	width: 70%;
+}
+
+.jsolr-advanced-search .field button {
+	float: right;
+}
+
+.jsolr-advanced-search #pmin {
+	margin-right: 5px;
+}
+
+.jsolr-advanced-search .pmin-currency {
+	margin-right: 5px;
+}
+
+.jsolr-advanced-search .pmax-currency {
+	margin: 0 5px;
+}

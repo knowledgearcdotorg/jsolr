@@ -39,8 +39,11 @@ require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.
 
 require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
 
+if (!defined("JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH"))
+	define("JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH", JPATH_COMPONENT.DS.'views'.DS.'advanced'.DS.'tmpl'.DS.'advanced.xml');
+
 class JSolrSearchModelAdvanced extends JModel
-{
+{	
 	public function __construct()
 	{
 		parent::__construct();
@@ -158,47 +161,9 @@ class JSolrSearchModelAdvanced extends JModel
 		return trim($nq);
 	}
 	
-	public function getFilterOptions()
+	public function getQuery()
 	{
-		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();
-
-		$options = array();
-		
-		$option = new stdClass();
-		$option->value = "everything";
-		$option->text = JText::_("COM_JSOLRSEARCH_OPTION_EVERYTHING");
-		
-		$options[] = $option;
-
-		foreach ($dispatcher->trigger('onFilterOptions', array()) as $array) {
-			foreach ($array as $key=>$value) {	
-				$option = new stdClass();			
-				$option->value = $key;
-				$option->text = $value;
-				
-				$options[] = $option;
-			}
-		}
-		
-		return $options;
-	}
-	
-	public function getLanguages()
-	{
-		$langs = JLanguage::getKnownLanguages();
-
-		$options = array();
-		
-		foreach ($langs as $lang) {
-			$option = new stdClass();
-			$option->value = JArrayHelper::getValue($lang, "tag");
-			$option->text = JArrayHelper::getValue($lang, "name");
-			
-			$options[] = $option;
-		}
-		
-		return $options;		
+		return JRequest::getString("q");
 	}
 	
 	public function getDateRanges()
@@ -238,5 +203,57 @@ class JSolrSearchModelAdvanced extends JModel
 	public function getDateRange()
 	{
 		return JRequest::getString("qdr", "");
-	} 	
+	}
+	
+	public function getTitle()
+	{
+		$path = null;
+
+		if (JRequest::getWord("o")) {
+			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
+			$path = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."views".DS."advanced.xml";
+
+			if (!JFile::exists($path)) {
+				$path = null;
+			}
+		}
+		
+		if (!$path) {
+			$path = JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH;
+		}
+
+		$xml = & JFactory::getXMLParser('Simple');
+
+		if ($xml->loadFile($path)) {
+			if ($node = & $xml->document->title) {
+				$title = JArrayHelper::getValue($node, 0);
+				if (isset($title->_data)) {
+					return $title->_data;
+				}
+			}
+		}
+
+		return "";
+	}
+	
+	public function getForm()
+	{
+		$path = null;
+
+		if (JRequest::getWord("o")) {
+			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
+			$path = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."views".DS."advanced.xml";
+
+			if (!JFile::exists($path)) {
+				$path = null;
+			}
+		}
+		
+		if (!$path) {
+			$path = JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH;
+		}
+		
+		$form = new JParameter('', $path);
+		return $form;
+	}
 }

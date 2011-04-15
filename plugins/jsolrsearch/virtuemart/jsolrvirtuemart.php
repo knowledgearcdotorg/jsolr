@@ -173,7 +173,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		try {
 			$client = new SolrClient($options);
 			$query = new SolrQuery();
-					
+
 			$query->setQuery(JRequest::getString("q"));
 		
 			$query->addFacetQuery("option:".$this->_option);
@@ -238,7 +238,8 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 
 		$option = $this->onFilterOptions();
 		$keys = array_keys($option);
-		
+
+		$id = $document->id;
 		$title = "title$lang";
 		$category = "category$lang";
 
@@ -246,22 +247,26 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$result = new stdClass();
 			
 			$parts = explode(".", $document->id);
-			$id = JArrayHelper::getValue($parts, 1, 0);
+			$productId = JArrayHelper::getValue($parts, 1, 0);
 
-			$highlighting = JArrayHelper::getValue($hl, $document->id);
-			
-			if ($highlighting->offsetExists($title)) {
-        		$hlTitle = JArrayHelper::getValue($highlighting->$title, 0);
+			if (isset($hl->$id->$title)) {
+        		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
 			} else {
 				$hlTitle = $document->$title;
 			}
 			
-			$this->_setId($id);
+			$this->_setId($productId);
 			
 			$result->title = $hlTitle;
-			$result->href = JRoute::_("index.php?option=".$this->_option."&id=".$id);
-			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
-			$result->location = implode(", ", $document->$category);
+			$result->href = JRoute::_("index.php?option=".$this->_option."&id=".$productId);
+			$result->text = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
+
+			if (is_array($document->$category)) {
+				$result->location = implode(", ", $document->$category);
+			} else {
+				$result->location = $document->$category;
+			}
+
 			$result->created = null;
 			$result->modified = null;			
 			$result->attribs["price"] = $this->_formatCurrency($document->price);
@@ -272,14 +277,15 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		return $result;
 	}
 	
-	private function _getHlContent($solrDocument, $highlighting, $fragSize, $lang)
+	private function _getHlContent($document, $highlighting, $fragSize, $lang)
 	{
+		$id = $document->id;
 		$hlContent = null;
 
 		$content = "content$lang";
 
-		if ($highlighting->offsetExists($content)) {
-			foreach ($highlighting->$content as $item) {
+		if (isset($highlighting->$id->$content)) {
+			foreach ($highlighting->$id->$content as $item) {
 				$hlContent .= $item;	
 			}
 		}

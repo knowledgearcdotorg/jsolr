@@ -35,6 +35,13 @@ class JSolrSearchViewAdvanced extends JView
 {
     function display($tpl = null)
     {
+		JHTML::_('behavior.mootools');
+    	
+		$document = JFactory::getDocument();
+
+    	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
+    	$document->addScript(JURI::base()."media/com_jsolrsearch/js/jsolrsearch.js");
+    	
 		$params = JComponentHelper::getParams('com_jsolrsearch');
 
 		$this->assignRef('params', $params);

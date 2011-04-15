@@ -87,6 +87,7 @@ class plgJSolrSearchJSolrContent extends JPlugin
 		$option = $this->onFilterOptions();
 		$keys = array_keys($option);
 		
+		$id = $document->id;
 		$title = "title$lang";
 		$section = "section$lang";
 		$category = "category$lang";
@@ -94,41 +95,40 @@ class plgJSolrSearchJSolrContent extends JPlugin
 		if ($document->option == JArrayHelper::getValue($keys, 0)) {
 			$result = new stdClass();
 			
-			$parts = explode(".", $document->id);
-			$id = JArrayHelper::getValue($parts, 1, 0);
-
-			$highlighting = JArrayHelper::getValue($hl, $document->id);
+			$parts = explode(".", $id);
+			$articleId = JArrayHelper::getValue($parts, 1, 0);
 			
-			if ($highlighting->offsetExists($title)) {
-        		$hlTitle = JArrayHelper::getValue($highlighting->$title, 0);
+			if (isset($hl->$id->$title)) {
+        		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
 			} else {
 				$hlTitle = $document->$title;
 			}
 			
 			$result->title = $hlTitle;
-			$result->href = ContentHelperRoute::getArticleRoute($id);
-			$result->text = $this->_getHlContent($document, $highlighting, $hlFragSize, $lang);
+			$result->href = ContentHelperRoute::getArticleRoute($articleId);
+			$result->text = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
 			$result->created = $document->created;
 			$result->modified = $document->modified;
-			$result->location = implode(", ", $document->$section) . "/" . implode(", ", $document->$category);
+			$result->location = $document->$section . "/" . $document->$category;
 		}
 		
 		return $result;
 	}
 	
-	function _getHlContent($solrDocument, $highlighting, $fragSize, $lang)
+	function _getHlContent($document, $highlighting, $fragSize, $lang)
 	{
+		$id = $document->id;
 		$hlContent = null;
 
 		$metadescription = "metadescription$lang";
 		$content = "content$lang";
 
 		if ($this->_params->get("jsolr_use_hl_metadescription") == 1 && 
-			$highlighting->offsetExists($metadescription)) {
-			$hlContent = JArrayHelper::getValue($highlighting->$metadescription, 0);
+			isset($highlighting->$id->$metadescription)) {
+			$hlContent = JArrayHelper::getValue($highlighting->$id->$metadescription, 0);
 		} else {
-			if ($highlighting->offsetExists($content)) {
-				foreach ($highlighting->$content as $item) {
+			if (isset($highlighting->$id->$content)) {
+				foreach ($highlighting->$id->$content as $item) {
 					$hlContent .= "<span class=\"jsolr-separator\">...</span>".$item;	
 				}
 

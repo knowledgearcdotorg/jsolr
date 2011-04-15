@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE</title>
+	<params addpath="/administrator/components/com_jsolrsearch/elements">
+		<param name="lr" type="jsolrlanguages" client="site" default="" label="COM_JSOLRSEARCH_ADVANCED_SEARCH_LANGUAGE_LABEL" description="COM_JSOLRSEARCH_ADVANCED_SEARCH_LANGUAGE_DESCRIPTION" />
+		
+		<param name="qdr" type="jsolrlist" default="" label="COM_JSOLRSEARCH_ADVANCED_SEARCH_DATERANGE_LABEL" description="COM_JSOLRSEARCH_ADVANCED_SEARCH_DATERANGE_DESCRIPTION">
+			<option value="">Anytime</option>
+			<option value="d">Last 24 hours</option>
+			<option value="w">Last week</option>
+			<option value="m">Last month</option>
+			<option value="y">Last year</option>
+		</param>
+	</params>
+</form>
+
