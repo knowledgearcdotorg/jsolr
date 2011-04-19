@@ -1,8 +1,6 @@
 <?php
-defined('_JEXEC') or die('Restricted access');
-
 /**
- * Copyright (c) 2007-2009, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
  *  - Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *  - Neither the name of Conduit Internet Technologies, Inc. nor the names of
+ *  - Neither the name of Servigistics, Inc. nor the names of
  *    its contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -29,9 +27,9 @@ defined('_JEXEC') or die('Restricted access');
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2009 Conduit Internet Technologies, Inc. (http://conduit-it.com)
- * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
- * @version $Id: Document.php 15 2009-08-04 17:53:08Z donovan.jimenez $
+ * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
+ * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
+ * @version $Id: Document.php 54 2011-02-04 16:29:18Z donovan.jimenez $
  *
  * @package Apache
  * @subpackage Solr
@@ -62,12 +60,12 @@ class Apache_Solr_Document implements IteratorAggregate
 	/**
 	 * SVN Revision meta data for this class
 	 */
-	const SVN_REVISION = '$Revision: 15 $';
+	const SVN_REVISION = '$Revision: 54 $';
 
 	/**
 	 * SVN ID meta data for this class
 	 */
-	const SVN_ID = '$Id: Document.php 15 2009-08-04 17:53:08Z donovan.jimenez $';
+	const SVN_ID = '$Id: Document.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
 
 	/**
 	 * Document boost value
@@ -316,7 +314,12 @@ class Apache_Solr_Document implements IteratorAggregate
 	 */
 	public function __get($key)
 	{
-		return $this->_fields[$key];
+		if (isset($this->_fields[$key]))
+		{
+			return $this->_fields[$key];
+		}
+		
+		return null;
 	}
 
 	/**

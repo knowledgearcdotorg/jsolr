@@ -31,9 +31,10 @@
     </media>
     	
 	<administration>
-		<menu>JSolr Index</menu>
+		<menu view="configuration">JSolr Index</menu>
 		<submenu>
 			<menu view="configuration">Configuration</menu>
+			<menu view="attachments">Attachments</menu>
 			<menu view="robots">Robots</menu>
 		</submenu>
 
@@ -47,6 +48,7 @@
 	    	<filename>configuration.php</filename>
 	    	<filename>crawler.php</filename>
 	    	<folder>extensions</folder>
+	    	<folder>test.odt</folder>
 	    </files>
 	    
 		<languages folder="language/admin">

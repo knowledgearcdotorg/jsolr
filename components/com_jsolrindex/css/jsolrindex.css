@@ -1,5 +1,9 @@
-#testButton,
+.test-button,
 #indexButton,
 #purgeButton {
-	width: 100px;
+	width: 150px;
+}
+
+fieldset.hide {
+	display: none;
 }

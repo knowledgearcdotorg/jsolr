@@ -46,7 +46,7 @@ var adminOptions = new Object({
 });
 ");
 
-JToolBarHelper::title(JText::_('JSolr Index Configuration'), 'config.png');
+JToolBarHelper::title(JText::_('Attachment Configuration'), 'config.png');
 
 JToolBarHelper::save();
 JToolBarHelper::cancel();
@@ -60,7 +60,7 @@ JToolBarHelper::cancel();
 					<tr>
 						<td width="65%">
 							<fieldset class="adminform">
-								<legend>Component Settings</legend>
+								<legend>Index Server Settings</legend>
 	
 								<table cellspacing="1" class="admintable">
 									<tbody>
@@ -115,10 +115,10 @@ JToolBarHelper::cancel();
 									<tbody>
 										<tr>
 											<td>
-												<button id="testButton"><?php echo JText::_("Test connection"); ?></button>
+												<button id="testButton1" class="test-button"><?php echo JText::_("Test connection"); ?></button>
 											</td>
 											<td style="vertical-align: middle;">
-												<div id="testMessage"></div>
+												<div id="testButton1Message" class="test-message"></div>
 											</td>
 										</tr>
 										<tr>

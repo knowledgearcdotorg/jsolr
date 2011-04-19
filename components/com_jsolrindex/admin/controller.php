@@ -53,18 +53,22 @@ class JSolrIndexController extends JController
 		$url->setVar("option", JRequest::getWord("option"));
 		$url->setVar("view", JRequest::getWord("view"));
 		
-		$this->setRedirect($url->toString(), JText::_("Configuration successfully saved."));
+		$this->setRedirect($url->toString(), JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_SAVE_SUCCESSFUL"));
 	}
 	
 	public function test()
 	{
-		$model = $this->getModel("configuration");
+		$model = $this->getModel(JRequest::getWord("view", "configuration"));
 		
 		if ($success = $model->test()) {
-			$msg = JText::_("Ping successful");
+			$msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
 		} else {
 			$msg = JText::_($model->getError());
 		}
+
+		$search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
+		$replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
+		$msg = str_replace($search, $replace, $msg);
 		
 		echo json_encode(array("success"=>$success, "message"=>$msg));
 	}
@@ -78,7 +82,7 @@ class JSolrIndexController extends JController
 		} else {
 			$msg = JText::_($model->getError());
 		}
-		
+
 		echo json_encode(array("success"=>$success, "message"=>$msg));		
 	}
 
@@ -97,7 +101,7 @@ class JSolrIndexController extends JController
 	
 	function display()
 	{
-		$model = $this->getModel(JRequest::getWord("view"));
+		$model = $this->getModel(JRequest::getWord("view", "configuration"));
 		
 		$view = $this->getView(JRequest::getWord("view"), JRequest::getWord("format", "html"));
 		$view->setModel($model, true);
