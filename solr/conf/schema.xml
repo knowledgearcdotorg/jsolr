@@ -1577,6 +1577,13 @@
 	<field name="link_zh_CN" type="textgen" indexed="true" stored="true"/>
 	<field name="link_ar_AA" type="textgen" indexed="true" stored="true"/>
 
+	<!-- Dynamic field declarations -->
+	
+	<!-- A name suffix field for values such as file names. -->
+	<dynamicField name="*_name" type="string" indexed="false" stored="true"/>	
+	<!-- A type suffix field for values such as content type. -->
+	<dynamicField name="*_type" type="string" indexed="true" stored="true"/>
+
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
         or to add multiple fields to the same field for easier/faster searching.  -->
