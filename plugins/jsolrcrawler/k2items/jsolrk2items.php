@@ -154,7 +154,7 @@ class plgJSolrCrawlerJSolrK2Items extends JSolrCrawlerPlugin
 				 "FROM #__k2_items AS a WHERE a.published = 1 AND a.checked_out = 0 AND a.trash = 0"; 
 		
 		if (JArrayHelper::getValue($array, "item", null)) {
-			$query .= " AND a.id NOT IN (" . $database->getEscaped(JArrayHelper::getValue($array, "article", null)) . ")";
+			$query .= " AND a.id NOT IN (" . $database->getEscaped(JArrayHelper::getValue($array, "item", null)) . ")";
 		}
 
 		if (JArrayHelper::getValue($array, "category", null)) {
