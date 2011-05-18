@@ -158,4 +158,9 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 			throw $e;
 		}
 	}
+	
+	public function getClient()
+	{
+		return $this->_client;
+	}
 }
