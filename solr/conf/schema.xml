@@ -1578,11 +1578,37 @@
 	<field name="link_ar_AA" type="textgen" indexed="true" stored="true"/>
 
 	<!-- Dynamic field declarations -->
+
+	<!-- An id suffix field for storing relationships with other records. 
+		 Dynamic id is not indexed; it simplifies retrieval of a secondary id -->
+	<dynamicField name="*_id" type="string" indexed="false" stored="true"/>
+	
+	<!-- A title suffix field for values such as parent title or alternate title. 
+		 Dynamic title is not indexed; it simplifies retrieval of a secondary title -->
+	<dynamicField name="*_title" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_es_ES" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_pt_PT" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_pt_BR" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_ko_KR" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_ja_JP" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_de_DE" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_fr_FR" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_en_AU" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_en_CA" type="string" indexed="false" stored="true"/>	
+	<dynamicField name="*_title_en_GB" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_en_US" type="string" indexed="false" stored="true"/>	
+	<dynamicField name="*_title_zh_TW" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_zh_CN" type="string" indexed="false" stored="true"/>
+	<dynamicField name="*_title_ar_AA" type="string" indexed="false" stored="true"/>
 	
 	<!-- A name suffix field for values such as file names. -->
-	<dynamicField name="*_name" type="string" indexed="false" stored="true"/>	
+	<dynamicField name="*_name" type="string" indexed="false" stored="true"/>
+	
 	<!-- A type suffix field for values such as content type. -->
 	<dynamicField name="*_type" type="string" indexed="true" stored="true"/>
+	
+	<!-- A type suffix field for values such as attachment size. -->
+	<dynamicField name="*_size" type="tlong" indexed="false" stored="true"/>
 
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
@@ -1624,7 +1650,7 @@
 
 	<!-- copyField_title_LANGUAGE_text_LANGUAGE -->
 	<copyField source="title" dest="text"/>
-	<copyField source="content_*" dest="text"/>	
+	<copyField source="title_*" dest="text"/>	
 	
 	<copyField source="title_es_ES" dest="text_es_ES"/>
 	<copyField source="title_pt_PT" dest="text_pt_PT"/>
