@@ -84,14 +84,14 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 	{
 		$i = 0;
 		
-		$query = "option:".$this->_option." AND -id:(";
+		$query = "option:".$this->getOption()." AND -id:(";
 		
 		foreach ($ids as $id) {
 			if ($i > 0) {
 				$query .= " OR ";	
 			}
 			
-			$query .= $this->_option.".".intval($id);
+			$query .= $this->getOption().".".intval($id);
 			
 			$i++;	
 		}
@@ -144,13 +144,13 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 		}
 
 		try {
-			$response = @ $this->_client->ping();
+			$response = @ $this->getClient()->ping();
 			
-			$this->_client->addDocuments($documents);
+			$this->getClient()->addDocuments($documents);
 
-			$this->_client->deleteByQuery($this->getDeleteQueryById($ids));
+			$this->getClient()->deleteByQuery($this->getDeleteQueryById($ids));
 			
-			$this->_client->commit();
+			$this->getClient()->commit();
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
@@ -162,5 +162,10 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 	public function getClient()
 	{
 		return $this->_client;
+	}
+	
+	public function getOption()
+	{
+		return $this->_option;
 	}
 }

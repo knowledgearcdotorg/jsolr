@@ -51,7 +51,7 @@ class plgJSolrCrawlerJSolrK2Items extends JSolrCrawlerPlugin
 	 */
 	public function __construct(&$subject, $config = array())
 	{
-		parent::__construct("k2", $subject, $config);
+		parent::__construct("k2items", $subject, $config);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class plgJSolrCrawlerJSolrK2Items extends JSolrCrawlerPlugin
 			$lang = "_".str_replace("-", "_", $lang);
 		}
 		
-		$doc->addField('id',  "$this->_option." . $record->id);
+		$doc->addField('id',  $this->getOption() . "." . $record->id);
 		$doc->addField('created', $created->toISO8601());
 		$doc->addField('modified', $modified->toISO8601());
 		$doc->addField("title", $record->title);		
@@ -85,7 +85,7 @@ class plgJSolrCrawlerJSolrK2Items extends JSolrCrawlerPlugin
 		$doc->addField("metadescription$lang", $record->metadesc);
 		$doc->addField("author", $author->get("name"));		
 		$doc->addField("author$lang", $author->get("name"));
-		$doc->addField('option', $this->_option);
+		$doc->addField('option', $this->getOption());
 		
 		foreach ($this->_getTags($record, array("h1")) as $item) {
 			$doc->addField("tags_h1", $item);
