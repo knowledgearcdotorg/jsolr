@@ -95,7 +95,7 @@ class plgJSolrCrawlerJSolrK2Attachments extends JSolrCrawlerPlugin
 		$doc->addField("file_name", $extractedDoc->metadata->fileName);
 		$doc->addField("content_type", $extractedDoc->metadata->type);
 		$doc->addField("content_size", $extractedDoc->metadata->size);
-		$doc->addField('item_id', $this->getOption() . "." . $record->itemID);
+		$doc->addField('item_id', "k2items." . $record->itemID);
 		$doc->addField("item_title", $record->itemTitle);
 		$doc->addField("item_title$lang", $record->itemTitle);
 		$doc->addField('option', "com_k2items");
