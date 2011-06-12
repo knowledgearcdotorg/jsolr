@@ -32,6 +32,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 
+jimport('joomla.filesystem.file');
 jimport('joomla.installer.helper');
 
 function com_install()
@@ -55,10 +56,11 @@ class JSolrSearchInstaller
 		$installer->_overwrite = true;
 		
 		$pkg_path = JPATH_ADMINISTRATOR.DS.'components'.DS.self::COM_JSOLRSEARCH.DS.'extensions'.DS;
+		$test = new JFile();
 		
 		if ($handle = opendir($pkg_path)) {
 			while ($pkg = readdir($handle)) {
-				if ($pkg != "." && $pkg != "..") {
+				if ($pkg != "." && $pkg != ".." && $pkg != "index.html") {
 					$package = JInstallerHelper::unpack($pkg_path.$pkg);
 		
 					if ($installer->install($package['dir'])) {

@@ -40,7 +40,7 @@ class JSolrSearchViewAdvanced extends JView
 		$document = JFactory::getDocument();
 
     	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
-    	$document->addScript(JURI::base()."media/com_jsolrsearch/js/jsolrsearch.js");
+    	$document->addScript(JURI::base()."media/com_jsolrsearch/js/site/jsolrsearch.js");
     	
 		$params = JComponentHelper::getParams('com_jsolrsearch');
 

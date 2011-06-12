@@ -43,7 +43,7 @@ var adminOptions = new Object({
 });
 ");
 
-$document->addScript($application->getSiteURL() . "media/com_jsolrsearch/js/jsolrsearch.js");
+$document->addScript($application->getSiteURL() . "media/com_jsolrsearch/js/admin/jsolrsearch.js");
 
 JToolBarHelper::title(JText::_('JSolrSearch Configuration'), 'config.png');
 
