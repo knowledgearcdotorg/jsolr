@@ -98,7 +98,7 @@ class plgJSolrCrawlerJSolrK2Attachments extends JSolrCrawlerPlugin
 		$doc->addField('item_id', "k2items." . $record->itemID);
 		$doc->addField("item_title", $record->itemTitle);
 		$doc->addField("item_title$lang", $record->itemTitle);
-		$doc->addField('option', "com_k2items");
+		$doc->addField('option', $this->getOption());
 		
 		foreach ($this->_getTags($content, array("h1")) as $item) {
 			$doc->addField("tags_h1", $item);
