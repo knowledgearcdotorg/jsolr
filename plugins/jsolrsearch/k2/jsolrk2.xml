@@ -13,6 +13,7 @@
 	<description>The JSolr K2 Search maps a k2 search item or attachment to a generic result.</description>
 	<files>
 		<filename plugin="jsolrk2">jsolrk2.php</filename>
+		<folder>k2</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrk2.ini</language>

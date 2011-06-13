@@ -50,7 +50,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<?php	
 	foreach ($this->results as $item) :
 		echo $this->loadResultTemplate($item);
-		//require_once(JPATH_COMPONENT.DS."views".DS."basic".DS."tmpl".DS."results_result.php");
 	endforeach;
 	?>
 	</div>

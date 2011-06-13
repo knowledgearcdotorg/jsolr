@@ -31,13 +31,5 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 $this->assignRef("results", $this->get("Results"));
 
-switch ($this->get("FilterOption")) {
-	case "com_virtuemart":
-		echo $this->loadTemplate("virtuemart");
-		break;
-		
-	default:
-		echo $this->loadTemplate("default");
-		break;
-}
+echo $this->loadResultsTemplate($this->get("FilterOption"));
 ?>

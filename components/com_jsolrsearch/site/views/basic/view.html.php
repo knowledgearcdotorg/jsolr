@@ -56,14 +56,14 @@ class JSolrSearchViewBasic extends JView
 				while (!$path && $plugin = readdir($handle)) {
 					if ($plugin != "." && $plugin != "..") {
 						$path = JPath::find($pluginsPath.$plugin.DS."views".DS."result", $item->option.".php");
+							
+				    	// Next look for default layout in plugin.
+				    	if (!$path) {
+				    		$path = JPath::find($pluginsPath.$plugin.DS."views".DS."result", "default.php");
+				    	}
 					}
 				}
 			}
-    	}
-    	
-    	// first look for default layout in plugin.
-    	if (!$path) {
-    		$path = JPath::find($pluginsPath.$plugin.DS."views".DS."result", "default.php");
     	}
     	
     	// if a custom layout path is found, output it, otherwise fall back to component default.
@@ -78,4 +78,26 @@ class JSolrSearchViewBasic extends JView
 			return $this->loadTemplate("result");
     	}
     }
+
+	public function loadResultsTemplate($option)
+	{
+    	$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;
+    	$path = false;
+
+    	$plugin = JArrayHelper::getValue(explode("_", $option, 2), 1);
+    	
+	    $path = JPath::find($pluginsPath.$plugin.DS."views".DS."results", "default.php");
+
+    	// if a custom layout path is found, output it, otherwise fall back to component default.
+    	if ($path) {
+			ob_start();
+			include $path;
+			$output = ob_get_contents();
+			ob_end_clean();
+			
+			return $output;
+    	} else {
+			return $this->loadTemplate("default");
+    	}
+	}
 }
