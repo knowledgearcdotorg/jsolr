@@ -2,7 +2,7 @@
 <!DOCTYPE install PUBLIC 
   "-//Joomla! 1.5//DTD plugin 1.0//EN" "http://dev.joomla.org/xml/1.5/plugin-install.dtd">
 <install version="1.5" type="plugin" group="jsolrsearch">
-	<name>JSolr Search - K2Items</name>
+	<name>JSolr Search - K2</name>
 	<creationDate>2011-06-11</creationDate>
 	<author>Wijiti</author>
 	<authorEmail>development@wijiti.com</authorEmail>
@@ -10,12 +10,12 @@
 	<copyright>>Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>0.1.0</version>
-	<description>The JSolr K2 Item Search maps a k2 search item to a generic result.</description>
+	<description>The JSolr K2 Search maps a k2 search item or attachment to a generic result.</description>
 	<files>
-		<filename plugin="jsolrk2items">jsolrk2items.php</filename>
+		<filename plugin="jsolrk2">jsolrk2.php</filename>
 	</files>
 	<languages>
-		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrk2items.ini</language>
+		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrk2.ini</language>
 	</languages>
 	<params>
 		<param name="jsolr_use_hl_metadescription" type="radio" default="0" label="Use highlighted metadescription in search results" description="Use the highlighted metadesciption in the search results instead of the k2 item fragment when available.">
@@ -28,7 +28,6 @@
 		<param name="jsolr_boost_author" type="text" default="2.0" label="Category Boost" description="Boost the author field's relevancy."/>		
 		<param name="jsolr_boost_metakeywords" type="text" default="5.0" label="Meta Keywords Boost" description="Boost the meta keywords relevancy."/>
 		<param name="jsolr_boost_metadescription" type="text" default="10.0" label="Meta Description Boost" description="Boost the meta description field's relevancy."/>
-		<param name="jsolr_boost_section" type="text" default="2.0" label="Section Boost" description="Boost the section's relevancy."/>
 		<param name="jsolr_boost_category" type="text" default="2.0" label="Category Boost" description="Boost the category's relevancy."/>
 		<param name="jsolr_boost_tags_h1" type="text" default="10.0" label="H1 Tag Boost" description="Boost the H1 tag's relevancy."/>
 		<param name="jsolr_boost_tags_h2_h3" type="text" default="7.5" label="H2 and H3 Tag Boost" description="Boost H2 and H3 tags' relevancies."/>

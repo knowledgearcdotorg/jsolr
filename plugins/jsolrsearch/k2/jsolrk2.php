@@ -1,7 +1,7 @@
 <?php
 defined( '_JEXEC' ) or die( 'Restricted access' );
 /**
- * Format a K2 item result to create a generic result.
+ * Format a K2 result to create a generic result.
  *
  * @version     $LastChangedBy: spauldingsmails $
  * @paackage	Wijiti
@@ -13,7 +13,7 @@ jimport('joomla.error.log');
 
 require_once JPATH_ROOT.DS."components".DS."com_k2".DS."helpers".DS."route.php";
 
-class plgJSolrSearchJSolrK2Items extends JPlugin 
+class plgJSolrSearchJSolrK2 extends JPlugin 
 {
 	var $_plugin;
 	
@@ -34,7 +34,7 @@ class plgJSolrSearchJSolrK2Items extends JPlugin
 		$this->loadLanguage(null, JPATH_ADMINISTRATOR);
 		
 		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrk2items');
+		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrk2');
 		$this->_params = new JParameter($this->_plugin->params);	
 	}
 
@@ -62,7 +62,7 @@ class plgJSolrSearchJSolrK2Items extends JPlugin
 	function onFilterOptions()
 	{		
 		static $options = array();
-		$options['com_k2items'] = JText::_("PLG_JSOLRSEARCH_JSOLRK2ITEMS_COM_K2");
+		$options['com_k2'] = JText::_("PLG_JSOLRSEARCH_JSOLRK2_COM_K2");
 	
 		return $options;
 	}
@@ -86,8 +86,9 @@ class plgJSolrSearchJSolrK2Items extends JPlugin
 		$id = $document->id;
 		$title = "title$lang";
 		$category = "category$lang";
+		$parentTitle = "item_title$lang";
 
-		if ($document->option == JArrayHelper::getValue($keys, 0)) {
+		if (strpos($document->option, JArrayHelper::getValue($keys, 0)) === 0) {
 			$result = new stdClass();
 			
 			$parts = explode(".", $id);
@@ -99,12 +100,21 @@ class plgJSolrSearchJSolrK2Items extends JPlugin
 				$hlTitle = $document->$title;
 			}
 			
-			$result->title = $hlTitle;			
-			$result->href = JRoute::_(K2HelperRoute::getItemRoute($itemId));
+			$result->title = $hlTitle;
 			$result->text = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
 			$result->created = $document->created;
 			$result->modified = $document->modified;
 			$result->location = $document->$category;
+			
+			if ($document->option == "com_k2attachments") {
+				$result->contentType = $document->content_type;
+				$result->parentTitle = $document->$parentTitle;
+				$result->parentId = $document->item_id;
+				$result->parentHref = JRoute::_(K2HelperRoute::getItemRoute($result->parentId));
+				$result->href = JURI::base()."media/k2/attachments/".$document->file_name;
+			} else {
+				$result->href = JRoute::_(K2HelperRoute::getItemRoute($itemId));
+			}
 		}
 		
 		return $result;
