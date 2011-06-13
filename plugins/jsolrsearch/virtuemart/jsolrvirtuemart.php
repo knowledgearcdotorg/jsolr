@@ -268,7 +268,8 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			}
 
 			$result->created = null;
-			$result->modified = null;			
+			$result->modified = null;
+			$result->option = $document->option;
 			$result->attribs["price"] = $this->_formatCurrency($document->price);
 			$result->attribs["currency"] = $this->_params->get("jsolr_default_currency");
 			$result->attribs["thumbnail"] = $this->_buildThumbnailURL($document);

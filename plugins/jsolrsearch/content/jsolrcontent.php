@@ -110,6 +110,7 @@ class plgJSolrSearchJSolrContent extends JPlugin
 			$result->created = $document->created;
 			$result->modified = $document->modified;
 			$result->location = $document->$section . "/" . $document->$category;
+			$result->option = $document->option;
 		}
 		
 		return $result;
