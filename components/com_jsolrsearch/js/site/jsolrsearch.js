@@ -63,7 +63,9 @@ window.addEvent("domready", function() {
 		}
 	});
 	
-	$$(".jsolr-advanced-search #query").set("text", query.build());
+	window.addEvent("load", function() {
+		$$(".jsolr-advanced-search #query").set("text", query.build());
+	});
 	
 	$$(".jsolrquery").addEvent("keyup", function(e) {
 		var event = new Event(e);
