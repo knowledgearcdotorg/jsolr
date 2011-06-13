@@ -105,11 +105,16 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 			$result->created = $document->created;
 			$result->modified = $document->modified;
 			$result->location = $document->$category;
+			$result->option = $document->option;
 			
 			if ($document->option == "com_k2attachments") {
 				$result->contentType = $document->content_type;
 				$result->parentTitle = $document->$parentTitle;
-				$result->parentId = $document->item_id;
+				
+				$parts = explode(".", $document->item_id);
+				$parentId = JArrayHelper::getValue($parts, 1, 0);
+			
+				$result->parentId = $parentId;
 				$result->parentHref = JRoute::_(K2HelperRoute::getItemRoute($result->parentId));
 				$result->href = JURI::base()."media/k2/attachments/".$document->file_name;
 			} else {
