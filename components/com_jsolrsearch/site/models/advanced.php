@@ -34,6 +34,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
+jimport('joomla.filesystem.path');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
@@ -239,17 +240,15 @@ class JSolrSearchModelAdvanced extends JModel
 			$application = JFactory::getApplication("site");
 			
 			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
-			$themePath = JPATH_THEMES.DS.$application->getTemplate().DS."html".DS."com_jsolrsearch";	
-		
-			$overridePath = $themePath.DS."plugins".DS."jsolr".$option.DS."advanced.xml";
-			$plgPath = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."views".DS."advanced.xml";
+			//$themePath = JPATH_THEMES.DS.$application->getTemplate().DS."html".DS."com_jsolrsearch";	
+
+			//$overridePath = $themePath.DS."plugins".DS."jsolr".$option.DS."advanced.xml";
+			$path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$option.DS."views".DS."advanced", "advanced.xml");
 		
 			// check the html override path first.
-			if (JFile::exists($overridePath)) {
+			/*if (JFile::exists($overridePath)) {
 				$path = $overridePath;
-			} else if (JFile::exists($plgPath)) {
-				$path = $plgPath;
-			}
+			} */
 		}
 		
 		if (!$path) {
