@@ -239,26 +239,24 @@ class modJSolrFilterHelper
 	}
 	
 	public function renderFilterContext()
-	{
+	{		
 		$path = null;
 
 		if (JRequest::getString("o")) {
 			$application = JFactory::getApplication("site");
 			
 			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
-			$themePath = JPATH_THEMES.DS.$application->getTemplate().DS."html".DS."mod_jsolrfilter";	
-		
-			$overridePath = $themePath.DS."plugins".DS."jsolr".$option.DS."filters.php";
-			$plgPath = JPATH_PLUGINS.DS."jsolrsearch".DS."jsolr".$option.DS."mod_jsolrfilter".DS."filters.php";
+			//$themePath = JPATH_THEMES.DS.$application->getTemplate().DS."html".DS."mod_jsolrfilter";	
+
+			//$overridePath = $themePath.DS."plugins".DS."jsolr".$option.DS."filters.php";
+			$path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$option.DS."filters", "default.php");
 		
 			// check the html override path first.
-			if (JFile::exists($overridePath)) {
+			/* if (JFile::exists($overridePath)) {
 				$path = $overridePath;
-			} else if (JFile::exists($plgPath)) {
-				$path = $plgPath;
-			}
+			} */
 		} else {
-			$path = JModuleHelper::getLayoutPath('mod_jsolrfilter', "filters");	
+			$path = JModuleHelper::getLayoutPath('mod_jsolrfilter', "filters");
 		}
 		
 		if ($path) {

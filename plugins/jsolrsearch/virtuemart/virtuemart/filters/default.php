@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
 JPluginHelper::importPlugin("jsolrsearch", "jsolrvirtuemart");
 $dispatcher =& JDispatcher::getInstance();
 			
-$array = $dispatcher->trigger('onPrepareFacets', array($helper->getLang()));
+$array = $dispatcher->trigger('onPrepareFacets', array($this->getLang()));
 $facets = JArrayHelper::getValue($array, 0);
 
 $array = $dispatcher->trigger('onPrepareCurrency', array());
@@ -47,7 +47,7 @@ $currency = JArrayHelper::getValue($array, 0);
 			$link = "#";
 			$class = "jsolr-fo-selected";	
 		} else {
-			$url = new JURI($helper->getSearchURL());
+			$url = new JURI($this->getSearchURL());
 			$url->delVar("qdr");
 			$url->delVar("fcat");
 			
@@ -63,7 +63,7 @@ $currency = JArrayHelper::getValue($array, 0);
 				$link = "#";
 				$class = "jsolr-fo-selected";
 			} else {
-				$url = new JURI($helper->getSearchURL());
+				$url = new JURI($this->getSearchURL());
 				$url->delVar("qdr");
 				$url->delVar("dmin");
 				$url->delVar("dmax");
@@ -86,7 +86,7 @@ $currency = JArrayHelper::getValue($array, 0);
 			$link = "#";
 			$class = "jsolr-fo-selected";	
 		} else {
-			$url = new JURI($helper->getSearchURL());
+			$url = new JURI($this->getSearchURL());
 			$url->delVar("qdr");
 			$url->delVar("dmin");
 			$url->delVar("dmax");
@@ -133,7 +133,7 @@ $currency = JArrayHelper::getValue($array, 0);
 		id="jSolrPriceRange" 
 		name="jSolrPriceRange"
 		method="post"
-		action="<?php echo $helper->getFormURL(array("q", "lr", "option", "o", "view", "fcat", "Itemid")); ?>">
+		action="<?php echo $this->getFormURL(array("q", "lr", "option", "o", "view", "fcat", "Itemid")); ?>">
 		<div>
 			<label><?php echo JText::_("MOD_JSOLRFILTER_PRICE_MIN"); ?>:</label>
 			<span class="jsolrfilter-virtuemart-currency"><?php echo $currency; ?></span><input type="text" name="pmin" id="pmin" value="<?php echo JRequest::getString("pmin", ""); ?>" size="6"/>
