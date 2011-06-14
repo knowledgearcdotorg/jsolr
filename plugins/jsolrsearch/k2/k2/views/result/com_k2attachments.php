@@ -35,5 +35,5 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<a href="<?php echo $item->href; ?>"><?php echo $item->title; ?></a>
 	</div>
 	<div class="jsolr-result-description"><?php echo $item->text; ?></div>
-	<div class="jsolr-result-location"><?php echo JText::_("Attached to "); ?><?php echo JHTML::link($item->parentHref, $item->parentTitle); ?></div>
+	<div class="jsolr-result-location"><?php echo JHTML::_("image.site", "attachment.gif", "media/com_jsolrsearch/images/", null, null, JText::_("Attached to"), array("title"=>JText::_("Attached to"))); ?><?php echo JHTML::link($item->parentHref, $item->parentTitle); ?></div>
 </div>
