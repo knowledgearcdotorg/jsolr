@@ -62,7 +62,7 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 	function onFilterOptions()
 	{		
 		static $options = array();
-		$options['com_k2'] = JText::_("PLG_JSOLRSEARCH_JSOLRK2_COM_K2");
+		$options['com_k2items,com_k2attachments'] = JText::_("PLG_JSOLRSEARCH_JSOLRK2_COM_K2");
 	
 		return $options;
 	}
@@ -80,15 +80,14 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 	{
 		$result = null;
 		
-		$option = $this->onFilterOptions();
-		$keys = array_keys($option);
-		
+		$keys = explode(",", implode(",", array_keys($this->onFilterOptions())));
+
 		$id = $document->id;
 		$title = "title$lang";
 		$category = "category$lang";
 		$parentTitle = "item_title$lang";
 
-		if (strpos($document->option, JArrayHelper::getValue($keys, 0)) === 0) {
+		if (array_search($document->option, $keys) !== false) {
 			$result = new stdClass();
 			
 			$parts = explode(".", $id);

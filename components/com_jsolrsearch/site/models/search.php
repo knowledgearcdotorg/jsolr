@@ -408,7 +408,21 @@ class JSolrSearchModelSearch extends JModel
 		$query = "";
 		
 		if ($this->getFilterOption()) {
-			$query = "option:".$this->getFilterOption();
+			$filterOptions = explode(",", $this->getFilterOption());
+		
+			$array = array();
+	
+			foreach ($filterOptions as $filterOption) {
+				if ($filterOption) {
+					$array[] = "option:".$filterOption;
+				}
+			}
+
+			if (count($array) > 1) {
+				$query = "(" . implode(" OR ", $array) . ")";
+			} else {
+				$query = implode("", $array);
+			}
 		}
 
 		return $query;
