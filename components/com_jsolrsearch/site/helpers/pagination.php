@@ -67,17 +67,16 @@ class JSolrSearchPagination extends JPagination
 		{
 			$page = ($this->get('pages.current') -2) * $this->limit;
 
-			$page = $page == 0 ? '' : $page; //set the empty for removal from route
-
-			$url->delVar("start");
+			$page = $page == 0 ? '0' : $page; //set the empty for removal from route
+			$url->delVar("limitstart");
 			
-			$data->start->base	= '0';
-			$data->start->link	= JRoute::_($url->toString());
-			$data->previous->base	= $page;
+			$data->start->base = '0';
+			$data->start->link = JRoute::_($url->toString());
+			$data->previous->base = $page;
 			
 			$url->setVar("start", $page);
 			
-			$data->previous->link	= JRoute::_($url->toString());
+			$data->previous->link = JRoute::_($url->toString());
 		}
 
 		// Set the next and end data objects
@@ -106,7 +105,7 @@ class JSolrSearchPagination extends JPagination
 		{
 			$offset = ($i -1) * $this->limit;
 
-			$offset = $offset == 0 ? '' : $offset;  //set the empty for removal from route
+			$offset = $offset == 0 ? '0' : $offset;  //set the empty for removal from route
 
 			$data->pages[$i] = new JPaginationObject($i);
 			if ($i != $this->get('pages.current') || $this->_viewall)
