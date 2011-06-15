@@ -46,6 +46,7 @@
 	    <files folder="admin">
 	    	<folder>elements</folder>
 	    	<folder>extensions</folder>
+	    	<folder>helpers</folder>
 	    	<folder>lib</folder> 
 	    	<folder>models</folder>
 	    	<folder>views</folder>  	

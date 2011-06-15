@@ -12,13 +12,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 jimport('joomla.error.log');
 
 require_once JPATH_ROOT.DS."components".DS."com_k2".DS."helpers".DS."route.php";
+require_once JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."helpers".DS."plugin.php";
 
-class plgJSolrSearchJSolrK2 extends JPlugin 
+class plgJSolrSearchJSolrK2 extends JSolrSearchPlugin 
 {
-	var $_plugin;
-	
-	var $_params;
-		
 	/**
 	 * Constructor
 	 *
@@ -27,38 +24,32 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 	 * @since 1.5
 	 */
 
-	function __construct(&$subject, $config)
+	public function __construct(&$subject, $config)
 	{
-		parent::__construct($subject, $config);
-		
-		$this->loadLanguage(null, JPATH_ADMINISTRATOR);
-		
-		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrk2');
-		$this->_params = new JParameter($this->_plugin->params);	
+		parent::__construct($subject, $config, "jsolrk2");
 	}
 
-	function onAddQF()
+	public function onAddQF()
 	{
 		$qf = array();
 
-		foreach ($this->_params->toArray() as $key=>$value) {
-				if (strpos($key, "jsolr_boost") === 0) {
-					$qfKey = str_replace("jsolr_boost_", "", $key);
-					$qf[$qfKey] = floatval($value);
-				}
+		foreach ($this->getParams()->toArray() as $key=>$value) {
+			if (strpos($key, "jsolr_boost") === 0) {
+				$qfKey = str_replace("jsolr_boost_", "", $key);
+				$qf[$qfKey] = floatval($value);
+			}
 		}
 
 		return $qf;
 	}
 	
-	function onAddHL()
+	public function onAddHL()
 	{
 		$hl = array("title", "content", "metadescription");
 		
 		return $hl;
 	}	
-	
+
 	function onFilterOptions()
 	{		
 		static $options = array();
@@ -76,7 +67,7 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 	* @param int $hlFragSize
 	* @param string $lang
 	*/
-	function onFormatResult($document, $hl, $hlFragSize, $lang) 
+	public function onFormatResult($document, $hl, $hlFragSize, $lang) 
 	{
 		$result = null;
 		
@@ -124,7 +115,7 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 		return $result;
 	}
 	
-	function _getHlContent($document, $highlighting, $fragSize, $lang)
+	private function _getHlContent($document, $highlighting, $fragSize, $lang)
 	{
 		$id = $document->id;
 		$hlContent = null;
@@ -132,7 +123,7 @@ class plgJSolrSearchJSolrK2 extends JPlugin
 		$metadescription = "metadescription$lang";
 		$content = "content$lang";
 
-		if ($this->_params->get("jsolr_use_hl_metadescription") == 1 && 
+		if ($this->getParams()->get("jsolr_use_hl_metadescription") == 1 && 
 			isset($highlighting->$id->$metadescription)) {
 			$hlContent = JArrayHelper::getValue($highlighting->$id->$metadescription, 0);
 		} else {
