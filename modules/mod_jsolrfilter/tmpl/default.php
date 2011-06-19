@@ -40,9 +40,11 @@ $document->addStyleSheet(JURI::base()."/modules/mod_jsolrfilter/css/jsolrfilter.
 	<ul>
 	<?php 
 	foreach ($helper->getFilterOptions() as $key=>$value) : 
+		if ($value) :
 	?>
 		<li class="jsolr-filter-item jsolr-filter-option"><?php echo $value; ?></li>
-	<?php 
+	<?php
+		endif; 
 	endforeach;
 	?>
 	</ul>

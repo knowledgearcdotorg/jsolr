@@ -6,7 +6,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @version     $LastChangedBy$
  * @paackage	Wijiti
  * @subpackage	JSolr
- * @copyright   Copyright (C) 2011 inwardXpat Pty Ltd
+ * @copyright   Copyright (C) 2011 Wijiti Pty Ltd
  */
 
 jimport('joomla.error.log');

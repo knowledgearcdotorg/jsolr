@@ -19,6 +19,11 @@
 		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrk2.ini</language>
 	</languages>
 	<params>
+		<param name="jsolr_show_filter_label" type="radio" default="1" label="Show filter label" description="Show/hide the filter label.">
+			<option value="0">No</option> 
+			<option value="1">Yes</option> 
+		</param>
+	
 		<param name="jsolr_use_hl_metadescription" type="radio" default="0" label="Use highlighted metadescription in search results" description="Use the highlighted metadesciption in the search results instead of the k2 item fragment when available.">
 			<option value="0">No</option> 
 			<option value="1">Yes</option> 

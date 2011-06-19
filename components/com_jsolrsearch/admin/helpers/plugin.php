@@ -33,11 +33,10 @@ defined('_JEXEC') or die();
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
+jimport('joomla.utilities.arrayhelper');
 
 abstract class JSolrSearchPlugin extends JPlugin 
 {
-	var $_params;
-		
 	/**
 	 * Constructor
 	 *
@@ -46,25 +45,12 @@ abstract class JSolrSearchPlugin extends JPlugin
 	 * @param 	string  $name  The plugin name.
 	 * @since 1.5
 	 */
-	public function __construct(&$subject, $config, $name)
+	public function __construct(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
+		$this->set("option", JArrayHelper::getValue($config, "option"));
 		
 		$this->loadLanguage(null, JPATH_ADMINISTRATOR);
-		
-		// load plugin parameters
-		$plugin = & JPluginHelper::getPlugin('jsolrsearch', $name);
-		$this->setParams($plugin->params);
-	}
-	
-	public function setParams($params)
-	{
-		$this->_params = new JParameter($params);
-	}
-	
-	public function getParams()
-	{
-		return $this->_params;
 	}
 	
 	/**
@@ -90,12 +76,90 @@ abstract class JSolrSearchPlugin extends JPlugin
 	 * more option names (stored in Solr's option field) and the value holds 
 	 * the translated label for that key.
 	 * 
+	 * If the plugin's jsolr_show_filter_label parameter is set, the returned 
+	 * result takes the form: 
+	 * $array[option] = OPTION_TRANSLATED_TO_TEXT
+	 *
+	 * Otherwise, the result will look like:
+	 * $array[option] = null
+	 *
 	 * The key can be made up of more than one option, with options separated 
 	 * by a comma. 
 	 * 
 	 * @return array A single option returned within an array.
 	 */
-	public abstract function onFilterOptions();
+	public function onFilterOptions()
+	{		
+		$options = array();
+
+		if ($this->get("params")->get("jsolr_show_filter_label", false)) {
+			$options[$this->get("option")] = JText::_("PLG_JSOLRSEARCH_".strtoupper($this->get("_name"))."_FILTER_LABEL");
+		} else {
+			$options[$this->get("params")->get("option")] = null;
+		}
+	
+		return $options;
+	}
+
+	/**
+	 * Retrieve the individual result template for this plugin.
+	 * 
+	 * @param string $option The option used to identify the associated 
+	 * template.
+	 * 
+	 * @return string The path to the individual result template for this 
+	 * plugin.
+	 */
+	public function onFindResultTemplatePath($option)
+	{
+		$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;		
+		
+		$path = false;
+
+		// if the o query string has not been set, exit immediately.
+		if (!$option) {
+			return $path;	
+		}
+
+		$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."results", $option.".php");
+
+		if (!$path) {
+			$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."result", "default.php");
+		}
+		
+		return $path;
+	}
+	
+	/**
+	 * Retrieve the custom results template for this plugin.
+	 * 
+	 * @param string $o The currently selected option(s).
+	 * 
+	 * @return string The path to the custom results template for this plugin. 
+	 */
+	public function onFindResultsTemplatePath($o)
+	{
+		$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;		
+		
+		$path = false;
+
+		// if the o query string has not been set, exit immediately.
+		if (!$o) {
+			return $path;	
+		}
+		
+		$options = explode(",", $o);
+	
+		while (!$path && $option = current($options)) {
+			if (array_key_exists($option, $this->onFilterOptions())) {
+				$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."results", "default.php");
+			}
+			
+			next($options);
+		}
+		
+		return $path;
+	}
 	
 	/**
 	 * Maps a Solr document to a generic result object.
@@ -108,4 +172,9 @@ abstract class JSolrSearchPlugin extends JPlugin
 	 * @return stdClass A generic result object.
 	 */
 	public abstract function onFormatResult($document, $hl, $hlFragSize, $lang);
+	
+	protected function getTemplateDirectoryName()
+	{
+		return str_ireplace("jsolr", "", $this->get("_name"));
+	}
 }

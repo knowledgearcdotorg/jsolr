@@ -17,7 +17,12 @@
 	<languages>
 		<language tag="en-GB">en-GB.plg_jsolrsearch_jsolrvirtuemart.ini</language>
 	</languages>
-	<params>		
+	<params>
+		<param name="jsolr_show_filter_label" type="radio" default="1" label="Show filter label" description="Show/hide the filter label.">
+			<option value="0">No</option> 
+			<option value="1">Yes</option> 
+		</param>
+		
 		<param name="jsolr_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
 		<param name="jsolr_content" type="text" default="15.0" label="Content Boost" description="Boost the content field's relevancy."/>
 		<param name="jsolr_category" type="text" default="2.0" label="Category Boost" description="Boost the category's relevancy."/>

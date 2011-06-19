@@ -6,7 +6,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @version     $LastChangedBy: spauldingsmails $
  * @paackage	Wijiti
  * @subpackage	JSolr
- * @copyright   Copyright (C) 2011 inwardXpat Pty Ltd
+ * @copyright   Copyright (C) 2011 Wijiti Pty Ltd
  */
 
 jimport('joomla.error.log');
@@ -14,7 +14,7 @@ jimport('joomla.error.log');
 require_once JPATH_ROOT.DS."components".DS."com_k2".DS."helpers".DS."route.php";
 require_once JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."helpers".DS."plugin.php";
 
-class plgJSolrSearchJSolrK2 extends JSolrSearchPlugin 
+class plgJSolrSearchJSolrK2 extends JSolrSearchPlugin
 {
 	/**
 	 * Constructor
@@ -26,14 +26,15 @@ class plgJSolrSearchJSolrK2 extends JSolrSearchPlugin
 
 	public function __construct(&$subject, $config)
 	{
-		parent::__construct($subject, $config, "jsolrk2");
+		$config["option"] = "com_k2items,com_k2attachments";
+		parent::__construct($subject, $config);
 	}
 
 	public function onAddQF()
 	{
 		$qf = array();
 
-		foreach ($this->getParams()->toArray() as $key=>$value) {
+		foreach ($this->get("params")->toArray() as $key=>$value) {
 			if (strpos($key, "jsolr_boost") === 0) {
 				$qfKey = str_replace("jsolr_boost_", "", $key);
 				$qf[$qfKey] = floatval($value);
@@ -48,14 +49,6 @@ class plgJSolrSearchJSolrK2 extends JSolrSearchPlugin
 		$hl = array("title", "content", "metadescription");
 		
 		return $hl;
-	}	
-
-	function onFilterOptions()
-	{		
-		static $options = array();
-		$options['com_k2items,com_k2attachments'] = JText::_("PLG_JSOLRSEARCH_JSOLRK2_COM_K2");
-	
-		return $options;
 	}
 	
 	/**
@@ -123,7 +116,7 @@ class plgJSolrSearchJSolrK2 extends JSolrSearchPlugin
 		$metadescription = "metadescription$lang";
 		$content = "content$lang";
 
-		if ($this->getParams()->get("jsolr_use_hl_metadescription") == 1 && 
+		if ($this->get("params")->get("jsolr_use_hl_metadescription") == 1 && 
 			isset($highlighting->$id->$metadescription)) {
 			$hlContent = JArrayHelper::getValue($highlighting->$id->$metadescription, 0);
 		} else {

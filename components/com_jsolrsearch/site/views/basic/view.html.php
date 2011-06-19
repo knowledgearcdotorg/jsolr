@@ -31,6 +31,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  
 jimport( 'joomla.application.component.view');
 jimport('joomla.filesystem.path');
+jimport('joomla.utilities.arrayhelper');
  
 class JSolrSearchViewBasic extends JView
 {
@@ -51,6 +52,20 @@ class JSolrSearchViewBasic extends JView
     	$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;
     	$path = false;
 
+    	JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();
+
+		$results = $dispatcher->trigger("onFindResultTemplatePath", array($item->option));
+
+		$i = 0;
+		while (!$path && $i < count($results)) {
+			if (JArrayHelper::getValue($results, $i)) {
+				$path = JArrayHelper::getValue($results, $i);
+			}
+			
+			$i++;
+		}
+    	
     	if (is_dir($pluginsPath)) {
 			if ($handle = opendir($pluginsPath)) {
 				while (!$path && $plugin = readdir($handle)) {
@@ -81,12 +96,21 @@ class JSolrSearchViewBasic extends JView
 
 	public function loadResultsTemplate($option)
 	{
-    	$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;
     	$path = false;
 
-    	$plugin = JArrayHelper::getValue(explode("_", $option, 2), 1);
-    	
-	    $path = JPath::find($pluginsPath.$plugin.DS."views".DS."results", "default.php");
+		JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();
+
+		$results = $dispatcher->trigger("onFindResultsTemplatePath", array($option));
+
+		$i = 0;
+		while (!$path && $i < count($results)) {
+			if (JArrayHelper::getValue($results, $i)) {
+				$path = JArrayHelper::getValue($results, $i);
+			}
+			
+			$i++;
+		}
 
     	// if a custom layout path is found, output it, otherwise fall back to component default.
     	if ($path) {

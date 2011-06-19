@@ -6,20 +6,18 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @version     $LastChangedBy$
  * @paackage	Wijiti
  * @subpackage	JSolr
- * @copyright   Copyright (C) 2011 inwardXpat Pty Ltd
+ * @copyright   Copyright (C) 2011 Wijiti Pty Ltd
  */
 
 jimport('joomla.error.log');
 
-class plgJSolrSearchJSolrVirtuemart extends JPlugin 
+require_once JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."helpers".DS."plugin.php";
+
+class plgJSolrSearchJSolrVirtuemart extends JSolrSearchPlugin
 {
-	var $_thumbnailRelPath;
+	var $_imageURL;
 	
-	var $_plugin;
-	
-	var $_params;
-	
-	var $_option = 'com_virtuemart';
+	var $_vmNoImageURL;
 	
 	var $_id = 0;
 		
@@ -33,13 +31,8 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 
 	function __construct(&$subject, $config)
 	{
+		$config["option"] = "com_virtuemart";
 		parent::__construct($subject, $config);
-		
-		$this->loadLanguage(null, JPATH_ADMINISTRATOR);
-		
-		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('jsolrsearch', 'jsolrvirtuemart');
-		$this->_params = new JParameter($this->_plugin->params);
 
 		$this->_imageURL = JURI::base()."components/com_virtuemart/shop_image/product";
 		$this->_vmNoImageURL = JURI::base()."components/com_virtuemart/themes/default/images/noimage.gif";
@@ -57,7 +50,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	{
 		$qf = array();
 
-		foreach ($this->_params->toArray() as $key=>$value) {
+		foreach ($this->get("params")->toArray() as $key=>$value) {
 				if (strpos($key, "jsolr_boost") === 0) {
 					$qfKey = str_replace("jsolr_boost_", "", $key);
 					$qf[$qfKey] = floatval($value);
@@ -79,22 +72,6 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 		$hl = array("title", "content");
 		
 		return $hl;
-	}	
-	
-	/**
-	 * Gets the option associated with this plugin.
-	 * 
-	 * The returned result takes the form 
-	 * $array[option] = OPTION_TRANSLATED_TO_TEXT.
-	 * 
-	 * @return array The option associated with this plugin.
-	 */
-	public function onFilterOptions()
-	{		
-		static $options = array();
-		$options[$this->_option] = JText::_("PLG_JSOLRSEARCH_JSOLRVIRTUEMART_COM_VIRTUEMART");
-	
-		return $options;
 	}
 	
 	/**
@@ -113,7 +90,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	{
 		$array = array();
 		
-		if (JArrayHelper::getValue($params, "o") == $this->_option) {			
+		if (JArrayHelper::getValue($params, "o") == $this->get("option")) {			
 			$category = JArrayHelper::getValue($params, "fcat");			
 			
 			if ($category) {
@@ -176,7 +153,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 
 			$query->setQuery(JRequest::getString("q"));
 		
-			$query->addFacetQuery("option:".$this->_option);
+			$query->addFacetQuery("option:".$this->get("option"));
 			
 			$min = JRequest::getString("pmin", null);
 			$max = JRequest::getString("pmax", null);
@@ -220,7 +197,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 	
 	public function onPrepareCurrency()
 	{
-		return $this->_params->get("jsolr_default_currency");
+		return $this->get("params")->get("jsolr_default_currency");
 	}
 
 	/**
@@ -258,7 +235,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$this->_setId($productId);
 			
 			$result->title = $hlTitle;
-			$result->href = JRoute::_("index.php?option=".$this->_option."&id=".$productId);
+			$result->href = JRoute::_("index.php?option=".$this->get("option")."&id=".$productId);
 			$result->text = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
 
 			if (is_array($document->$category)) {
@@ -271,7 +248,7 @@ class plgJSolrSearchJSolrVirtuemart extends JPlugin
 			$result->modified = null;
 			$result->option = $document->option;
 			$result->attribs["price"] = $this->_formatCurrency($document->price);
-			$result->attribs["currency"] = $this->_params->get("jsolr_default_currency");
+			$result->attribs["currency"] = $this->get("params")->get("jsolr_default_currency");
 			$result->attribs["thumbnail"] = $this->_buildThumbnailURL($document);
 		}
 
