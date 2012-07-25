@@ -3,7 +3,7 @@
  * A script for intercepting calls to this component and handling them appropriately.
  * 
  * @author		$LastChangedBy$
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
    The JSolrIndex component for Joomla! is free software: you can redistribute it 
@@ -29,24 +29,11 @@
  */
 
 defined('_JEXEC') or die('Restricted access');
- 
-// Require the base controller
 
-require_once(JPATH_COMPONENT.DS.'controller.php');
- 
-// Require specific controller if requested
-if($controller = JRequest::getWord('controller')) {
-    $path = JPATH_COMPONENT.DS.'controllers'.DS.$controller.'.php';
-    
-    if (file_exists($path)) {
-        require_once $path;
-    } else {
-        $controller = '';
-    }
-    
-}
+jimport('joomla.application.component.controller');
 
-$classname = 'JSolrIndexController'.$controller;
-$controller = new $classname();
-$controller->execute(JRequest::getVar('task'));
+JLoader::register('JSolrIndexHelper', dirname(__FILE__) . '/helpers/jsolrindex.php');
+
+$controller	= JController::getInstance('jsolrindex');
+$controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

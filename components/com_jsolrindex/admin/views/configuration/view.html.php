@@ -39,12 +39,24 @@ class JSolrIndexViewConfiguration extends JView
     function display($tpl = null)
     {
     	JHTML::_('behavior.mootools');
-
+    	
     	$document = JFactory::getDocument();
 
     	$document->addStyleSheet(JURI::root()."media/com_jsolrindex/css/jsolrindex.css");
-    	$document->addScript(JURI::root() . "media/com_jsolrindex/js/jsolrindex.js");
-        
-    	parent::display($tpl);
+    	$document->addScript(JURI::root() . "media/com_jsolrindex/js/jsolrindex.js");        
+    	
+    	$this->addToolbar();
+
+		JSolrIndexHelper::addSubmenu(JRequest::getCmd('view', 'configuration'));
+		    	
+        parent::display($tpl);
+    }
+    
+    protected function addToolbar()
+    {
+    	JToolBarHelper::title(JText::_('Configuration'), 'config.png');
+    	
+		JToolBarHelper::preferences('com_jsolrindex');
+		JToolBarHelper::divider();
     }
 }

@@ -33,32 +33,13 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
-class JSolrIndexController extends JController 
+class JSolrIndexController extends JController
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
+	protected $default_view = 'configuration';
 
-	public function save()
-	{
-		$model = $this->getModel(JRequest::getWord("view"));
-		
-		$model->save(JRequest::get("post"));
-
-		$view = $this->getView(JRequest::getWord("view"), JRequest::getWord("format", "html"));
-		$view->setModel($model, true);
-		
-		$url = new JURI("index.php");
-		$url->setVar("option", JRequest::getWord("option"));
-		$url->setVar("view", JRequest::getWord("view"));
-		
-		$this->setRedirect($url->toString(), JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_SAVE_SUCCESSFUL"));
-	}
-	
 	public function test()
 	{
-		$model = $this->getModel(JRequest::getWord("view", "configuration"));
+		$model = $this->getModel($this->default_view);
 		
 		if ($success = $model->test()) {
 			$msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
@@ -73,9 +54,26 @@ class JSolrIndexController extends JController
 		echo json_encode(array("success"=>$success, "message"=>$msg));
 	}
 	
+	public function testTika()
+	{
+		$model = $this->getModel($this->default_view);
+		
+		if ($success = $model->testTika()) {
+			$msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
+		} else {
+			$msg = JText::_($model->getError());
+		}
+
+		$search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
+		$replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
+		$msg = str_replace($search, $replace, $msg);
+		
+		echo json_encode(array("success"=>$success, "message"=>$msg));
+	}	
+	
 	public function index()
 	{
-		$model = $this->getModel("configuration");
+		$model = $this->getModel($this->default_view);
 		
 		if ($success = $model->index()) {
 			$msg = JText::_("Index successful");
@@ -88,7 +86,7 @@ class JSolrIndexController extends JController
 
 	public function purge()
 	{
-		$model = $this->getModel("configuration");
+		$model = $this->getModel($this->default_view);
 		
 		if ($success = $model->purge()) {
 			$msg = JText::_("Index purged successfully");
@@ -101,11 +99,8 @@ class JSolrIndexController extends JController
 	
 	function display()
 	{
-		$model = $this->getModel(JRequest::getWord("view", "configuration"));
+		parent::display();
 		
-		$view = $this->getView(JRequest::getWord("view"), JRequest::getWord("format", "html"));
-		$view->setModel($model, true);
-		
-		$view->display();
+		return $this;
 	}
 }

@@ -37,118 +37,55 @@ $application = JFactory::getApplication("administrator");
 $document = JFactory::getDocument();
 
 $document->addScriptDeclaration(
-"
-var adminOptions = new Object({
-	pleaseWait : \"".JText::_("Please wait...")."\",
-	testURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrindex&task=test&format=raw\",
-	indexURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrindex&task=index&format=raw\",
-	purgeURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrindex&task=purge&format=raw\"
+'
+var jsolrindex = new Object({
+	options : {
+		jsolrIndexTest : {
+			url : "'.JURI::root().'administrator/index.php?option=com_jsolrindex&task=test&format=raw",
+		},
+		jsolrStartIndex : {
+			url : "'.JURI::root().'administrator/index.php?option=com_jsolrindex&task=index&format=raw",
+		},
+		jsolrPurgeIndex : {
+			url : "'.JURI::root().'administrator/index.php?option=com_jsolrindex&task=purge&format=raw",
+		},
+		jsolrIndexTestTika : {
+			url : "'.JURI::root().'administrator/index.php?option=com_jsolrindex&task=testTika&format=raw"
+		}
+	},
+	language : {
+		pleaseWait : "'.JText::_("Please wait...").'",
+		failed : "'.JText::_("Connection failed.").'",
+		cancelling : "'.JText::_("Cancelling...").'",
+		cancelled : "'.JText::_("Cancelled.").'"
+	}
 });
-");
-
-JToolBarHelper::title(JText::_('Attachment Configuration'), 'config.png');
-
-JToolBarHelper::save();
-JToolBarHelper::cancel();
+');
 ?>
 
-<form autocomplete="off" name="adminForm" method="post" action="index.php">
-	<div id="config-document">
-		<div id="page-site" style="display: block;">
-			<table class="noshow">
-				<tbody>
-					<tr>
-						<td width="65%">
-							<fieldset class="adminform">
-								<legend>Index Server Settings</legend>
-	
-								<table cellspacing="1" class="admintable">
-									<tbody>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Host name</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("host"); ?>" size="50" id="host" name="host" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Port</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("port"); ?>" size="50" id="port" name="port" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Path</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("path"); ?>" size="50" id="path" name="path" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Username</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("username"); ?>" size="50" id="username" name="username" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Password</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("password"); ?>" size="50" id="password" name="password" class="text_area"/>
-											</td>
-										</tr>
-									</tbody>																	
-								</table>
-							</fieldset>
-							
-							<fieldset class="adminform">
-								<legend>Index Management</legend>
-	
-								<table cellspacing="1" class="admintable">
-									<tbody>
-										<tr>
-											<td>
-												<button id="testButton1" class="test-button"><?php echo JText::_("Test connection"); ?></button>
-											</td>
-											<td style="vertical-align: middle;">
-												<div id="testButton1Message" class="test-message"></div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<button id="indexButton"><?php echo JText::_("Start indexing"); ?></button>
-											</td>
-											<td style="vertical-align: middle;">
-												<div id="indexMessage"></div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<button id="purgeButton"><?php echo JText::_("Purge index"); ?></button>
-											</td>
-											<td style="vertical-align: middle;">
-												<div id="purgeMessage"></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</fieldset>							
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+<div id="element-box">
+	<div class="m">
+		<fieldset>
+			<legend>Index Management</legend>
+			<div id="jsolrIndexManagementMessage">&nbsp;</div>
+			
+			<div id="jSolrIndexManagementButtons">
+				<button id="jsolrIndexTest"><?php echo JText::_("Test connection"); ?></button>
+				<button id="jsolrStartIndex"><?php echo JText::_("Start indexing"); ?></button>
+				<button id="jsolrPurgeIndex"><?php echo JText::_("Purge index"); ?></button>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<legend>Attachment Indexing</legend>
+			<div id="jsolrIndexAttachmentIndexingMessage">&nbsp;</div>
+			
+			<div id="jSolrAttachmentIndexingButtons">
+				<button id="jsolrIndexTestTika"><?php echo JText::_("Test Connection"); ?></button>				
+			</div>
+		</fieldset>
+
+		<div class="clr"></div>
 	</div>
-	<div class="clr"></div>
-	
-	<input type="hidden" value="com_jsolrindex" name="option"/>
-	<input type="hidden" value="" name="task"/>
-	<input type="hidden" value="configuration" name="view"/>
-</form>
+	<noscript>Warning! JavaScript must be enabled for proper operation of the Administrator backend.</noscript>
+</div>

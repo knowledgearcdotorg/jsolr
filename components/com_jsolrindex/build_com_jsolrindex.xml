@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolr Index" default="" basedir=".">	
+	<target name="update" description="Copies JSolr Index component to existing Joomla install.">
+		<echo message="Deploying JSolr Index component to Joomla! environment."/>
+		
+		<copy todir="${dest.administrator.components}/com_jsolrindex">
+			<fileset dir="${src}/admin" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${dest.administrator.languages}">
+			<fileset dir="${src}/admin/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${dest.media}/com_jsolrindex/js">
+			<fileset dir="${src}/js" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		<!-- copy todir="${dest.components}/com_jsolrindex">
+			<fileset dir="${src}/components/com_jsolrindex/admin" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+			</fileset>
+		</copy -->
+	</target>
+	
+	<target name="package" description="Creates a JSolr Index component package.">
+		<echo message="Packaging JSolr Index component ${src}."/>
+		<zip destfile="${package.dest}/com_jsolrindex.zip"
+		       basedir="${src}"
+		       update="true"
+		       excludes="build*.xml"/>
+	</target>
+</project>

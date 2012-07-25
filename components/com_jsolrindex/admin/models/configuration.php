@@ -2,10 +2,9 @@
 /**
  * A model that provides configuration options for JSolrIndex.
  * 
- * @author		$LastChangedBy$
  * @package		Wijiti
  * @subpackage	JSolr
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
    The JSolrIndex component for Joomla! is free software: you can redistribute it 
@@ -34,70 +33,36 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.registry.registry');
 jimport('joomla.filesystem.file');
+jimport('joomla.application.component.model');
+jimport('joomla.application.component.helper');
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
 
 class JSolrIndexModelConfiguration extends JModel
-{	
-	var $configuration;
-	
+{
 	public function __construct()
 	{
-		parent::__construct();
-
-		require_once($this->getConfig());
-		
-		$this->configuration = new JSolrIndexConfig();		
-	}
-	
-	/**
-	 * Gets the configuration file path.
-	 * 
-	 * @return The configuration file path.
-	 */
-	public function getConfig()
-	{
-		return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."configuration.php";
+		parent::__construct();	
 	}
 	
 	public function getHost()
 	{
-		$url = $this->configuration->host;
+		$params = JComponentHelper::getParams('com_jsolrindex');
 		
-		if ($this->configuration->username && $this->configuration->password) {
-			$url = $this->configuration->username . ":" . $this->configuration->password . "@" . $url;
+		$url = $params->get('host');
+		
+		if ($params->get('username') && $params->get('password')) {
+			$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 		}
 		
 		return $url;
 	}
-
-	public function getParam($name)
-	{
-		return $this->configuration->$name;
-	}
-	
-	public function save($array)
-	{	
-		require_once($this->getConfig());
-		
-		$config = new JRegistry('solrindexconfig');
-
-		$config->loadObject(new JSolrIndexConfig());
-		
-		foreach(array_keys($config->toArray()) as $key) {
-			if ($value = JArrayHelper::getValue($array, $key)) {
-				$config->setValue($key, $value);
-			}
-		}
-
-		JFile::write($this->getConfig(), $config->toString("PHP", "solrindexconfig", array("class"=>"JSolrIndexConfig")));
-
-		$this->configuration = new JSolrIndexConfig();
-	}
 	
 	public function test()
 	{
-		$client = new Apache_Solr_Service($this->getHost(), $this->configuration->port, $this->configuration->path);
+		$params = JComponentHelper::getParams('com_jsolrindex');
+		
+		$client = new Apache_Solr_Service($this->getHost(), $params->get('port'), $params->get('path'));
 
 		$response = $client->ping();
 		
@@ -111,18 +76,18 @@ class JSolrIndexModelConfiguration extends JModel
 	
 	public function index()
 	{
+		$params = JComponentHelper::getParams('com_jsolrindex');
+		
 		if (!$this->test()) {
 			return false;
 		}
-		
-	    $rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
 
     	$dispatcher =& JDispatcher::getInstance();
     	
 		JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
 
 		try {
-			$array = $dispatcher->trigger('onIndex', array($rules));
+			$array = $dispatcher->trigger('onIndex');
 			
 			return true;
 		} catch (Exception $e) {
@@ -134,11 +99,13 @@ class JSolrIndexModelConfiguration extends JModel
 	
 	public function purge()
 	{
+		$params = JComponentHelper::getParams('com_jsolrindex');
+		
 		if (!$this->test()) {
 			return false;
-		}
+		}		
 		
-		$client = new Apache_Solr_Service($this->getHost(), $this->configuration->port, $this->configuration->path);;
+		$client = new Apache_Solr_Service($this->getHost(), $params->get('port'), $params->get('path'));
 		
 		try {
 			$client->deleteByQuery("*:*");
@@ -151,8 +118,76 @@ class JSolrIndexModelConfiguration extends JModel
 		}		
 	}
 	
-    public function getRobotsFile()
-    {
-    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."ignore.txt";
-    }
+	public function testTika()
+	{
+		$params = JComponentHelper::getParams('com_jsolrindex');
+		
+		switch ($params->get("extractor")) {
+			case "local":
+				if (!JFile::exists($params->get("local_tika_app_path"))) {
+					$this->setError(JText::_("COM_JSOLRINDEX_TIKA_CANNOT_FIND_LOCAL_PATH"));
+					return false;
+				}				
+				
+				break;
+				
+			case "remote":
+				try {
+					$client = new Apche_Solr_Service($this->getAttachmentHost(), $params->get("remote_tika_port"), $params->get("remote_tika_path"));
+					$response = $client->extract(
+						JPATH_COMPONENT_ADMINISTRATOR.DS."test.odt",
+						array("extractOnly"=>"true")
+					);
+
+					if ($response->getHttpStatus() != 200) {
+						$this->setError($response->getHttpMessage());
+						return false;
+					}
+				} catch (Apache_Solr_Exception $e) {
+					$this->setError($e->getMessage());
+					return false;
+				}				
+
+				break;
+				
+			case "solr":
+
+				break;
+				
+			default:
+				
+				break;
+		}
+
+		return true;
+	}
+	
+	public function getAttachmentHost()
+	{
+		$params = JComponentHelper::getParams('com_jsolrindex');
+		
+		$url = "";
+		
+		switch ($params->get("extractor")) {
+			case "remote":
+				$url = $params->get("remote_tika_host");
+				
+				if ($params->get("remote_tika_username") && $params->get("remote_tika_password")) {
+					$url = $params->get("remote_tika_username") . ":" . $params->get("remote_tika_password") . "@" . $url;
+				}
+				
+				break;
+				
+			case "solr":
+				$url = $this->getHost();
+
+				break;
+		
+			default:
+				
+				break;
+		}
+					
+		return $url;
+	}
 }

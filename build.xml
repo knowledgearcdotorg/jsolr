@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolr" default="help" basedir=".">
+	<property	file="build.properties"/>
+	<property	name="dest.administrator"				value="${dest}/administrator"/>
+	<property	name="dest.administrator.components"	value="${dest.administrator}/components"/>
+	<property	name="dest.administrator.languages"		value="${dest.administrator}/language"/>
+	<property	name="dest.components"					value="${dest}/components"/>
+	<property	name="dest.languages"					value="${dest}/languages"/>
+	<property 	name="dest.media" 						value="${dest}/media"/>
+	<property	name="dest.plugins"						value="${dest}/plugins"/>
+	
+	<target name="update" description="Updates all JSolr extensions in an existing Joomla install.">
+		<echo message="Updating all extensions in the Joomla! environment."/>
+		
+		<subant target="update">
+			<fileset dir=".">
+				<include name="**/**/build_*.xml"/>
+			</fileset>
+			<property	name="src"								value="${src}"/>
+			<property	name="dest.administrator.components"	value="${dest.administrator.components}"/>
+        	<property	name="dest.administrator.languages"		value="${dest.administrator.languages}"/>
+			<property	name="dest.components"					value="${dest.components}"/>
+        	<property	name="dest.languages"					value="${dest.languages}"/>
+			<property 	name="dest.media" 						value="${dest.media}"/>
+			<property 	name="dest.plugins" 					value="${dest.plugins}"/>
+        </subant>
+	</target>
+	
+	<target name="package" description="Packages all JSolr extensions for easy installation into Joomla!.">
+		<echo message="Packaging all extensions."/>
+		
+		<subant target="package">
+			<fileset dir=".">
+				<include name="**/**/build_*.xml"/>
+			</fileset>
+			<property	name="src"			value="${src}"/>
+			<property	name="package.dest"	value="${package.dest}"/>
+        </subant>
+	</target>
+	
+	<target name="help" description="Help documentation for this build file.">
+		<echo message="Help documentation."/>
+	</target>
+</project>

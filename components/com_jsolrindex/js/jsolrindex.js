@@ -1,90 +1,81 @@
 window.addEvent("domready", function() {
-	$$("button.test-button").addEvent("click", function(e) {
+	$$("#jSolrIndexManagementButtons button").addEvent("click", function(e) {
 		var event = new Event(e).stop();
-		
-		var url = adminOptions.testURL;
 
-		var a = new Ajax(url, {
+		var cancel = 'jSolrIndexCancel';
+		
+		jsolrindex.request = new Request.JSON({
+			url: jsolrindex.options[event.target.id].url,
 			method: "get",
 			onRequest: function() {
-				$(event.target.id+"Message").setText(adminOptions.pleaseWait);
+				$("jsolrIndexManagementMessage").set('text', jsolrindex.language.pleaseWait);
+				
+				var button = document.createElement('button');
+								
+				button.setAttribute('name', cancel);
+				button.setAttribute('id', cancel);
+				button.set('text', 'Cancel');
+				button.addEvent("click", function() {
+					$("jsolrIndexManagementMessage").set('text', jsolrindex.language.cancelling);
+					jsolrindex.request.cancel();
+				});
+				
+				$("jSolrIndexManagementButtons").appendChild(button);
+				
+				$$("#jSolrIndexManagementButtons button").each(function(item, index) {
+					if (item.id != cancel) {
+						item.set("disabled", "disabled");
+					}
+				});
 			},
-			onComplete: function(response) {				
-	        	var r = Json.evaluate(response);
-	        	$(event.target.id+"Message").setText(r.message);
-	    	},    		
+			onSuccess: function(response) {
+	        	$("jsolrIndexManagementMessage").set('text', response.message);
+	    	},
 			onFailure: function() {
+				$("jsolrIndexManagementMessage").set('text', jsolrindex.language.failed);
+	    	},
+	    	onComplete: function() {
+				$$("#jSolrIndexManagementButtons button").each(function(item, index) {
+					if (item.id != cancel) {
+						item.erase("disabled");
+					}
+				});
+				
+				var button = document.getElementById(cancel);
+				$("jSolrIndexManagementButtons").removeChild(button);
+	    	},
+	    	onCancel: function() {
+	    		$("jsolrIndexManagementMessage").set('text', jsolrindex.language.cancelled);
 	    		
+				$$("#jSolrIndexManagementButtons button").each(function(item, index) {
+					if (item.id != cancel) {
+						item.erase("disabled");
+					}
+				});
+				
+				var button = document.getElementById(cancel);
+				$("jSolrIndexManagementButtons").removeChild(button);	    		
 	    	}
-		}).request();
+		}).send();
 	});
-	
-	$$("button#indexButton").addEvent("click", function(e) {
+
+	$$("button#jsolrIndexTestTika").addEvent("click", function(e) {
 		var event = new Event(e).stop();
 		
-		var url = adminOptions.indexURL;
+		var url = adminOptions.testTikaURL;
 
-		var a = new Ajax(url, {
+		var request = new Request.JSON({
+			url: url,
 			method: "get",
 			onRequest: function() {
-				$("indexMessage").setText(adminOptions.pleaseWait);
+				$("jsolrIndexAttachmentIndexingMessage").set('text', adminOptions.pleaseWait);
 			},
-			onComplete: function(response) {
-	        	var r = Json.evaluate(response);
-
-	        	$("indexMessage").setText(r.message);
+			onSuccess: function(response) {
+	        	$("jsolrIndexAttachmentIndexingMessage").set('text', response.message);
 	    	},    		
 			onFailure: function() {
-	    		
+				$("jsolrIndexAttachmentIndexingMessage").set('text', adminOptions.failed);
 	    	}
-		}).request();
-	});
-	
-	$$("button#purgeButton").addEvent("click", function(e) {
-		var event = new Event(e).stop();
-		
-		var url = adminOptions.purgeURL;
-
-		var a = new Ajax(url, {
-			method: "get",
-			onRequest: function() {
-				$("purgeMessage").setText(adminOptions.pleaseWait);
-			},
-			onComplete: function(response) {
-	        	var r = Json.evaluate(response);
-
-	        	$("purgeMessage").setText(r.message);
-	    	},    		
-			onFailure: function() {
-	    		
-	    	}
-		}).request();
-	});
-	
-	$$("input[name=extractor]").addEvent("change", function(e) {
-		var event = new Event(e);
-		switch (event.target.id) {
-			case "extractorlocal":				
-				$("localTika").removeClass("hide");
-				$("remoteTika").addClass("hide");
-				$("solrServer").addClass("hide");
-				break;
-				
-			case "extractorremote":
-				$("localTika").addClass("hide");
-				$("remoteTika").removeClass("hide");
-				$("solrServer").addClass("hide");
-				break;
-				
-			case "extractorsolr":
-				$("localTika").addClass("hide");
-				$("remoteTika").addClass("hide");
-				$("solrServer").removeClass("hide");
-				break;
-				
-			default:
-				
-				break;
-		}
+		}).send();
 	});
 });

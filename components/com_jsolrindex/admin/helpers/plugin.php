@@ -1,9 +1,8 @@
 <?php
 /**
- * @author		$LastChangedBy: spauldingsmails $
- * @paackage	Wijiti
- * @subpackage	JSolr
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Index
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
    The JSolrIndex component for Joomla! is free software: you can redistribute it 
@@ -33,48 +32,28 @@ defined('_JEXEC') or die();
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
+jimport('joomla.plugin.plugin');
 
 abstract class JSolrCrawlerPlugin extends JPlugin 
 {
-	var $_plugin;
+    /**
+     * The extension of the indexed item.
+     * 
+     * E.g. com_content
+     *
+     * @var string
+     */
+	protected $extension;
 	
-	var $_params;
+    /**
+     * The view of the indexed item.
+     * 
+     * E.g. article
+     *
+     * @var string
+     */
+	protected $view;
 	
-	var $_client;
-	
-	var $_option;
-	
-	/**
-	 * Constructor
-	 *
-	 * @param	string $name The name of the plugin.
-	 * @param 	object $subject The object to observe
-	 * @param 	array  $config  An array that holds the plugin configuration
-	 * @since 1.5
-	 */
-	public function __construct($name, &$subject, $config = array())
-	{
-		parent::__construct($subject, $config);
-
-		// load plugin parameters
-		$this->_plugin = & JPluginHelper::getPlugin('jsolrcrawler', "jsolr".$name);
-		$this->_params = new JParameter($this->_plugin->params);
-		
-		$this->_option = "com_".$name;
-		
-		require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."configuration.php");
-
-		$configuration = new JSolrIndexConfig();
-		
-		$url = $configuration->host;
-		
-		if ($configuration->username && $configuration->password) {
-			$url = $configuration->username . ":" . $configuration->password . "@" . $url;
-		}
-		
-		$this->_client = new Apache_Solr_Service($url, $configuration->port, $configuration->path);
-	}
-
 	/**
 	* Prepares an article for indexing.
 	*/
@@ -84,88 +63,155 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 	{
 		$i = 0;
 		
-		$query = "option:".$this->getOption()." AND -id:(";
+		$query = "";
 		
-		foreach ($ids as $id) {
-			if ($i > 0) {
-				$query .= " OR ";	
+		if (count($ids)) {
+			$query.="-key:(";
+		
+			foreach ($ids as $id) {
+				if ($i > 0) {
+					$query .= " OR ";	
+				}
+				
+				$query .= $this->get('extension').".".$this->get('view').".".intval($id);
+				
+				$i++;	
 			}
 			
-			$query .= $this->getOption().".".intval($id);
-			
-			$i++;	
+			$query .= ")";
 		}
-		
-		$query .= ")";
 		
 		return $query;
 	}
-	
-	protected function getLang(&$item = null)
-	{
-		$lang = JLanguageHelper::detectLanguage();
 
-		return $lang;
-	}
-	
-	protected function parseRules($rules)
+	/**
+	 * Get's the language, either from the item or from the Joomla environment.
+	 * 
+	 * @param JObject $item The item being indexed.
+	 * @param bool $includeRegion True if the region should be included, false 
+	 * otherwise. E.g. If true, en-AU would be returned, if false, just en 
+	 * would be returned.
+	 * 
+	 *  @return string The language code.
+	 */
+	protected function getLanguage(&$item, $includeRegion = true)
 	{
-		$array = array();
-		
-		foreach ($rules as $rule) {
-			if (strpos($rule, $this->_option) === 0) {
-				$item = JArrayHelper::getValue(explode(";", $rule), 1);
-				$array[JArrayHelper::getValue(explode("=", $item), 0)] = JArrayHelper::getValue(explode("=", $item), 1);
-			}
+		if (isset($item->language) && $item->language != '*') {
+			$lang = $item->language;
+		} else {
+			$lang = JLanguageHelper::detectLanguage();
 		}
 		
-		return $array;
+		if ($includeRegion) {
+			return $lang;
+		} else {
+			$parts = explode('-', $lang);
+			
+			// just return the xx part of the xx-XX language.
+			return JArrayHelper::getValue($parts, 0);
+		}
 	}
 	
-	abstract protected function buildQuery($rules);
+	/**
+	 * 
+	 * 
+	 * @return JDatabaseQuery A database query.
+	 */
+	abstract protected function buildQuery();
 	
-	protected function getItems($rules)
+	protected function getItems()
 	{
 		$database = JFactory::getDBO();
-		$database->setQuery($this->buildQuery($rules));
+		$database->setQuery($this->buildQuery());
+
 		return $database->loadObjectList();
 	}
 	
-	public function onIndex($rules)
-	{	
-		$items = $this->getItems($rules);
+	/**
+	 * Builds the item's index key.
+	 * 
+	 * Takes the form extension.view.id, E.g. com_content.article.1.
+	 * 
+	 * The key can be customized by overriding this method but it is not 
+	 * recommended.
+	 * 
+	 * @param Apache_Solr_Document $document The document to use to build the 
+	 * key.
+	 * 
+	 * @return string The item's key.
+	 */
+	protected function buildKey($document)
+	{
+		$extension = JArrayHelper::getValue($document->getField('extension'), 'value');
+		$extension = JArrayHelper::getValue($extension, 0);
+		$view = JArrayHelper::getValue($document->getField('view'), 'value');
+		$view = JArrayHelper::getValue($view, 0);
+		$id = JArrayHelper::getValue($document->getField('id'), 'value');
+		$id = JArrayHelper::getValue($id, 0);
+		return $extension.'.'.$view.'.'.$id;
+	}
+	
+	public function onIndex()
+	{		
+		JLog::add('JSolrCrawlerPlugin::onIndex', JLog::INFO);
+
+		$items = $this->getItems();
 
 		$ids = array();
 		$documents = array();
 
+		$i = 0;
 		foreach ($items as $item) {
-			$documents[] = $this->getDocument($item);
-			$ids[] = $item->id;
+			// Initialize the item's parameters.
+			if (isset($item->params)) {
+				$registry = new JRegistry();
+				$registry->loadString($item->params);
+				$item->params = JComponentHelper::getParams($this->get('extension'), true);
+				$item->params->merge($registry);
+			}
+			
+			if (isset($item->metadata)) {
+				$registry = new JRegistry();
+				$registry->loadString($item->metadata);
+				$item->metadata = $registry;
+			}
+			
+			$documents[$i] = $this->getDocument($item);
+			$documents[$i]->addField('id', $item->id);
+			$documents[$i]->addField('extension', $this->get('extension'));
+			$documents[$i]->addField('view', $this->get('view'));
+			$documents[$i]->addField('lang', $this->getLanguage($item));
+			$documents[$i]->addField('key', $this->buildKey($documents[$i]));		
+			$ids[$i] = $item->id;
+			
+			$i++;
 		}
 
 		try {
-			$response = @ $this->getClient()->ping();
+			$params = JComponentHelper::getParams("com_jsolrindex", true);
 			
-			$this->getClient()->addDocuments($documents);
+			if (!$params) {
+				return;
+			}
 
-			$this->getClient()->deleteByQuery($this->getDeleteQueryById($ids));
+			$url = $params->get('host');
 			
-			$this->getClient()->commit();
+			if ($params->get('username') && $params->get('password')) {
+				$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
+			}
+
+			$solr = new Apache_Solr_Service($url, $params->get('port'), $params->get('path'));
+
+			$solr->deleteByQuery($this->getDeleteQueryById($ids));
+			
+			$solr->addDocuments($documents);
+			
+			$solr->commit();
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 			
 			throw $e;
 		}
-	}
-	
-	public function getClient()
-	{
-		return $this->_client;
-	}
-	
-	public function getOption()
-	{
-		return $this->_option;
 	}
 }

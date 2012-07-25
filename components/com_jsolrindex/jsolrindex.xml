@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="component" version="2.5" method="upgrade">
+	<name>com_jsolrindex</name>
+	<creationDate>2012-06-21</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.3.0</version>
+	<description>COM_JSOLRINDEX_XML_DESCRIPTION</description>
+
+	<scriptfile>script.php</scriptfile>
+
+    <install><sql></sql></install>
+    <uninstall><sql></sql></uninstall>
+	
+	<files folder="site">
+		<filename>jsolrindex.php</filename>
+	</files>
+
+ 	<languages folder="site">
+ 		<language tag="en-GB">language/en-GB/en-GB.com_jsolrindex.ini</language>
+ 	</languages>	
+	    
+    <media destination="com_jsolrindex">
+    	<folder>js</folder>
+    	<folder>css</folder>
+    </media>
+    	
+	<administration>
+	    <files folder="admin">
+	    	<folder>models</folder>
+	    	<folder>views</folder>
+	    	<folder>helpers</folder>
+	    	<folder>lib</folder>
+	    	<filename>controller.php</filename>
+	    	<filename>jsolrindex.php</filename>
+	    	<filename>ignore.txt</filename>	    	
+	    	<filename>configuration.php</filename>
+	    	<filename>jsolr_crawler.php</filename>
+	    	<filename>test.odt</filename>
+	    </files>
+	    
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB/en-GB.com_jsolrindex.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_jsolrindex.sys.ini</language>
+		</languages>
+	</administration>	
+</extension>
