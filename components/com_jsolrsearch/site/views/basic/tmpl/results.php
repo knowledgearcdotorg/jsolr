@@ -29,7 +29,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-$this->assignRef("results", $this->get("Results"));
+$this->assignRef("items", $this->get("Items"));
 
-echo $this->loadResultsTemplate($this->get("FilterOption"));
+echo $this->loadResultsTemplate();
 ?>

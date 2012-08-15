@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="component" version="2.5" method="upgrade">
+	<name>com_jsolrsearch</name>
+	<creationDate>2012-07-26</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.3.0</version>
+	<description>COM_JSOLRSEARCH_XML_DESCRIPTION</description>
+
+	<scriptfile>script.php</scriptfile>
+
+    <install><sql></sql></install>
+    <uninstall><sql></sql></uninstall>
+	
+	<files folder="site">	
+    	<folder>models</folder>
+    	<folder>views</folder>
+    	<folder>helpers</folder>
+    	<filename>controller.php</filename>
+    	<filename>jsolrsearch.php</filename>
+		<filename>router.php</filename>
+	</files>
+
+ 	<languages folder="site">
+ 		<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
+ 	</languages>
+
+    <media destination="com_jsolrsearch">
+    	<folder>js</folder>
+    	<folder>css</folder>
+    	<folder>images</folder>
+    </media>
+
+	<administration>
+	    <files folder="admin">
+	    	<folder>elements</folder>
+	    	<folder>extensions</folder>
+	    	<folder>helpers</folder>
+	    	<folder>lib</folder> 
+	    	<folder>models</folder>
+	    	<folder>views</folder>  	
+	    	<filename>controller.php</filename>
+	    	<filename>jsolrsearch.php</filename>
+	    	<filename>configuration.php</filename>
+	    </files>
+	    
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.sys.ini</language>
+		</languages>
+	</administration>	
+</extension>

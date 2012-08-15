@@ -1,9 +1,8 @@
 <?php
 /**
- * @author		$LastChangedBy: spauldingsmails $
- * @paackage	Wijiti
- * @subpackage	JSolr
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2011, 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -36,39 +35,52 @@ jimport('joomla.language.helper');
 jimport('joomla.utilities.arrayhelper');
 
 abstract class JSolrSearchPlugin extends JPlugin 
-{
-	/**
-	 * Constructor
-	 *
-	 * @param 	object $subject The object to observe
-	 * @param 	array  $config  An array that holds the plugin configuration
-	 * @param 	string  $name  The plugin name.
-	 * @since 1.5
-	 */
-	public function __construct(&$subject, $config)
-	{
+{	
+	protected $highlighting = array();
+	
+	public function __construct(&$subject, $config = array()) 
+	{	
 		parent::__construct($subject, $config);
-		$this->set("option", JArrayHelper::getValue($config, "option"));
 		
-		$this->loadLanguage(null, JPATH_ADMINISTRATOR);
+		$this->loadLanguage();
 	}
 	
 	/**
-	 * Returns a list of Solr DISMAX query fields when triggered.
+	 * Lists fields and the boosts to associate with each.
 	 * 
-	 * Use this event to define boost fields.
-	 * 
-	 * @return array An array of DISMAX query fields.
+	 * Override this method to add more query field values.
 	 */
-	public abstract function onAddQF();
-	
-	/**
-	 * Returns a list of Solr highlight fields when triggered.
-	 * 
-	 * @return array An array of highlight fields.
-	 */
-	public abstract function onAddHL();
+	public function onJSolrSearchQFAdd()
+	{	
+		$qf = array();
 
+		foreach ($this->get('params')->toArray() as $key=>$value) {
+				if (strpos($key, "boost_") === 0) {
+					$qfKey = str_replace("boost_", "", $key);
+					$qf[$qfKey] = floatval($value);
+				}
+		}
+
+		return $qf;
+	}
+
+	/**
+	 * Lists fields that have highlighting applied on the found text. 
+	 */
+	public function onJSolrSearchHLAdd()
+	{
+		return $this->highlighting;
+	}
+	
+	public function onJSolrSearchExtensionGet()
+	{	
+		static $extensions = array();
+		
+		$extensions[$this->get('extension')] = JText::_("PLG_JSOLRSEARCH_".strtoupper($this->get('extension')));
+	
+		return $extensions;
+	}
+	
 	/**
 	 * Returns a single filter option returned within an array when triggered.
 	 * 
@@ -87,6 +99,7 @@ abstract class JSolrSearchPlugin extends JPlugin
 	 * by a comma. 
 	 * 
 	 * @return array A single option returned within an array.
+	 * @deprecated Use onJSolrSearchExtensionGet instead.
 	 */
 	public function onFilterOptions()
 	{		
@@ -171,8 +184,14 @@ abstract class JSolrSearchPlugin extends JPlugin
 	 * 
 	 * @return stdClass A generic result object.
 	 */
-	public abstract function onFormatResult($document, $hl, $hlFragSize, $lang);
+	public function onJSolrSearchResultPrepare($document, $hl, $hlFragSize, $lang)
+	{
+		return $document;
+	}
 	
+	/**
+	 * @deprecated
+	 */
 	protected function getTemplateDirectoryName()
 	{
 		return str_ireplace("jsolr", "", $this->get("_name"));

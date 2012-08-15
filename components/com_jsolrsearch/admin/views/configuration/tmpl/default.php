@@ -2,10 +2,9 @@
 /**
  * A form view for adding/editing JSolrSearch configuration.
  * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -32,106 +31,46 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+$testUrl = new JURI(JURI::root().'administrator/index.php');
+$testUrl->setVar('option', 'com_jsolrsearch');
+$testUrl->setVar('task', 'test');
+$testUrl->setVar('format', 'raw');
+
 $application = JFactory::getApplication("administrator");
 
 $document = JFactory::getDocument();
 
 $document->addScriptDeclaration(
-"
-var adminOptions = new Object({
-	testURL : \"".$application->getSiteURL()."administrator/index.php?option=com_jsolrsearch&task=test&format=raw\"
+'
+var jsolrsearch = new Object({
+	options : {
+		jsolrSearchTest : {
+			url : "'.(string)$testUrl.'"
+		}
+	},	
+	language : {
+		pleaseWait : "'.JText::_("Please wait...").'",
+		failed : "'.JText::_("Connection failed.").'",
+		cancelling : "'.JText::_("Cancelling...").'",
+		cancelled : "'.JText::_("Cancelled.").'"
+	}
 });
-");
-
-$document->addScript($application->getSiteURL() . "media/com_jsolrsearch/js/admin/jsolrsearch.js");
-
-JToolBarHelper::title(JText::_('JSolrSearch Configuration'), 'config.png');
-
-JToolBarHelper::save();
-JToolBarHelper::cancel();
+');
 ?>
 
-<form autocomplete="off" name="adminForm" method="post" action="index.php">
-	<div id="config-document">
-		<div id="page-site" style="display: block;">
-			<table class="noshow">
-				<tbody>
-					<tr>
-						<td width="65%">
-							<fieldset class="adminform">
-								<legend>Component Settings</legend>
-	
-								<table cellspacing="1" class="admintable">
-									<tbody>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Host name</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("host"); ?>" size="50" id="host" name="host" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Port</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("port"); ?>" size="50" id="port" name="port" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Path</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("path"); ?>" size="50" id="path" name="path" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Username</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("username"); ?>" size="50" id="username" name="username" class="text_area"/>
-											</td>
-										</tr>
-										<tr>
-											<td class="key">
-												<span class="editlinktip hasTip">Password</span>
-											</td>
-											<td>
-												<input type="text" value="<?php echo $this->getModel()->getParam("password"); ?>" size="50" id="password" name="password" class="text_area"/>
-											</td>
-										</tr>
-									</tbody>																	
-								</table>
-							</fieldset>
-							
-							<fieldset class="adminform">
-								<legend>Index Management</legend>
-	
-								<table cellspacing="1" class="admintable">
-									<tbody>
-										<tr>
-											<td>
-												<button id="testButton"><?php echo JText::_("Test connection"); ?></button>
-											</td>
-											<td style="vertical-align: middle;">
-												<div id="testMessage"></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</fieldset>							
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+<div id="element-box">
+	<div class="m">
+		<fieldset>
+			<legend>Search Management</legend>
+
+			<div id="jsolrSearchManagementMessage">&nbsp;</div>
+			
+			<div id="jSolrSearchManagementButtons">
+				<button id="jsolrSearchTest"><?php echo JText::_("Test connection"); ?></button>
+			</div>
+		</fieldset>
+
+		<div class="clr"></div>
 	</div>
-	<div class="clr"></div>
-	
-	<input type="hidden" value="com_jsolrsearch" name="option"/>
-	<input type="hidden" value="" name="task"/>
-	<input type="hidden" value="configuration" name="view"/>
-</form>
+	<noscript>Warning! JavaScript must be enabled for proper operation of the Administrator backend.</noscript>
+</div>

@@ -2,10 +2,9 @@
 /**
  * A model that provides configuration options for JSolrSearch.
  * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -33,76 +32,35 @@
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.registry.registry');
-jimport('joomla.filesystem.file');
+jimport('joomla.application.component.model');
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
 
 class JSolrSearchModelConfiguration extends JModel
 {	
-	var $configuration;
-	
-	public function __construct()
-	{
-		parent::__construct();
-
-		require_once($this->getConfig());
-		
-		$this->configuration = new JSolrSearchConfig();		
-	}
-	
-	/**
-	 * Gets the configuration file path.
-	 * 
-	 * @return The configuration file path.
-	 */
-	public function getConfig()
-	{
-		return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php";
-	}
-	
 	public function getHost()
 	{
-		$url = $this->configuration->host;
+		$params = JComponentHelper::getParams($this->option);
 		
-		if ($this->configuration->username && $this->configuration->password) {
-			$url = $this->configuration->username . ":" . $this->configuration->password . "@" . $url;
+		$url = $params->get('host');
+		
+		if ($params->get('username') && $params->get('password')) {
+			$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 		}
 		
 		return $url;
 	}
-
-	public function getParam($name)
-	{
-		return $this->configuration->$name;
-	}
-	
-	public function save($array)
-	{	
-		require_once($this->getConfig());
-		
-		$config = new JRegistry('solrconfig');
-		$config_array = array();
-
-		$config_array["host"] = JArrayHelper::getValue($array, "host");
-		$config_array["port"] = JArrayHelper::getValue($array, "port");		
-		$config_array["username"] = JArrayHelper::getValue($array, "username");
-		$config_array["password"] = JArrayHelper::getValue($array, "password");
-		$config_array["path"] = JArrayHelper::getValue($array, "path");
-		$config->loadArray($config_array);
-		
-		JFile::write($this->getConfig(), $config->toString("PHP", "solrconfig", array("class"=>"JSolrSearchConfig")));
-
-		$this->configuration = new JSolrSearchConfig();
-	}
 	
 	public function test()
 	{
-		$client = new Apache_Solr_Service($this->getHost(), $this->configuration->port, $this->configuration->path);
+		$params = JComponentHelper::getParams($this->option);
+		
+		$client = new Apache_Solr_Service($this->getHost(), $params->get('port'), $params->get('path'));
 
 		$response = $client->ping();
 		
 		if ($response === false) {
-			$this->setError(JText::_("COM_JSOLRINDEX_PING_FAILED"));
+			$this->setError(JText::_("COM_JSOLRSEARCH_PING_FAILED"));
 			return false;
 		}
 

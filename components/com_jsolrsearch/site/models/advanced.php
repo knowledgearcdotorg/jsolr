@@ -2,10 +2,9 @@
 /**
  * A model that provides advanced search capabilities.
  * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -35,16 +34,16 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
+jimport('joomla.application.component.modelform');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
 require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
 
-if (!defined("JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH"))
-	define("JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH", JPATH_COMPONENT.DS.'views'.DS.'advanced'.DS.'tmpl'.DS.'advanced.xml');
-
-class JSolrSearchModelAdvanced extends JModel
-{	
+class JSolrSearchModelAdvanced extends JModelForm
+{
+    protected $view_item = 'advanced';
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -224,35 +223,60 @@ class JSolrSearchModelAdvanced extends JModel
 		return "";
 	}
 	
-	public function getForm()
+	protected function populateState()
 	{
-		$path = $this->_getCustomFormPath();
+		$app = JFactory::getApplication();
 		
-		$form = new JParameter('', $path);
+		// Load the parameters.
+		$params = $app->getParams();
+		$this->setState('params', $params);
+	}
+	
+	/**
+	 * Method to get the advanced search form.
+	 *
+	 * @param	array	$data		An optional array of data for the form to interrogate.
+	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
+	 * @return	JForm				A JForm object on success, false on failure.
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		$context = $this->get('option').'.'.$this->getName();
+		$form = $this->loadForm($context, $this->getName(), array('control' => 'jform', 'load_data' => $loadData));
+
+		if (empty($form)) {
+			return false;
+		}
+
 		return $form;
 	}
 	
+	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
+	{
+		$form->loadFile($this->_getCustomFormPath(), false);
+		parent::preprocessForm($form, $data, $group);
+	}
+
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelForm::loadFormData()
+	 */
+	protected function loadFormData()
+	{
+		$context = $this->get('option').'.edit.'.$this->getName().'.data';
+		$data = (array)JFactory::getApplication()->getUserState($context.'.data', array());
+		
+		return $data;
+	}
+
 	private function _getCustomFormPath()
 	{
 		$path = null;
 
 		if (JRequest::getString("o")) {
-			$application = JFactory::getApplication("site");
-			
-			$option = JArrayHelper::getValue(explode("_", JRequest::getWord("o"), 2), 1);
-			//$themePath = JPATH_THEMES.DS.$application->getTemplate().DS."html".DS."com_jsolrsearch";	
+			$extension = JArrayHelper::getValue(explode("_", JRequest::getCmd("o"), 2), 1);
 
-			//$overridePath = $themePath.DS."plugins".DS."jsolr".$option.DS."advanced.xml";
-			$path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$option.DS."views".DS."advanced", "advanced.xml");
-		
-			// check the html override path first.
-			/*if (JFile::exists($overridePath)) {
-				$path = $overridePath;
-			} */
-		}
-		
-		if (!$path) {
-			$path = JSOLR_SEARCH_DEFAULT_ADVANCED_FORM_PATH;
+			$path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS."forms", "advanced.xml");
 		}
 		
 		return $path;

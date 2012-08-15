@@ -41,12 +41,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 
 class JSolrSearchController extends JController 
-{
-	function __construct()
-	{
-		parent::__construct();
-	}
-	
+{	
 	function advanced()
 	{
 		$model = $this->getModel("advanced");
@@ -60,7 +55,7 @@ class JSolrSearchController extends JController
 		$this->setRedirect($model->buildQueryURL(JRequest::get()));
 	}
 
-	function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$default = "basic";
 		
@@ -82,6 +77,6 @@ class JSolrSearchController extends JController
 			$view->setLayout("results");
 		}
 		
-		$view->display();
+		return parent::display($cachable, $urlparams);    	
 	}
 }

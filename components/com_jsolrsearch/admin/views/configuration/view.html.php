@@ -2,10 +2,9 @@
 /**
  * A view for configuring the JSolrSearch component's settings.
  * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -39,7 +38,23 @@ class JSolrSearchViewConfiguration extends JView
     function display($tpl = null)
     {
     	JHTML::_('behavior.mootools');
+    	
+    	$document = JFactory::getDocument();
 
+    	$document->addScript(JURI::root() . "media/com_jsolrsearch/js/admin/jsolrsearch.js");        
+    	
+    	$this->addToolbar();
+
+		JSolrSearchHelper::addSubmenu(JRequest::getCmd('view', 'configuration'));
+		    	
         parent::display($tpl);
+    }
+    
+    protected function addToolbar()
+    {
+    	JToolBarHelper::title(JText::_('Configuration'), 'config.png');
+    	
+		JToolBarHelper::preferences('com_jsolrsearch');
+		JToolBarHelper::divider();
     }
 }

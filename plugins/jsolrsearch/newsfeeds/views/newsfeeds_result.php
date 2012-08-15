@@ -30,7 +30,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <div class="jsolr-result">
 	<div class="jsolr-result-title"><a href="<?php echo $this->item->href; ?>"><?php echo $this->item->title; ?></a></div>
-	
+		
 	<?php if ($this->item->created) : ?>
 	<div class="jsolr-result-date">
 		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?>:</span><?php echo $this->item->created; ?>
@@ -45,4 +45,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	
 	<div class="jsolr-result-description"><?php echo $this->item->snippet; ?></div>
 	<div class="jsolr-result-location"><?php echo $this->item->category; ?></div>
+	<?php if (isset($this->item->link)) : ?>
+	<div class="jsolr-result-link"><a href="<?php echo $this->item->link; ?>"><?php echo $this->item->link; ?></a></div>
+	<?php endif; ?>
 </div>

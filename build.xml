@@ -5,9 +5,10 @@
 	<property	name="dest.administrator.components"	value="${dest.administrator}/components"/>
 	<property	name="dest.administrator.languages"		value="${dest.administrator}/language"/>
 	<property	name="dest.components"					value="${dest}/components"/>
-	<property	name="dest.languages"					value="${dest}/languages"/>
+	<property	name="dest.languages"					value="${dest}/language"/>
 	<property 	name="dest.media" 						value="${dest}/media"/>
 	<property	name="dest.plugins"						value="${dest}/plugins"/>
+	<property	name="dest.modules"						value="${dest}/modules"/>
 	
 	<target name="update" description="Updates all JSolr extensions in an existing Joomla install.">
 		<echo message="Updating all extensions in the Joomla! environment."/>
@@ -23,18 +24,21 @@
         	<property	name="dest.languages"					value="${dest.languages}"/>
 			<property 	name="dest.media" 						value="${dest.media}"/>
 			<property 	name="dest.plugins" 					value="${dest.plugins}"/>
+			<property 	name="dest.modules" 					value="${dest.modules}"/>
         </subant>
 	</target>
 	
 	<target name="package" description="Packages all JSolr extensions for easy installation into Joomla!.">
 		<echo message="Packaging all extensions."/>
 		
+		<mkdir dir="${package.dest}/jsolr"/>
+		
 		<subant target="package">
 			<fileset dir=".">
 				<include name="**/**/build_*.xml"/>
 			</fileset>
 			<property	name="src"			value="${src}"/>
-			<property	name="package.dest"	value="${package.dest}"/>
+			<property	name="package.dest"	value="${package.dest}/jsolr"/>
         </subant>
 	</target>
 	

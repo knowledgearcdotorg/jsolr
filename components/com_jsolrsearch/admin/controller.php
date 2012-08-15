@@ -2,9 +2,9 @@
 /**
  * A controller for managing Solr searching.
  * 
- * @author		$LastChangedBy$
- * @package		JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -33,49 +33,31 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
-class JSolrSearchController extends JController 
+class JSolrSearchController extends JController
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
+	protected $default_view = 'configuration';
 
-	public function save()
-	{
-		$model = $this->getModel(JRequest::getWord("view"));
-		
-		$model->save(JRequest::get("post"));
-
-		$view = $this->getView(JRequest::getWord("view"), JRequest::getWord("format", "html"));
-		$view->setModel($model, true);
-		
-		$url = new JURI("index.php");
-		$url->setVar("option", JRequest::getWord("option"));
-		$url->setVar("view", JRequest::getWord("view"));
-		
-		$this->setRedirect($url->toString(), JText::_("Configuration successfully saved."));
-	}
-	
 	public function test()
 	{
-		$model = $this->getModel("configuration");
+		$model = $this->getModel($this->default_view);
 		
 		if ($success = $model->test()) {
-			$msg = JText::_("Ping successful");
+			$msg = JText::_(strtoupper('com_'.$this->get('name').'_'.JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
 		} else {
 			$msg = JText::_($model->getError());
 		}
+
+		$search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
+		$replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
+		$msg = str_replace($search, $replace, $msg);
 		
 		echo json_encode(array("success"=>$success, "message"=>$msg));
 	}
-	
+
 	function display()
 	{
-		$model = $this->getModel(JRequest::getWord("view"));
+		parent::display();
 		
-		$view = $this->getView(JRequest::getWord("view"), JRequest::getWord("format", "html"));
-		$view->setModel($model, true);
-		
-		$view->display();
+		return $this;
 	}
 }

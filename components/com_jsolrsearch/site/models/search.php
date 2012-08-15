@@ -2,10 +2,9 @@
 /**
  * A model that provides search capabilities.
  * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -34,28 +33,24 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
+jimport('joomla.application.component.modellist');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
-require_once(JPATH_ROOT.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'pagination.php');
 
 require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."configuration.php");
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."query.php");
 
-class JSolrSearchModelSearch extends JModel
+class JSolrSearchModelSearch extends JModelList
 {
 	var $query;
 	
-	var $total;
+	protected $total;
 	
-	var $qTime = 0;
-	
-	var $pagination;
+	protected $qTime = 0;
 	
 	var $dateRange;
-	
-	var $filterOption;
 	
 	var $lang;
 	
@@ -81,7 +76,7 @@ class JSolrSearchModelSearch extends JModel
 	{
 		$url = new JURI("index.php");
 
-		$url->setVar("option", "com_jsolrsearch");
+		$url->setVar("option", $this->get('option'));
 		$url->setVar("view", "basic");
 		
 		foreach ($params as $key=>$value) {
@@ -116,8 +111,6 @@ class JSolrSearchModelSearch extends JModel
 		
 		$this->_setDateRange($from, $to);
 		
-		$this->_setFilterOption(JArrayHelper::getValue($params, "o"));
-
 		$lang = JArrayHelper::getValue($params, "lr", null);
 		
 		if (!$lang) {
@@ -133,11 +126,6 @@ class JSolrSearchModelSearch extends JModel
 		$this->dateRange = new stdClass();
 		$this->dateRange->from = $from;
 		$this->dateRange->to = $to;
-	}
-	
-	private function _setFilterOption($option)
-	{
-		$this->filterOption = $option;
 	}
 	
 	private function _setParams($params)
@@ -160,38 +148,27 @@ class JSolrSearchModelSearch extends JModel
 		return $this->dateRange;
 	}
 	
-	public function getFilterOption()
+	public function getItems()
 	{
-		return $this->filterOption;
-	}
-	
-	public function getResults()
-	{		
+		$hl = array();
+		$filters = array();
 		$list = array();
+
+		$params = JComponentHelper::getParams($this->get('option'), true);
 		
 		try {
-			$configuration = new JSolrSearchConfig();
-
 			JPluginHelper::importPlugin("jsolrsearch");
 			$dispatcher =& JDispatcher::getInstance();
-
-
-			$filters = array();
-			$hl = array("content");
 			
-			$filter = $this->getDateQuery();
-
-			if ($filter) {
+			if ($filter = $this->getDateQuery()) {
 				$filters[] = $filter;
 			}
 			
-			$filter = $this->getFilterOptionQuery();
-			
-			if ($filter) {
+			if ($filter = $this->_getExtensionFilter()) {
 				$filters[] = $filter;
 			}
 
-			foreach ($dispatcher->trigger("onAddFilterQuery", array($this->getParams(), $this->getLang())) as $result) {
+			foreach ($dispatcher->trigger("onAddFQ", array($this->getParams(), $this->getLanguage(false))) as $result) {
 				foreach ($result as $item) {
 					if ($item) {
 						$filters[] = $item;
@@ -200,22 +177,22 @@ class JSolrSearchModelSearch extends JModel
 			}
 
 			// Get Highlight fields for results. 
-			foreach ($dispatcher->trigger('onAddHL', array()) as $result) {
+			foreach ($dispatcher->trigger('onJSolrSearchHLAdd', array()) as $result) {
 				foreach ($result as $item) {
-					$hl[] = $item.$this->getLang();
+					$hl[] = $item.'_'.$this->getLanguage(false);
 				}
 			}
 			
 			// get query filter params and boosts from plugin.
-			$qf = $dispatcher->trigger('onAddQF', array());
+			$qf = $dispatcher->trigger('onJSolrSearchQFAdd', array());
 
-			$host = $configuration->host;
+			$host = $params->get('host');
 			
-			if ($configuration->username && $configuration->password) {
-				$host = $configuration->username . ":" . $configuration->password . "@" . $url;
+			if ($params->get('username') && $params->get('password')) {
+				$host = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 			}
 
-			$client = new Apache_Solr_Service($host, $configuration->port, $configuration->path);
+			$client = new Apache_Solr_Service($host, $params->get('port'), $params->get('path'));
 			$query = Apache_Solr_Query_Factory($this->getQuery(), $client)
 				->useQueryParser("dismax")
 				->retrieveFields("*,score")
@@ -225,30 +202,31 @@ class JSolrSearchModelSearch extends JModel
 				->offset($this->getState("limitstart"));
 
 			if (count($qf)) {
-				$query->queryFields($this->getQFQuery($qf));
-			}		
-			
+				$query->queryFields($this->_buildQF($qf));
+			}
+
 			$response = $query->search();
 
 			$headers = json_decode($response->getRawResponse())->responseHeader;
 
-			$this->_setTotal($response->response->numFound);
-			$this->_setQTime($headers->QTime);
-			
-			if(intval($response->response->numFound) > 0) {
+			$this->set('total', $response->response->numFound);
+			$this->set('qTime', $headers->QTime);
+
+			if (intval($response->response->numFound) > 0) {
 				$i = 0;
 				
-				foreach ($response->response->docs as $document) {
-					$array = $dispatcher->trigger('onFormatResult', array(
+				foreach ($response->response->docs as $document) {					    				
+					$array = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
 						$document, 
 						$response->highlighting, 
 						JArrayHelper::getValue($query->getParams(), "fl.fragsize"),
-						$this->getLang())
+						$this->getLanguage(false))
 					);
 
-					// When a plugin and the document's option value match, 
+					// @todo the following loop is causing problems.
+					// When a plugin and the document's extension value match, 
 					// the plugin will return a result. Therefore, only one 
-					// result should be returned per document.  
+					// result should be returned per document.
 					foreach ($array as $result) {
 						if (count($result)) {
 							$list[$i] = $result;
@@ -260,28 +238,18 @@ class JSolrSearchModelSearch extends JModel
 							if ($list[$i]->modified) {
 								$list[$i]->modified = $this->_localizeDateTime($list[$i]->modified);
 							}
-	
+
 							$i++;
 						}
-					}					
+					}
 				}
 			}
         } catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 		}
-		
+
 		return $list;
-	}
-	
-	private function _setTotal($total)
-	{
-		$this->total = $total;
-	}
-	
-	private function _setQTime($qTime)
-	{
-		$this->qTime = $qTime;
 	}
 	
 	public function getTotal()
@@ -293,16 +261,7 @@ class JSolrSearchModelSearch extends JModel
 	{
 		return floatval($this->qTime / 1000);
 	}
-	
-	public function getPagination()
-	{
-		if (empty($this->pagination)) {
-			$this->pagination = new JSolrSearchPagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit'));
-		}
 
-		return $this->pagination;
-	}
-	
 	public function getDateQuery()
 	{	
 		$query = "";
@@ -353,34 +312,15 @@ class JSolrSearchModelSearch extends JModel
 	}
 	
 	/**
-	 * Get an array of query filter values.
+	 * Get's the language, either from the item or from the Joomla environment.
 	 * 
-	 * Query filters that have multiple values are re-weighted and the boosts 
-	 * are updated. 
+	 * @param bool $includeRegion True if the region should be included, false 
+	 * otherwise. E.g. If true, en-AU would be returned, if false, just en 
+	 * would be returned.
 	 * 
-	 * @param mixed $qf
+	 *  @return string The language code.
 	 */
-	private function _getQF($qf)
-	{
-		$array = array();
-		
-		foreach ($qf as $key=>$value) {
-			if (!array_key_exists($key, $array)) {
-				$array[$key . $this->getLang()] = array();
-			}
-
-			$array[$key . $this->getLang()][] = $value;
-		}
-		
-		return $array;
-	}
-	
-	/**
-	 * Gets the modified language code for use by the Solr search engine.
-	 * 
-	 * The code will look like; _xx_XX.
-	 */
-	public function getLang()
+	protected function getLanguage($includeRegion = true)
 	{
 		$lang = $this->lang;
 
@@ -388,52 +328,84 @@ class JSolrSearchModelSearch extends JModel
 		if (!$lang || count(explode("-", $lang)) < 2) {
 			$lang = JLanguageHelper::detectLanguage();
 		}
-
-		if ($lang) {
-			$lang = "_" . $lang;
-		}
 		
-		return str_replace("-", "_", $lang);
+		if ($includeRegion) {
+			return $lang;
+		} else {
+			$parts = explode('-', $lang);
+			
+			// just return the xx part of the xx-XX language.
+			return JArrayHelper::getValue($parts, 0);
+		}
 	}
 	
 	private function _localizeDateTime($dateTime)
 	{
 		$date = JFactory::getDate($dateTime);
 		
-		return $date->toFormat(JText::_("DATE_FORMAT_LC2"));
+		return $date->format(JText::_("DATE_FORMAT_LC2"));
 	}
 	
-	public function getFilterOptionQuery()
-	{
-		$query = "";
+	/**
+	 * Gets a list of extensions as a Solr query filter.
+	 * 
+	 * Only items which have the same extension parameter as the querystring 
+	 * "o" will be filtered if the parameter is specified, otherwise all items 
+	 * which match any of the enabled plugins will be filtered.
+	 * 
+	 * Plugins must be enabled and have the event onJSolrSearchExtensionGet implemented.
+	 */
+	private function _getExtensionFilter()
+	{	
+		$extensions = array();
 		
-		if ($this->getFilterOption()) {
-			$filterOptions = explode(",", $this->getFilterOption());
-		
-			$array = array();
-	
-			foreach ($filterOptions as $filterOption) {
-				if ($filterOption) {
-					$array[] = "option:".$filterOption;
-				}
-			}
+		$query = "";		
 
-			if (count($array) > 1) {
-				$query = "(" . implode(" OR ", $array) . ")";
-			} else {
-				$query = implode("", $array);
+		if (JRequest::getCmd("o")) {
+			$extensions[] = JRequest::getCmd("o");
+		} else {
+			JPluginHelper::importPlugin("jsolrsearch");
+			$dispatcher =& JDispatcher::getInstance();
+			
+			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
+				$extensions = array_merge($extensions, array_keys($result));
 			}
+		}
+	
+		$array = array();
+
+		foreach ($extensions as $extension) {
+			if ($extension) {
+				$array[] = "extension:".$extension;
+			}
+		}
+
+		if (count($array) > 1) {
+			$query = "(" . implode(" OR ", $array) . ")";
+		} else {
+			$query = implode("", $array);
 		}
 
 		return $query;
 	}
 	
-	public function getQFQuery($qf)
+	/**
+	 * Build a query filter string from an arrya of query filters.
+	 * 
+	 * @param array $qf An array of query filters.
+	 */
+	private function _buildQF($qf)
 	{
 		$array = array();
 
-		foreach ($qf as $item) {
-			$array = array_merge($array, $this->_getQF($item));
+		foreach ($qf as $item) {			
+			foreach ($item as $key=>$value) {
+				if (!array_key_exists($key, $array)) {
+					$array[$key . '_' . $this->getLanguage(false)] = array();
+				}
+	
+				$array[$key . '_' . $this->getLanguage(false)][] = $value;
+			}
 		}
 		
 		$reweighted = "";

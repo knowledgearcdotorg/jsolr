@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -33,7 +32,9 @@ jimport( 'joomla.application.component.view');
  
 class JSolrSearchViewAdvanced extends JView
 {
-    function display($tpl = null)
+	protected $form;
+	
+    public function display($tpl = null)
     {
 		JHTML::_('behavior.mootools');
     	
@@ -41,10 +42,9 @@ class JSolrSearchViewAdvanced extends JView
 
     	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
     	$document->addScript(JURI::base()."media/com_jsolrsearch/js/site/jsolrsearch.js");
-    	
-		$params = JComponentHelper::getParams('com_jsolrsearch');
-
-		$this->assignRef('params', $params);
+		
+		$this->form	= $this->get('Form');
+		$this->state = $this->get('State');
 		
 		parent::display($tpl);
     }

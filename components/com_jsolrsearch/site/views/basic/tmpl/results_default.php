@@ -1,9 +1,8 @@
 <?php
 /**
- * @version		$LastChangedBy: spauldingsmails $
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2010-2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -48,7 +47,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	
 	<div class="jsolr-results">
 	<?php	
-	foreach ($this->results as $item) :
+	foreach ($this->items as $item) :
 		echo $this->loadResultTemplate($item);
 	endforeach;
 	?>
@@ -69,6 +68,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<?php echo JHTML::_('form.token'); ?>
 </form>	
 	
-<div class="jsolr-pagination">
+<div class="pagination">
 	<?php echo $this->get("Pagination")->getPagesLinks(); ?>
 </div>

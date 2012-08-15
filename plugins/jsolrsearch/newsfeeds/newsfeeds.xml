@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="jsolrsearch">
+	<name>plg_jsolrsearch_newsfeeds</name>
+	<creationDate>2012-08-07</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.3.0</version>
+	<description>PLG_JSOLRSEARCH_NEWSFEEDS_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="newsfeeds">newsfeeds.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_newsfeeds.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_newsfeeds.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="boost_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
+				<field name="boost_body" type="text" default="15.0" label="Content Boost" description="Boost the content field's relevancy."/>
+				<field name="boost_category" type="text" default="2.0" label="Category Boost" description="Boost the category's relevancy."/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

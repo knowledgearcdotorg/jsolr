@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<form>
-	<title>COM_JSOLRSEARCH_ADVANCED_PRODUCT_SEARCH_TITLE</title>
-	<params addpath="/plugins/jsolrsearch/virtuemart/elements">
-		<param name="p" type="jsolrpricerange" default="" label="COM_JSOLRSEARCH_ADVANCED_SEARCH_PRICERANGE_LABEL" description="COM_JSOLRSEARCH_ADVANCED_SEARCH_PRICERANGE_DESCRIPTION"/>
-	</params>
-</form>
