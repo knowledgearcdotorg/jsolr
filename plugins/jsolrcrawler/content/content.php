@@ -58,9 +58,9 @@ class plgJSolrCrawlerContent extends JSolrCrawlerPlugin
 
 		$record->summary = self::prepareContent($record->summary, $record->params);
 		$record->body = self::prepareContent($record->body, $record->params);
-		
-		$doc->addField("summary_$lang", strip_tags($record->summary));
-		$doc->addField("body_$lang", strip_tags($record->body));	
+
+		$doc->addField("body_$lang", strip_tags($record->summary));	
+		$doc->addField("body_$lang", strip_tags($record->body));
 		
 		foreach (explode(',', $record->metakey) as $metakey) {
 			$doc->addField("metakeywords_$lang", trim($metakey));
