@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+        <layout title="COM_JSOLRSEARCH_ADVANCED_LAYOUT_TITLE" option="com_jsolrsearch_advanced_view_default_option">
+                <message>
+                        <![CDATA[COM_JSOLRSEARCH_ADVANCED_LAYOUT_DESC]]>
+                </message>
+        </layout>
+</metadata>
