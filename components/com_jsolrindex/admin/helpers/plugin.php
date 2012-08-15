@@ -152,9 +152,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 	}
 	
 	public function onIndex()
-	{		
-		JLog::add('JSolrCrawlerPlugin::onIndex', JLog::INFO);
-
+	{
 		$items = $this->getItems();
 
 		$ids = array();
@@ -182,7 +180,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 			$documents[$i]->addField('view', $this->get('view'));
 			$documents[$i]->addField('lang', $this->getLanguage($item));
 			$documents[$i]->addField('key', $this->buildKey($documents[$i]));		
-			$ids[$i] = $item->id;
+			$ids[$i] = $item->key;
 			
 			$i++;
 		}

@@ -28,7 +28,7 @@
 	</target>
 	
 	<target name="package" description="Creates a JSolr Index component package.">
-		<echo message="Packaging JSolr Index component ${src}."/>
+		<echo message="Packaging JSolr Index component."/>
 		<zip destfile="${package.dest}/com_jsolrindex.zip"
 		       basedir="${src}"
 		       update="true"
