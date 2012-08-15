@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolrCrawler Newsfeeds Plugin" default="" basedir=".">
+	<property name="dest.plugins.crawlers" value="${dest.plugins}/jsolrcrawler"/>
+	
+	<target name="update" description="Copies JSolr Index newsfeeds plugin to existing Joomla install.">
+		<echo message="Deploying JSolr Index newsfeeds plugin to Joomla! environment."/>
+		<copy todir="${dest.plugins.crawlers}/newsfeeds">
+			<fileset dir="${src}" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${dest.administrator.languages}">
+			<fileset dir="${src}/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="package" description="Creates a JSolr Index newsfeeds plugin package.">
+		<echo message="Packaging JSolr Index newsfeeds plugin."/>
+		<zip destfile="${package.dest}/plg_jsolrcrawler_newsfeeds.zip"
+		       basedir="${src}"
+		       update="true"
+		       excludes="build*.xml"/>
+	</target>
+</project>
