@@ -35,12 +35,7 @@
  */
 class modJSolrFilterHelper
 {
-	function __construct($params)
-	{
-		$this->params = $params;
-	}
-	
-	public function showFilter()
+	public static function showFilter()
 	{
 		if (trim(JRequest::getString("q", null))) {
 			return true;
@@ -49,9 +44,9 @@ class modJSolrFilterHelper
 		}
 	}
 	
-	function getDateLink($range)
+	public static function getDateLink($range)
 	{
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid"));
+		$url = modJSolrFilterHelper::getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid"));
 		$text = JText::_("MOD_JSOLRFILTER_".$range);	
 		
 		switch ($range) {
@@ -75,18 +70,18 @@ class modJSolrFilterHelper
 				break;				
 		}
 
-		if ($this->isDateRangeSelected($range)) {
+		if (modJSolrFilterHelper::isDateRangeSelected($range)) {
 			return JHTML::_("link", "#", $text);
 		} else {
 			return JHTML::_("link", $url->toString(), $text);
 		}
 	}
 	
-	function getCustomRangeLink()
+	public static function getCustomRangeLink()
 	{
 		$text = JText::_("MOD_JSOLRFILTER_CUSTOM_RANGE");
 		
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
+		$url = modJSolrFilterHelper::getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
 		
 		if (trim($url->getVar("dmin")) || trim($url->getVar("dmax"))) {
 			return $text;		
@@ -95,9 +90,9 @@ class modJSolrFilterHelper
 		}
 	}
 	
-	function isCustomRangeSelected()
+	public static function isCustomRangeSelected()
 	{
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
+		$url = modJSolrFilterHelper::getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax"));
 		
 		if (trim($url->getVar("dmin")) || trim($url->getVar("dmax"))) {
 			return true;		
@@ -106,9 +101,9 @@ class modJSolrFilterHelper
 		}
 	}
 	
-	function isDateRangeSelected($range)
+	public static function isDateRangeSelected($range)
 	{
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax", "qdr"));
+		$url = modJSolrFilterHelper::getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid", "dmin", "dmax", "qdr"));
 
 		$selected = false;
 		
@@ -139,7 +134,7 @@ class modJSolrFilterHelper
 		return $selected;
 	}
 	
-	function getFormURL($allowed = null)
+	public static function getFormURL($allowed = null)
 	{
 		$array = array("q", "lr", "option", "o", "Itemid");
 		
@@ -147,7 +142,7 @@ class modJSolrFilterHelper
 			$array = $allowed;
 		}
 		
-		$url = $this->getCleanedSearchURL($array);
+		$url = modJSolrFilterHelper::getCleanedSearchURL($array);
 
 		$url->setVar("task", "search");
 		
@@ -159,9 +154,9 @@ class modJSolrFilterHelper
 	 * 
 	 * @return array An array of filter option anchor tags.
 	 */
-	function getFilterOptions()
+	public static function getFilterOptions()
 	{
-		$url = $this->getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid"));
+		$url = modJSolrFilterHelper::getCleanedSearchURL(array("q", "lr", "option", "o", "view", "Itemid"));
 		
 		JPluginHelper::importPlugin("jsolrsearch");
 		$dispatcher =& JDispatcher::getInstance();
@@ -177,7 +172,7 @@ class modJSolrFilterHelper
 			$links[] = JHTML::_("link", JRoute::_($url->toString()), JText::_("MOD_JSOLRFILTER_OPTION_EVERYTHING"));
 		}
 		
-		foreach ($dispatcher->trigger('onFilterOptions', array()) as $options) {
+		foreach ($dispatcher->trigger('onJSolrSearchExtensionGet', array()) as $options) {
 			foreach ($options as $key=>$value) {
 				if ($key == $selected) {
 					$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
@@ -196,7 +191,7 @@ class modJSolrFilterHelper
 	 * 
 	 * The code will look like; xx-XX.
 	 */
-	public function getLang()
+	public static function getLang()
 	{
 		$lang = JRequest::getString("lr", null);
 
@@ -225,9 +220,9 @@ class modJSolrFilterHelper
 	 * 
 	 * @return JURI A url cleaned of any unnecessary query string values.
 	 */
-	public function getCleanedSearchURL($allowed)
+	public static function getCleanedSearchURL($allowed)
 	{
-		$url = new JURI($this->getSearchURL());
+		$url = new JURI(modJSolrFilterHelper::getSearchURL());
 		
 		foreach (JRequest::get('get') as $key=>$value) {
 			if (array_search($key, $allowed) === false) {
@@ -238,7 +233,7 @@ class modJSolrFilterHelper
 		return $url;
 	}
 	
-	public function renderFilterContext()
+	public static function renderFilterContext()
 	{		
 		$path = null;
 

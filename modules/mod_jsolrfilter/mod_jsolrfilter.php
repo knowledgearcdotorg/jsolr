@@ -1,8 +1,8 @@
 <?php
 /**
- * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can 
@@ -27,16 +27,14 @@
  * 
  */
 
-/** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+defined('_JEXEC') or die;
 
-require_once (dirname(__FILE__).DS.'helper.php');
+require_once dirname(__FILE__).'/helper.php';
 
-$helper = new modJSolrFilterHelper($params);
+$moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
 // Don't show the filter module contents unless the user has specified 
 // something to search for.
-if ($helper->showFilter()) {
-	require(JModuleHelper::getLayoutPath('mod_jsolrfilter'));
+if (modJSolrFilterHelper::showFilter()) {
+	require JModuleHelper::getLayoutPath('mod_jsolrfilter', $params->get('layout', 'default'));
 }
-?>

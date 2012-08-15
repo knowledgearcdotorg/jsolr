@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE install PUBLIC "-//Joomla! 1.5//DTD module 1.0//EN" "http://dev.joomla.org/xml/1.5/module-install.dtd">
-<install type="module" version="1.5.0">
-	<name>JSolr Filter</name>
-	<creationDate>2011-01-18</creationDate>
-	<author>Wijiti</author>
-	<authorEmail>development@wijiti.com</authorEmail>
-	<authorUrl>http://www.wijiti.com</authorUrl>
-	<copyright>>Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>0.1.0</version>
-	<description>Provides filtering options for JSolr search in a module.</description>
-	<files>
-		<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
-		<filename>helper.php</filename>
-		<filename>tmpl/default.php</filename>
-		<filename>tmpl/com_content.php</filename>
-		<filename>tmpl/com_virtuemart.php</filename>
-		<filename>js/jsolrfilter.js</filename>
-		<filename>css/jsolrfilter.css</filename>
-	</files>
-	<languages folder="language">
-		<language tag="en-GB">en-GB.mod_jsolrfilter.ini</language>
-	</languages>
-</install>
+<extension
+        type="module"
+        version="2.5"
+        client="site"
+        method="upgrade">
+		<name>mod_jsolrfilter</name>
+		<creationDate>2012-08-06</creationDate>
+		<author>Wijiti</author>
+		<authorEmail>development@wijiti.com</authorEmail>
+		<authorUrl>http://www.wijiti.com</authorUrl>
+		<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+		<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+		<version>0.1.0</version>
+		<description>MOD_JSOLRFILTER_XML_DESCRIPTION</description>
+		<files>
+			<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
+			<filename>helper.php</filename>
+			<folder>tmpl</folder>
+		</files>
+		
+	    <media destination="mod_jsolrfilter">
+	    	<folder>js</folder>
+	    	<folder>css</folder>
+	    </media>
+
+	 	<languages>
+	 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.ini</language>
+	 	</languages>
+</extension>

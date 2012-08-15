@@ -33,13 +33,13 @@ JHTML::_('behavior.mootools');
 JHTML::_('behavior.calendar');
 
 $document = JFactory::getDocument();
-$document->addScript(JURI::base()."/modules/mod_jsolrfilter/js/jsolrfilter.js");
-$document->addStyleSheet(JURI::base()."/modules/mod_jsolrfilter/css/jsolrfilter.css");
+$document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
+$document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
 ?>
 <div id="jSolrOptions">
 	<ul>
 	<?php 
-	foreach ($helper->getFilterOptions() as $key=>$value) : 
+	foreach (modJSolrFilterHelper::getFilterOptions() as $key=>$value) : 
 		if ($value) :
 	?>
 		<li class="jsolr-filter-item jsolr-filter-option"><?php echo $value; ?></li>
@@ -51,5 +51,5 @@ $document->addStyleSheet(JURI::base()."/modules/mod_jsolrfilter/css/jsolrfilter.
 </div>
 
 <?php
-$helper->renderFilterContext();
+modJSolrFilterHelper::renderFilterContext();
 ?>
