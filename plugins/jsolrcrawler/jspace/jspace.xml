@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="jsolrcrawler">
+	<name>plg_jsolrcrawler_jspace</name>
+	<creationDate>2012-08-15</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.3.0</version>
+	<description>PLG_JSOLRCRAWLER_JSPACE_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="jspace">jspace.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jspace.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jspace.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field 
+					name="use_jspace_connection_params" 
+					type="checkbox"
+					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_DESC"
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_LABEL"/>
+		<field 
+			name="rest_url" 
+			type="text" 
+			label="PLG_JSOLRCRAWLER_JSPACE_FIELD_URL_LABEL" 
+			description="PLG_JSOLRCRAWLER_JSPACE_FIELD_URL_DESC"
+			size="45"/>
+		<field 
+			name="username" 
+			type="text" 
+			label="PLG_JSOLRCRAWLER_JSPACE_FIELD_USERNAME_LABEL" 
+			description="PLG_JSOLRCRAWLER_JSPACE_FIELD_USERNAME_DESC"
+			size="45"/>
+		<field 
+			name="password" 
+			type="text" 
+			label="PLG_JSOLRCRAWLER_JSPACE_FIELD_PASSWORD_LABEL"
+			description="PLG_JSOLRCRAWLER_JSPACE_FIELD_PASSWORD_DESC" 
+			size="45"/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

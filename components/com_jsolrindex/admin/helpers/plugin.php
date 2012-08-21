@@ -151,6 +151,11 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 		return $extension.'.'.$view.'.'.$id;
 	}
 	
+	/**
+	 * Builds Solr documents and indexes them to the Solr server.
+	 * 
+	 * @throws Exception
+	 */
 	public function onIndex()
 	{
 		$items = $this->getItems();
@@ -173,14 +178,15 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry;
 			}
-			
+
 			$documents[$i] = $this->getDocument($item);
 			$documents[$i]->addField('id', $item->id);
 			$documents[$i]->addField('extension', $this->get('extension'));
 			$documents[$i]->addField('view', $this->get('view'));
 			$documents[$i]->addField('lang', $this->getLanguage($item));
-			$documents[$i]->addField('key', $this->buildKey($documents[$i]));		
-			$ids[$i] = $item->key;
+			$documents[$i]->addField('key', $this->buildKey($documents[$i]));
+					
+			$ids[$i] = JArrayHelper::getValue($documents[$i]->getField('key'), 0);
 			
 			$i++;
 		}
