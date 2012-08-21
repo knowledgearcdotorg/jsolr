@@ -900,7 +900,7 @@
       </analyzer>
     </fieldType>
     
-    <fieldType name="lowerCaseSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+    <fieldType name="sort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
       <analyzer>
         <!-- KeywordTokenizer does no actual tokenizing, so the entire
              input string is preserved as a single token
@@ -1024,7 +1024,7 @@
 	<!--Dynamic field used for search autocompletion-->
 	<dynamicField name="*_ac" type="joomlaAutoComplete" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
 
-    <dynamicField name="*_sort" type="lowerCaseSort" indexed="true" stored="true" multiValued="false" omitNorms="true"/>
+    <dynamicField name="*_sort" type="sort" indexed="true" stored="true" multiValued="false" omitNorms="true"/>
     
 	<!-- LANGUAGE-specific -->
 	<dynamicField name="*_es" type="text_es" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
