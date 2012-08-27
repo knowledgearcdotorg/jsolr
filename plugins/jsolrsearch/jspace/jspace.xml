@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="jsolrsearch">
+	<name>plg_jsolrsearch_jspace</name>
+	<creationDate>2012-08-21</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.3.0</version>
+	<description>PLG_JSOLRSEARCH_JSPACE_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="jspace">jspace.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jspace.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jspace.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">		
+				<field name="boost_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
+				<field name="boost_body" type="text" default="15.0" label="Body Boost" description="Boost the body field's relevancy."/>
+				<field name="boost_author" type="text" default="2.0" label="Author Boost" description="Boost the author field's relevancy."/>
+				<field name="boost_bitstream_title" type="text" default="1.0" label="Bitstream Title Boost" description="Boost the bitstream title field's relevancy."/>
+				<field name="boost_bitstream_body" type="text" default="1.0" label="Bitstream Body Boost" description="Boost the bitstream body field's relevancy."/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

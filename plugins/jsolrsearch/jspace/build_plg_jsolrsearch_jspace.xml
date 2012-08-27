@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolrSearch JSpace Plugin" default="" basedir=".">
+	<property name="dest.plugins.search" value="${dest.plugins}/jsolrsearch"/>
+	<property name="dest.plugins.search.jspace" value="${dest.plugins}/jsolrsearch/jspace"/>
+	
+	<target name="update" description="Copies JSolr Search JSpace plugin to existing Joomla install.">
+		<echo message="Deploying JSolr Search JSpace plugin to Joomla! environment."/>
+		<copy todir="${dest.plugins.search.jspace}">
+			<fileset dir="${src}" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${dest.administrator.languages}">
+			<fileset dir="${src}/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="package" description="Creates a JSolr Search JSpace plugin package.">
+		<echo message="Packaging JSolr Search JSpace plugin."/>
+		<zip destfile="${package.dest}/plg_jsolrsearch_jspace.zip"
+		       basedir="${src}"
+		       update="true"
+		       excludes="build*.xml"/>
+	</target>
+</project>
