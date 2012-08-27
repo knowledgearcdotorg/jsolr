@@ -1,8 +1,9 @@
 <?php
 /**
- * @version		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
+ * A controller for managing content sharing.
+ * 
+ * @package		JSolr
+ * @subpackage	Search
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
@@ -25,15 +26,6 @@
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<haydenyoung@wijiti.com>
- */
-
-/** 
- * A controller for managing content sharing.
- * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  */
 
 defined('_JEXEC') or die('Restricted access');

@@ -2,8 +2,8 @@
 /**
  * Installation scripts.
  * 
- * @package	Wijiti
- * @subpackage	JSolr
+ * @package		JSolr
+ * @subpackage	Index
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 

@@ -3,9 +3,8 @@
  * A customized pagination class to overcome some of the default pagination 
  * limitations.
  * 
- * @author		$LastChangedBy$
- * @package		Wijiti
- * @subpackage	JSolrSearch
+ * @package		JSolr
+ * @subpackage	Search
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 

@@ -2,10 +2,9 @@
 /**
  * A form view for adding/editing JSolrIndex configuration.
  * 
- * @author		$LastChangedBy$
- * @package	Wijiti
- * @subpackage	JSolr
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Index
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
    The JSolrIndex component for Joomla! is free software: you can redistribute it 
