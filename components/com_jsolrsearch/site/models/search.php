@@ -168,7 +168,7 @@ class JSolrSearchModelSearch extends JModelList
 				$filters[] = $filter;
 			}
 
-			foreach ($dispatcher->trigger("onAddFQ", array($this->getParams(), $this->getLanguage(false))) as $result) {
+			foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getParams(), $this->getLanguage(false))) as $result) {
 				foreach ($result as $item) {
 					if ($item) {
 						$filters[] = $item;
