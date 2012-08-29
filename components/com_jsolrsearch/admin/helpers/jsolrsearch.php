@@ -1,6 +1,6 @@
 <?php
 /**
- * @paackage	JSolr
+ * @package		JSolr
  * @subpackage	Search
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
