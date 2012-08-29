@@ -928,8 +928,14 @@
             <filter class="solr.TrimFilterFactory" />
         </analyzer>
     </fieldType>
+    
+	<fieldType name="joomlaFacets" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+		<analyzer>
+			<!--Treats the entire field as a single token, regardless of its content-->
+			<tokenizer class="solr.KeywordTokenizerFactory"/>
+		</analyzer>
+	</fieldType>
  </types>
-
 
  <fields>
    <!-- Valid attributes for fields:
@@ -1024,7 +1030,11 @@
 	<!--Dynamic field used for search autocompletion-->
 	<dynamicField name="*_ac" type="joomlaAutoComplete" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
 
+	<!--Dynamic field used for search sorting-->
     <dynamicField name="*_sort" type="sort" indexed="true" stored="true" multiValued="false" omitNorms="true"/>
+
+	<!--Dynamic field used for faceting -->
+	<dynamicField name="*_fc" type="joomlaFacets" indexed="true" stored="true" multiValued="true" omitNorms="true" />
     
 	<!-- LANGUAGE-specific -->
 	<dynamicField name="*_es" type="text_es" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
