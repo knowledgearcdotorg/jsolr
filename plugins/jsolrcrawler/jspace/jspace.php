@@ -53,7 +53,7 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 		$params = null;
 		
 		if ($this->get('params')->get('use_jspace_connection_params')) {		
-			if (!JComponentHelper::isEnabled("com_jspace")) {
+			if (!JComponentHelper::isEnabled("com_jspace", true)) {
 				JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
 				return;	
 			}
@@ -63,21 +63,28 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 			$params = $this->params;
 		}
 		
-		$url = JFactory::getURI($params->get("rest_url").'/items.json');
-		$url->setVar("user", $params->get("user"));
-		$url->setVar("pass", $params->get("pass"));
+		try {
+			$items = array();
 			
-		$client = new JRestClient($url->toString(), 'get');
-		$client->execute();
-		
-		if (JArrayHelper::getValue($client->getResponseInfo(), "http_code") == 200) {
-        	$response = json_decode($client->getResponseBody());
+			$url = JFactory::getURI($params->get("rest_url").'/items.json');
+			$url->setVar("user", $params->get("user"));
+			$url->setVar("pass", $params->get("pass"));
+				
+			$client = new JRestClient($url->toString(), 'get');
+			$client->execute();
+			
+			if (JArrayHelper::getValue($client->getResponseInfo(), "http_code") == 200) {
+	        	$response = json_decode($client->getResponseBody());
+	        	$items = $response->items;
+			} else {
+				JLog::add($client->getResponseInfo(). " " . $client->getResponseBody(), JLog::ERROR, 'jsolrcrawler');			
+			}
 
-		} else {
-			JLog::add($client->getResponseInfo(). " " . $client->getResponseBody(), JLog::ERROR, 'jsolrcrawler');			
+		} catch (Exception $e) {
+        	JLog::add($client->getResponseInfo()." ".$e->toString(), JLog::ERROR);
 		}
-
-		return $response->items;
+		
+		return $items;			
 	}
 	
 	/**
@@ -129,6 +136,9 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 					if ($item->qualifier == 'author') {
 						$doc->addField('author', $item->value);
 						$doc->addField('author_'.$lang, $item->value);
+						$doc->addField("author_fc", $item->value); // for faceting
+						$doc->addField("author_ac", $item->value); // for auto complete
+						$doc->addField("author_sort", $item->value); // for auto complete
 					}
 					
 					$doc->addField($field.'_s_multi', $item->value);
@@ -138,6 +148,8 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 				case 'subject':
 					if (!$item->qualifier) {
 						$doc->addField($field.'_'.$lang, $item->value);
+						$doc->addField("keywords_fc", $item->value); // for faceting
+						$doc->addField("keywords_ac", $item->value); // for auto complete
 					}
 					
 					$doc->addField($field.'_s_multi', $item->value);
@@ -273,9 +285,12 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 			$documents[$i]->addField('extension', $this->get('extension'));
 			$documents[$i]->addField('view', $this->get('view'));
 			$documents[$i]->addField('lang', $this->getLanguage($item));
-			$documents[$i]->addField('key', $this->buildKey($documents[$i]));
+			
+			$key = $this->buildKey($documents[$i]);
+			
+			$documents[$i]->addField('key', $key);
 
-			$ids[$i] = JArrayHelper::getValue($documents[$i]->getField('key'), 0);
+			$ids[$i] = $key;
 
 			// index bitstream metadata and content against record to 
 			// enhance searching. These values are for enhanced search 
@@ -313,8 +328,16 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 				}
 				
 				$documents[$j]->addField("parent_id", $item->id);
+				error_log(print_r($documents[$j]->getField('key'), true));
 				
-				$ids[$j] = JArrayHelper::getValue($documents[$j]->getField('key'), 0);
+				$key = 
+					JArrayHelper::getValue(
+						JArrayHelper::getValue(
+							$documents[$j]->getField('key'), 
+							'value'), 
+						0);
+						
+				$ids[$j] = $key;
 				
 				$j++;
 			}
@@ -337,7 +360,11 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 
 			$solr = new Apache_Solr_Service($url, $params->get('port'), $params->get('path'));
 
-			$solr->deleteByQuery($this->getDeleteQueryById($ids));
+			if (count($ids)) {
+				$solr->deleteByQuery($this->getDeleteQueryById($ids));
+			} else {
+				$solr->deleteByQuery('extension:'.$this->get('extension'));
+			}
 			
 			$solr->addDocuments($documents);
 			
