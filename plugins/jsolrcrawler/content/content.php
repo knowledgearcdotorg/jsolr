@@ -53,8 +53,10 @@ class plgJSolrCrawlerContent extends JSolrCrawlerPlugin
 
 		$doc->addField('created', $created->format('Y-m-d\TH:i:s\Z', false));
 		$doc->addField('modified', $modified->format('Y-m-d\TH:i:s\Z', false));
-		$doc->addField("title", $record->title);		
+		$doc->addField("title", $record->title);	
 		$doc->addField("title_$lang", $record->title);
+
+		$doc->addField("title_ac", $record->title); // for auto complete
 
 		$record->summary = self::prepareContent($record->summary, $record->params);
 		$record->body = self::prepareContent($record->body, $record->params);
@@ -68,6 +70,9 @@ class plgJSolrCrawlerContent extends JSolrCrawlerPlugin
 		
 		$doc->addField("metadescription_$lang", $record->metadesc);
 		$doc->addField("author", $record->author);
+		
+		$doc->addField("author_fc", $record->author); // for faceting
+		$doc->addField("author_ac", $record->author); // for auto complete
 		
 		foreach ($this->_getTags($record, array("<h1>")) as $item) {
 			$doc->addField("tags_h1_$lang", $item);
@@ -86,6 +91,7 @@ class plgJSolrCrawlerContent extends JSolrCrawlerPlugin
 		if ($record->catid) {
 			$doc->addField("parent_id", $record->catid);
 			$doc->addField("category_$lang", $record->category);
+			$doc->addField("category_fc", $record->category); // for faceting
 		}
 		
 		return $doc;
