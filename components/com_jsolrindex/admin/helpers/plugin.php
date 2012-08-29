@@ -73,7 +73,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 					$query .= " OR ";	
 				}
 				
-				$query .= $this->get('extension').".".$this->get('view').".".intval($id);
+				$query .= $id;
 				
 				$i++;	
 			}
@@ -178,18 +178,23 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 				$registry->loadString($item->metadata);
 				$item->metadata = $registry;
 			}
-
+		
 			$documents[$i] = $this->getDocument($item);
 			$documents[$i]->addField('id', $item->id);
 			$documents[$i]->addField('extension', $this->get('extension'));
 			$documents[$i]->addField('view', $this->get('view'));
 			$documents[$i]->addField('lang', $this->getLanguage($item));
-			$documents[$i]->addField('key', $this->buildKey($documents[$i]));
-					
-			$ids[$i] = JArrayHelper::getValue($documents[$i]->getField('key'), 0);
+			
+			$key = $this->buildKey($documents[$i]);
+			
+			$documents[$i]->addField('key', $key);
+
+			$ids[$i] = $key;
 			
 			$i++;
 		}
+		
+		error_log(print_r($this->getDeleteQueryById($ids),true));
 
 		try {
 			$params = JComponentHelper::getParams("com_jsolrindex", true);
