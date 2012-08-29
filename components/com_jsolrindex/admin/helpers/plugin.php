@@ -193,8 +193,6 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 			
 			$i++;
 		}
-		
-		error_log(print_r($this->getDeleteQueryById($ids),true));
 
 		try {
 			$params = JComponentHelper::getParams("com_jsolrindex", true);
