@@ -209,7 +209,11 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 
 			$solr = new Apache_Solr_Service($url, $params->get('port'), $params->get('path'));
 
-			$solr->deleteByQuery($this->getDeleteQueryById($ids));
+			if (count($ids)) {
+				$solr->deleteByQuery($this->getDeleteQueryById($ids));
+			} else {
+				$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
+			}
 			
 			$solr->addDocuments($documents);
 			
