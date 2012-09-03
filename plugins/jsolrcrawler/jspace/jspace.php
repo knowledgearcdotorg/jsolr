@@ -155,6 +155,16 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 					$doc->addField($field.'_s_multi', $item->value);
 					
 					break;
+				
+				case 'type':
+					if (!$item->qualifier) {
+						$doc->addField($field.'_'.$lang, $item->value);
+						$doc->addField("type_fc", $item->value); // for faceting
+						$doc->addField("type_ac", $item->value); // for auto complete
+					} else {
+						$doc->addField($field.'_s_multi', $item->value); 
+					}					
+					break;
 					
 				case 'description':
 					if (!$item->qualifier) {
@@ -163,6 +173,8 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 					} else {
 						$doc->addField($field.'_s_multi', $item->value); 
 					}
+					
+					break;
 					
 				default:
 					$doc->addField($field.'_s_multi', $item->value);
