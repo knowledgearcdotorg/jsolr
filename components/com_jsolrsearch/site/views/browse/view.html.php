@@ -35,7 +35,6 @@ jimport('joomla.utilities.arrayhelper');
 class JSolrSearchViewBrowse extends JView
 {	
 	protected $state;
-	
 	protected $items;
 	
 	public function display($tpl = null)

@@ -43,7 +43,7 @@ class plgJSolrSearchJSpace extends JSolrSearchPlugin
 		parent::__construct($subject, $config);
 		
 		$this->set('highlighting', array("title", "body", "author"));
-		$this->set('operators', array('author'));
+		$this->set('operators', array('author_fc'=>'author', 'type_fc'=>'type'));
 	}
 
 	/**

@@ -29,11 +29,14 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+$operators = $this->state->get('facet.operators');
 ?>
 <ul>
-<?php foreach (get_object_vars($this->items) as $item) : ?>
-	<?php foreach ($item as $key=>$value) : ?>
-		<li><?php echo JHTML::_('link', JRoute::_('index.php?option=com_jsolrsearch&view=basic&o=com_jspace&q=author:"'.$key.'"'), JText::sprintf('%s (%s)', $key, $value)); ?></li>
+<?php foreach (get_object_vars($this->items) as $keyi=>$valuei) : ?>
+	<?php $field = JArrayHelper::getValue($operators, $keyi); ?>
+	<?php foreach ($valuei as $keyj=>$valuej) : ?>
+		<li><?php echo JHTML::_('link', JRoute::_('index.php?option=com_jsolrsearch&view=basic&o=com_jspace&q='.$field.':"'.$keyj.'"'), JText::sprintf('%s (%s)', $keyj, $valuej)); ?></li>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 </ul>

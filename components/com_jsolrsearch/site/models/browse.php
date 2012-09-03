@@ -52,6 +52,8 @@ class JSolrSearchModelBrowse extends JModelList
 			$this->setState('facet.fields', $array);
 			
 			$this->setState('facet.prefix', JRequest::getString('prefix'));
+			
+			$this->setState('facet.operators', $this->_getOperators());
 		}
 		
 		parent::populateState($ordering, $direction);
@@ -99,6 +101,7 @@ class JSolrSearchModelBrowse extends JModelList
 
 			$client = new Apache_Solr_Service($host, $params->get('port'), $params->get('path'));
 			$query = Apache_Solr_Query_Factory("*:*", $client)
+				->useQueryParser('edismax')
 				->facetFields($facetFields)
 				->mergeParams($facetParams)
 				->filters($filters)
@@ -114,6 +117,20 @@ class JSolrSearchModelBrowse extends JModelList
 		}
 
 		return $list;
+	}
+	
+	private function _getOperators()
+	{
+		$operators = array(); 
+		
+		JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();		
+		
+		foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
+			$operators = array_merge($operators, $result);
+		}
+		
+		return $operators;
 	}
 	
 	/**
