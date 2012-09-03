@@ -1031,10 +1031,10 @@
 	<dynamicField name="*_ac" type="joomlaAutoComplete" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
 
 	<!--Dynamic field used for search sorting-->
-    <dynamicField name="*_sort" type="sort" indexed="true" stored="true" multiValued="false" omitNorms="true"/>
+    <dynamicField name="*_sort" type="sort" indexed="true" stored="false" multiValued="true" omitNorms="true"/>
 
 	<!--Dynamic field used for faceting -->
-	<dynamicField name="*_fc" type="joomlaFacets" indexed="true" stored="true" multiValued="true" omitNorms="true" />
+	<dynamicField name="*_fc" type="joomlaFacets" indexed="true" stored="false" multiValued="true" omitNorms="true" />
     
 	<!-- LANGUAGE-specific -->
 	<dynamicField name="*_es" type="text_es" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
