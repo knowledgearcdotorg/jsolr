@@ -67,9 +67,14 @@ abstract class JSolrSearchPlugin extends JPlugin
 	}
 
 	/**
-	 * Gets a list of operators for this search plugin.
+	 * Gets a list of operator mappings for this search plugin.
 	 * 
-	 *  Required for stripping the correct operators off of the query.
+	 * Each operator takes the form array[facet_name] = [search_name] where 
+	 * [facet_name] is the field to browse on and [search_name] is the 
+	 * corresponding field to search on when navigating from browse to search.  
+	 * 
+	 * The [search_name] is used for stripping the correct operators off of 
+	 * the query.
 	 */
 	public function onJSolrSearchOperatorsGet()
 	{
@@ -115,15 +120,7 @@ abstract class JSolrSearchPlugin extends JPlugin
 	 */
 	public function onFilterOptions()
 	{		
-		$options = array();
-
-		if ($this->get("params")->get("jsolr_show_filter_label", false)) {
-			$options[$this->get("option")] = JText::_("PLG_JSOLRSEARCH_".strtoupper($this->get("_name"))."_FILTER_LABEL");
-		} else {
-			$options[$this->get("params")->get("option")] = null;
-		}
-	
-		return $options;
+		return $this->onJSolrSearchExtensionGet();
 	}
 
 	/**
