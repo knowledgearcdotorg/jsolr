@@ -43,11 +43,25 @@ class plgJSolrSearchJSpace extends JSolrSearchPlugin
 		parent::__construct($subject, $config);
 		
 		$this->set('highlighting', array("title", "body", "author"));
+		$this->set('operators', array('author'));
 	}
 
-	public function onJSolrSearchFQAdd($params, $language)
+	/**
+	 * Add custom filters to the main query.
+	 * 
+	 * @param JObject $state An instance of JObject. Holds query variables of 
+	 * the class which triggered this plugin event.
+	 * @param string $language The current language.
+	 */
+	public function onJSolrSearchFQAdd($state, $language)
 	{
-		return array('-view:bitstream');
+		$array = array('-view:bitstream');
+
+		if ($value = JArrayHelper::getValue($state->get('query.q.operators'), 'author')) {
+			$array[] = 'author:'.$value;	
+		}
+		
+		return $array;
 	}
 
 	/**

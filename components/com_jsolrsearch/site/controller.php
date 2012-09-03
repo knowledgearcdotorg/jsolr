@@ -65,7 +65,6 @@ class JSolrSearchController extends JController
 		$view->setModel($model, true);
 
 		if (($viewName == "" || $viewName == $default) && trim(JRequest::getString("q", null))) {
-			$model->setQueryParams(JRequest::get("get"));
 			$view->setLayout("results");
 		}
 		

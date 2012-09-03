@@ -50,36 +50,20 @@ class JSolrSearchModelSearch extends JModelList
 	
 	protected $qTime = 0;
 	
-	var $dateRange;
-	
 	var $lang;
 	
 	var $category;
 	
 	var $params;
 	
-	public function __construct()
-	{
-		parent::__construct();
-
-		$application = JFactory::getApplication("site");
-		
-		$config = JFactory::getConfig();
-				
-		$this->setState('limit', $application->getUserStateFromRequest('com_jsolrsearch.limit', 'limit', $config->getValue('config.list_limit'), 'int'));
-		$this->setState('limitstart', JRequest::getVar('start', 0, '', 'int'));	
-
-		$this->dateRange = null;
-	}
-	
-	public function buildQueryURL($params)
+	public function buildQueryURL($query)
 	{
 		$url = new JURI("index.php");
 
 		$url->setVar("option", $this->get('option'));
 		$url->setVar("view", "basic");
 		
-		foreach ($params as $key=>$value) {
+		foreach ($query as $key=>$value) {
 			if ($value != "com_jsolrsearch") {
 				if ($key == "task") {
 					$url->delVar($key);
@@ -92,60 +76,60 @@ class JSolrSearchModelSearch extends JModelList
 		return JRoute::_($url->toString(), false);
 	}
 	
-	
-	public function setQueryParams($params)
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelList::populateState()
+	 */
+	public function populateState($ordering = null, $direction = null)
 	{
-		$this->query = JArrayHelper::getValue($params, "q", "", "string");
+		$query = JRequest::get("get");
 		
+		$q = JArrayHelper::getValue($query, "q", "", "string");
+		
+		$this->setState('query.q', $q);
+		
+		if ($operators = $this->_parseOperators($q)) {
+			$this->setState('query.q.operators', $operators);
+		}
+		
+		if ($strippedQuery = $this->_stripOperators($q)) {
+			$this->setState('query.q.stripped', $strippedQuery);
+		}
+
 		$from = null;
 		$to = null;
 		
-		if (JArrayHelper::getValue($params, "dmin") || 
-			JArrayHelper::getValue($params, "dmax"))  {
-			$from = JArrayHelper::getValue($params, "dmin", "*", "string");
-			$to = JArrayHelper::getValue($params, "dmax", "NOW", "string");
-		} else if (JArrayHelper::getValue($params, "qdr")) {
-			$from = JArrayHelper::getValue($params, "qdr", "*", "string");
+		if (JArrayHelper::getValue($query, "dmin") || 
+			JArrayHelper::getValue($query, "dmax"))  {
+			$from = JArrayHelper::getValue($query, "dmin", "*", "string");
+			$to = JArrayHelper::getValue($query, "dmax", "NOW", "string");
+		} else if (JArrayHelper::getValue($query, "qdr")) {
+			$from = JArrayHelper::getValue($query, "qdr", "*", "string");
 			$to = "NOW";
 		}
 		
-		$this->_setDateRange($from, $to);
+		$range = new stdClass();
+		$range->from = $from;
+		$range->to = $to;
 		
-		$lang = JArrayHelper::getValue($params, "lr", null);
+		$this->setState('query.date.range', $range);
+		
+		$lang = JArrayHelper::getValue($query, "lr", null);
 		
 		if (!$lang) {
-			$lang = JArrayHelper::getValue($params, "lang");
+			$lang = JArrayHelper::getValue($query, "lang");
 		}
 		
-		$this->_setParams($params);
-		$this->_setLang($lang);
-	}
+		$this->setState('query.lang', $lang);
 
-	private function _setDateRange($from = null, $to = null)
-	{
-		$this->dateRange = new stdClass();
-		$this->dateRange->from = $from;
-		$this->dateRange->to = $to;
-	}
-	
-	private function _setParams($params)
-	{
-		$this->params = $params;
-	}
-	
-	private function _setLang($lang)
-	{
-		$this->lang = $lang;
-	}
-	
-	public function getQuery()
-	{
-		return $this->query;
-	}
-	
-	public function getDateRange()
-	{
-		return $this->dateRange;
+		// handle custom query params.
+		foreach ($query as $key=>$value) {
+			if (strpos($key, 'q.') == 0) {
+				$this->setState('query.q.'.$key, $value);				
+			}
+		}
+		
+		parent::populateState($ordering, $direction);
 	}
 	
 	public function getItems()
@@ -168,7 +152,7 @@ class JSolrSearchModelSearch extends JModelList
 				$filters[] = $filter;
 			}
 
-			foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getParams(), $this->getLanguage(false))) as $result) {
+			foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState(), $this->getLanguage(false))) as $result) {
 				foreach ($result as $item) {
 					if ($item) {
 						$filters[] = $item;
@@ -193,13 +177,13 @@ class JSolrSearchModelSearch extends JModelList
 			}
 
 			$client = new Apache_Solr_Service($host, $params->get('port'), $params->get('path'));
-			$query = Apache_Solr_Query_Factory($this->getQuery(), $client)
-				->useQueryParser("dismax")
+			$query = Apache_Solr_Query_Factory($this->getState('query.q.stripped', '*:*'), $client)
+				->useQueryParser("edismax")
 				->retrieveFields("*,score")
 				->filters($filters)
 				->highlight(200, "<strong>", "</strong>", 1, implode(" ", $hl))
-				->limit($this->getState("limit"))
-				->offset($this->getState("limitstart"));
+				->limit($this->getState("list.limit"))
+				->offset($this->getState("list.start"));
 
 			if (count($qf)) {
 				$query->queryFields($this->_buildQF($qf));
@@ -265,11 +249,11 @@ class JSolrSearchModelSearch extends JModelList
 	public function getDateQuery()
 	{	
 		$query = "";
-		if ($this->dateRange != null) {
-			if ($this->dateRange->from) {
+		if ($this->getState('query.date.range') != null) {
+			if ($this->getState('query.date.range')->from) {
 				$query = "modified:";
 		
-				switch ($this->dateRange->from) {
+				switch ($this->getState('query.date.range')->from) {
 					case "d":
 						$query .= "[NOW-1DAY TO NOW]";
 						break;
@@ -289,8 +273,8 @@ class JSolrSearchModelSearch extends JModelList
 					default:
 						$query .= "[";
 
-						if ($this->dateRange->from != "*") {
-							$from = JFactory::getDate($this->dateRange->from);
+						if ($this->getState('query.date.range')->from != "*") {
+							$from = JFactory::getDate($this->getState('query.date.range')->from);
 							$query .= $from->toISO8601();
 						} else {
 							$query .= "*";	
@@ -298,7 +282,7 @@ class JSolrSearchModelSearch extends JModelList
 						
 						$query .= " TO ";
 						
-						$to = JFactory::getDate($this->dateRange->to);
+						$to = JFactory::getDate($this->getState('query.date.range')->to);
 						$query .= $to->toISO8601();
 						
 						$query .= "]";
@@ -431,8 +415,57 @@ class JSolrSearchModelSearch extends JModelList
 		return JRoute::_($url->toString(), false);
 	}
 	
-	public function getParams()
+	private function _parseOperators($query)
 	{
-		return $this->params;
+		$matches = array();		
+		$operators = array();
+		
+		$subject = $query;
+		
+		do {
+			$matched = preg_match_all('/(.*\s+?|^)(\w+:.+)/', $subject, $matches, PREG_SET_ORDER);
+				
+			if ($matched) {
+				$operator = explode(':', 
+					JArrayHelper::getValue(
+						JArrayHelper::getValue($matches, 0), 2));
+
+				$key = JArrayHelper::getvalue($operator, 0, null);
+				$value = JArrayHelper::getvalue($operator, 1, null);
+				
+				if ($key && $value) {
+					$operators[$key] = trim($value);
+				}
+				
+				$subject = JArrayHelper::getValue(JArrayHelper::getValue($matches, 0), 1);
+			}
+		} while ($matched);
+		
+		return $operators;
+	}
+	
+	private function _stripOperators($query)
+	{
+		$strippedQuery = $query;
+		
+		$operators = $this->_parseOperators($query);
+
+		$pluginOperators = array(); 
+		
+		JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();		
+		
+		foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
+			$pluginOperators = array_merge($pluginOperators, $result);
+		}
+
+		foreach ($pluginOperators as $key) {
+			if ($value = JArrayHelper::getValue($operators, $key)) {
+				$search = $key.':'.JArrayHelper::getValue($operators, $key);
+				$strippedQuery = trim(str_replace($search, '', $strippedQuery));
+			}
+		}
+
+		return $strippedQuery;
 	}
 }

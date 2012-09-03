@@ -1,9 +1,10 @@
 <?php
 /**
- * @version		$LastChangedBy$
+ * Default display for browse view.
+ * 
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -28,6 +29,11 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
-
-echo $this->loadResultsTemplate();
 ?>
+<ul>
+<?php foreach (get_object_vars($this->items) as $item) : ?>
+	<?php foreach ($item as $key=>$value) : ?>
+		<li><?php echo JHTML::_('link', JRoute::_('index.php?option=com_jsolrsearch&view=basic&o=com_jspace&q=author:"'.$key.'"'), JText::sprintf('%s (%s)', $key, $value)); ?></li>
+	<?php endforeach; ?>
+<?php endforeach; ?>
+</ul>

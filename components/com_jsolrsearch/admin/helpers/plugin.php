@@ -38,6 +38,8 @@ abstract class JSolrSearchPlugin extends JPlugin
 {	
 	protected $highlighting = array();
 	
+	protected $operators = array();
+	
 	public function __construct(&$subject, $config = array()) 
 	{	
 		parent::__construct($subject, $config);
@@ -62,6 +64,16 @@ abstract class JSolrSearchPlugin extends JPlugin
 		}
 
 		return $qf;
+	}
+
+	/**
+	 * Gets a list of operators for this search plugin.
+	 * 
+	 *  Required for stripping the correct operators off of the query.
+	 */
+	public function onJSolrSearchOperatorsGet()
+	{
+		return $this->operators;
 	}
 
 	/**

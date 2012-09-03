@@ -1,9 +1,10 @@
 <?php
 /**
- * @version		$LastChangedBy$
+ * Default display for browse view.
+ * 
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -30,4 +31,3 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 echo $this->loadResultsTemplate();
-?>

@@ -30,7 +30,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <form action="index.php?option=com_jsolrsearch&task=search" method="post" name="adminForm" class="jsolr-search-result-form">
 	<div class="jsolr-query">
-		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->get("Query")); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-button">Search</button>
+		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->state->get('query.q')); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-button">Search</button>
 	</div>
 	
 	<div class="jsolr-advanced-link">
