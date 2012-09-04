@@ -1,8 +1,8 @@
 <?php
 /**
- * 
- * @author		$LastChangedBy$
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr
+ * @subpackage	Search
+ * @copyright	Copyright (C) 2011-2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -35,23 +35,32 @@ function JSolrSearchBuildRoute(&$query)
 {
 	$segments = array();
 
-	// if no item id specified, try and get it.
-	if (!JArrayHelper::getValue($query, "Itemid")) {
-		$application = JFactory::getApplication("site");
-		$menus = $application->getMenu();
-		$items = $menus->getItems("link", "index.php?option=com_jsolrsearch");
+	// get a menu item based on Itemid or currently active
+	$app  = JFactory::getApplication();
+	$menu = $app->getMenu();
+	$params = JComponentHelper::getParams('com_jsolrsearch');
+	$advanced = $params->get('sef_advanced_link', 0);
 
-		if (count($items) > 0) {
-			$query["Itemid"] = $items[0]->id;
-		}
+	if (empty($query['Itemid'])) {
+		$menuItem = $menu->getActive();
+	} else {
+		$menuItem = $menu->getItem($query['Itemid']);
 	}
-	
-	if (isset($query['view'])) {		
-		if ($query['view'] != "results" && $query['view'] != "basic") {
-			$segments[] = JArrayHelper::getValue($query, "view");
+
+	$mView  = (empty($menuItem->query['view'])) ? null : $menuItem->query['view'];
+
+	if (isset($query['view'])) {
+		$view = $query['view'];
+
+		if (empty($query['Itemid'])) {
+			$segments[] = $query['view'];
 		}
-		
+        unset($query['view']);
+	}
+
+	if (isset($view) && ($mView == $view)) {
 		unset($query['view']);
+		return $segments;
 	}
 
 	return $segments;

@@ -1,8 +1,9 @@
 <?php
 /**
  * A script for intercepting calls to this component and handling them appropriately.
- * 
- * @author		$LastChangedBy$
+
+ * @package		JSolr
+ * @subpackage	Search
  * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 

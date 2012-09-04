@@ -36,7 +36,7 @@ $operators = $this->state->get('facet.operators');
 <?php foreach (get_object_vars($this->items) as $keyi=>$valuei) : ?>
 	<?php $field = JArrayHelper::getValue($operators, $keyi); ?>
 	<?php foreach ($valuei as $keyj=>$valuej) : ?>
-		<li><?php echo JHTML::_('link', JRoute::_('index.php?option=com_jsolrsearch&view=basic&o=com_jspace&q='.$field.':"'.$keyj.'"'), JText::sprintf('%s (%s)', $keyj, $valuej)); ?></li>
+		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute($field.':"'.$keyj.'"')), JText::sprintf('%s (%s)', $keyj, $valuej)); ?></li>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 </ul>
