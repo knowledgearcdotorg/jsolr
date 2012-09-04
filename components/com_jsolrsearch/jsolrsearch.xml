@@ -36,15 +36,14 @@
 
 	<administration>
 	    <files folder="admin">
-	    	<folder>elements</folder>
 	    	<folder>extensions</folder>
 	    	<folder>helpers</folder>
 	    	<folder>lib</folder> 
 	    	<folder>models</folder>
-	    	<folder>views</folder>  	
+	    	<folder>views</folder>
+	    	<filename>config.xml</filename>
 	    	<filename>controller.php</filename>
 	    	<filename>jsolrsearch.php</filename>
-	    	<filename>configuration.php</filename>
 	    </files>
 	    
 		<languages folder="admin">
