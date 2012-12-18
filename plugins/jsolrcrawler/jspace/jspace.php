@@ -340,7 +340,6 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 				}
 				
 				$documents[$j]->addField("parent_id", $item->id);
-				error_log(print_r($documents[$j]->getField('key'), true));
 				
 				$key = 
 					JArrayHelper::getValue(
