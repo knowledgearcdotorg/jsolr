@@ -11,6 +11,7 @@
 	<description>PLG_JSOLRSEARCH_JSPACE_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="jspace">jspace.php</filename>
+		<folder>views</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jspace.ini</language>
