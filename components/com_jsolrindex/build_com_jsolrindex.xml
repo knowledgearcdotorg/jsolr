@@ -1,30 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSolr Index" default="" basedir=".">	
+<project name="JSolr Index" default="" basedir=".">
+	<target name="clean" description="Clean JSolr Index component from Joomla.">
+		<delete dir="${dest.administrator.components}/com_jsolrindex"/>
+		
+		<delete>
+			<fileset dir="${dest.administrator.languages}" defaultexcludes="true">
+				<include name="**/*.com_jsolrindex*.ini"/>
+			</fileset>
+		</delete>
+		
+		<delete dir="${dest.media}/com_jsolrindex"/>
+		
+		<delete dir="${dest.components}/com_jsolrindex"/>
+		
+		<!--delete>
+			<fileset dir="${dest.languages}" defaultexcludes="true">
+				<include name="**/*.com_jsolrindex*.ini"/>
+			</fileset>
+		</delete-->
+	</target>
+	
 	<target name="update" description="Copies JSolr Index component to existing Joomla install.">
 		<echo message="Deploying JSolr Index component to Joomla! environment."/>
+		
+		<antcall target="clean"/>
 		
 		<copy todir="${dest.administrator.components}/com_jsolrindex">
 			<fileset dir="${src}/admin" defaultexcludes="true">
 				<include name="**"/>
 				<exclude name="**/language/**"/>
+				<exclude name="jsolr_crawler.php"/>
 			</fileset>
-		</copy>
+		</copy> 
+		
 		<copy todir="${dest.administrator.languages}">
 			<fileset dir="${src}/admin/language" defaultexcludes="true">
 				<include name="**/**"/>
 			</fileset>
 		</copy>
+		
 		<copy todir="${dest.media}/com_jsolrindex/js">
 			<fileset dir="${src}/js" defaultexcludes="true">
 				<include name="**/**"/>
 			</fileset>
 		</copy>
-		<!-- copy todir="${dest.components}/com_jsolrindex">
-			<fileset dir="${src}/components/com_jsolrindex/admin" defaultexcludes="true">
+		
+		<copy todir="${dest.media}/com_jsolrindex/css">
+			<fileset dir="${src}/css" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${dest.components}/com_jsolrindex">
+			<fileset dir="${src}/site" defaultexcludes="true">
 				<include name="**"/>
 				<exclude name="**/language/**"/>
 			</fileset>
-		</copy -->
+		</copy>
+		
+		<!--copy todir="${dest.languages}">
+			<fileset dir="${src}/site/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy-->
 	</target>
 	
 	<target name="package" description="Creates a JSolr Index component package.">
