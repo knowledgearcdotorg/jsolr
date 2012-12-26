@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="library" method="upgrade" version="2.5">
+	<name>jsolr</name>
+	<libraryname>jsolr</libraryname>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>0.2.0</version>
+    <description>LIB_JSOLR_XML_DESCRIPTION</description>
+	<packager>Wijiti Pty Ltd</packager>
+	<packagerurl>http://www.wijiti.org</packagerurl>
+	<update>http://developer.wijiti.org/projects/jsolr</update>
+	
+    <files folder="libraries">
+        <folder>client</folder>
+    </files>
+    
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.lib_jsolr.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.lib_jsolr.sys.ini</language>
+	</languages>
+</extension>
