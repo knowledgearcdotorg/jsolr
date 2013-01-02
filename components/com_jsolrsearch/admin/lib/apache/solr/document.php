@@ -57,7 +57,7 @@ defined('_JEXEC') or die('Restricted access');
  * }
  * </code>
  */
-class Apache_Solr_Document implements IteratorAggregate
+class JSolrApacheSolrDocument implements IteratorAggregate
 {
 	/**
 	 * SVN Revision meta data for this class
@@ -140,7 +140,7 @@ class Apache_Solr_Document implements IteratorAggregate
 	 * on field values - this is similar to SolrJ's functionality.
 	 *
 	 * <code>
-	 * $doc = new Apache_Solr_Document();
+	 * $doc = new JSolrApacheSolrDocument();
 	 *
 	 * $doc->addField('foo', 'bar', 2.0);
 	 * $doc->addField('foo', 'baz', 3.0);

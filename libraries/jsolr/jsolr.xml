@@ -14,7 +14,7 @@
 	<update>http://developer.wijiti.org/projects/jsolr</update>
 	
     <files folder="libraries">
-        <folder>client</folder>
+        <folder>apache</folder>
     </files>
     
 	<languages>

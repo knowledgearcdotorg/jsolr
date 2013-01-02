@@ -31,9 +31,10 @@
 defined('_JEXEC') or die();
 
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
-require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."helpers".DS."plugin.php");
 
-class plgJSolrCrawlerContent extends JSolrCrawlerPlugin
+jimport('jsolr.index.crawler');
+
+class plgJSolrCrawlerContent extends JSolrIndexCrawler
 {	
 	protected $extension = 'com_content';
 	
@@ -44,7 +45,7 @@ class plgJSolrCrawlerContent extends JSolrCrawlerPlugin
 	*/
 	protected function getDocument(&$record)
 	{	
-		$doc = new Apache_Solr_Document();
+		$doc = new JSolrApacheSolrDocument();
 		
 		$created = JFactory::getDate($record->created);
 		$modified = JFactory::getDate($record->modified);

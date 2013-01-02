@@ -54,7 +54,7 @@ jimport('joomla.plugin.helper');
 jimport('joomla.error.log');
 jimport('joomla.user.user');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
+jimport('jsolr.apache.solr.service');
  
 /**
  * Simple command line interface application class.

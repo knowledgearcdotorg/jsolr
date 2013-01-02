@@ -36,7 +36,8 @@ jimport('joomla.filesystem.file');
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
+jimport('jsolr.apache.solr.service');
+jimport('jsolr.apache.solr.exception');
 
 class JSolrIndexModelConfiguration extends JModel
 {
@@ -62,7 +63,7 @@ class JSolrIndexModelConfiguration extends JModel
 	{
 		$params = JComponentHelper::getParams('com_jsolrindex');
 		
-		$client = new Apache_Solr_Service($this->getHost(), $params->get('port'), $params->get('path'));
+		$client = new JSolrApacheSolrService($this->getHost(), $params->get('port'), $params->get('path'));
 
 		$response = $client->ping();
 		
@@ -105,7 +106,7 @@ class JSolrIndexModelConfiguration extends JModel
 			return false;
 		}		
 		
-		$client = new Apache_Solr_Service($this->getHost(), $params->get('port'), $params->get('path'));
+		$client = new JSolrApacheSolrService($this->getHost(), $params->get('port'), $params->get('path'));
 		
 		try {
 			$client->deleteByQuery("*:*");
@@ -143,7 +144,7 @@ class JSolrIndexModelConfiguration extends JModel
 						$this->setError($response->getHttpMessage());
 						return false;
 					}
-				} catch (Apache_Solr_Exception $e) {
+				} catch (JSolrApacheSolrException $e) {
 					$this->setError($e->getMessage());
 					return false;
 				}				

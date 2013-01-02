@@ -9,6 +9,7 @@
 	<property 	name="dest.media" 						value="${dest}/media"/>
 	<property	name="dest.plugins"						value="${dest}/plugins"/>
 	<property	name="dest.modules"						value="${dest}/modules"/>
+	<property	name="dest.libs"						value="${dest}/libraries"/>
 	
 	<target name="update" description="Updates all JSolr extensions in an existing Joomla install.">
 		<echo message="Updating all extensions in the Joomla! environment."/>
@@ -25,6 +26,7 @@
 			<property 	name="dest.media" 						value="${dest.media}"/>
 			<property 	name="dest.plugins" 					value="${dest.plugins}"/>
 			<property 	name="dest.modules" 					value="${dest.modules}"/>
+			<property 	name="dest.libs" 						value="${dest.libs}"/>
         </subant>
 	</target>
 	

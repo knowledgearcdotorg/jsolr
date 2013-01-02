@@ -91,7 +91,7 @@ class JSolrSearchViewBasic extends JView
      * parameter in the solr document sans the "com_" prefix 
      * (E.g. newsfeeds_result.php).
      * 
-     * @param Apache_Solr_Document $item A single solr document.
+     * @param JSolrApacheSolrDocument $item A single solr document.
      * @return string The output of the template override or the default 
 	 * template if no override is found.
      */

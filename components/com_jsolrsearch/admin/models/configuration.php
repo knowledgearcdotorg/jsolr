@@ -55,7 +55,7 @@ class JSolrSearchModelConfiguration extends JModel
 	{
 		$params = JComponentHelper::getParams($this->option);
 		
-		$client = new Apache_Solr_Service($this->getHost(), $params->get('port'), $params->get('path'));
+		$client = new JSolrApacheSolrService($this->getHost(), $params->get('port'), $params->get('path'));
 
 		$response = $client->ping();
 		

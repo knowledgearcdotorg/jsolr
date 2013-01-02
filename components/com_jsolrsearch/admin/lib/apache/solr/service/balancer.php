@@ -48,7 +48,7 @@ require_once(dirname(dirname(__FILE__)) . '/service.php');
  * 	routing of read / write operations
  * 	failover (on selection) for multiple read servers
  */
-class Apache_Solr_Service_Balancer
+class JSolrApacheSolrService_Balancer
 {
 	/**
 	 * SVN Revision meta data for this class
@@ -80,14 +80,14 @@ class Apache_Solr_Service_Balancer
 	/**
 	 * Escape a value for special query characters such as ':', '(', ')', '*', '?', etc.
 	 *
-	 * NOTE: inside a phrase fewer characters need escaped, use {@link Apache_Solr_Service::escapePhrase()} instead
+	 * NOTE: inside a phrase fewer characters need escaped, use {@link JSolrApacheSolrService::escapePhrase()} instead
 	 *
 	 * @param string $value
 	 * @return string
 	 */
 	static public function escape($value)
 	{
-		return Apache_Solr_Service::escape($value);
+		return JSolrApacheSolrService::escape($value);
 	}
 
 	/**
@@ -98,7 +98,7 @@ class Apache_Solr_Service_Balancer
 	 */
 	static public function escapePhrase($value)
 	{
-		return Apache_Solr_Service::escapePhrase($value);
+		return JSolrApacheSolrService::escapePhrase($value);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Apache_Solr_Service_Balancer
 	 */
 	static public function phrase($value)
 	{
-		return Apache_Solr_Service::phrase($value);
+		return JSolrApacheSolrService::phrase($value);
 	}
 
 	/**
@@ -171,7 +171,7 @@ class Apache_Solr_Service_Balancer
 	 */
 	public function addReadService($service)
 	{
-		if ($service instanceof Apache_Solr_Service)
+		if ($service instanceof JSolrApacheSolrService)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 
@@ -203,7 +203,7 @@ class Apache_Solr_Service_Balancer
 	{
 		$id = '';
 
-		if ($service instanceof Apache_Solr_Service)
+		if ($service instanceof JSolrApacheSolrService)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 		}
@@ -239,7 +239,7 @@ class Apache_Solr_Service_Balancer
 	 */
 	public function addWriteService($service)
 	{
-		if ($service instanceof Apache_Solr_Service)
+		if ($service instanceof JSolrApacheSolrService)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 
@@ -271,7 +271,7 @@ class Apache_Solr_Service_Balancer
 	{
 		$id = '';
 
-		if ($service instanceof Apache_Solr_Service)
+		if ($service instanceof JSolrApacheSolrService)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 		}
@@ -301,7 +301,7 @@ class Apache_Solr_Service_Balancer
 	 * Iterate through available read services and select the first with a ping
 	 * that satisfies configured timeout restrictions (or the default)
 	 *
-	 * @return Apache_Solr_Service
+	 * @return JSolrApacheSolrService
 	 *
 	 * @throws Exception If there are no read services that meet requirements
 	 */
@@ -329,7 +329,7 @@ class Apache_Solr_Service_Balancer
 				if (is_array($service))
 				{
 					//convert the array definition to a client object
-					$service = new Apache_Solr_Service($service['host'], $service['port'], $service['path']);
+					$service = new JSolrApacheSolrService($service['host'], $service['port'], $service['path']);
 					$this->_readableServices[$id] = $service;
 				}
 
@@ -349,7 +349,7 @@ class Apache_Solr_Service_Balancer
 	 * Iterate through available write services and select the first with a ping
 	 * that satisfies configured timeout restrictions (or the default)
 	 *
-	 * @return Apache_Solr_Service
+	 * @return JSolrApacheSolrService
 	 *
 	 * @throws Exception If there are no write services that meet requirements
 	 */
@@ -382,7 +382,7 @@ class Apache_Solr_Service_Balancer
 				if (is_array($service))
 				{
 					//convert the array definition to a client object
-					$service = new Apache_Solr_Service($service['host'], $service['port'], $service['path']);
+					$service = new JSolrApacheSolrService($service['host'], $service['port'], $service['path']);
 					$this->_writeableServices[$id] = $service;
 				}
 
@@ -404,7 +404,7 @@ class Apache_Solr_Service_Balancer
 	 * reached.   This will allow for increased reliability with heavily loaded
 	 * server(s).
 	 *
-	 * @return Apache_Solr_Service
+	 * @return JSolrApacheSolrService
 	 *
 	 * @throws Exception If there are no write services that meet requirements
 	 */
@@ -427,7 +427,7 @@ class Apache_Solr_Service_Balancer
 					if (is_array($service))
 					{
 						//convert the array definition to a client object
-						$service = new Apache_Solr_Service($service['host'], $service['port'], $service['path']);
+						$service = new JSolrApacheSolrService($service['host'], $service['port'], $service['path']);
 						$this->_writeableServices[$id] = $service;
 					}
 
@@ -503,7 +503,7 @@ class Apache_Solr_Service_Balancer
 	/**
 	 * Add a Solr Document to the index
 	 *
-	 * @param Apache_Solr_Document $document
+	 * @param JSolrApacheSolrDocument $document
 	 * @param boolean $allowDups
 	 * @param boolean $overwritePending
 	 * @param boolean $overwriteCommitted
@@ -511,7 +511,7 @@ class Apache_Solr_Service_Balancer
 	 *
 	 * @throws Exception If an error occurs during the service call
 	 */
-	public function addDocument(Apache_Solr_Document $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true)
+	public function addDocument(JSolrApacheSolrDocument $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true)
 	{
 		$service = $this->_selectWriteService();
 
@@ -538,7 +538,7 @@ class Apache_Solr_Service_Balancer
 	/**
 	 * Add an array of Solr Documents to the index all at once
 	 *
-	 * @param array $documents Should be an array of Apache_Solr_Document instances
+	 * @param array $documents Should be an array of JSolrApacheSolrDocument instances
 	 * @param boolean $allowDups
 	 * @param boolean $overwritePending
 	 * @param boolean $overwriteCommitted

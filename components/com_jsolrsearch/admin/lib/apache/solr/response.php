@@ -99,7 +99,7 @@ class Apache_Solr_Response
 	 *
 	 * @param string $rawResponse
 	 * @param array $httpHeaders
-	 * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to Apache_Solr_Document instances
+	 * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to JSolrApacheSolrDocument instances
 	 * @param boolean $collapseSingleValueArrays Whether to make multivalued fields appear as single values
 	 */
 	public function __construct($rawResponse, $httpHeaders = array(), $createDocuments = true, $collapseSingleValueArrays = true)
@@ -249,7 +249,7 @@ class Apache_Solr_Response
 		//An alternative would be to use Zend_Json::decode(...)
 		$data = json_decode($this->_rawResponse);
 
-		//if we're configured to collapse single valued arrays or to convert them to Apache_Solr_Document objects
+		//if we're configured to collapse single valued arrays or to convert them to JSolrApacheSolrDocument objects
 		//and we have response documents, then try to collapse the values and / or convert them now
 		if (($this->_createDocuments || $this->_collapseSingleValueArrays) && isset($data->response) && is_array($data->response->docs))
 		{
@@ -259,7 +259,7 @@ class Apache_Solr_Response
 			{
 				if ($this->_createDocuments)
 				{
-					$document = new Apache_Solr_Document();
+					$document = new JSolrApacheSolrDocument();
 				}
 				else
 				{

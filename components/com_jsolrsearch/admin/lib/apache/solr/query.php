@@ -153,7 +153,7 @@
  * @see http://wiki.apache.org/solr/SolrQuerySyntax Query syntax.
  * @see http://code.google.com/p/solr-php-client/ The Solr PHP Client library.
  */
-function Apache_Solr_Query_Factory($query = NULL,  Apache_Solr_Service $solr = NULL) {
+function Apache_Solr_Query_Factory($query = NULL,  JSolrApacheSolrService $solr = NULL) {
   return new Apache_Solr_Query($query, $solr);
 }
 
@@ -239,7 +239,7 @@ class Apache_Solr_Query {
    * @see solr()
    * @see apachesolr_get_solr()
    */
-  public function __construct($query = '', Apache_Solr_Service $solr = NULL) {
+  public function __construct($query = '', JSolrApacheSolrService $solr = NULL) {
     $this->solr = is_object($solr) ? $solr : apachesolr_get_solr();
     
     if ($query instanceof Drupal_Solr_Query_Interface) {
@@ -1124,7 +1124,7 @@ class Apache_Solr_Query {
    * 
    * @return
    *  The search results as an Apache_Solr_Response object.
-   * @see Apache_Solr_Service
+   * @see JSolrApacheSolrService
    */
   public function search() {
 
@@ -1150,7 +1150,7 @@ class Apache_Solr_Query {
    *  - setter: This object
    *  - getter: The Apache Solr Service instance.
    */
-  public function solr(Apache_Solr_Service $instance = NULL) {
+  public function solr(JSolrApacheSolrService $instance = NULL) {
     if (is_null($instance)) {
       return $this->solr;
     }

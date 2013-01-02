@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolr Index" default="" basedir=".">
+	<target name="clean" description="Clean JSolr library from Joomla.">
+		<delete dir="${dest.libs}/jsolr"/>
+		
+		<delete>
+			<fileset dir="${dest.languages}" defaultexcludes="true">
+				<include name="**/*.lib_jsolr*.ini"/>
+			</fileset>
+		</delete>
+		
+		<delete dir="${dest.libs}/jsolr"/>
+	</target>
+	
+	<target name="update" description="Copies JSolr library to existing Joomla install.">
+		<echo message="Deploying JSolr library to Joomla! environment."/>
+		
+		<antcall target="clean"/>
+		
+		<copy todir="${dest.libs}/jsolr">
+			<fileset dir="${src}" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+			</fileset>
+		</copy> 
+		
+		<copy todir="${dest.languages}">
+			<fileset dir="${src}/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="package" description="Creates a JSolr library package.">
+		<echo message="Packaging JSolr library."/>
+		<zip destfile="${package.dest}/lib_jsolr.zip"
+		       basedir="${src}"
+		       update="true"
+		       excludes="build*.xml"/>
+	</target>
+</project>

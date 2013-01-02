@@ -174,7 +174,7 @@ class JSolrSearchModelSearch extends JModelList
 				$host = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 			}
 
-			$client = new Apache_Solr_Service($host, $params->get('port'), $params->get('path'));
+			$client = new JSolrApacheSolrService($host, $params->get('port'), $params->get('path'));
 			$query = Apache_Solr_Query_Factory($this->getState('query.q.stripped', '*:*'), $client)
 				->useQueryParser("edismax")
 				->retrieveFields("*,score")

@@ -3,14 +3,14 @@
  * @package		JSolr
  * @subpackage	Index
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolrIndex component for Joomla!.
+ * @license     This file is part of the JSolr library for Joomla!.
 
-   The JSolrIndex component for Joomla! is free software: you can redistribute it 
+   The JSolr library for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolrIndex component for Joomla! is distributed in the hope that it will be 
+   The JSolr library for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
@@ -34,7 +34,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.plugin.plugin');
 
-abstract class JSolrCrawlerPlugin extends JPlugin 
+abstract class JSolrIndexCrawler extends JPlugin 
 {
     /**
      * The extension of the indexed item.
@@ -135,7 +135,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 	 * The key can be customized by overriding this method but it is not 
 	 * recommended.
 	 * 
-	 * @param Apache_Solr_Document $document The document to use to build the 
+	 * @param JSolrApacheSolrDocument $document The document to use to build the 
 	 * key.
 	 * 
 	 * @return string The item's key.
@@ -207,7 +207,7 @@ abstract class JSolrCrawlerPlugin extends JPlugin
 				$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 			}
 
-			$solr = new Apache_Solr_Service($url, $params->get('port'), $params->get('path'));
+			$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
 
 			if (count($ids)) {
 				$solr->deleteByQuery($this->getDeleteQueryById($ids));

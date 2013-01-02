@@ -186,7 +186,7 @@ abstract class JSolrSearchPlugin extends JPlugin
 	/**
 	 * Maps a Solr document to a generic result object.
 	 * 
-	 * @param Apache_Solr_Document $document A Solr document.
+	 * @param JSolrApacheSolrDocument $document A Solr document.
 	 * @param stdClass $hl Highlighted fields.
 	 * @param int $hlFragSize The size of the highlighted fragment.
 	 * @param string $lang The language the result should be returned in.

@@ -33,9 +33,9 @@ defined('_JEXEC') or die();
 jimport('joomla.log.log');
 jimport('jrest.client.client');
 
-require_once(JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."helpers".DS."plugin.php");
+jimport('jsolr.index.crawler');
 
-class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
+class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 {
 	protected $extension = 'com_jspace';
 	
@@ -92,7 +92,7 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 	 */
 	protected function getDocument(&$record)
 	{	
-		$doc = new Apache_Solr_Document();
+		$doc = new JSolrApacheSolrDocument();
 		
 		$lang = $this->getLanguage($record, false);
 		
@@ -239,7 +239,7 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 	
 	private function _getBitstreamDocument($record)
 	{
-		$doc = new Apache_Solr_Document();
+		$doc = new JSolrApacheSolrDocument();
 		
 		$lang = $this->getLanguage($record, false);
 
@@ -273,7 +273,7 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see JSolrCrawlerPlugin::onIndex()
+	 * @see JSolrIndexCrawler::onIndex()
 	 */
 	public function onIndex()
 	{
@@ -369,7 +369,7 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 				$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 			}
 
-			$solr = new Apache_Solr_Service($url, $params->get('port'), $params->get('path'));
+			$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
 
 			if (count($ids)) {
 				$solr->deleteByQuery($this->getDeleteQueryById($ids));
@@ -438,7 +438,7 @@ class plgJSolrCrawlerJSpace extends JSolrCrawlerPlugin
 					$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 				}
 		
-				$solr = new Apache_Solr_Service($url, $params->get('port'), $params->get('path'));
+				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
 								
 				$extraction = $solr->extract($path, array("extractOnly"=>"true"));
 				

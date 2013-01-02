@@ -50,13 +50,13 @@ require_once(dirname(__FILE__) . '/response.php');
  * Example Usage:
  * <code>
  * ...
- * $solr = new Apache_Solr_Service(); //or explicitly new Apache_Solr_Service('localhost', 8180, '/solr')
+ * $solr = new JSolrApacheSolrService(); //or explicitly new JSolrApacheSolrService('localhost', 8180, '/solr')
  *
  * if ($solr->ping())
  * {
  * 		$solr->deleteByQuery('*:*'); //deletes ALL documents - be careful :)
  *
- * 		$document = new Apache_Solr_Document();
+ * 		$document = new JSolrApacheSolrDocument();
  * 		$document->id = uniqid(); //or something else suitably unique
  *
  * 		$document->title = 'Some Title';
@@ -79,7 +79,7 @@ require_once(dirname(__FILE__) . '/response.php');
  * @todo Investigate using other HTTP clients other than file_get_contents built-in handler. Could provide performance
  * improvements when dealing with multiple requests by using HTTP's keep alive functionality
  */
-class Apache_Solr_Service
+class JSolrApacheSolrService
 {
 	/**
 	 * SVN Revision meta data for this class
@@ -129,7 +129,7 @@ class Apache_Solr_Service
 	protected $_host, $_port, $_path;
 
 	/**
-	 * Whether {@link Apache_Solr_Response} objects should create {@link Apache_Solr_Document}s in
+	 * Whether {@link Apache_Solr_Response} objects should create {@link JSolrApacheSolrDocument}s in
 	 * the returned parsed data
 	 *
 	 * @var boolean
@@ -146,7 +146,7 @@ class Apache_Solr_Service
 
 	/**
 	 * How NamedLists should be formatted in the output.  This specifically effects facet counts. Valid values
-	 * are {@link Apache_Solr_Service::NAMED_LIST_MAP} (default) or {@link Apache_Solr_Service::NAMED_LIST_FLAT}.
+	 * are {@link JSolrApacheSolrService::NAMED_LIST_MAP} (default) or {@link JSolrApacheSolrService::NAMED_LIST_FLAT}.
 	 *
 	 * @var string
 	 */
@@ -191,7 +191,7 @@ class Apache_Solr_Service
 	/**
 	 * Escape a value for special query characters such as ':', '(', ')', '*', '?', etc.
 	 *
-	 * NOTE: inside a phrase fewer characters need escaped, use {@link Apache_Solr_Service::escapePhrase()} instead
+	 * NOTE: inside a phrase fewer characters need escaped, use {@link JSolrApacheSolrService::escapePhrase()} instead
 	 *
 	 * @param string $value
 	 * @return string
@@ -487,7 +487,7 @@ class Apache_Solr_Service
 
 	/**
 	 * Set the create documents flag. This determines whether {@link Apache_Solr_Response} objects will
-	 * parse the response and create {@link Apache_Solr_Document} instances in place.
+	 * parse the response and create {@link JSolrApacheSolrDocument} instances in place.
 	 *
 	 * @param unknown_type $createDocuments
 	 */
@@ -537,12 +537,12 @@ class Apache_Solr_Service
 	{
 		switch ((string) $namedListTreatment)
 		{
-			case Apache_Solr_Service::NAMED_LIST_FLAT:
-				$this->_namedListTreatment = Apache_Solr_Service::NAMED_LIST_FLAT;
+			case JSolrApacheSolrService::NAMED_LIST_FLAT:
+				$this->_namedListTreatment = JSolrApacheSolrService::NAMED_LIST_FLAT;
 				break;
 
-			case Apache_Solr_Service::NAMED_LIST_MAP:
-				$this->_namedListTreatment = Apache_Solr_Service::NAMED_LIST_MAP;
+			case JSolrApacheSolrService::NAMED_LIST_MAP:
+				$this->_namedListTreatment = JSolrApacheSolrService::NAMED_LIST_MAP;
 				break;
 
 			default:
@@ -657,7 +657,7 @@ class Apache_Solr_Service
 	/**
 	 * Add a Solr Document to the index
 	 *
-	 * @param Apache_Solr_Document $document
+	 * @param JSolrApacheSolrDocument $document
 	 * @param boolean $allowDups
 	 * @param boolean $overwritePending
 	 * @param boolean $overwriteCommitted
@@ -665,7 +665,7 @@ class Apache_Solr_Service
 	 *
 	 * @throws Exception If an error occurs during the service call
 	 */
-	public function addDocument(Apache_Solr_Document $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true)
+	public function addDocument(JSolrApacheSolrDocument $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true)
 	{
 		$dupValue = $allowDups ? 'true' : 'false';
 		$pendingValue = $overwritePending ? 'true' : 'false';
@@ -681,7 +681,7 @@ class Apache_Solr_Service
 	/**
 	 * Add an array of Solr Documents to the index all at once
 	 *
-	 * @param array $documents Should be an array of Apache_Solr_Document instances
+	 * @param array $documents Should be an array of JSolrApacheSolrDocument instances
 	 * @param boolean $allowDups
 	 * @param boolean $overwritePending
 	 * @param boolean $overwriteCommitted
@@ -699,7 +699,7 @@ class Apache_Solr_Service
 
 		foreach ($documents as $document)
 		{
-			if ($document instanceof Apache_Solr_Document)
+			if ($document instanceof JSolrApacheSolrDocument)
 			{
 				$rawPost .= $this->_documentToXmlFragment($document);
 			}
@@ -711,11 +711,11 @@ class Apache_Solr_Service
 	}
 
 	/**
-	 * Create an XML fragment from a {@link Apache_Solr_Document} instance appropriate for use inside a Solr add call
+	 * Create an XML fragment from a {@link JSolrApacheSolrDocument} instance appropriate for use inside a Solr add call
 	 *
 	 * @return string
 	 */
-	protected function _documentToXmlFragment(Apache_Solr_Document $document)
+	protected function _documentToXmlFragment(JSolrApacheSolrDocument $document)
 	{
 		$xml = '<doc';
 
@@ -971,7 +971,7 @@ class Apache_Solr_Service
 		}
 		else
 		{
-			throw new Exception("Unsupported method '$method', please use the Apache_Solr_Service::METHOD_* constants");
+			throw new Exception("Unsupported method '$method', please use the JSolrApacheSolrService::METHOD_* constants");
 		}
 	}
 }
