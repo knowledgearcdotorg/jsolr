@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="content">
+	<name>plg_content_jsolrcrawler</name>
+	<creationDate>2013-01-02</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.1.0</version>
+	<description>PLG_CONTENT_JSOLRCRAWLER_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="jsolrcrawler">jsolrcrawler.php</filename>
+		<filename>index.html</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">en-GB.plg_content_jsolrcrawler.ini</language>
+		<language tag="en-GB">en-GB.plg_content_jsolrcrawler.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+		</fields>
+	</config>
+</extension>

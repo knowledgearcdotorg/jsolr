@@ -57,6 +57,12 @@
 				<exclude name="**/language/**"/>
 			</fileset>
 		</copy>
+
+		<copy todir="${dest.cli}">
+			<fileset dir="${src}/admin" defaultexcludes="true">
+				<include name="jsolr_crawler.php"/>
+			</fileset>
+		</copy>
 		
 		<!--copy todir="${dest.languages}">
 			<fileset dir="${src}/site/language" defaultexcludes="true">

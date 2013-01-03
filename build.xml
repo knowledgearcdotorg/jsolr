@@ -10,6 +10,7 @@
 	<property	name="dest.plugins"						value="${dest}/plugins"/>
 	<property	name="dest.modules"						value="${dest}/modules"/>
 	<property	name="dest.libs"						value="${dest}/libraries"/>
+	<property	name="dest.cli"							value="${dest}/cli"/>
 	
 	<target name="update" description="Updates all JSolr extensions in an existing Joomla install.">
 		<echo message="Updating all extensions in the Joomla! environment."/>
@@ -27,6 +28,7 @@
 			<property 	name="dest.plugins" 					value="${dest.plugins}"/>
 			<property 	name="dest.modules" 					value="${dest.modules}"/>
 			<property 	name="dest.libs" 						value="${dest.libs}"/>
+			<property 	name="dest.cli" 						value="${dest.cli}"/>
         </subant>
 	</target>
 	

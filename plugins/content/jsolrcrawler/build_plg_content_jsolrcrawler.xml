@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolrCrawler Content Plugin" default="" basedir=".">
+	<property name="dest.plugins.content" value="${dest.plugins}/content"/>
+	
+	<target name="update" description="Copies content JSolr Index plugin to existing Joomla install.">
+		<echo message="Deploying content JSolr Index plugin to Joomla! environment."/>
+		<copy todir="${dest.plugins.content}/jsolrcrawler">
+			<fileset dir="${src}" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${dest.administrator.languages}">
+			<fileset dir="${src}/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="package" description="Creates a content JSolr Index plugin package.">
+		<echo message="Packaging content JSolr Index plugin."/>
+		<zip destfile="${package.dest}/plg_content_jsolrcrawler.zip"
+		       basedir="${src}"
+		       update="true"
+		       excludes="build*.xml"/>
+	</target>
+</project>

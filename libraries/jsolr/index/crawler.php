@@ -34,6 +34,9 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.plugin.plugin');
 
+jimport('jsolr.apache.solr.service');
+jimport('jsolr.apache.solr.document');
+
 abstract class JSolrIndexCrawler extends JPlugin 
 {
     /**
@@ -165,31 +168,10 @@ abstract class JSolrIndexCrawler extends JPlugin
 
 		$i = 0;
 		foreach ($items as $item) {
-			// Initialize the item's parameters.
-			if (isset($item->params)) {
-				$registry = new JRegistry();
-				$registry->loadString($item->params);
-				$item->params = JComponentHelper::getParams($this->get('extension'), true);
-				$item->params->merge($registry);
-			}
-			
-			if (isset($item->metadata)) {
-				$registry = new JRegistry();
-				$registry->loadString($item->metadata);
-				$item->metadata = $registry;
-			}
-		
-			$documents[$i] = $this->getDocument($item);
-			$documents[$i]->addField('id', $item->id);
-			$documents[$i]->addField('extension', $this->get('extension'));
-			$documents[$i]->addField('view', $this->get('view'));
-			$documents[$i]->addField('lang', $this->getLanguage($item));
-			
-			$key = $this->buildKey($documents[$i]);
-			
-			$documents[$i]->addField('key', $key);
+			$documents[$i] = $this->prepare($item);
 
-			$ids[$i] = $key;
+			$key = JArrayHelper::getValue($documents[$i]->getField('key'), 'value');
+			$ids[$i] = JArrayHelper::getValue($key, 0);
 			
 			$i++;
 		}
@@ -215,14 +197,47 @@ abstract class JSolrIndexCrawler extends JPlugin
 				$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
 			}
 			
-			$solr->addDocuments($documents);
-			
-			$solr->commit();
+			$solr->addDocuments($documents, false, true, true);
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 			
 			throw $e;
 		}
+	}
+	
+	/**
+	 * Prepare the item for indexing.
+	 * 
+	 * @param stdClass $item
+	 * @return JSolrApacheSolrDocument
+	 */
+	protected function prepare($item)
+	{
+		// Initialize the item's parameters.
+		if (isset($item->params)) {
+			$registry = new JRegistry();
+			$registry->loadString($item->params);
+			$item->params = JComponentHelper::getParams($this->get('extension'), true);
+			$item->params->merge($registry);
+		}
+		
+		if (isset($item->metadata)) {
+			$registry = new JRegistry();
+			$registry->loadString($item->metadata);
+			$item->metadata = $registry;
+		}
+	
+		$document = $this->getDocument($item);
+		$document->addField('id', $item->id);
+		$document->addField('extension', $this->get('extension'));
+		$document->addField('view', $this->get('view'));
+		$document->addField('lang', $this->getLanguage($item));
+		
+		$key = $this->buildKey($document);
+		
+		$document->addField('key', $key);
+
+		return $document;
 	}
 }

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package	JSolr
- * @subpackage Index
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolr Content Index plugin for Joomla!.
+ * @package		JSolr.Plugins
+ * @subpackage	Index
+ * @copyright	Copyright (C) 2012, 2013 Wijiti Pty Ltd. All rights reserved.
+ * @license		This file is part of the JSolr Content Index plugin for Joomla!.
 
    The JSolr Content Index plugin for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
@@ -154,6 +154,41 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		$dispatcher->trigger('onContentPrepare', array('com_finder.indexer', &$content, &$params, 0));
  
 		return $content->text;
+	}
+	
+	public function onJSolrIndexAfterSave($context, $article, $isNew)
+	{	
+		if ($context == 'com_content.article') {
+			$query = $this->buildQuery()->where('a.id='.$article->id);
+			
+			$database = JFactory::getDBO();
+			$database->setQuery($query);
+
+			$document = $this->prepare($database->loadObject());
+			
+			try {
+				$params = JComponentHelper::getParams("com_jsolrindex", true);
+				
+				if (!$params) {
+					return;
+				}
+	
+				$url = $params->get('host');
+				
+				if ($params->get('username') && $params->get('password')) {
+					$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
+				}
+	
+				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
+
+				$solr->addDocument($document, false, true, true);
+			} catch (Exception $e) {
+				$log = JLog::getInstance();
+				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+				
+				throw $e;
+			}
+		}
 	}
 
 	protected function buildQuery()

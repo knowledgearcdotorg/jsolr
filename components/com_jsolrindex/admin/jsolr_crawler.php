@@ -2,7 +2,7 @@
 <?php
 /**
  * @package JSolr
- * @subpackage CLI
+ * @subpackage Index
  * @copyright Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  */
 
@@ -62,7 +62,7 @@ jimport('jsolr.apache.solr.service');
  * @package Wijiti
  * @subpackage CLI
  */
-class JSolrIndexCrawler extends JApplicationCli
+class JSolrCrawlerCli extends JApplicationCli
 {   
     public function getRobotsFile()
     {
@@ -119,4 +119,4 @@ class JSolrIndexCrawler extends JApplicationCli
 // Set error handling.
 JError::setErrorHandling(E_ALL, 'echo');
  
-JApplicationCli::getInstance('JSolrIndexCrawler')->execute();
+JApplicationCli::getInstance('JSolrCrawlerCli')->execute();
