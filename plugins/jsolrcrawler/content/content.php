@@ -156,7 +156,7 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		return $content->text;
 	}
 	
-	public function onJSolrIndexAfterSave($context, $article, $isNew)
+	public function onJSolrIndexAfterSave($context, $article)
 	{	
 		if ($context == 'com_content.article') {
 			$query = $this->buildQuery()->where('a.id='.$article->id);
