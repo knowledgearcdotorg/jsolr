@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSolr Content Crawler Plugin" default="" basedir=".">
 	<property name="dest.plugins.content" value="${dest.plugins}/content"/>
+	<property name="package.dest.crawler.jreviews" value="${package.dest}/plg_content_jsolrcrawler.zip"/>
 	
 	<target name="update" description="Copies content JSolr Index plugin to existing Joomla install.">
 		<echo message="Deploying content JSolr Index plugin to Joomla! environment."/>
@@ -19,7 +20,7 @@
 	
 	<target name="package" description="Creates a content JSolr Index plugin package.">
 		<echo message="Packaging content JSolr Index plugin."/>
-		<zip destfile="${package.dest}/plg_content_jsolrcrawler.zip"
+		<zip destfile="${package.dest.crawler.jreviews}"
 		       basedir="${src}"
 		       update="true"
 		       excludes="build*.xml"/>
