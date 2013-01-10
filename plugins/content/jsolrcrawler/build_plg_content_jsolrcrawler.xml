@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSolrCrawler Content Plugin" default="" basedir=".">
+<project name="JSolr Content Crawler Plugin" default="" basedir=".">
 	<property name="dest.plugins.content" value="${dest.plugins}/content"/>
 	
 	<target name="update" description="Copies content JSolr Index plugin to existing Joomla install.">
