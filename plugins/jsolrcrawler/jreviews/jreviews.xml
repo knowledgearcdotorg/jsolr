@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="jsolrcrawler">
+	<name>plg_jsolrcrawler_jreviews</name>
+	<creationDate>2013-01-08</creationDate>
+	<author>Wijiti</author>
+	<authorEmail>development@wijiti.com</authorEmail>
+	<authorUrl>http://www.wijiti.com</authorUrl>
+	<copyright>>Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<version>0.3.0</version>
+	<description>PLG_JSOLRCRAWLER_JREVIEWS_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="jreviews">jreviews.php</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jreviews.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jreviews.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="index_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_INDEX_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true"/>
+				<field name="facet_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_FACET_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true"/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
