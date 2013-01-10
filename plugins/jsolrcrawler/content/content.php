@@ -156,10 +156,10 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		return $content->text;
 	}
 	
-	public function onJSolrIndexAfterSave($context, $article)
+	public function onJSolrIndexAfterSave($context, $item)
 	{	
 		if ($context == 'com_content.article') {
-			$query = $this->buildQuery()->where('a.id='.$article->id);
+			$query = $this->buildQuery()->where('a.id='.$item->id);
 			
 			$database = JFactory::getDBO();
 			$database->setQuery($query);
