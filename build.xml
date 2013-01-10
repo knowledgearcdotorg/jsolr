@@ -20,6 +20,7 @@
 				<include name="**/**/build_*.xml"/>
 			</fileset>
 			<property	name="src"								value="${src}"/>
+			<property	name="dest"								value="${dest}"/>
 			<property	name="dest.administrator.components"	value="${dest.administrator.components}"/>
         	<property	name="dest.administrator.languages"		value="${dest.administrator.languages}"/>
 			<property	name="dest.components"					value="${dest.components}"/>
