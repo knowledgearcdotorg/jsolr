@@ -30,7 +30,8 @@
 // no direct access
 defined('_JEXEC') or die();
 
-jimport('joomla.database.table.category');
+jimport('joomla.factory');
+jimport('joomla.database.table');
 
 jimport('jsolr.index.crawler');
 
@@ -131,7 +132,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				case 'checkboxes':
 				case 'selectmultiple':
 				case 'radiobuttons':
-					foreach (explode('*', $record->$facet) as $value) {
+					foreach (explode('*', rtrim(ltrim($record->$facet,'*'),'*')) as $value) {
 						if (!empty($value))
 							$doc->addField($key.'_s_multi', $value);
 					}
@@ -233,16 +234,70 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 	}
 	
 	public function onJSolrIndexAfterSave($context, $item)
-	{	
+	{
 		if ($context == 'com_jreviews.listing') {
-			$query = $this->buildQuery()->where('a.id='.$item->id);
-			
-			$database = JFactory::getDBO();
-			$database->setQuery($query);
+			$listing = JArrayHelper::getValue($item->data, 'Listing');
+			$fields = JArrayHelper::getValue($item->data, 'Field');
 
-			$document = $this->prepare($database->loadObject());
+			if ($id = JArrayHelper::getValue($item->data, 'insertid', 0)) {	
+				// flatten the array and prepare it for indexing.
+				$array = array_merge($listing, JArrayHelper::getValue($fields, 'Listing'));
+				
+				foreach ($array as $key=>$value) {
+					if (JString::strpos('jr_', $value) !== 0) {
+						if (is_array($value)) {
+							$array[$key] = '*'.implode('*', $value).'*';			
+						}
+					}
+				}
+	
+				// Load the category title.
+				$category = JTable::getInstance('Category');
+				$category->load(JArrayHelper::getValue($array, 'catid'));
+				
+				$array['category'] = $category->get('title');
+				
+				// Load the user name.
+				$array['author'] = JFactory::getUser(JArrayHelper::getValue($array, 'created_by'))->get('name');
+				
+				// rename some keys.
+				$array['summary'] = JArrayHelper::getValue($array, 'introtext');
+				unset($array['introtext']);
+				
+				$array['body'] = JArrayHelper::getValue($array, 'fulltext');
+				unset($array['fulltext']);
+				
+				// Add some mandatory field values if they don't already exist.
+				$array['modified'] = JArrayHelper::getValue(
+					$array, 
+					'modified', 
+					JArrayHelper::getValue($array, 'created')
+				);
+				
+				$array['hits'] = JArrayHelper::getValue($array, 'hits', 0);
+				
+				$array['params'] = JArrayHelper::getValue($array, 'attribs', null);
+				
+				$array['id'] = $id;
+				
+				$object = JArrayHelper::toObject($array);
+			} else {
+				$query = $this->buildQuery()->where('a.id='.JArrayHelper::getValue($listing, 'id', 0));
+
+				$database = JFactory::getDBO();
+				$database->setQuery($query);
+	
+				$object = $database->loadObject();
+			}
 			
 			try {
+				// Throw an error if the record has no id.
+				if ($object->id == 0) {
+					throw new Exception('Could not find item id. Cannot index.');
+				}
+				
+				$document = $this->prepare($object);
+			
 				$params = JComponentHelper::getParams("com_jsolrindex", true);
 				
 				if (!$params) {
@@ -258,6 +313,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
 
 				$solr->addDocument($document, false, true, true);
+				$solr->commit();
 			} catch (Exception $e) {
 				$log = JLog::getInstance();
 				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));

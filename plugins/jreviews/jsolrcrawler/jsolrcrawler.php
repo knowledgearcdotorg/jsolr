@@ -19,7 +19,7 @@ class JSolrCrawlerComponent extends S2Component {
 
     function plgAfterSave(&$model)
     {
-		if (is_a($model, 'EverywhereComContentModel')) {
+		if (is_a($model, 'EverywhereComContentModel')) {			
 			if ($model->name == 'Listing') {
 				$dispatcher = JDispatcher::getInstance();
 				JPluginHelper::importPlugin('jsolrcrawler');
