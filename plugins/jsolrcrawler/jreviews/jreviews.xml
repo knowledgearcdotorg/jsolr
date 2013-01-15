@@ -19,8 +19,12 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="index_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_INDEX_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true"/>
-				<field name="facet_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_FACET_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true"/>
+				<field name="index_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_INDEX_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true">
+					<option value="jsolr_all">PLG_JSOLRCRAWLER_ALL_FIELDS</option>
+				</field>
+				<field name="facet_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_FACET_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true">
+					<option value="jsolr_all">PLG_JSOLRCRAWLER_ALL_FIELDS</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>

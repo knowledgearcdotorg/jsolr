@@ -98,8 +98,14 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 			$doc->addField("category_fc", $record->category); // for faceting
 		}
 
-		// Obtain the configured fields to index.
-		foreach ($this->params->def('index_fields') as $index) {
+		// Obtain the configured fields to index.		
+		if (array_search('jsolr_all', $this->params->def('index_fields')) === false) {
+			$indexes = $this->params->def('index_fields');
+		} else {
+			$indexes = $this->_getJRFields();
+		}
+		
+		foreach ($indexes as $index) {
 			$key = JString::strtolower(JStringNormalise::toVariable($index));
 			
 			switch ($this->_getJRField($index)->type) {
@@ -123,18 +129,25 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 					break;
 			}
 		}
+
+		// Obtain the configured fields to index.		
+		if (array_search('jsolr_all', $this->params->def('facet_fields')) === false) {
+			$facets = $this->params->def('facet_fields');
+		} else {
+			$facets = $this->_getJRFields();
+		}
 		
 		// Obtain the configured fields to facet.
-		foreach ($this->params->def('facet_fields') as $facet) {
+		foreach ($facets as $facet) {
 			$key = JString::strtolower(JStringNormalise::toVariable($facet));
-
+			
 			switch ($this->_getJRField($facet)->type) {
 				case 'checkboxes':
 				case 'selectmultiple':
 				case 'radiobuttons':
 					foreach (explode('*', rtrim(ltrim($record->$facet,'*'),'*')) as $value) {
 						if (!empty($value))
-							$doc->addField($key.'_s_multi', $value);
+							$doc->addField($key.'_fc', $value);
 					}
 					
 					break;
@@ -146,6 +159,24 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		}
 
 		return $doc;
+	}
+	
+	private function _getJRFields()
+	{
+		// Create a new query object.
+		$db		= JFactory::getDbo();
+		$query	= $db->getQuery(true);
+		$user	= JFactory::getUser();
+
+		// Select extra fields from jreviews content.
+		$query
+			->select('jf.name')
+			->from('#__jreviews_fields AS jf')
+			->where("location='content'");
+			
+		$db->setQuery($query);
+		
+		return $db->loadColumn();
 	}
 	
 	/**
