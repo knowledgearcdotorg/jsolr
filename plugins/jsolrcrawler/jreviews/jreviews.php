@@ -33,6 +33,7 @@ defined('_JEXEC') or die();
 jimport('joomla.factory');
 jimport('joomla.database.table');
 
+jimport('jsolr.factory');
 jimport('jsolr.index.crawler');
 
 class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
@@ -264,6 +265,12 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		return $content->text;
 	}
 	
+	/**
+	 * Updates the index after an item is saved.
+	 * 
+	 * @param string $context The context of the item (com_jreviews.listing).
+	 * @param mixed $item The item to index.
+	 */
 	public function onJSolrIndexAfterSave($context, $item)
 	{
 		if ($context == 'com_jreviews.listing') {
@@ -330,10 +337,8 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 						$object->$key = $value;
 					}
 				}
-				
-				error_log(print_r($object, true));
 			}
-			
+	
 			try {
 				// Throw an error if the record has no id.
 				if ($object->id == 0) {
@@ -341,29 +346,28 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				}
 				
 				$document = $this->prepare($object);
-			
-				$params = JComponentHelper::getParams("com_jsolrindex", true);
-				
-				if (!$params) {
-					return;
-				}
-	
-				$url = $params->get('host');
-				
-				if ($params->get('username') && $params->get('password')) {
-					$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-				}
-	
-				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
+
+				$solr = JSolrFactory::getIndexService();
 
 				$solr->addDocument($document, false, true, true, 1000);
 			} catch (Exception $e) {
-				$log = JLog::getInstance();
-				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-				
-				throw $e;
+				error_log(print_r($e, true));
+				Jlog::addLogger(array('text_file' => 'jsolr.php'), JLog::ALL, 'jsolr');
+				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 			}
 		}
+	}
+	
+	/**
+	 * Deletes the item from the index after it has been successfully deleted 
+	 * from the JReviews database.
+	 * 
+	 * @param string $context The context of the item (com_jreviews.listing).
+	 * @param mixed $item The item to index.
+	 */
+	public function onJSolrIndexAfterDelete($context, $item)
+	{
+		
 	}
 
 	protected function buildQuery()
