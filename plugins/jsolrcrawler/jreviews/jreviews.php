@@ -270,18 +270,18 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 			$listing = JArrayHelper::getValue($item->data, 'Listing');
 			$fields = JArrayHelper::getValue($item->data, 'Field');
 
-			if ($id = JArrayHelper::getValue($item->data, 'insertid', 0)) {	
-				// flatten the array and prepare it for indexing.
-				$array = array_merge($listing, JArrayHelper::getValue($fields, 'Listing'));
-				
-				foreach ($array as $key=>$value) {
-					if (JString::strpos('jr_', $value) !== 0) {
-						if (is_array($value)) {
-							$array[$key] = '*'.implode('*', $value).'*';			
-						}
+			// flatten the array.
+			$array = array_merge($listing, JArrayHelper::getValue($fields, 'Listing'));
+			
+			foreach ($array as $key=>$value) {
+				if (JString::strpos('jr_', $value) !== 0) {
+					if (is_array($value)) {
+						$array[$key] = '*'.implode('*', $value).'*';			
 					}
 				}
-	
+			}
+			
+			if ($id = JArrayHelper::getValue($item->data, 'insertid', 0)) {		
 				// Load the category title.
 				$category = JTable::getInstance('Category');
 				$category->load(JArrayHelper::getValue($array, 'catid'));
@@ -313,12 +313,25 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				
 				$object = JArrayHelper::toObject($array);
 			} else {
+				// JReviews does not pass through the entire record (it only 
+				// updates a subset of fields) and the database table cannot 
+				// be relied upon for the most up-to-date record. 
+				// Therefore we need to load the entire record then update 
+				// fields available in the passed object. 
 				$query = $this->buildQuery()->where('a.id='.JArrayHelper::getValue($listing, 'id', 0));
 
 				$database = JFactory::getDBO();
 				$database->setQuery($query);
-	
+
 				$object = $database->loadObject();
+
+				foreach ($array as $key=>$value) {
+					if (property_exists($object, $key)) {
+						$object->$key = $value;
+					}
+				}
+				
+				error_log(print_r($object, true));
 			}
 			
 			try {
@@ -343,8 +356,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 	
 				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
 
-				$solr->addDocument($document, false, true, true);
-				$solr->commit();
+				$solr->addDocument($document, false, true, true, 1000);
 			} catch (Exception $e) {
 				$log = JLog::getInstance();
 				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
