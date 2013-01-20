@@ -28,4 +28,16 @@ class JSolrCrawlerComponent extends S2Component {
 			}
 		}
     }
+    
+    function plgAfterDelete(&$model)
+    {
+		if (is_a($model, 'EverywhereComContentModel')) {			
+			if ($model->name == 'Listing') {
+				$dispatcher = JDispatcher::getInstance();
+				JPluginHelper::importPlugin('jsolrcrawler');
+				
+				$results = $dispatcher->trigger('onJSolrIndexAfterDelete', array('com_jreviews.listing', $model));
+			}
+		}
+    }
 }

@@ -351,7 +351,6 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 
 				$solr->addDocument($document, false, true, true, 1000);
 			} catch (Exception $e) {
-				error_log(print_r($e, true));
 				Jlog::addLogger(array('text_file' => 'jsolr.php'), JLog::ALL, 'jsolr');
 				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 			}
@@ -367,7 +366,23 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 	 */
 	public function onJSolrIndexAfterDelete($context, $item)
 	{
-		
+		if ($context == 'com_jreviews.listing') {
+			$listing = JArrayHelper::getValue($item->data, 'Listing');
+			$id = JArrayHelper::getValue($listing, 'id');
+			
+			try {
+				if (!$id) {
+					throw new Exception('No id exists for this item.');
+				}
+				
+				$solr = JSolrFactory::getIndexService();
+				$solr->deleteById($this->get('extension').'.'.$this->get('view').'.'.$id);
+				$solr->commit();
+			} catch (Exception $e) {
+				Jlog::addLogger(array('text_file' => 'jsolr.php'), JLog::ALL, 'jsolr');
+				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
+			}
+		}
 	}
 
 	protected function buildQuery()
