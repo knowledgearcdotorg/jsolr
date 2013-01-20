@@ -63,27 +63,20 @@ jimport('jsolr.apache.solr.service');
  * @subpackage CLI
  */
 class JSolrCrawlerCli extends JApplicationCli
-{   
-    public function getRobotsFile()
-    {
-    	return JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrindex".DS."ignore.txt";
-    }
- 
+{ 
     public function doExecute()
     {
     	if ($this->input->get('h') || $this->input->get('help')) {
     		$this->help();
     		return;
     	}
-    	
-    	$rules = file($this->getRobotsFile(), FILE_IGNORE_NEW_LINES);
 
     	$dispatcher =& JDispatcher::getInstance();
     	
 		JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
 
 		try {
-			$array = $dispatcher->trigger('onIndex', array($rules));
+			$array = $dispatcher->trigger('onIndex');
 		} catch (Exception $e) {
 			if ($this->input->get('q', null) || $this->input->get('quiet', null)) {
 				$this->out($e->getMessage());
