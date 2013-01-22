@@ -56,6 +56,12 @@ abstract class JSolrIndexCrawler extends JPlugin
      * @var string
      */
 	protected $view;
+
+	public function __construct(&$subject, $config = array())
+	{
+		parent::__construct($subject, $config);
+		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, 'jsolr');
+	}
 	
 	/**
 	* Prepares an article for indexing.
@@ -198,6 +204,8 @@ abstract class JSolrIndexCrawler extends JPlugin
 			}
 			
 			$solr->addDocuments($documents, false, true, true);
+			
+			$solr->commit();
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));

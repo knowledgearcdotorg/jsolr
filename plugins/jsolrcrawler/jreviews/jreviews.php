@@ -351,7 +351,6 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 
 				$solr->addDocument($document, false, true, true, 1000);
 			} catch (Exception $e) {
-				Jlog::addLogger(array('text_file' => 'jsolr.php'), JLog::ALL, 'jsolr');
 				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 			}
 		}
@@ -379,7 +378,6 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				$solr->deleteById($this->get('extension').'.'.$this->get('view').'.'.$id);
 				$solr->commit();
 			} catch (Exception $e) {
-				Jlog::addLogger(array('text_file' => 'jsolr.php'), JLog::ALL, 'jsolr');
 				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 			}
 		}
