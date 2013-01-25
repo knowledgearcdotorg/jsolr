@@ -40,50 +40,27 @@ jimport('jsolr.apache.solr.document');
 class JSolrFactory extends JObject 
 {
 	/**
-	 * Gets a connection to the Solr Service using the JSolrIndex connection 
-	 * settings.
-	 * 
-	 * @return JSolrApacheSolrService A connection to the Solr Service.
+	 * @static
 	 */
-	public static function getIndexService()
-	{
-		return self::getService('com_jsolrindex');
-	}
-
+	protected static $component;
+	
 	/**
-	 * Gets a connection to the Solr Service using the JSolrSearch connection 
-	 * settings.
-	 * 
-	 * @return JSolrApacheSolrService A connection to the Solr Service.
+	 * @static
 	 */
-	public static function getSearchService()
-	{
-		return self::getService('com_jsolrsearch');
-	}
+	public static $config = null;
 	
 	/**
 	 * Gets a connection to the Solr Service using settings from the specified 
 	 * component.
 	 * 
-	 * @param string $component The component name. Defaults to com_jsolrsearch.
 	 * @return JSolrApacheSolrService A connection to the Solr Service.
 	 * @throws Exception An exception when a connection issue occurs.
 	 */
-	public static function getService($component = 'com_jsolrsearch')
+	public static function getService()
 	{
-		$lang = JFactory::getLanguage();
-		$lang->load('lib_jsolr', JPATH_SITE, JLanguageHelper::detectLanguage(), true);
-		
-		if (!JComponentHelper::isEnabled($component, true)) {
-			throw new Exception(JText::sprintf('LIB_JSOLR_ERROR_COMPONENT_NOT_FOUND', $component), 404);
-		}
-		
-		$params = JComponentHelper::getParams($component, true);
-		
-		if (!$params) {
-			throw new Exception(JText::sprintf('LIB_JSOLR_ERROR_PARAMS_NOT_LOADED', $component), 404);
-		}
 
+		$params = self::getConfig();
+		
 		$url = $params->get('host');
 		
 		if ($params->get('username') && $params->get('password')) {
@@ -91,5 +68,30 @@ class JSolrFactory extends JObject
 		}
 
 		return new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
+	}
+	
+	/**
+	 * Gets the Solr component's configuration parameters..
+	 * 
+	 * @return JRegistry The Solr component's configuration parameters.
+	 * @throws Exception An exception when the configuration parameters cannot be loaded.
+	 */
+	public static function getConfig()
+	{
+		if (!self::$config) {
+			$lang = JFactory::getLanguage();
+			
+			$lang->load('lib_jsolr', JPATH_SITE, JLanguageHelper::detectLanguage(), true);
+	
+			if (!JComponentHelper::isEnabled(static::$component, true)) {
+				throw new Exception(JText::sprintf('LIB_JSOLR_ERROR_COMPONENT_NOT_FOUND', static::$component), 404);
+			}
+
+			if (!self::$config = JComponentHelper::getParams(static::$component, true)) {
+				throw new Exception(JText::sprintf('LIB_JSOLR_ERROR_PARAMS_NOT_LOADED', static::$component), 404);
+			}		 
+		}
+
+		return self::$config;
 	}
 }

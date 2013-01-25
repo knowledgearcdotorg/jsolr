@@ -33,7 +33,7 @@ defined('_JEXEC') or die();
 jimport('joomla.factory');
 jimport('joomla.database.table');
 
-jimport('jsolr.factory');
+jimport('jsolr.index.factory');
 jimport('jsolr.index.crawler');
 
 class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
@@ -347,9 +347,17 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				
 				$document = $this->prepare($object);
 
-				$solr = JSolrFactory::getIndexService();
+				$solr = JSolrIndexFactory::getService();
 
-				$solr->addDocument($document, false, true, true, 1000);
+				$commitWithin = JSolrIndexFactory::getConfig()->get('commitWithin', 0);
+				
+				$solr->addDocument($document, false, true, true, $commitWithin);	
+
+				// if no commitWithin time is set and autocommit is not 
+				// configured, need to commit manually. 
+				if (!($commitWithin || JSolrIndexFactory::getConfig()->get('autocommit', 0))) {
+					$solr->commit();
+				}
 			} catch (Exception $e) {
 				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 			}
@@ -374,7 +382,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 					throw new Exception('No id exists for this item.');
 				}
 				
-				$solr = JSolrFactory::getIndexService();
+				$solr = JSolrIndexFactory::getService();
 				$solr->deleteById($this->get('extension').'.'.$this->get('view').'.'.$id);
 				$solr->commit();
 			} catch (Exception $e) {

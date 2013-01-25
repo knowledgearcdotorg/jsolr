@@ -29,15 +29,6 @@
 			type="text" 
 			label="COM_JSOLRINDEX_CONNECTION_PASSWORD_LABEL" 
 			size="45"/>
-		<field 
-			name="autocommit" 
-			type="radio" 
-			label="COM_JSOLRINDEX_CONNECTION_AUTOCOMMIT_LABEL"
-			description="COM_JSOLRINDEX_CONNECTION_AUTOCOMMIT_DESC"
-			default="1">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
 	</fieldset>
 	<fieldset 
 		name="attachments"
@@ -115,5 +106,35 @@
 			label="COM_JSOLRINDEX_ATTACHMENTS_REMOTETIKA_PATH_LABEL"
 			description="COM_JSOLRINDEX_ATTACHMENTS_REMOTETIKA_PATH_DESC"
 			class="inputbox"/>
+	</fieldset>
+	<fieldset 
+		name="advanced"
+		label="COM_JSOLRINDEX_CONFIG_ADVANCED_LABEL"
+		description="COM_JSOLRINDEX_CONFIG_ADVANCED_DESC">
+		<field 
+			name="autocommit" 
+			type="radio" 
+			label="COM_JSOLRINDEX_ADVANCED_AUTOCOMMIT_LABEL"
+			description="COM_JSOLRINDEX_ADVANCED_AUTOCOMMIT_DESC"
+			default="0">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field 
+			name="commitsWithin" 
+			type="text" 
+			label="COM_JSOLRINDEX_ADVANCED_COMMITSWITHIN_LABEL"
+			description="COM_JSOLRINDEX_ADVANCED_COMMITSWITHIN_DESC"
+			default="0" 
+			filter="integer"
+			size="4"/>
+		<field 
+			name="commitWithin" 
+			type="text" 
+			label="COM_JSOLRINDEX_ADVANCED_COMMITWITHIN_LABEL"
+			description="COM_JSOLRINDEX_ADVANCED_COMMITWITHIN_DESC"
+			default="0" 
+			filter="integer"
+			size="4"/>
 	</fieldset>
 </config>
