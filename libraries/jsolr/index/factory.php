@@ -1,6 +1,7 @@
 <?php
 /**
  * @package		JSolr
+ * @subpackage	Index
  * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
 
