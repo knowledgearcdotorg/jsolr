@@ -33,12 +33,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 jimport('joomla.error.log');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
-require_once JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."helpers".DS."plugin.php";
 
 jimport('joomla.database.table.category');
 jimport('joomla.database.table.content');
 
-class plgJSolrSearchContent extends JSolrSearchPlugin 
+jimport('jsolr.search.search');
+
+class plgJSolrSearchContent extends JSolrSearchSearch
 {
 	protected $extension = 'com_content';
 

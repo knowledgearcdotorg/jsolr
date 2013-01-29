@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSolr Search" default="" basedir=".">	
+<project name="JSolr Search" default="" basedir=".">
+	<target name="clean" description="Clean JSolr Index component from Joomla.">
+		<delete dir="${dest.administrator.components}/com_jsolrindex"/>
+		
+		<delete>
+			<fileset dir="${dest.administrator.languages}" defaultexcludes="true">
+				<include name="**/*.com_jsolrindex*.ini"/>
+			</fileset>
+		</delete>
+		
+		<delete dir="${dest.media}/com_jsolrindex"/>
+		
+		<delete dir="${dest.components}/com_jsolrindex"/>
+		
+		<!--delete>
+			<fileset dir="${dest.languages}" defaultexcludes="true">
+				<include name="**/*.com_jsolrindex*.ini"/>
+			</fileset>
+		</delete-->
+	</target>
+			
 	<target name="update" description="Copies JSolr Search component to existing Joomla install.">
 		<echo message="Deploying JSolr Search component to Joomla! environment."/>
 		

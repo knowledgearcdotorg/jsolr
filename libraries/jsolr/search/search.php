@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2011, 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2011-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -34,7 +34,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.utilities.arrayhelper');
 
-abstract class JSolrSearchPlugin extends JPlugin 
+abstract class JSolrSearchSearch extends JPlugin 
 {	
 	protected $highlighting = array();
 	

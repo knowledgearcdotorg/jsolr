@@ -71,7 +71,7 @@ class JSolrFactory extends JObject
 	}
 	
 	/**
-	 * Gets the Solr component's configuration parameters..
+	 * Gets the Solr component's configuration parameters.
 	 * 
 	 * @return JRegistry The Solr component's configuration parameters.
 	 * @throws Exception An exception when the configuration parameters cannot be loaded.

@@ -34,30 +34,15 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.registry.registry');
 jimport('joomla.application.component.model');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
+jimport('jsolr.search.factory');
 
 class JSolrSearchModelConfiguration extends JModel
 {	
-	public function getHost()
-	{
-		$params = JComponentHelper::getParams($this->option);
-		
-		$url = $params->get('host');
-		
-		if ($params->get('username') && $params->get('password')) {
-			$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-		}
-		
-		return $url;
-	}
-	
 	public function test()
 	{
-		$params = JComponentHelper::getParams($this->option);
-		
-		$client = new JSolrApacheSolrService($this->getHost(), $params->get('port'), $params->get('path'));
+		$solr = JSolrSearchFactory::getService();
 
-		$response = $client->ping();
+		$response = $solr->ping();
 		
 		if ($response === false) {
 			$this->setError(JText::_("COM_JSOLRSEARCH_PING_FAILED"));
