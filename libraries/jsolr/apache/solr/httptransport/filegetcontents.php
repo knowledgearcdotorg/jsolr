@@ -36,8 +36,11 @@
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
 
+// no direct access
+defined('_JEXEC') or die();
+
 // Require JSolrApacheSolrHttpTransportAbstract
-require_once(dirname(__FILE__) . '/abstract.php');
+jimport('jsolr.apache.solr.httptransport.abstract');
 
 /**
  * HTTP Transport implemenation that uses the builtin http URL wrappers and file_get_contents

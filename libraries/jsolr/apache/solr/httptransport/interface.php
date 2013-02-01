@@ -36,8 +36,11 @@
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>, Donovan Jimenez <djimenez@conduit-it.com>
  */
 
-// require JSolrApacheSolrHttpTransportResponse
-require_once(dirname(__FILE__) . '/response.php');
+// no direct access
+defined('_JEXEC') or die();
+
+// Require JSolrApacheSolrHttpTransportAbstract
+jimport('jsolr.apache.solr.httptransport.response');
 
 /**
  * Interface that all Transport (HTTP Requester) implementations must implement. These

@@ -36,6 +36,9 @@
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
 
+// no direct access
+defined('_JEXEC') or die();
+
 class JSolrApacheSolrException extends Exception
 {
 	/**

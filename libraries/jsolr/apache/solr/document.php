@@ -36,6 +36,9 @@
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
 
+// no direct access
+defined('_JEXEC') or die();
+
 /**
  * Holds Key / Value pairs that represent a Solr Document along with any associated boost
  * values. Field values can be accessed by direct dereferencing such as:

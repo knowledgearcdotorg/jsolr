@@ -36,7 +36,10 @@
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
 
-require_once(dirname(__FILE__) . '/parserexception.php');
+// no direct access
+defined('_JEXEC') or die();
+
+jimport('jsolr.apache.solr.parserexception');
 
 /**
  * Represents a Solr response.  Parses the raw response into a set of stdClass objects

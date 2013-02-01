@@ -36,16 +36,15 @@
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
 
-// See Issue #1 (http://code.google.com/p/solr-php-client/issues/detail?id=1)
-// Doesn't follow typical include path conventions, but is more convenient for users
-require_once(dirname(__FILE__) . '/exception.php');
-require_once(dirname(__FILE__) . '/httptransportexception.php');
-require_once(dirname(__FILE__) . '/invalidargumentexception.php');
+// no direct access
+defined('_JEXEC') or die();
 
-require_once(dirname(__FILE__) . '/document.php');
-require_once(dirname(__FILE__) . '/response.php');
-
-require_once(dirname(__FILE__) . '/httptransport/interface.php');
+jimport('jsolr.apache.solr.exception');
+jimport('jsolr.apache.solr.httptransportexception');
+jimport('jsolr.apache.solr.invalidargumentexception');
+jimport('jsolr.apache.solr.document');
+jimport('jsolr.apache.solr.response');
+jimport('jsolr.apache.solr.httptransport.interface');
 
 /**
  * Starting point for the Solr API. Represents a Solr server resource and has

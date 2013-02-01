@@ -36,8 +36,11 @@
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>, Donovan Jimenez <djimenez@conduit-it.com>
  */
 
+// no direct access
+defined('_JEXEC') or die();
+
 // Require JSolrApacheSolrHttpTransportAbstract
-require_once(dirname(__FILE__) . '/abstract.php');
+jimport('jsolr.apache.solr.httptransport.abstract');
 
 /**
  * A Curl based HTTP transport. Uses a single curl session for all requests.
