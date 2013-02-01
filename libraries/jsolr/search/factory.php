@@ -31,8 +31,16 @@
 defined('_JEXEC') or die();
 
 jimport('jsolr.factory');
+jimport('jsolr.search.query');
 
 class JSolrSearchFactory extends JSolrFactory 
 {
 	protected static $component = 'com_jsolrsearch';
+
+	public static function getQuery($query = null)
+	{
+		$solr = self::getService();
+		
+		return new JSolrSearchQuery($query, $solr);
+	}
 }

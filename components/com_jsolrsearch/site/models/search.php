@@ -29,16 +29,15 @@
  * 
  */
 
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.application.component.modellist');
 
-require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+jimport('jsolr.search.factory');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."query.php");
+require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
 class JSolrSearchModelSearch extends JModelList
 {
@@ -168,14 +167,7 @@ class JSolrSearchModelSearch extends JModelList
 			// get query filter params and boosts from plugin.
 			$qf = $dispatcher->trigger('onJSolrSearchQFAdd', array());
 
-			$host = $params->get('host');
-			
-			if ($params->get('username') && $params->get('password')) {
-				$host = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-			}
-
-			$client = new JSolrApacheSolrService($host, $params->get('port'), $params->get('path'));
-			$query = Apache_Solr_Query_Factory($this->getState('query.q.stripped', '*:*'), $client)
+			$query = JSolrSearchFactory::getQuery($this->getState('query.q.stripped', '*:*'))
 				->useQueryParser("edismax")
 				->retrieveFields("*,score")
 				->filters($filters)
@@ -201,7 +193,7 @@ class JSolrSearchModelSearch extends JModelList
 					$array = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
 						$document, 
 						$response->highlighting, 
-						JArrayHelper::getValue($query->getParams(), "fl.fragsize"),
+						JArrayHelper::getValue($query->params(), "fl.fragsize"),
 						$this->getLanguage(false))
 					);
 
