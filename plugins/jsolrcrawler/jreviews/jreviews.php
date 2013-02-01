@@ -141,7 +141,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		// Obtain the configured fields to facet.
 		foreach ($facets as $facet) {
 			$key = JString::strtolower(JStringNormalise::toVariable($facet));
-			
+
 			switch ($this->_getJRField($facet)->type) {
 				case 'checkboxes':
 				case 'selectmultiple':
@@ -154,7 +154,10 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 					break;
 					
 				default:
-					$doc->addField($key.'_fc', $record->$facet); // for faceting
+					if (!empty($record->$facet)) {
+						$doc->addField($key.'_fc', $record->$facet); // for faceting
+					}
+					
 					break;
 			}
 		}
