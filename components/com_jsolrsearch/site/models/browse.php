@@ -35,10 +35,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.application.component.modellist');
 
-require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
-
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."service.php");
-require_once(JPATH_COMPONENT_ADMINISTRATOR.DS."lib".DS."apache".DS."solr".DS."query.php");
+jimport('jsolr.search.factory');
 
 class JSolrSearchModelBrowse extends JModelList
 {
@@ -99,8 +96,7 @@ class JSolrSearchModelBrowse extends JModelList
 				$host = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 			}
 
-			$client = new JSolrApacheSolrService($host, $params->get('port'), $params->get('path'));
-			$query = Apache_Solr_Query_Factory("*:*", $client)
+			$query = JSolrSearchFactory::getQuery("*:*")
 				->useQueryParser('edismax')
 				->facetFields($facetFields)
 				->mergeParams($facetParams)
