@@ -15,6 +15,9 @@
 	
     <files folder="libraries">
         <folder>apache</folder>
+        <folder>index</folder>
+        <folder>search</folder>
+        <filename>factory.php</filename>
     </files>
     
 	<languages>
