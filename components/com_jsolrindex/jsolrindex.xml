@@ -33,7 +33,6 @@
 	    	<folder>models</folder>
 	    	<folder>views</folder>
 	    	<folder>helpers</folder>
-	    	<folder>lib</folder>
 	    	<filename>config.xml</filename>
 	    	<filename>controller.php</filename>
 	    	<filename>jsolrindex.php</filename>
