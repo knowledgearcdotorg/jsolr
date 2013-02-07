@@ -151,7 +151,7 @@ class JSolrSearchModelBrowse extends JModelList
 			$dispatcher =& JDispatcher::getInstance();
 			
 			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-				$extensions = array_merge($extensions, array_keys($result));
+				$extensions = array_merge($extensions, array($result->get('name')=>$result->get('title')));
 			}
 		}
 	
