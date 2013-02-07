@@ -38,7 +38,6 @@
 	    <files folder="admin">
 	    	<folder>extensions</folder>
 	    	<folder>helpers</folder>
-	    	<folder>lib</folder> 
 	    	<folder>models</folder>
 	    	<folder>views</folder>
 	    	<filename>config.xml</filename>
