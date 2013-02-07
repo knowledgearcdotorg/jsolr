@@ -3,14 +3,14 @@
  * @package		JSolr
  * @subpackage	Search
  * @copyright	Copyright (C) 2011-2013 Wijiti Pty Ltd. All rights reserved.
- * @license     This file is part of the JSolrSearch component for Joomla!.
+ * @license     This file is part of the JSolr library for Joomla!.
 
-   The JSolrSearch component for Joomla! is free software: you can redistribute it 
+   The JSolr library for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
+   The JSolr library for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
