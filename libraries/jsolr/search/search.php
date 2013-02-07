@@ -100,31 +100,6 @@ abstract class JSolrSearchSearch extends JPlugin
 	}
 	
 	/**
-	 * Returns a single filter option returned within an array when triggered.
-	 * 
-	 * The single item array holds an array key which corresponds with one or 
-	 * more option names (stored in Solr's option field) and the value holds 
-	 * the translated label for that key.
-	 * 
-	 * If the plugin's jsolr_show_filter_label parameter is set, the returned 
-	 * result takes the form: 
-	 * $array[option] = OPTION_TRANSLATED_TO_TEXT
-	 *
-	 * Otherwise, the result will look like:
-	 * $array[option] = null
-	 *
-	 * The key can be made up of more than one option, with options separated 
-	 * by a comma. 
-	 * 
-	 * @return array A single option returned within an array.
-	 * @deprecated Use onJSolrSearchExtensionGet instead.
-	 */
-	public function onFilterOptions()
-	{		
-		return $this->onJSolrSearchExtensionGet();
-	}
-
-	/**
 	 * Retrieve the individual result template for this plugin.
 	 * 
 	 * @param string $option The option used to identify the associated 
@@ -174,7 +149,7 @@ abstract class JSolrSearchSearch extends JPlugin
 		$options = explode(",", $o);
 	
 		while (!$path && $option = current($options)) {
-			if (array_key_exists($option, $this->onFilterOptions())) {
+			if (array_key_exists($option, $this->onJSolrSearchExtensionGet())) {
 				$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."results", "default.php");
 			}
 			
