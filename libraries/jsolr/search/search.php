@@ -76,7 +76,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	 * The [search_name] is used for stripping the correct operators off of 
 	 * the query.
 	 */
-	public function onJSolrSearchOperatorsGet()
+	final public function onJSolrSearchOperatorsGet()
 	{
 		return $this->operators;
 	}
