@@ -84,7 +84,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	/**
 	 * Lists fields that have highlighting applied on the found text. 
 	 */
-	public function onJSolrSearchHLAdd()
+	final public function onJSolrSearchHLAdd()
 	{
 		return $this->highlighting;
 	}
