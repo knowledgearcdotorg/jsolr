@@ -1,3 +1,4 @@
+/*
 window.addEvent("domready", function() {	
 	var query = new Hash({
 		build : function() {
@@ -78,4 +79,40 @@ window.addEvent("domready", function() {
 
 		$$(".jsolr-advanced-search #query").set("text", query.build());
 	});
+});
+*/
+
+$(function() {
+    
+    $('#jsolr-submit-advanced').click(function(){
+
+        var Query = '' ;
+        
+        if ( $('#jform_oq').val().length ) {
+            
+            var AnyOfThese = $('#jform_oq').val().replace(/\ /g,' OR ') ;            
+            var Query = Query+' '+AnyOfThese ;
+        }
+        
+        if ( $('#jform_eq').val().length ) {
+            
+            var Query = Query+' "'+$('#jform_eq').val()+'"' ;
+        }
+        
+        if ( $('#jform_aq').val().length ) {
+            
+            var Query = Query+' '+$('#jform_aq').val() ;
+        }
+        
+        if ( $('#jform_nq').val().length ) {
+            
+            var NoneOfThese = '-'+$('#jform_nq').val().replace(/\ /g,' -') ;            
+            var Query = Query+' '+NoneOfThese ;
+        }
+        
+        var Url = '/jsolrsearch?q='+Query ;
+        var Url = Url.replace('?q= ','?q=') ;
+        
+        window.location=Url ;
+    }) ;
 });

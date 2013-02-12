@@ -342,7 +342,7 @@ class JSolrSearchModelSearch extends JModelList
 			$dispatcher =& JDispatcher::getInstance();
 			
 			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-				$extensions = array_merge($extensions, array($result->get('name')=>$result->get('title')));
+				$extensions = array_merge($extensions, array_keys($result));
 			}
 		}
 	
@@ -399,10 +399,19 @@ class JSolrSearchModelSearch extends JModelList
 	
 	public function getAdvancedSearchURL()
 	{
-		$url = new JURI("index.php?".http_build_query(JRequest::get('get')));		
-		$url->setVar("view", "advanced");
 
-		return JRoute::_($url->toString(), false);
+            $url = new JURI("index.php?".http_build_query(JRequest::get('get')));
+            $url->setVar("view", "advanced");
+            $url = $url->toString() ;
+            $url = JRoute::_($url, false) ;
+            
+            if ( strpos($url, '?') === false ) {
+                $url = $url.'?view=advanced' ;
+            } else {
+                $url = $url.'&view=advanced' ;
+            }
+            
+            return $url ;
 	}
 	
 	private function _parseOperators($query)

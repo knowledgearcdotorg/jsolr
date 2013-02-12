@@ -28,7 +28,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-<form action="index.php?option=com_jsolrsearch&task=search" method="post" name="adminForm" class="jsolr-search-result-form">
+<form action="<?php echo JRoute::_("index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-result-form">
 	<div class="jsolr-query">
 		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->state->get('query.q')); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-button">Search</button>
 	</div>
@@ -36,6 +36,15 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<div class="jsolr-advanced-link">
 		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>"><?php echo JText::_("Advanced search"); ?></a>	
 	</div>	
+        
+        <?php
+            $modules =& JModuleHelper::getModules('position-jsolrsearch');
+            
+            foreach ($modules as $module){
+                
+                echo JModuleHelper::renderModule($module);
+            }
+        ?>
 
 	<?php if ($this->get("Total") > 0) : ?>
 	<div class="jsolr-total-results"><?php echo JText::sprintf("COM_JSOLRSEARCH_TOTAL_RESULTS", $this->get("Total"), $this->get("QTime")); ?></div>
