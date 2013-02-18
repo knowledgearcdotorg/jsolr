@@ -1,0 +1,135 @@
+.jsolr-show {
+	display: block;
+	margin: 10px 0;
+}
+
+.jsolr-hide {
+	display: none;
+}
+
+.jsolr-filter-item {
+	margin: 4px 0; 	
+}
+
+#jSolrOptions ul, .jsolr-context-filter ul {
+	padding-left: 0;
+	list-style-type: none;	
+        list-style: none !important ;
+        float: left ;
+        width: 100% ;
+        margin: 10px 0 0 !important ;
+}
+
+#jSolrOptions ul {
+    padding-bottom: 5px !important ;
+    border-bottom: 1px solid #DDDDDD ;
+}
+
+#jSolrOptions ul li {
+        float: left ;
+        font-size: 100% ;
+        margin: 0 10px 0 0 !important ;
+}
+
+.jsolr-filter-option {
+	font-size: 120%;	
+}
+
+a.jsolr-fo-selected, a.jsolr-custom-range-selected {
+	color: inherit !important;
+	text-decoration: inherit !important;
+	font-weight: bold !important;
+	cursor: inherit;
+}
+
+.jsolr-range-selected a {
+	color: inherit !important;
+	text-decoration: inherit !important;
+	font-weight: bold !important;
+	cursor: inherit;
+}
+
+.jsolr-range-selected a:hover {
+	color: inherit !important;
+	text-decoration: inherit !important;
+	cursor: inherit;
+}
+
+#jSolrDateRange label, #jSolrPriceRange label {
+	display: inline-block;
+	width: 30px;
+}
+
+#jSolrDateRange button {
+	margin-left: 32px;
+}
+
+#jSolrPriceRange button {
+	margin-left: 44px;
+}
+
+.jsolr-example {
+	color: #666666;
+	size: 90%;
+	font-style: italic;
+	margin: 2px 0 2px 34px;
+}
+
+.jsolr-filter-item .jsolr-cat-count {
+	padding-left: 5px;
+}
+
+.jsolrfilter-virtuemart-currency {
+	padding: 2px;
+}
+
+.jSolrRanges {
+    float: left ;
+    width: 100% ;
+    clear: both ;
+}
+
+#jSolrSearchDates ul > li {
+    float: left ;
+    margin-right: 5px !important ;
+}
+
+#jSolrShowRange {
+    cursor: pointer ;
+}
+
+#jSolrSearchDates {
+    margin-bottom: 20px !important ;
+    float: left ;
+    clear: both ;
+    width: 100% ;
+}
+
+.jSolrRanges div {
+    float: left ;
+    clear: left ;
+    margin: 5px 0;
+}
+
+.jSolrRanges div label {
+    display: block;
+    float: left;
+    margin-top: 5px;
+    width: 50px;
+}
+
+.jSolrRanges div img {
+    display: block;
+    float: left;
+    margin: 1px 0 0 5px ;
+}
+
+.jSolrRanges div input {
+    display: block ;
+    float: left ;
+}
+
+.jSolrRanges button {
+    float: left ;
+    clear: left ;
+}

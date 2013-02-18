@@ -38,6 +38,7 @@ jimport('joomla.application.component.modellist');
 jimport('jsolr.search.factory');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+require_once(JPATH_BASE.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'toolbar.php');
 
 class JSolrSearchModelSearch extends JModelList
 {
@@ -399,7 +400,7 @@ class JSolrSearchModelSearch extends JModelList
 	
 	public function getAdvancedSearchURL()
 	{
-
+            /*
             $url = new JURI("index.php?".http_build_query(JRequest::get('get')));
             $url->setVar("view", "advanced");
             $url = $url->toString() ;
@@ -410,8 +411,16 @@ class JSolrSearchModelSearch extends JModelList
             } else {
                 $url = $url.'&view=advanced' ;
             }
+            */
             
-            return $url ;
+            if ( isset($_GET['q']) && !empty($_GET['q']) ) {
+                $Q = "&q=$_GET[q]" ;
+            } else {  
+                $Q = '' ;
+            }
+            
+            $Link = JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search&view=advanced$Q") ;
+            return $Link ;
 	}
 	
 	private function _parseOperators($query)

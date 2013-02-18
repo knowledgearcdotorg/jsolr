@@ -38,6 +38,7 @@ jimport('joomla.application.component.modelform');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
+
 class JSolrSearchModelAdvanced extends JModelForm
 {
     protected $view_item = 'advanced';

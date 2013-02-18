@@ -7,8 +7,8 @@ $params = $this->state->get('params');
 	<?php if ($params->get('show_page_heading', 1)) : ?>
 	<h1><?php echo $this->escape($params->get('page_heading')); ?></h1>
 	<?php endif; ?>
-
-	<form action="<?php echo JRoute::_('index.php?option=com_jsolrsearch&task=search'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
+<? JSolrSearchViewAdvanced::ParseQueryToFields() ; ?>
+	<form action="<?php echo JRoute::_(JURI::base().'index.php?option=com_jsolrsearch&task=search'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
 		<fieldset>
 			<div class="formelm">
 				<?php echo $this->form->getLabel('aq'); ?>

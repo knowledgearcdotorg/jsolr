@@ -28,7 +28,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-<form action="<?php echo JRoute::_("index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-form">
+<form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-form">
 	<div class="jsolr-query">
 		<input type="text" name="q" id="q" class="inputbox"/><button type="submit" class="jsolr-search-button">Search</button>
 	</div>

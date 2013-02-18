@@ -28,7 +28,8 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-<form action="<?php echo JRoute::_("index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-result-form">
+
+<form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-result-form">
 	<div class="jsolr-query">
 		<input type="text" name="q" id="q" value="<?php echo htmlspecialchars($this->state->get('query.q')); ?>" class="jsolr-result-query"/><button type="submit" class="jsolr-search-button">Search</button>
 	</div>
@@ -53,6 +54,91 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	<?php if ($this->get("Total") == 0) : ?>
 	<div class="jsolr-no-results"><?php echo JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></div>
 	<?php endif; ?>
+        
+        <?php
+        JHTML::_('behavior.mootools');
+        JHTML::_('behavior.calendar');
+
+        $document = JFactory::getDocument();
+        $document->addScript('http://code.jquery.com/jquery.min.js');
+        $document->addScript(JURI::base()."/media/com_jsolrsearch/js/site/jsolrfiltertoolbar.js");
+        $document->addStyleSheet(JURI::base()."/media/com_jsolrsearch/css/jsolrfiltertoolbar.css");
+        ?>
+        <div id="jSolrOptions">
+                <ul>
+                <?php 
+                $jSorlSearchParams = &JComponentHelper::getParams( 'com_jsolrsearch' );
+                $FilterCount = $jSorlSearchParams->get('filter_count');
+
+                foreach (JSolrSearchHelperToolbar::getFilterOptions() as $key=>$value) : 
+                        if ($value and $key < $FilterCount) :
+                ?>
+                        <li class="jsolr-filter-item jsolr-filter-option"><?php echo $value; ?></li>
+                <?php
+                        endif; 
+                endforeach;
+                ?>
+                </ul>
+        </div>
+
+        <?php
+        JSolrSearchHelperToolbar::renderFilterContext();
+        ?>
+
+        <div id="jSolrSearchDates" class="jsolr-context-filter">
+                <ul>
+                        <?php
+                            $Ranges = array('Anytime','1d','1w','1m','1y') ;
+
+                            foreach( $Ranges as $Range ) {
+
+                                if (JSolrSearchHelperToolbar::isDateRangeSelected(strtoupper($Range))) {
+
+                                    echo '<li id="jSolr'.$Range.'" class="jsolr-filter-item jsolr-range jsolr-range-selected">'.JSolrSearchHelperToolbar::getDateLink(strtoupper($Range)).'</li>' ;
+                                    break ;
+                                }
+                            }
+                        ?>
+
+
+
+                        <li id="jSolrShowRanges" class="jsolr-filter-item jsolr-range"><a id="jSolrShowRange"><img src="/media/com_jsolrsearch/images/arrow-down.png" /></a></li>
+                        <div class="jSolrRanges jsolr-hide">
+
+                            <?php 
+                                foreach( $Ranges as $Range ) {
+
+                                    if (JSolrSearchHelperToolbar::isDateRangeSelected(strtoupper($Range))) {
+
+                                        continue ;
+                                    } else {
+                                        echo '<li id="jSolr'.$Range.'" class="jsolr-filter-item jsolr-range">'.JSolrSearchHelperToolbar::getDateLink(strtoupper($Range)).'</li>' ;
+                                    }
+                                }
+                            ?>
+
+                            <li id="jSolrCustom" class="jsolr-filter-item jsolr-range"><?php echo JSolrSearchHelperToolbar::getCustomRangeLink(); ?></li>
+
+                            <form 
+                                    id="jSolrDateRange" 
+                                    name="jSolrDateRange"
+                                    method="post"
+                                    action="<?php echo JSolrSearchHelperToolbar::getFormURL(); ?>"
+                                    class="<?php echo JSolrSearchHelperToolbar::isCustomRangeSelected() ? "jsolr-show" : "jsolr-hide"; ?>">
+                                    <div>
+                                            <label>From:</label>
+                                            <?php echo JHTML::_('calendar', JRequest::getVar("dmin"), 'dmin', 'dmin', '%Y-%m-%d', array("size"=>10)); ?>
+                                    </div>
+                                    <div>
+                                            <label>To:</label>
+                                            <?php echo JHTML::_('calendar', JRequest::getVar("dmax"), 'dmax', 'dmax', '%Y-%m-%d', array("size"=>10)); ?>
+                                    </div>
+                                    <div class="jsolr-example">eg. 2010-01-26</div>
+                                    <button type="submit"><?php echo JText::_("COM_JSOLR_TOOLBAR_SEARCH"); ?></button>
+                            </form>
+                        </div>
+                </ul>
+        </div>
 	
 	<div class="jsolr-results">
 	<?php	
