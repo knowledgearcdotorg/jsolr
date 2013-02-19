@@ -14,8 +14,8 @@
 		<filename>index.html</filename>
 	</files>
 	<languages>
-		<language tag="en-GB">en-GB.plg_content_jsolrcrawler.ini</language>
-		<language tag="en-GB">en-GB.plg_content_jsolrcrawler.sys.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_content_jsolrcrawler.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_content_jsolrcrawler.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
