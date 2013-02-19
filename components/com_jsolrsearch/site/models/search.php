@@ -348,7 +348,7 @@ class JSolrSearchModelSearch extends JModelList
 	
 		$array = array();
 
-		foreach ($extensions as $extension) {
+		foreach (array_keys($extensions) as $extension) {
 			if ($extension) {
 				$array[] = "extension:".$extension;
 			}
