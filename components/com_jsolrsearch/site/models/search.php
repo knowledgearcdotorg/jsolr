@@ -38,6 +38,7 @@ jimport('joomla.application.component.modellist');
 jimport('jsolr.search.factory');
 
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+require_once(JPATH_BASE.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'toolbar.php');
 
 class JSolrSearchModelSearch extends JModelList
 {
@@ -342,7 +343,7 @@ class JSolrSearchModelSearch extends JModelList
 			$dispatcher =& JDispatcher::getInstance();
 			
 			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-				$extensions = array_merge($extensions, array($result->get('name')=>$result->get('title')));
+				$extensions = array_merge($extensions, array_keys($result));
 			}
 		}
 	
@@ -399,10 +400,27 @@ class JSolrSearchModelSearch extends JModelList
 	
 	public function getAdvancedSearchURL()
 	{
-		$url = new JURI("index.php?".http_build_query(JRequest::get('get')));		
-		$url->setVar("view", "advanced");
-
-		return JRoute::_($url->toString(), false);
+            /*
+            $url = new JURI("index.php?".http_build_query(JRequest::get('get')));
+            $url->setVar("view", "advanced");
+            $url = $url->toString() ;
+            $url = JRoute::_($url, false) ;
+            
+            if ( strpos($url, '?') === false ) {
+                $url = $url.'?view=advanced' ;
+            } else {
+                $url = $url.'&view=advanced' ;
+            }
+            */
+            
+            if ( isset($_GET['q']) && !empty($_GET['q']) ) {
+                $Q = "&q=$_GET[q]" ;
+            } else {  
+                $Q = '' ;
+            }
+            
+            $Link = JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search&view=advanced$Q") ;
+            return $Link ;
 	}
 	
 	private function _parseOperators($query)

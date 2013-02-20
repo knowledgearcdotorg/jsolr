@@ -30,4 +30,15 @@
 			label="COM_JSOLRSEARCH_CONNECTION_PASSWORD_LABEL" 
 			size="45"/>
 	</fieldset>
+        
+        <fieldset 
+		name="filter_tools"
+		label="MOD_JSOLRFILTERTOOLBAR_CONFIG_FIELDSET_LABEL"
+		description="">
+		<field 
+			name="filter_count" 
+			type="text" 
+			label="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_LABEL" 
+                        description="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_DESCRIPTION" />
+	</fieldset>
 </config>

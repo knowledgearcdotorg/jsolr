@@ -41,11 +41,65 @@ class JSolrSearchViewAdvanced extends JView
 		$document = JFactory::getDocument();
 
     	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
+        $document->addScript("http://code.jquery.com/jquery.min.js");
     	$document->addScript(JURI::base()."media/com_jsolrsearch/js/site/jsolrsearch.js");
 		
 		$this->form	= $this->get('Form');
 		$this->state = $this->get('State');
 		
 		parent::display($tpl);
+    }
+    
+    public function ParseQueryToFields() {
+
+        $eq = array();
+	preg_match("/(?<=\").*?(?=\")/", JRequest::getString("q", "", "default", 2), $eq);
+        
+
+        $nq = "";
+        $matches = array();
+        preg_match_all("/(?<=-)(.*?)(?=\s|$)/", JRequest::getString("q"), $matches);
+
+        foreach (JArrayHelper::getValue($matches, 0) as $item) {
+                $nq .= " $item";
+        }
+        
+        if ( strpos(JRequest::getString("q"), ' OR ') !== false ) {
+            $oq = explode(' OR ', JRequest::getString("q")) ;
+
+            if ( isset($oq[0]) ) {
+                $oq0 = explode(' ', $oq[0]) ;
+                $oq0 = array_reverse($oq0) ;
+            }
+
+            if ( isset($oq[1]) ) {
+                $oq1 = explode(' ', $oq[1]) ;
+            }
+
+            if ( isset($oq[0]) && isset($oq1[0]) ) {
+                $oq = $oq0[0].' '.$oq1[0] ;
+            }
+        } else {
+            $oq = '' ;
+        }
+        
+        $aq = preg_replace('/(".*?")/', '', JRequest::getString("q"), 1);
+        $aq = preg_replace('/(-.*?)(?=\s|$)/', '', $aq);
+        $aq = trim(preg_replace('/"/', "", $aq));
+        $aq = str_replace(array(' OR','"'),'',$aq) ;
+        
+                
+        if ( !empty($eq) ) {
+            $this->form->setValue('eq', null, $eq[0]);
+        }
+        if ( !empty($nq) ) {
+            $this->form->setValue('nq', null, trim($nq));
+        }
+        if ( !empty($oq) ) {
+            $this->form->setValue('oq', null, $oq);
+        }
+        if ( !empty($aq) ) {
+            $this->form->setValue('aq', null, $aq);
+        }
     }
 }

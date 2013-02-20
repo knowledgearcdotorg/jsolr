@@ -7,8 +7,8 @@ $params = $this->state->get('params');
 	<?php if ($params->get('show_page_heading', 1)) : ?>
 	<h1><?php echo $this->escape($params->get('page_heading')); ?></h1>
 	<?php endif; ?>
-
-	<form action="<?php echo JRoute::_('index.php?option=com_jsolrsearch'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
+<? JSolrSearchViewAdvanced::ParseQueryToFields() ; ?>
+	<form action="<?php echo JRoute::_(JURI::base().'index.php?option=com_jsolrsearch&task=search'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
 		<fieldset>
 			<div class="formelm">
 				<?php echo $this->form->getLabel('aq'); ?>
@@ -66,7 +66,7 @@ $params = $this->state->get('params');
 			?>
 		
 			<div class="field">
-				<button class="button validate" type="submit"><?php echo JText::_("COM_JSOLRSEARCH_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?></button>
+				<a id="jsolr-submit-advanced" class="button validate" style="float:right;background:#DDDDDD;border:1px solid #D1D1D1;padding:5px 10px;cursor:pointer;"><?php echo JText::_("COM_JSOLRSEARCH_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?></a>
 			</div>
 			
 			<input type="hidden" name="task" value="advanced" />
