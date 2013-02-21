@@ -343,13 +343,13 @@ class JSolrSearchModelSearch extends JModelList
 			$dispatcher =& JDispatcher::getInstance();
 			
 			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-				$extensions = array_merge($extensions, array($result->get('name')=>$result->get('title')));
+				$extensions = array_merge($extensions, array($result->get('name')));
 			}
 		}
 	
 		$array = array();
 
-		foreach (array_keys($extensions) as $extension) {
+		foreach ($extensions as $extension) {
 			if ($extension) {
 				$array[] = "extension:".$extension;
 			}
