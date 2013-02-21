@@ -68,7 +68,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
                 <ul>
                 <?php 
                 $jSorlSearchParams = &JComponentHelper::getParams( 'com_jsolrsearch' );
-                $FilterCount = $jSorlSearchParams->get('filter_count');
+                $FilterCount = $jSorlSearchParams->get('filter_count', 10);
 
                 foreach (JSolrSearchHelperToolbar::getFilterOptions() as $key=>$value) : 
                         if ($value and $key < $FilterCount) :

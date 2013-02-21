@@ -178,14 +178,12 @@ abstract class JSolrSearchHelperToolbar
 			$links[] = JHTML::_("link", JRoute::_($url->toString()), JText::_("COM_JSOLR_TOOLBAR_OPTION_EVERYTHING"));
 		}
 		
-		foreach ($dispatcher->trigger('onJSolrSearchExtensionGet', array()) as $options) {
-			foreach ($options as $key=>$value) {
-				if ($key == $selected) {
-					$links[] = JHTML::_("link", "#", $value, array("class"=>"jsolr-fo-selected"));
-				} else {
-					$url->setVar("o", $key);				
-					$links[] = JHTML::_("link", JRoute::_($url->toString()), $value);
-				}
+		foreach ($dispatcher->trigger('onJSolrSearchExtensionGet') as $option) {
+			if ($option->get('name') == $selected) {
+				$links[] = JHTML::_("link", "#", $option->get('title'), array("class"=>"jsolr-fo-selected"));
+			} else {
+				$url->setVar("o", $option->get('name'));	
+				$links[] = JHTML::_("link", JRoute::_($url->toString()), $option->get('title'));
 			}
 		}
 
