@@ -31,11 +31,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 
 jimport('joomla.error.log');
+jimport('jsolr.search.search');
 
 require_once(JPATH_ROOT.DS."components".DS."com_newsfeeds".DS."helpers".DS."route.php");
-require_once JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."helpers".DS."plugin.php";
 
-class plgJSolrSearchNewsfeeds extends JSolrSearchPlugin 
+class plgJSolrSearchNewsfeeds extends JSolrSearchSearch 
 {
 	protected $extension = 'com_newsfeeds';
 	
