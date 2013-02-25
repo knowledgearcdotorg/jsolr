@@ -77,7 +77,7 @@ abstract class JSolrSearchHelperToolbar
 		}
 
 		if (JSolrSearchHelperToolbar::isDateRangeSelected($range)) {
-			return JHTML::_("link", "#", $text);
+			return JHTML::_("link", "#", $text, 'class="jSolrShowRange"');
 		} else {
 			return JHTML::_("link", $url->toString(), $text);
 		}
@@ -92,7 +92,7 @@ abstract class JSolrSearchHelperToolbar
 		if (trim($url->getVar("dmin")) || trim($url->getVar("dmax"))) {
 			return $text;		
 		} else {
-			return JHTML::_("link", "#", $text);	
+			return JHTML::_("link", "#", $text, 'id="jsolr-custom-range-toggle"');	
 		}
 	}
 	

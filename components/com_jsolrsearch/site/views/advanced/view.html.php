@@ -41,8 +41,7 @@ class JSolrSearchViewAdvanced extends JView
 		$document = JFactory::getDocument();
 
     	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
-        $document->addScript("http://code.jquery.com/jquery.min.js");
-    	$document->addScript(JURI::base()."media/com_jsolrsearch/js/site/jsolrsearch.js");
+    	$document->addScript(JURI::base()."media/com_jsolrsearch/js/jsolrsearch.js");
 		
 		$this->form	= $this->get('Form');
 		$this->state = $this->get('State');

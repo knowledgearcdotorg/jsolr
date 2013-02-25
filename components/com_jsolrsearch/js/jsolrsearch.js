@@ -82,31 +82,55 @@ window.addEvent("domready", function() {
 });
 */
 
-$(function() {
+window.addEvent("domready", function() {
     
-    $('#jsolr-submit-advanced').click(function(){
+    $$(".jSolrShowRange, .jSolrShowRangeIcon").addEvent("click", function(e) {
+
+        $$('.jSolrRanges').toggle() ;
+        return false ;
+    });
+    
+    $$("#jsolr-searchtools").addEvent("click", function(e) {
+
+        $$('#jSolrSearchDates').toggle() ;
+        return false ;
+    });
+    
+    $$("#jsolr-custom-range-toggle").addEvent("click", function(e) {
+        
+        $$('#jSolrDateRange').toggle() ;
+        return false ;
+    });
+    
+    $$("#jSolrDateRangeClose").addEvent("click", function(e) {
+        
+        $$('#jSolrDateRange').toggle() ;
+        return false ;
+    });
+    
+    $$("#jsolr-submit-advanced").addEvent("click", function(e) {
 
         var Query = '' ;
         
-        if ( $('#jform_oq').val().length ) {
+        if ( $$('#jform_oq').get('value') != '' ) {
             
-            var AnyOfThese = $('#jform_oq').val().replace(/\ /g,' OR ') ;            
+            var AnyOfThese = $('#jform_oq').get('value').replace(/\ /g,' OR ') ;
             var Query = Query+' '+AnyOfThese ;
         }
         
-        if ( $('#jform_eq').val().length ) {
+        if ( $$('#jform_eq').get('value') != '' ) {
             
-            var Query = Query+' "'+$('#jform_eq').val()+'"' ;
+            var Query = Query+' "'+$$('#jform_eq').get('value')+'"' ;
         }
         
-        if ( $('#jform_aq').val().length ) {
+        if ( $$('#jform_aq').get('value') != '' ) {
             
-            var Query = Query+' '+$('#jform_aq').val() ;
+            var Query = Query+' '+$$('#jform_aq').get('value') ;
         }
         
-        if ( $('#jform_nq').val().length ) {
+        if ( $$('#jform_nq').get('value') != '' ) {
             
-            var NoneOfThese = '-'+$('#jform_nq').val().replace(/\ /g,' -') ;            
+            var NoneOfThese = '-'+$$('#jform_nq').get('value').replace(/\ /g,' -') ;            
             var Query = Query+' '+NoneOfThese ;
         }
         
@@ -114,5 +138,5 @@ $(function() {
         var Url = Url.replace('?q= ','?q=') ;
         
         window.location=Url ;
-    }) ;
+    });
 });

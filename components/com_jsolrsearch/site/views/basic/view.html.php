@@ -43,8 +43,10 @@ class JSolrSearchViewBasic extends JView
     	$this->state = $this->get('State');
     	
     	$document = JFactory::getDocument();
-
+        JHTML::_('behavior.mootools');
+        JHTML::_('behavior.calendar');
     	$document->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolrsearch.css");
+        $document->addScript(JURI::base()."/media/com_jsolrsearch/js/jsolrsearch.js");
 
 		$templates = JArrayHelper::getValue($this->get('_path'), 'template');
     	
