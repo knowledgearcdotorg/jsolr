@@ -1,6 +1,6 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
-
+//test
 $params = $this->state->get('params');
 ?>
 <div class="edit item-page<?php echo $params->get('pageclass_sfx'); ?>">
@@ -10,35 +10,19 @@ $params = $this->state->get('params');
 <? JSolrSearchViewAdvanced::ParseQueryToFields() ; ?>
 	<form action="<?php echo JRoute::_(JURI::base().'index.php?option=com_jsolrsearch&task=search'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
 		<fieldset>
-			<div class="formelm">
-				<?php echo $this->form->getLabel('aq'); ?>
-				<?php echo $this->form->getInput('aq'); ?>
-			</div>
-
-			<div class="formelm">
-				<?php echo $this->form->getLabel('eq'); ?>
-				<?php echo $this->form->getInput('eq'); ?>
-			</div>
 			
-			<div class="formelm">
-				<?php echo $this->form->getLabel('oq'); ?>
-				<?php echo $this->form->getInput('oq'); ?>
-			</div>
-
-			<div class="formelm">
-				<?php echo $this->form->getLabel('nq'); ?>
-				<?php echo $this->form->getInput('nq'); ?>
-			</div>
+			<?php 
+				/**
+				 * Display all defined form fields
+				 */
+			?>
+			<?php foreach($this->form->getFieldset() as $field ) : ?>
+				<div class="formelm">
+					<?php echo $this->form->getLabel($field->fieldname); ?>
+					<?php echo $this->form->getInput($field->fieldname); ?>
+				</div>
+			<?php endforeach;?>
 			
-			<div class="formelm">
-				<?php echo $this->form->getLabel('lr'); ?>
-				<?php echo $this->form->getInput('lr'); ?>
-			</div>
-			
-			<div class="formelm">
-				<?php echo $this->form->getLabel('qdr'); ?>
-				<?php echo $this->form->getInput('qdr'); ?>
-			</div>
 
 			<?php 
 			if (JRequest::getWord("o")) :
