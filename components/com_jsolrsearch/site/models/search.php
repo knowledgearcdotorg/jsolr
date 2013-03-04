@@ -110,7 +110,7 @@ class JSolrSearchModelSearch extends JModelList
 		$range->from = $from;
 		$range->to = $to;
 		
-		$this->setState('query.date.range', $range);
+		$this->setState('query.created.range', $range);
 		
 		$lang = JArrayHelper::getValue($query, "lr", null);
 		
