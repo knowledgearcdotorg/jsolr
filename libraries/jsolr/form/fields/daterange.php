@@ -18,7 +18,7 @@ defined('JPATH_BASE') or die;
 jimport('jsolr.form.fields.rangeabstract');
 
 //JSorl prefix!
-class JSolrFormFieldDateRange extends JSolrFormRangeAbstract
+class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 {
 	protected $type = 'JSolr.DateRange'; //JSorl prefix
 	

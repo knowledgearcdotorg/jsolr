@@ -10,7 +10,7 @@
 
 jimport('jsolr.form.fields.selectabstract');
 
-abstract class JSolrFormFieldRangeAbstract extends JSolrFormSelectAbstract
+abstract class JSolrFormFieldRangeAbstract extends JSolrFormFieldSelectAbstract
 {
 	/**
 	 * Method to get if using custom range is needed

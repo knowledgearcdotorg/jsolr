@@ -12,7 +12,7 @@ defined('JPATH_BASE') or die;
 
 jimport('jsolr.form.fields.abstract');
 
-class JSolrFormFieldText extends JSolrFormAbstract
+class JSolrFormFieldText extends JSolrFormFieldAbstract
 {
 	protected $type = 'JSolr.Text';
 	
@@ -62,5 +62,11 @@ class JSolrFormFieldText extends JSolrFormAbstract
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 		
 		return '<input type="text" name="' . $this->name . '" value="" id="' . $this->element['name'] . '" ' . $attr . '/>';
+	}
+	
+	function updateQuery()
+	{
+		$query = &$this->getQuery();
+		// TODO
 	}
 }

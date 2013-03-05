@@ -12,7 +12,7 @@ defined('JPATH_BASE') or die;
 
 jimport('joomla.form.formfield');
 
-abstract class JSolrFormAbstract extends JFormField
+abstract class JSolrFormFieldAbstract extends JFormField
 {
 	/**
 	 * Method to update JSolrSearchQuery object

@@ -10,7 +10,7 @@
 
 jimport('jsolr.form.fields.abstract');
 
-abstract class JSolrFormSelectAbstract extends JSolrFormAbstract
+abstract class JSolrFormFieldSelectAbstract extends JSolrFormFieldAbstract
 {
 	/**
 	 * Method to get default options for form field
