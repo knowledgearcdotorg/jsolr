@@ -35,6 +35,9 @@ jimport('joomla.form.form');
 
 class JSolrForm extends JForm
 {
+	const TYPE_FACETFILTERS 	= 0;
+	const TYPE_SEARCHTOOLS 		= 1;
+	
 	/**
 	 * 
 	 * @var SORL query object
@@ -49,6 +52,39 @@ class JSolrForm extends JForm
 			//create query object if null
 		}
 		return $this->query;
+	}
+	
+	/**
+	 * Keeps type of the form
+	 * @var integer
+	 */
+	protected $type;
+	
+	/**
+	 * @return integer one of the consts JSolrForm::TYPE_FACETFILTERS or JSolrForm::TYPE_SEARCHTOOLS
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+	
+	/**
+	 * Set form type. Accepted values:
+	 * * JSolrForm::TYPE_FACETFILTERS
+	 * * JSolrForm::TYPE_SEARCHTOOLS
+	 * @param integer $type
+	 */
+	public function setType($type)
+	{
+		switch($type) {
+			case self::TYPE_FACETFILTERS:
+			case self::TYPE_SEARCHTOOLS:
+				$this->type = $type;
+				break;
+			default:
+				$this->type = self::TYPE_FACETFILTERS;
+				break;
+		}
 	}
 	
 	
@@ -75,7 +111,6 @@ class JSolrForm extends JForm
 		// Only instantiate the form if it does not already exist.
 		if (!isset($forms[$name]))
 		{
-	
 			$data = trim($data);
 	
 			if (empty($data))
