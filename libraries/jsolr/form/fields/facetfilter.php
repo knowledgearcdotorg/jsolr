@@ -18,7 +18,7 @@ defined('JPATH_BASE') or die;
 jimport('joomla.form.formfield');
 
 
-class JSolrFormFieldFacetFilter extends JFormField
+abstract class JSolrFormFieldFacetFilter extends JFormField
 {
 	protected $type = 'JSolr.FacetFilter';
 	

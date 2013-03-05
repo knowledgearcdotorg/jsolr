@@ -15,10 +15,10 @@
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.form.formfield');
+jimport('jsolr.form.fields.facetfilter');
 
 //JSorl prefix!
-class JSolrFormFieldDateRange extends JFormField
+class JSolrFormFieldDateRange extends JSolrFormFieldFacetFilter
 {
 	protected $type = 'JSolr.DateRange'; //JSorl prefix
 	
@@ -29,8 +29,8 @@ class JSolrFormFieldDateRange extends JFormField
 		
 		$document->addStyleSheet('/media/com_jsolrsearch/css/ui-lightness/jquery-ui-1.10.1.custom.min.css');
 		
-		$name = $this->element['name'];
-		
+		$name = $this->name;
+		$id = $this->element['name'];
 /**
  * A value must be provided and used in this html code.
  * Usually $this->value contins value, but in our case we may want to consider
@@ -44,27 +44,27 @@ class JSolrFormFieldDateRange extends JFormField
 		
 <script>
 $(function() {
-	$( "#{$name}_from" ).datepicker({
+	$( "#{$id}_from" ).datepicker({
 	defaultDate: "+1w",
 	changeMonth: true,
 	numberOfMonths: 1,
 	onClose: function( selectedDate ) {
-		$( "#{$name}_to" ).datepicker( "option", "minDate", selectedDate );
+		$( "#{$id}_to" ).datepicker( "option", "minDate", selectedDate );
 	}
 });
-$( "#{$name}_to" ).datepicker({
+$( "#{$id}_to" ).datepicker({
 	defaultDate: "+1w",
 	changeMonth: true,
 	numberOfMonths: 1,
 	onClose: function( selectedDate ) {
-		$( "#{$name}_from" ).datepicker( "option", "maxDate", selectedDate );
+		$( "#{$id}_from" ).datepicker( "option", "maxDate", selectedDate );
 	}
 	});
 });
 </script>
 
-<input type="text" id="{$name}_from" name="jform[{$name}][from]" />
-<input type="text" id="{$name}_to" name="jform[{$name}][to]" />
+<input type="text" id="{$id}_from" name="{$name}[from]" />
+<input type="text" id="{$id}_to" name="{$name}[to]" />
 HTML;
 		return $html;
 	}
