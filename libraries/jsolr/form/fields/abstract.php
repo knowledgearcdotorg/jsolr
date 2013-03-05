@@ -15,6 +15,11 @@ jimport('joomla.form.formfield');
 abstract class JSolrFormAbstract extends JFormField
 {
 	/**
+	 * Method to update JSolrSearchQuery object
+	 */
+	abstract protected function updateQuery();
+	
+	/**
 	 * Returns rendered HTML form field for facet filter
 	 */
 	abstract protected function getInputFacetFilter();
@@ -29,10 +34,26 @@ abstract class JSolrFormAbstract extends JFormField
 	 */
 	public function getInput()
 	{
-		if ($this->form->getType() == JSolrForm::TYPE_FACETFILTERS) {
-			return $this->getInputFacetFilter();
-		}
+		$html = $this->preRender();
 		
-		return $this->getInputSearchTool();
+		$html .= $this->form->getType() == JSolrForm::TYPE_FACETFILTERS ? 
+				$this->getInputFacetFilter() : $this->getInputSearchTool();
+		
+		$html .= $this->postRender();
+		return $html;
+	}
+	
+	/**
+	 * Called before rendering field
+	 */
+	protected function preRender()
+	{
+	}
+	
+	/**
+	 * Called after rendering field
+	 */
+	protected function postRender()
+	{
 	}
 }

@@ -42,7 +42,7 @@ abstract class JSolrFormSelectAbstract extends JSolrFormAbstract
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 	
 		// Get the field options.
-		$options = (array) $this->getOptions();
+		$options = (array) $this->getFinalOptions();
 	
 		// Create a read-only list (no name) with a hidden input to store the value.
 		if ((string) $this->element['readonly'] == 'true') {
@@ -81,7 +81,7 @@ abstract class JSolrFormSelectAbstract extends JSolrFormAbstract
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 	
 		// Get the field options.
-		$options = (array) $this->getOptions();
+		$options = (array) $this->getFinalOptions();
 	
 		// Create a read-only list (no name) with a hidden input to store the value.
 		if ((string) $this->element['readonly'] == 'true') {
@@ -104,12 +104,8 @@ abstract class JSolrFormSelectAbstract extends JSolrFormAbstract
 	protected function getOptions()
 	{		
 		// Initialize variables.
-		$options = $this->getDefaultOptions();
+		$options = array();
 		
-		if (count($options)) {
-			return $options;
-		}
-	
 		foreach ($this->element->children() as $option) {
 	
 			// Only add <option /> elements.
@@ -131,6 +127,17 @@ abstract class JSolrFormSelectAbstract extends JSolrFormAbstract
 		}
 	
 		reset($options);
+	
+		return $options;
+	}
+	
+	protected function getFinalOptions()
+	{
+		$options = $this->getOptions();
+	
+		if (!count($options)) {
+			return $this->getDefaultOptions();
+		}
 	
 		return $options;
 	}
