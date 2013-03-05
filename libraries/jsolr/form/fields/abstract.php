@@ -12,7 +12,7 @@ defined('JPATH_BASE') or die;
 
 jimport('joomla.form.formfield');
 
-class JSolrFormAbstract extends JFormField
+abstract class JSolrFormAbstract extends JFormField
 {
 	/**
 	 * Returns rendered HTML form field for facet filter
