@@ -43,8 +43,7 @@ class JSolrSearchViewBasic extends JView
     	$this->state = $this->get('State');
     	
     	$document = JFactory::getDocument();
-        JHTML::_('behavior.mootools');
-        JHTML::_('behavior.calendar');
+
     	$document->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolrsearch.css");
         $document->addScript(JURI::base()."/media/com_jsolrsearch/js/jsolrsearch.js");
 
@@ -54,7 +53,7 @@ class JSolrSearchViewBasic extends JView
 		$dispatcher =& JDispatcher::getInstance();
 
 		foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-			$extension = str_replace("com_", "", JArrayHelper::getValue(array_keys($result), 0));
+			$extension = str_replace("com_", "", JArrayHelper::getValue($result->get('name'), 0));
 			$pluginOverridePath = JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS.'views';
 	    	
 	    	if (array_search($pluginOverridePath, $templates) == false && 
