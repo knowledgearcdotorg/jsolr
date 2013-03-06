@@ -50,7 +50,7 @@ $params = $this->state->get('params');
 			?>
 		
 			<div class="field">
-				<a id="jsolr-submit-advanced" class="button validate" style="float:right;background:#DDDDDD;border:1px solid #D1D1D1;padding:5px 10px;cursor:pointer;"><?php echo JText::_("COM_JSOLRSEARCH_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?></a>
+			  	<input id="jsolr-submit-advanced" class="button validate" type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?>" />
 			</div>
 			
 			<input type="hidden" name="task" value="advanced" />

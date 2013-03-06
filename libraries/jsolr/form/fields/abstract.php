@@ -17,7 +17,7 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	/**
 	 * Method to update JSolrSearchQuery object
 	 */
-	abstract protected function updateQuery();
+	abstract public function getFilter();
 	
 	/**
 	 * Returns rendered HTML form field for facet filter

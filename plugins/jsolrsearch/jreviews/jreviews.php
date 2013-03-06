@@ -55,6 +55,7 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 			->where("location='content'");
 		
 		$db->setQuery($query);
+		$array = array();
 		
 		foreach ($db->loadObjectList() as $item) {
 			$key = JString::strtolower(JStringNormalise::toVariable($item->name)).'_fc';

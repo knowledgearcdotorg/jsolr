@@ -132,10 +132,9 @@ HTML;
 	/**
 	 * @inheritdoc
 	 */
-	protected function updateQuery()
+	public function getFilter()
 	{
-		$query = &$this->getQuery();
-		// TODO
+		return '';
 	}
 	
 	/**

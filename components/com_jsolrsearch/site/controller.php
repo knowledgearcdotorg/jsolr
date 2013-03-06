@@ -24,8 +24,8 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com>
+ * @author Hayden Young <haydenyoung@wijiti.com>
+ * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com>
  */
 
 defined('_JEXEC') or die('Restricted access');
@@ -37,7 +37,6 @@ class JSolrSearchController extends JController
 	function advanced()
 	{
 		$model = $this->getModel("advanced");
-		
 		$this->setRedirect($model->buildQueryURL(JRequest::get()));
 	}
 	
@@ -61,7 +60,7 @@ class JSolrSearchController extends JController
 
 		$model = $this->getModel($modelName);
 		
-		$view = $this->getView($viewName, JRequest::getWord("format", "html"));		
+		$view = $this->getView($viewName, JRequest::getWord("format", "html"));
 		$view->setModel($model, true);
 
 		if (($viewName == "" || $viewName == $default) && trim(JRequest::getString("q", null))) {

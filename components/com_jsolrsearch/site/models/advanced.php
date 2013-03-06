@@ -35,6 +35,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
 jimport('joomla.application.component.modelform');
+jimport('jsolr.search.factory');
 
 jimport('jsolr.form.form');
 
@@ -44,12 +45,9 @@ require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.
 class JSolrSearchModelAdvanced extends JModelForm
 {
     protected $view_item = 'advanced';
-	
-	public function __construct()
-	{
-		parent::__construct();
-	}
-	
+    
+    protected $solrQuery = NULL;
+    
 	public function buildQueryURL($params)
 	{
 		$url = new JURI("index.php");
@@ -59,7 +57,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 
 		$url->setVar("q", $this->buildQuery($params));
 		
-		foreach ($params as $key=>$value) {			
+		foreach ($params as $key=>$value) {
 			switch ($key) {
 				case "task":
 				case "eq":
@@ -68,29 +66,29 @@ class JSolrSearchModelAdvanced extends JModelForm
 				case "oq1":
 				case "oq2":
 				case "nq":
-				case "option":				
+				case "option":
 					break;
-
+		
 				case "o":
 					if ($value) {
 						if ($value != "everything") {
 							$url->setVar($key, $value);
-						}	
-					}
-					break;					
-					
-				case "qdr":
-					if ($value) {
-						$url->setVar($key, $value);	
+						}
 					}
 					break;
-									
+		
+				case "qdr":
+					if ($value) {
+						$url->setVar($key, $value);
+					}
+					break;
+		
 				default:
 					$url->setVar($key, $value);
 					break;
 			}
 		}
-
+		
 		return JRoute::_($url->toString(), false);
 	}
 	
@@ -101,127 +99,28 @@ class JSolrSearchModelAdvanced extends JModelForm
 		if (JArrayHelper::getValue($params, "aq")) {
 			$q .= JArrayHelper::getValue($params, "aq");
 		}
-		
+	
 		if (JArrayHelper::getValue($params, "eq")) {
 			$q .= "\"".JArrayHelper::getValue($params, "eq")."\"";
 		}
-		
+	
 		$oq = array();
-		
-		for ($i=0; $i<3; $i++) {		
+	
+		for ($i=0; $i<3; $i++) {
 			if (trim(JArrayHelper::getValue($params, "oq".$i))) {
 				$oq[] = trim(JArrayHelper::getValue($params, "oq".$i));
 			}
 		}
-
+	
 		if (count($oq)) {
 			$q .= " " . implode(" OR ", $oq);
 		}
-
+	
 		if (JArrayHelper::getValue($params, "nq")) {
-			$q .= " -".preg_replace('!\s+!', ' -', JArrayHelper::getValue($params, "nq"));			
+			$q .= " -".preg_replace('!\s+!', ' -', JArrayHelper::getValue($params, "nq"));
 		}
-
+	
 		return trim($q);
-	}
-	
-	public function getAndQuery()
-	{
-		$query = preg_replace('/(".*?")/', '', JRequest::getString("q"), 1);
-		$query = preg_replace('/(-.*?)(?=\s|$)/', '', $query);
-		$query = trim(preg_replace('/"/', "", $query));
-		
-		return $query;
-	}
-	
-	public function getExactQuery()
-	{
-		$matches = array();
-		preg_match("/(?<=\").*?(?=\")/", JRequest::getString("q", "", "default", 2), $matches);
-		
-		return JArrayHelper::getValue($matches, 0, "");
-	}
-
-	public function getOrQuery()
-	{
-		return "";
-	}
-	
-	public function getNotQuery()
-	{
-		$array = explode(" ", JRequest::getString("q"));
-		$nq = "";
-		
-		$matches = array();
-		preg_match_all("/(?<=-)(.*?)(?=\s|$)/", JRequest::getString("q"), $matches);
-		
-		foreach (JArrayHelper::getValue($matches, 0) as $item) {
-			$nq .= " $item";
-		}
-
-		return trim($nq);
-	}
-	
-	public function getQuery()
-	{
-		return JRequest::getString("q");
-	}
-	
-	public function getDateRanges()
-	{
-		$array = array(
-			""=>JText::_("COM_JSOLR_QDR_ANYTIME"),
-			"d"=>JText::_("COM_JSOLR_QDR_1D"),
-			"w"=>JText::_("COM_JSOLR_QDR_1W"),
-			"m"=>JText::_("COM_JSOLR_QDR_1M"),
-			"y"=>JText::_("COM_JSOLR_QDR_1Y")
-		);
-							
-		
-		$options = array();
-		
-		foreach ($array as $key=>$value) {
-			$option = new stdClass();
-			$option->value = $key;
-			$option->text = $value;
-			
-			$options[] = $option;
-		}
-		
-		return $options;		
-	}
-	
-	public function getFilterOption()
-	{
-		return JRequest::getWord("o", "everything");
-	}
-	
-	public function getLanguage()
-	{		
-		return JRequest::getString("lr", JLanguageHelper::detectLanguage());
-	}
-	
-	public function getDateRange()
-	{
-		return JRequest::getString("qdr", "");
-	}
-	
-	public function getTitle()
-	{
-		$path = $this->_getCustomFormPath();
-
-		$xml = & JFactory::getXMLParser('Simple');
-
-		if ($xml->loadFile($path)) {
-			if ($node = & $xml->document->title) {
-				$title = JArrayHelper::getValue($node, 0);
-				if (isset($title->_data)) {
-					return $title->_data;
-				}
-			}
-		}
-
-		return "";
 	}
 	
 	protected function populateState()

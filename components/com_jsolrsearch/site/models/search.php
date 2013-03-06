@@ -1,10 +1,10 @@
 <?php 
 /**
- * A model that provides search capabilities.
+ * A model that provides advanced search capabilities.
  * 
- * @package		JSolr
- * @subpackage	Search
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @package    JSolr
+ * @subpackage Search
+ * @copyright  Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -24,456 +24,294 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Name                    Email
+ * Hayden Young               <haydenyoung@wijiti.com> 
  * 
  */
 
-defined('_JEXEC') or die();
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
-jimport('joomla.application.component.modellist');
-
+jimport('joomla.filesystem.path');
+jimport('joomla.application.component.modelform');
 jimport('jsolr.search.factory');
 
+jimport('jsolr.form.form');
+
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
-require_once(JPATH_BASE.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'toolbar.php');
 
-class JSolrSearchModelSearch extends JModelList
+
+class JSolrSearchModelSearch extends JModelForm
 {
-	var $query;
-	
-	protected $total;
-	
-	protected $qTime = 0;
-	
-	var $lang;
-	
-	var $category;
-	
-	var $params;
-	
-	public function buildQueryURL($query)
-	{
-		$url = new JURI("index.php");
+   protected $view_item = 'search';
+   protected $form;
+   protected $lang;
 
-		$url->setVar("option", $this->get('option'));
-		$url->setVar("view", "basic");
-		
-		foreach ($query as $key=>$value) {
-			if ($value != "com_jsolrsearch") {
-				if ($key == "task") {
-					$url->delVar($key);
-				} else {
-					$url->setVar($key, $value);
-				}
-			}
-		}
-		
-		return JRoute::_($url->toString(), false);
-	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see JModelList::populateState()
-	 */
-	public function populateState($ordering = null, $direction = null)
-	{
-		$query = JRequest::get("get");
-		
-		$q = JArrayHelper::getValue($query, "q", "", "string");
-		
-		$this->setState('query.q', $q);
-		
-		if ($operators = $this->_parseOperators($q)) {
-			$this->setState('query.q.operators', $operators);
-		}
-		
-		if ($strippedQuery = $this->_stripOperators($q)) {
-			$this->setState('query.q.stripped', $strippedQuery);
-		}
+   public function getItems()
+   {
+      $filters = $this->getForm()->getFilters();
 
-		$from = null;
-		$to = null;
-		
-		if (JArrayHelper::getValue($query, "dmin") || 
-			JArrayHelper::getValue($query, "dmax"))  {
-			$from = JArrayHelper::getValue($query, "dmin", "*", "string");
-			$to = JArrayHelper::getValue($query, "dmax", "NOW", "string");
-		} else if (JArrayHelper::getValue($query, "qdr")) {
-			$from = JArrayHelper::getValue($query, "qdr", "*", "string");
-			$to = "NOW";
-		}
-		
-		$range = new stdClass();
-		$range->from = $from;
-		$range->to = $to;
-		
-		$this->setState('query.created.range', $range);
-		
-		$lang = JArrayHelper::getValue($query, "lr", null);
-		
-		if (!$lang) {
-			$lang = JArrayHelper::getValue($query, "lang");
-		}
-		
-		$this->setState('query.lang', $lang);
+      try {
+        JPluginHelper::importPlugin("jsolrsearch");
+        $dispatcher =& JDispatcher::getInstance();
 
-		// handle custom query params.
-		foreach ($query as $key=>$value) {
-			if (strpos($key, 'q.') == 0) {
-				$this->setState('query.q.'.$key, $value);				
-			}
-		}
-		
-		parent::populateState($ordering, $direction);
-	}
-	
-	public function getItems()
-	{
-		$hl = array();
-		$filters = array();
-		$list = array();
+        $params = JComponentHelper::getParams($this->get('option'), true);
 
-		$params = JComponentHelper::getParams($this->get('option'), true);
-		
-		try {
-			JPluginHelper::importPlugin("jsolrsearch");
-			$dispatcher =& JDispatcher::getInstance();
-			
-			if ($filter = $this->getDateQuery()) {
-				$filters[] = $filter;
-			}
-			
-			if ($filter = $this->_getExtensionFilter()) {
-				$filters[] = $filter;
-			}
+        $query = JSolrSearchFactory::getQuery('*:*')
+            ->useQueryParser("edismax")
+            ->retrieveFields("*,score")
+            ->filters($filters)
+            ->highlight(200, "<strong>", "</strong>", 1);
 
-			foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState(), $this->getLanguage(false))) as $result) {
-				foreach ($result as $item) {
-					if ($item) {
-						$filters[] = $item;
-					}
-				}				
-			}
+        $response = $query->search();
+        
+        $headers = json_decode($response->getRawResponse())->responseHeader;
 
-			// Get Highlight fields for results. 
-			foreach ($dispatcher->trigger('onJSolrSearchHLAdd', array()) as $result) {
-				foreach ($result as $item) {
-					$hl[] = $item.'_'.$this->getLanguage(false);
-				}
-			}
-			
-			// get query filter params and boosts from plugin.
-			$qf = $dispatcher->trigger('onJSolrSearchQFAdd', array());
+        $this->set('total', $response->response->numFound);
+        $this->set('qTime', $headers->QTime);
 
-			$query = JSolrSearchFactory::getQuery($this->getState('query.q.stripped', '*:*'))
-				->useQueryParser("edismax")
-				->retrieveFields("*,score")
-				->filters($filters)
-				->highlight(200, "<strong>", "</strong>", 1, implode(" ", $hl))
-				->limit($this->getState("list.limit"))
-				->offset($this->getState("list.start"));
+        $items = array();
 
-			if (count($qf)) {
-				$query->queryFields($this->_buildQF($qf));
-			}
+        foreach (json_decode($response->getRawResponse())->response->docs as $document) {
+            $docs = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
+                $document,
+                $response->highlighting,
+                JArrayHelper::getValue($query->params(), "fl.fragsize"),
+                $this->getLanguage(false))
+            );
 
-			$response = $query->search();
+            foreach ($docs as $document) {
+              foreach ($document as $key => $value) {
+                  if (is_array($value)) {
+                      $document->$key = $value[0];
+                  }
+              }
 
-			$headers = json_decode($response->getRawResponse())->responseHeader;
-
-			$this->set('total', $response->response->numFound);
-			$this->set('qTime', $headers->QTime);
-
-			if (intval($response->response->numFound) > 0) {
-				$i = 0;
-				
-				foreach ($response->response->docs as $document) {					    				
-					$array = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
-						$document, 
-						$response->highlighting, 
-						JArrayHelper::getValue($query->params(), "fl.fragsize"),
-						$this->getLanguage(false))
-					);
-
-					// @todo the following loop is causing problems.
-					// When a plugin and the document's extension value match, 
-					// the plugin will return a result. Therefore, only one 
-					// result should be returned per document.
-					foreach ($array as $result) {
-						if (count($result)) {
-							$list[$i] = $result;
-
-							if ($list[$i]->created) {
-								$list[$i]->created = $this->_localizeDateTime($list[$i]->created);
-							}
-							
-							if ($list[$i]->modified) {
-								$list[$i]->modified = $this->_localizeDateTime($list[$i]->modified);
-							}
-
-							$i++;
-						}
-					}
-				}
-			}
-        } catch (Exception $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-		}
-
-		return $list;
-	}
-	
-	public function getTotal()
-	{
-		return $this->total;
-	}
-	
-	public function getQTime()
-	{
-		return floatval($this->qTime / 1000);
-	}
-
-	public function getDateQuery()
-	{	
-		$query = "";
-		if ($this->getState('query.date.range') != null) {
-			if ($this->getState('query.date.range')->from) {
-				$query = "modified:";
-		
-				switch ($this->getState('query.date.range')->from) {
-					case "d":
-						$query .= "[NOW-1DAY TO NOW]";
-						break;
-						
-					case "w":
-						$query .= "[NOW-7DAY TO NOW]";
-						break;
-						
-					case "m":
-						$query .= "[NOW-1MONTH TO NOW]";
-						break;
-						
-					case "y":
-						$query .= "[NOW-1YEAR TO NOW]";
-						break;
-						
-					default:
-						$query .= "[";
-
-						if ($this->getState('query.date.range')->from != "*") {
-							$from = JFactory::getDate($this->getState('query.date.range')->from);
-							$query .= $from->toISO8601();
-						} else {
-							$query .= "*";	
-						}
-						
-						$query .= " TO ";
-						
-						$to = JFactory::getDate($this->getState('query.date.range')->to);
-						$query .= $to->toISO8601();
-						
-						$query .= "]";
-						
-						break;
-				}
-			}
-		}
-
-		return $query;
-	}
-	
-	/**
-	 * Get's the language, either from the item or from the Joomla environment.
-	 * 
-	 * @param bool $includeRegion True if the region should be included, false 
-	 * otherwise. E.g. If true, en-AU would be returned, if false, just en 
-	 * would be returned.
-	 * 
-	 *  @return string The language code.
-	 */
-	protected function getLanguage($includeRegion = true)
-	{
-		$lang = $this->lang;
-
-		// Language code must take the form xx-XX.
-		if (!$lang || count(explode("-", $lang)) < 2) {
-			$lang = JLanguageHelper::detectLanguage();
-		}
-		
-		if ($includeRegion) {
-			return $lang;
-		} else {
-			$parts = explode('-', $lang);
-			
-			// just return the xx part of the xx-XX language.
-			return JArrayHelper::getValue($parts, 0);
-		}
-	}
-	
-	private function _localizeDateTime($dateTime)
-	{
-		$date = JFactory::getDate($dateTime);
-		
-		return $date->format(JText::_("DATE_FORMAT_LC2"));
-	}
-	
-	/**
-	 * Gets a list of extensions as a Solr query filter.
-	 * 
-	 * Only items which have the same extension parameter as the querystring 
-	 * "o" will be filtered if the parameter is specified, otherwise all items 
-	 * which match any of the enabled plugins will be filtered.
-	 * 
-	 * Plugins must be enabled and have the event onJSolrSearchExtensionGet implemented.
-	 */
-	private function _getExtensionFilter()
-	{	
-		$extensions = array();
-		
-		$query = "";		
-
-		if (JRequest::getCmd("o")) {
-			$extensions[] = JRequest::getCmd("o");
-		} else {
-			JPluginHelper::importPlugin("jsolrsearch");
-			$dispatcher =& JDispatcher::getInstance();
-			
-			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-				$extensions = array_merge($extensions, array($result->get('name')));
-			}
-		}
-	
-		$array = array();
-
-		foreach ($extensions as $extension) {
-			if ($extension) {
-				$array[] = "extension:".$extension;
-			}
-		}
-
-		if (count($array) > 1) {
-			$query = "(" . implode(" OR ", $array) . ")";
-		} else {
-			$query = implode("", $array);
-		}
-
-		return $query;
-	}
-	
-	/**
-	 * Build a query filter string from an arrya of query filters.
-	 * 
-	 * @param array $qf An array of query filters.
-	 */
-	private function _buildQF($qf)
-	{
-		$array = array();
-
-		foreach ($qf as $item) {			
-			foreach ($item as $key=>$value) {
-				if (!array_key_exists($key, $array)) {
-					$array[$key . '_' . $this->getLanguage(false)] = array();
-				}
-	
-				$array[$key . '_' . $this->getLanguage(false)][] = $value;
-			}
-		}
-		
-		$reweighted = "";
-		
-		foreach ($array as $key=>$value) {
-			$boost = 0;
-			
-			foreach ($array[$key] as $item) {
-				$boost += $item;
-			}
-			
-			$reweighted .= " " . $key . "^" . $boost;
-		}
-
-		return trim($reweighted);
-	}
-	
-	public function getAdvancedSearchURL()
-	{
-            /*
-            $url = new JURI("index.php?".http_build_query(JRequest::get('get')));
-            $url->setVar("view", "advanced");
-            $url = $url->toString() ;
-            $url = JRoute::_($url, false) ;
-            
-            if ( strpos($url, '?') === false ) {
-                $url = $url.'?view=advanced' ;
-            } else {
-                $url = $url.'&view=advanced' ;
+              $items[] = $document;
             }
-            */
-            
-            if ( isset($_GET['q']) && !empty($_GET['q']) ) {
-                $Q = "&q=$_GET[q]" ;
-            } else {  
-                $Q = '' ;
-            }
-            
-            $Link = JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search&view=advanced$Q") ;
-            return $Link ;
-	}
-	
-	private function _parseOperators($query)
-	{
-		$matches = array();		
-		$operators = array();
-		
-		$subject = $query;
-		
-		do {
-			$matched = preg_match_all('/(.*\s+?|^)(\w+:.+)/', $subject, $matches, PREG_SET_ORDER);
-				
-			if ($matched) {
-				$operator = explode(':', 
-					JArrayHelper::getValue(
-						JArrayHelper::getValue($matches, 0), 2));
+        }
 
-				$key = JArrayHelper::getvalue($operator, 0, null);
-				$value = JArrayHelper::getvalue($operator, 1, null);
-				
-				if ($key && $value) {
-					$operators[$key] = trim($value);
-				}
-				
-				$subject = JArrayHelper::getValue(JArrayHelper::getValue($matches, 0), 1);
-			}
-		} while ($matched);
-		
-		return $operators;
-	}
-	
-	private function _stripOperators($query)
-	{
-		$strippedQuery = $query;
-		
-		$operators = $this->_parseOperators($query);
+        return $items;
+      } catch (Exception $e) {
+        return NULL;
+      }
 
-		$pluginOperators = array(); 
-		
-		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();		
-		
-		foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
-			$pluginOperators = array_merge($pluginOperators, $result);
-		}
+      return $response;
+   }
 
-		foreach ($pluginOperators as $key) {
-			if ($value = JArrayHelper::getValue($operators, $key)) {
-				$search = $key.':'.JArrayHelper::getValue($operators, $key);
-				$strippedQuery = trim(str_replace($search, '', $strippedQuery));
-			}
-		}
+   public function buildQueryURL($params)
+   {
+      $url = new JURI("index.php");
+      
+      $url->setVar("option", "com_jsolrsearch");
+      $url->setVar("view", "basic");
 
-		return $strippedQuery;
-	}
+      foreach ($params['jform'] as $key=>$value) {
+         switch ($key) {
+            case "task":
+            case "eq":
+            case "aq":
+            case "oq0":
+            case "oq1":
+            case "oq2":
+            case "nq":
+            case "option":
+               break;
+      
+            default:
+               $url->setVar($key, $value);
+               break;
+         }
+      }
+      
+      return JRoute::_($url->toString(), false);
+   }
+   
+   public function buildQuery($params)
+   {
+      $q = "";
+   
+      if (JArrayHelper::getValue($params, "aq")) {
+         $q .= JArrayHelper::getValue($params, "aq");
+      }
+   
+      if (JArrayHelper::getValue($params, "eq")) {
+         $q .= "\"".JArrayHelper::getValue($params, "eq")."\"";
+      }
+   
+      $oq = array();
+   
+      for ($i=0; $i<3; $i++) {
+         if (trim(JArrayHelper::getValue($params, "oq".$i))) {
+            $oq[] = trim(JArrayHelper::getValue($params, "oq".$i));
+         }
+      }
+   
+      if (count($oq)) {
+         $q .= " " . implode(" OR ", $oq);
+      }
+   
+      if (JArrayHelper::getValue($params, "nq")) {
+         $q .= " -".preg_replace('!\s+!', ' -', JArrayHelper::getValue($params, "nq"));
+      }
+   
+      return trim($q);
+   }
+
+   /**
+    * Method to get the advanced search form.
+    *
+    * @param   array $data    An optional array of data for the form to interrogate.
+    * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
+    * @return  JForm          A JForm object on success, false on failure.
+    */
+   public function getForm($data = array(), $loadData = true)
+   {
+      if (!is_null($this->form)) {
+         return $this->form;
+      }
+
+      $context = $this->get('option').'.'.$this->getName();
+      $this->form = $this->loadForm($context, $this->getName(), array('control' => 'jform', 'load_data' => $loadData));
+
+      if (empty($this->form)) {
+         return false;
+      }
+
+      return $this->form;
+   }
+   
+   protected function preprocessForm(JForm $form, $data, $group = 'plugin')
+   {
+      $form->loadFile($this->_getCustomFormPath(), false);
+      parent::preprocessForm($form, $data, $group);
+   }
+
+   /**
+    * (non-PHPdoc)
+    * @see JModelForm::loadFormData()
+    */
+   protected function loadFormData()
+   {
+      $context = $this->get('option').'.edit.'.$this->getName().'.data';
+      $data = (array)JFactory::getApplication()->getUserState($context.'.data', array());
+      
+      return $data;
+   }
+
+   private function _getCustomFormPath()
+   {
+      $path = null;
+
+      if (JRequest::getString("o")) {
+         $extension = JArrayHelper::getValue(explode("_", JRequest::getCmd("o"), 2), 1);
+
+         $path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS."forms", "advanced.xml");
+      }
+      
+      return $path;
+   }
+   
+   /**
+    * Override to use JSorlForm.
+    * Method to get a form object.
+    *
+    * @param   string   $name     The name of the form.
+    * @param   string   $source   The form source. Can be XML string if file flag is set to false.
+    * @param   array    $options  Optional array of options for the form creation.
+    * @param   boolean  $clear    Optional argument to force load a new form.
+    * @param   string   $xpath    An optional xpath to search for the fields.
+    *
+    * @return  mixed  JForm object on success, False on error.
+    *
+    * @see     JForm
+    * @since   11.1
+    */
+   protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+   {
+      // Handle the optional arguments.
+      $options['control'] = JArrayHelper::getValue($options, 'control', false);
+
+      // Create a signature hash.
+      $hash = md5($source . serialize($options));
+
+      // Check if we can use a previously loaded form.
+      if (isset($this->_forms[$hash]) && !$clear)
+      {
+         return $this->_forms[$hash];
+      }
+
+      // Get the form.
+      JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+      JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+
+      try
+      {
+         $form = JSolrForm::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
+
+         if (isset($options['load_data']) && $options['load_data'])
+         {
+            // Get the data for the form.
+            $data = $this->loadFormData();
+         }
+         else
+         {
+            $data = array();
+         }
+
+         // Allow for additional modification of the form, and events to be triggered.
+         // We pass the data because plugins may require it.
+         $this->preprocessForm($form, $data);
+
+         // Load the data into the form after the plugins have operated.
+         $form->bind($data);
+
+      }
+      catch (Exception $e)
+      {
+         $this->setError($e->getMessage());
+         return false;
+      }
+
+      // Store the form for later.
+      $this->_forms[$hash] = $form;
+
+      return $form;
+   }
+
+  /**
+  * Get's the language, either from the item or from the Joomla environment.
+  *
+  * @param bool $includeRegion True if the region should be included, false
+  * otherwise. E.g. If true, en-AU would be returned, if false, just en
+  * would be returned.
+  *
+  * @return string The language code.
+  */
+  protected function getLanguage($includeRegion = true)
+  {
+    $lang = $this->lang;
+
+    // Language code must take the form xx-XX.
+    if (!$lang || count(explode("-", $lang)) < 2) {
+      $lang = JLanguageHelper::detectLanguage();
+    }
+
+    if ($includeRegion) {
+      return $lang;
+    } else {
+      $parts = explode('-', $lang);
+
+      // just return the xx part of the xx-XX language.
+      return JArrayHelper::getValue($parts, 0);
+    }
+  }
+
+  private function _localizeDateTime($dateTime)
+  {
+    $date = JFactory::getDate($dateTime);
+    
+    return $date->format(JText::_("DATE_FORMAT_LC2"));
+  }
 }

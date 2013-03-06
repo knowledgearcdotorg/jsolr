@@ -27,9 +27,10 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
 ?>
 <div class="jsolr-result">
-	<div class="jsolr-result-title"><a href="<?php echo $this->item->href; ?>"><?php echo $this->item->title; ?></a></div>
+	<div class="jsolr-result-title"><a href="<?php echo  $this->item->href; ?>"><?php echo $this->item->title; ?></a></div>
 	
 	<?php if ($this->item->created) : ?>
 	<div class="jsolr-result-date">

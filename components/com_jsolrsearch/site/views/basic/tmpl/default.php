@@ -28,12 +28,5 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-<form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-form">
-	<div class="jsolr-query">
-		<input type="text" name="q" id="q" class="inputbox"/><button type="submit" class="jsolr-search-button">Search</button>
-	</div>
-	<div class="jsolr-advanced-link">
-		<a href="<?php echo $this->get("AdvancedSearchURL"); ?>"><?php echo JText::_("Advanced search"); ?></a>	
-	</div>
-	<?php echo JHTML::_('form.token'); ?>
-</form>
+
+<?php echo $this->loadFormTemplate()?>

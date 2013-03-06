@@ -11,9 +11,9 @@
 		<!-- eventually only our FacetFields fields should be used here -->
 		<field 
 			name="q"
-			facet="author_fc"
+			facet="title"
 			type="JSolr.Text"
-			label="Search text"
+			label="Title"
 			size="40"
 			class="inputbox jsolrquery"
 			maxlength="50"/>

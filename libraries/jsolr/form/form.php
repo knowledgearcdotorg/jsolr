@@ -39,22 +39,6 @@ class JSolrForm extends JForm
 	const TYPE_SEARCHTOOLS 		= 1;
 	
 	/**
-	 * 
-	 * @var SORL query object
-	 */
-	protected $query;
-	
-	/**
-	 * Get SOLR query object.
-	 */
-	public function getQuery() {
-		if( is_null($this->query) ) {
-			//create query object if null
-		}
-		return $this->query;
-	}
-	
-	/**
 	 * Keeps type of the form
 	 * @var integer
 	 */
@@ -85,6 +69,27 @@ class JSolrForm extends JForm
 				$this->type = self::TYPE_FACETFILTERS;
 				break;
 		}
+	}
+	
+	/**
+	 * Method to get filters for JSolr
+	 * @return array
+	 */
+	public function getFilters()
+	{
+		$filters = array();
+
+		foreach ($this->getFieldsets() as $fieldset) {
+			foreach ($this->getFieldset($fieldset->name) as $field) {
+				$filter = $field->getFilter();
+
+				if (!empty($filter)) {
+					$filters[] = $filter;
+				}
+			}
+		}
+
+		return $filters;
 	}
 	
 	

@@ -21,6 +21,9 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 	 */
 	function getInputFacetFilter()
 	{
+		$uri = JFactory::getUri();
+		$name = (string)$this->element['name'];
+
 		$attr = '';
 		
 		// Initialize some field attributes.
@@ -37,7 +40,7 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 		
-		return '<input type="text" name="' . $this->name . '" value="" id="' . $this->element['name'] . '" ' . $attr . '/>';
+		return '<input type="text" name="' . $this->name . '" value="' .$uri->getVar($name) . '" id="' . $this->element['name'] . '" ' . $attr . '/>';
 	}
 	
 	/**
@@ -45,6 +48,9 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 	 */
 	function getInputSearchTool()
 	{
+		$uri = JFactory::getUri();
+		$name = (string)$this->element['name'];
+
 		$attr = '';
 		
 		// Initialize some field attributes.
@@ -61,12 +67,22 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 		
-		return '<input type="text" name="' . $this->name . '" value="" id="' . $this->element['name'] . '" ' . $attr . '/>';
+		return '<input type="text" name="' . $this->name . '" value="' .$uri->getVar($name) . '" id="' . $this->element['name'] . '" ' . $attr . '/>';
 	}
 	
-	function updateQuery()
+	function getFilter()
 	{
-		$query = &$this->getQuery();
-		// TODO
+		$uri = JFactory::getUri();
+		$filter = '';
+		$name = (string)$this->element['name'];
+		$facet = (string)$this->element['facet'];
+
+		$value = $uri->getVar($name);
+
+		if (empty($value)) {
+			return '';
+		}
+
+		return $facet . ':' . $value . '';
 	}
 }
