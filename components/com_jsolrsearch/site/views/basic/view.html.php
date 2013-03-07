@@ -74,7 +74,7 @@ class JSolrSearchViewBasic extends JView
 
     	$extension = str_replace("com_", "", $item->extension);
 
-    	$templates = JArrayHelper::getValue($this->get('_path'), 'template');
+    	@$templates = JArrayHelper::getValue($this->get('_path'), 'template');
 
     	$pluginOverridePath = JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS.'views';
     	$themeOverridePath = JPATH_THEMES.DS.JFactory::getApplication()->getTemplate().DS.

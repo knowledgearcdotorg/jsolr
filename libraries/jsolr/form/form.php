@@ -109,8 +109,13 @@ class JSolrForm extends JForm
 	}
 	
 	public function fillQuery() {
+		$uri = JFactory::getURI();
+		$params = $uri->getQuery(true);
+
 		foreach ($this->getFieldsets() as $fieldset) {
 			foreach ($this->getFieldset($fieldset->name) as $field) {
+
+
 				$filter = $field->fillQuery();
 			}
 		}

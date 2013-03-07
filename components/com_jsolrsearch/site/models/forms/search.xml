@@ -8,7 +8,7 @@
 		label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
 		addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
 		
-		<!-- eventually only our FacetFields fields should be used here -->
+		<!-- only our JSolrFormField's should be used here -->
 		<field 
 			name="q"
 			facet="title"

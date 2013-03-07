@@ -1,5 +1,6 @@
 
-<form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="jsolr-search-result-form">
+<?php JHTML::_('behavior.formvalidation') ?>
+<form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="form-validate jsolr-search-result-form">
 
   <?php foreach($this->get('Form')->getFieldsets() as $fieldset ) : ?>
     <fieldset>

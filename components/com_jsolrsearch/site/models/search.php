@@ -42,7 +42,7 @@ jimport('jsolr.form.form');
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
 
-class JSolrSearchModelSearch extends JModel
+class JSolrSearchModelSearch extends JModelForm
 {
    protected $view_item = 'search';
    protected $form;
@@ -56,7 +56,9 @@ class JSolrSearchModelSearch extends JModel
 
         $params = JComponentHelper::getParams($this->get('option'), true);
 
-        $query = $this->getForm()->fillQuery()->getQuery();
+        $form = $this->getForm();
+
+        $query = $form->fillQuery()->getQuery();
         $response = $query->search();
         
         $headers = json_decode($response->getRawResponse())->responseHeader;
@@ -187,10 +189,19 @@ class JSolrSearchModelSearch extends JModel
     */
    protected function loadFormData()
    {
+      $uri = JFactory::getURI();
+
+      $query = $uri->getQuery(true);
+
+      if (count($query)) {
+        return $query;
+      }
+
       $context = $this->get('option').'.edit.'.$this->getName().'.data';
+
       $data = (array)JFactory::getApplication()->getUserState($context.'.data', array());
       
-      return $data;
+      return array();
    }
 
    private function _getCustomFormPath()
