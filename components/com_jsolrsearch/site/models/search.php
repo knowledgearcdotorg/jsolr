@@ -50,7 +50,7 @@ class JSolrSearchModelSearch extends JModelForm
 
    public function getItems()
    {
-      $filters = $this->getForm()->getFilters();
+//       $filters = $this->getForm()->getFilters();
 
       try {
         JPluginHelper::importPlugin("jsolrsearch");
@@ -58,12 +58,13 @@ class JSolrSearchModelSearch extends JModelForm
 
         $params = JComponentHelper::getParams($this->get('option'), true);
 
-        $query = JSolrSearchFactory::getQuery('*:*')
-            ->useQueryParser("edismax")
-            ->retrieveFields("*,score")
-            ->filters($filters)
-            ->highlight(200, "<strong>", "</strong>", 1);
+//         $query = JSolrSearchFactory::getQuery('*:*')
+//             ->useQueryParser("edismax")
+//             ->retrieveFields("*,score")
+//             ->filters($filters)
+//             ->highlight(200, "<strong>", "</strong>", 1);
 
+        $query = $form->fillQuery()->getQuery();
         $response = $query->search();
         
         $headers = json_decode($response->getRawResponse())->responseHeader;

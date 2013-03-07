@@ -44,6 +44,8 @@ class JSolrForm extends JForm
 	 */
 	protected $type;
 	
+	protected $query;
+	
 	/**
 	 * @return integer one of the consts JSolrForm::TYPE_FACETFILTERS or JSolrForm::TYPE_SEARCHTOOLS
 	 */
@@ -90,6 +92,29 @@ class JSolrForm extends JForm
 		}
 
 		return $filters;
+	}
+	
+	public function createQuery() {
+        $query = JSolrSearchFactory::getQuery('*:*')
+            ->useQueryParser("edismax")
+            ->retrieveFields("*,score")
+            ->highlight(200, "<strong>", "</strong>", 1);
+	}
+	
+	public function getQuery() {
+		if( empty($this->query) ) {
+			$this->createQuery();
+		}
+		return $this->query;
+	}
+	
+	public function fillQuery() {
+		foreach ($this->getFieldsets() as $fieldset) {
+			foreach ($this->getFieldset($fieldset->name) as $field) {
+				$filter = $field->fillQuery();
+			}
+		}
+		return $this;
 	}
 	
 	

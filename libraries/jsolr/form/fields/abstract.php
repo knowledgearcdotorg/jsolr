@@ -43,6 +43,8 @@ abstract class JSolrFormFieldAbstract extends JFormField
 		return $html;
 	}
 	
+	abstract public function fillQuery();
+	
 	/**
 	 * Called before rendering field
 	 */

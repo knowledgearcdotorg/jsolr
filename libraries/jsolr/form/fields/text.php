@@ -85,4 +85,12 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 
 		return $facet . ':' . $value . '';
 	}
+	
+	public function fillQuery() {
+		$filter = $this->getFilter();
+		if( !empty($filter) ) {
+			$this->form->getQuery()
+				->mergeFilters( $filter );
+		}
+	}
 }
