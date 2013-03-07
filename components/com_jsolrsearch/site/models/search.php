@@ -42,7 +42,7 @@ jimport('jsolr.form.form');
 require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
 
 
-class JSolrSearchModelSearch extends JModelForm
+class JSolrSearchModelSearch extends JModel
 {
    protected $view_item = 'search';
    protected $form;
