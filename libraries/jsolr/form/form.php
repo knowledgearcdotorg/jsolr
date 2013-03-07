@@ -95,7 +95,7 @@ class JSolrForm extends JForm
 	}
 	
 	public function createQuery() {
-        $query = JSolrSearchFactory::getQuery('*:*')
+        $this->query = JSolrSearchFactory::getQuery('*:*')
             ->useQueryParser("edismax")
             ->retrieveFields("*,score")
             ->highlight(200, "<strong>", "</strong>", 1);
