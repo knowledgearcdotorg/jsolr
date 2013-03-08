@@ -11,9 +11,9 @@
 		<!-- only our JSolrFormField's should be used here -->
 		<field 
 			name="q"
-			facet="title"
-			type="JSolr.Text"
-			label="Title"
+			facet="created"
+			type="JSolr.Daterange"
+			label="Data utworzenia"
 			size="40"
 			class="inputbox jsolrquery"
 			maxlength="50"/>
