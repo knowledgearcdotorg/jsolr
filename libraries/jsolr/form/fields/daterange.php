@@ -30,6 +30,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	{
 		$document = JFactory::getDocument();
 		$document->addScript('/media/com_jsolrsearch/js/jquery/jquery.js');
+		$document->addScript('/media/com_jsolrsearch/js/jsolrsearch.js');
 		$document->addScript('/media/com_jsolrsearch/js/jquery-ui/jquery-ui-1.10.1.custom.min.js');
 		
 		$document->addStyleSheet('/media/com_jsolrsearch/css/ui-lightness/jquery-ui-1.10.1.custom.min.css');
@@ -40,19 +41,21 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	public function getInputFacetFilter()
 	{
+		$id = $this->element['name'];
 		$html = '';
 		$name = (string)$this->element['name'];
+
+		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" />';
 
 		$html .= '<ul data-type="jdaterange">';
 
 		foreach ($this->getFinalOptions() as $label => $value) {
-			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange', 'data-value' => $value)) . '</li>';
+			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option', 'data-value' => $value, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 		}
 
 		if ($this->useCustomRange()) {
 			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', COM_JSOLRSEARCH_DATERANGE_CUSTOM);
 			$name = $this->name;
-			$id = $this->element['name'];
 			
 			$html .= '<span>';
 
@@ -102,37 +105,40 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	{
 		$facet = (string)$this->element['facet'];
 
+		$filter = '';
+
 		if (is_array($this->value)) {
 			$from 	= $this->value['from'];
 			$to 	= $this->value['to'];
+			$value  = $this->value['value'];
 
 			if (!empty($from) && !empty($to)) {
 				$from 	= JSolrHelper::getSolrDate($from);
 				$to 	= JSolrHelper::getSolrDate($to);
 
-				return $facet . ':[' . $from . ' TO ' . $to . ']';
-			}
-		} elseif (!empty($this->value)){
-			switch ($this->value) {
-				case 'd':
-					return $facet . ':[NOW-1DAY TO NOW]';
-					break;
+				$filter = $facet . ':[' . $from . ' TO ' . $to . ']';
+			} elseif (!empty($value)){
+				switch ($value) {
+					case 'd':
+						$filter = $facet . ':[NOW-1DAY TO NOW]';
+						break;
 
-				case 'w':
-					return $facet . ':[NOW-7DAY TO NOW]';
-					break;
+					case 'w':
+						$filter = $facet . ':[NOW-7DAY TO NOW]';
+						break;
 
-				case 'm':
-					return $facet . ':[NOW-1MONTH TO NOW]';
-					break;
+					case 'm':
+						$filter = $facet . ':[NOW-1MONTH TO NOW]';
+						break;
 
-				case 'y':
-					return $facet . ':[NOW-1YEAR TO NOW]';
-					break;
+					case 'y':
+						$filter = $facet . ':[NOW-1YEAR TO NOW]';
+						break;
+				}
 			}
 		}
 
-		return '';
+		return $filter;
 	}
 	
 	/**
