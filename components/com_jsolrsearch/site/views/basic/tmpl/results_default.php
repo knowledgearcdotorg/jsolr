@@ -44,5 +44,5 @@ endforeach;
 </div>
 	
 <div class="pagination">
-	<?php // echo $this->get("Pagination")->getPagesLinks(); ?>
+	<?php echo $this->get("Pagination")->getPagesLinks(); ?>
 </div>

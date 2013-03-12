@@ -70,7 +70,6 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 	
 	function getFilter()
 	{
-		$filter = '';
 		$name = (string)$this->element['name'];
 		$facet = (string)$this->element['facet'];
 
@@ -80,7 +79,9 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 			return '';
 		}
 
-		return $facet . ':' . $value . '';
+		$filter = $facet . ':' . $value;
+
+		return $filter;
 	}
 	
 	public function fillQuery() {

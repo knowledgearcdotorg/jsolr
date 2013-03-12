@@ -4,7 +4,7 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('a.jdaterange-option').click(function(){
+	$('a.jrange-option').click(function(){
 		var elem = $(this);
 
 		$('#' + elem.attr('data-name') + '_value').val(elem.attr('data-value'));

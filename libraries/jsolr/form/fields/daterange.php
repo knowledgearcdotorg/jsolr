@@ -45,7 +45,9 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		$html = '';
 		$name = (string)$this->element['name'];
 
-		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" />';
+		$value = $this->value['value'];
+
+		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . $value .'" />';
 
 		$html .= '<ul data-type="jdaterange">';
 
