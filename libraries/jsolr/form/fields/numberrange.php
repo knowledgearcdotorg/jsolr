@@ -27,34 +27,49 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	 */
 	public function getInputFacetFilter()
 	{
-		$id 	= $this->element['name'];
-		$html 	= '';
-		$name 	= (string)$this->element['name'];
+		$id = $this->element['name'];
+		$html = '';
+		$name = (string)$this->element['name'];
+		$value = explode('|', $this->value['value']);
 
-		$from 	= $this->value['from'];
-		$to 	= $this->value['to'];
-		$value 	= $this->value['value'];
+		if ($value[0] == '') {
+			unset($value[0]);
+		}
 
-		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . $value .'" />';
+		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . implode('|', $value) .'" />';
 
 		$html .= '<ul data-type="jnumberrange">';
 
 		foreach ($this->getFinalOptions() as $v => $label) {
-			if ($value != $v) {
-				$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange-option jnumberrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'numberrange_option_' . $id)) . '</li>';
+			if (!(in_array($v, $value))) {
+				if ($this->isMultiple()) {
+					if ($v != '') {
+						$v = array_merge($value, array($v));
+					} else {
+						$v = array();
+					}
+
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jnumberrange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				} else {
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jnumberrange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id)) . '</li>';
+				}
 			} else {
-				$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+				if ($this->isMultiple()) {
+					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+				} else {
+					$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+				}
 			}
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jnumberrange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_NUMBERRANGE_CUSTOM));
+			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
 			$name = $this->name;
 			
 			$html .= '<span>';
 
-			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_FROM) .'<input type="text" name="' . $name .'[from]" value="' . $from .'" id="' . $id . '_from" /></label>';
-			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_TO) .'<input type="text" name="' . $name .'[to]" value="' . $to .'" id="' . $id . '_to" /></label>';
+			$html .= JHTML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
+			$html .= JHTML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
 
 			$html .= '</span>';
 		
@@ -129,9 +144,17 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 
 				$filter = $facet . ':[' . $from . ' TO ' . $to . ']';
 			} elseif (!empty($value)) {
-				$value = explode('_', $value);
+				$filters = array();
 
-				$filter = $facet . ':[' . (int)$value[0] . ' TO ' . (int)$value[1] . ']';
+				foreach (explode('|', $value) as $val) {
+					$val = explode('_', $val);
+
+					$filters[] = '[' . (int)$val[0] . ' TO ' . (int)$val[1] . ']';
+				}
+
+				if (count($filters)) {
+					$filter = $facet . ':' . implode(' OR ', $filters);
+				}
 			}
 		}
 
