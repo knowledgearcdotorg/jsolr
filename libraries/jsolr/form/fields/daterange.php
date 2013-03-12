@@ -52,11 +52,11 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		$html .= '<ul data-type="jdaterange">';
 
 		foreach ($this->getFinalOptions() as $label => $value) {
-			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option', 'data-value' => $value, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $value, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', COM_JSOLRSEARCH_DATERANGE_CUSTOM);
+			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
 			$name = $this->name;
 			
 			$html .= '<span>';
@@ -148,7 +148,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	protected function getDefaultOptions()
 	{
-		return array(COM_JSOLRSEARCH_DATERANGE_ANYTIME => '',COM_JSOLRSEARCH_DATERANGE_24_HOURS => 'd', COM_JSOLRSEARCH_DATERANGE_PREV_WEEK => 'w', COM_JSOLRSEARCH_DATERANGE_PREV_MONTH => 'm', COM_JSOLRSEARCH_DATERANGE_PREV_YEAR => 'y');
+		return array(JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME) => '',JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY) => 'd', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK) => 'w', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH) => 'm', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR) => 'y');
 	}
 
 	function fillQuery()
