@@ -39,8 +39,12 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 
 		$html .= '<ul data-type="jnumberrange">';
 
-		foreach ($this->getFinalOptions() as $value => $label) {
-			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange-option jnumberrange-option', 'data-value' => $value, 'data-name' => $id, 'id' => 'numberrange_option_' . $id)) . '</li>';
+		foreach ($this->getFinalOptions() as $v => $label) {
+			if ($value != $v) {
+				$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange-option jnumberrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'numberrange_option_' . $id)) . '</li>';
+			} else {
+				$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+			}
 		}
 
 		if ($this->useCustomRange()) {
@@ -139,7 +143,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		$step 	= $this->getStep();
 		$start 	= $this->getStart();
 		$end 	= $this->getEnd();
-		$options = array();
+		$options = array('' => JText::_(COM_JSOLRSEARCH_NUMBERRANGE_ALL));
 
 		while($start < $end) {
 			if ($start + $step <= $end) {

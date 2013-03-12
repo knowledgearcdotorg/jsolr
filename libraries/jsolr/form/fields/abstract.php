@@ -58,4 +58,9 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	protected function postRender()
 	{
 	}
+
+	function isMultiple()
+	{
+		return (isset($this->element['multi'])) ? $this->element['multi'] == 'true' : false;
+	}
 }

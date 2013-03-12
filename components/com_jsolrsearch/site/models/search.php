@@ -51,6 +51,7 @@ class JSolrSearchModelSearch extends JModelForm
    public function getItems()
    {
       try {
+        $this->getComponentsList();
         JPluginHelper::importPlugin("jsolrsearch");
         $dispatcher =& JDispatcher::getInstance();
 
@@ -317,5 +318,13 @@ class JSolrSearchModelSearch extends JModelForm
     $date = JFactory::getDate($dateTime);
     
     return $date->format(JText::_("DATE_FORMAT_LC2"));
+  }
+
+  protected function getComponentsList()
+  {
+    JPluginHelper::importPlugin("jsolrsearch");
+    $dispatcher =& JDispatcher::getInstance();
+
+    return $dispatcher->trigger('onJSolrSearchRegisterComponents');
   }
 }

@@ -44,15 +44,38 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		$id = $this->element['name'];
 		$html = '';
 		$name = (string)$this->element['name'];
+		$value = explode('|', $this->value['value']);
 
-		$value = $this->value['value'];
+		if ($value[0] == '') {
+			unset($value[0]);
+		}
 
-		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . $value .'" />';
+		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . implode('|', $value) .'" />';
 
 		$html .= '<ul data-type="jdaterange">';
 
-		foreach ($this->getFinalOptions() as $label => $value) {
-			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $value, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+		foreach ($this->getFinalOptions() as $label => $v) {
+			if (!(in_array($v, $value))) {
+				if ($this->isMultiple()) {
+					if ($v != '') {
+						$v = array_merge($value, array($v));
+					} else {
+						$v = array();
+					}
+
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				} else {
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				}
+
+				
+			} else {
+				if ($this->isMultiple()) {
+					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+				} else {
+					$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+				}
+			}
 		}
 
 		if ($this->useCustomRange()) {
@@ -120,22 +143,30 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 
 				$filter = $facet . ':[' . $from . ' TO ' . $to . ']';
 			} elseif (!empty($value)){
-				switch ($value) {
-					case 'd':
-						$filter = $facet . ':[NOW-1DAY TO NOW]';
-						break;
+				$filters = array();
 
-					case 'w':
-						$filter = $facet . ':[NOW-7DAY TO NOW]';
-						break;
+				foreach (explode('|', $value) as $val) {
+					switch ($value) {
+						case 'd':
+							$filters[] = '[NOW-1DAY TO NOW]';
+							break;
 
-					case 'm':
-						$filter = $facet . ':[NOW-1MONTH TO NOW]';
-						break;
+						case 'w':
+							$filters[] = '[NOW-7DAY TO NOW]';
+							break;
 
-					case 'y':
-						$filter = $facet . ':[NOW-1YEAR TO NOW]';
-						break;
+						case 'm':
+							$filters[] = '[NOW-1MONTH TO NOW]';
+							break;
+
+						case 'y':
+							$filters[] = '[NOW-1YEAR TO NOW]';
+							break;
+					}
+				}
+
+				if (count($filters)) {
+					$filter = $facet . ':' . implode(' OR ', $filters);
 				}
 			}
 		}
