@@ -102,8 +102,9 @@ class JSolrSearchModelSearch extends JModelForm
       
       $url->setVar("option", "com_jsolrsearch");
       $url->setVar("view", "basic");
+      $plugin = $this->getCurrentPlugin();
 
-      foreach ($params['jform'] as $key=>$value) {
+      foreach ($params[$plugin] as $key=>$value) {
          switch ($key) {
             case "task":
             case "eq":
@@ -119,6 +120,10 @@ class JSolrSearchModelSearch extends JModelForm
                $url->setVar($key, $value);
                break;
          }
+      }
+
+      if (isset($params['component'])) {
+        $url->setVar('component', $params['component']);
       }
       
       return JRoute::_($url->toString(), false);
@@ -169,7 +174,8 @@ class JSolrSearchModelSearch extends JModelForm
       }
 
       $context = $this->get('option').'.'.$this->getName();
-      $this->form = $this->loadForm($context, $this->getName(), array('control' => 'jform', 'load_data' => $loadData));
+      $plugin = $this->getCurrentPlugin();
+      $this->form = $this->loadForm($context, $this->getName(), array('control' => $plugin, 'load_data' => $loadData));
 
       if (empty($this->form)) {
          return false;
@@ -209,10 +215,24 @@ class JSolrSearchModelSearch extends JModelForm
    {
       $path = null;
 
-      if (JRequest::getString("o")) {
-         $extension = JArrayHelper::getValue(explode("_", JRequest::getCmd("o"), 2), 1);
+      $plugin = $this->getCurrentPlugin();
 
-         $path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS."forms", "advanced.xml");
+      $components = $this->getComponentsList();
+
+      foreach ($components as $comp) {
+        if ($comp['plugin'] == $plugin) {
+          $file = $comp['path'] . DS . 'facets.xml';
+
+          if (file_exists($file)) {
+            $path = $file;
+          } else {
+            $file = $comp['path'] . DS . 'tools.xml';
+
+            if (file_exists($file)) {
+              $path = $file;
+            }
+          }
+        }
       }
       
       return $path;
@@ -320,11 +340,22 @@ class JSolrSearchModelSearch extends JModelForm
     return $date->format(JText::_("DATE_FORMAT_LC2"));
   }
 
-  protected function getComponentsList()
+  public function getComponentsList()
   {
     JPluginHelper::importPlugin("jsolrsearch");
     $dispatcher =& JDispatcher::getInstance();
 
     return $dispatcher->trigger('onJSolrSearchRegisterComponents');
+  }
+
+  public function getCurrentPlugin()
+  {
+    $uri = JFactory::getURI();
+
+    if ($uri->getVar('plugin')) {
+      return $uri->getVar('plugin');
+    }
+
+    return '';
   }
 }

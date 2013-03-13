@@ -31,9 +31,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 
 <?php echo $this->loadFormTemplate()?>
-<div id="jSolrOptions">
-
-</div>
 
 <div class="jsolr-results">
 <?php
