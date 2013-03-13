@@ -36,5 +36,15 @@
 			multi="true"
 			class="inputbox jsolrquery"
 			maxlength="50"/>
+
+		<field 
+			name="lang"
+			facet="lang"
+			type="JSolr.Lang"
+			label="Language"
+			size="4"
+			multiple="true"
+			class="inputbox jsolrquery"
+			maxlength="50"/>
 	</fieldset>
 </form>
