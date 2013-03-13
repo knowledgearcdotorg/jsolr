@@ -40,4 +40,9 @@ jQuery(document).ready(function($) {
 
 		return false;
 	});
+
+	$('#jsolr_form_plugin_select').change(function(){
+		window.location.href = '?plugin=' + $(this).val();
+		return false;
+	});
 });

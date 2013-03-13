@@ -60,6 +60,13 @@ class JSolrSearchModelSearch extends JModelForm
         $form = $this->getForm();
 
         $query = $form->fillQuery()->getQuery();
+
+        $plugin = $this->getCurrentPlugin();
+
+        if (!empty($plugin)) {
+          $query->mergeFilters('extension:' . $plugin);
+        }
+
         $response = $query->search();
         
         $headers = json_decode($response->getRawResponse())->responseHeader;
@@ -122,8 +129,8 @@ class JSolrSearchModelSearch extends JModelForm
          }
       }
 
-      if (isset($params['component'])) {
-        $url->setVar('component', $params['component']);
+      if (isset($params['plugin'])) {
+        $url->setVar('plugin', $params['plugin']);
       }
       
       return JRoute::_($url->toString(), false);
@@ -321,10 +328,12 @@ class JSolrSearchModelSearch extends JModelForm
   {
     $uri = JFactory::getURI();
 
-    if ($uri->getVar('plugin')) {
-      return $uri->getVar('plugin');
+    $plugin = JRequest::getVar('plugin', NULL, 'post');
+
+    if (!empty($plugin)) {
+      return $plugin;
     }
 
-    return '';
+    return $uri->getVar('plugin');
   }
 }

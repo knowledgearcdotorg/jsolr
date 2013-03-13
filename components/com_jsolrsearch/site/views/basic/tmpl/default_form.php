@@ -4,10 +4,10 @@
 
   <div id="jSolrOptions">
      Select component:
-     <select name="plugin">
+     <select name="plugin" id="jsolr_form_plugin_select">
         <?php foreach ($this->plugins as $plugin): ?>
           <option value="">ALL</option>
-           <option value="<?php echo $$plugin['plugin'] ?>"><?php echo $plugin['name'] ?></option>
+           <option <?php if ($plugin['plugin'] == $this->current_plugin): ?> selected="selected"<?php endif ?> value="<?php echo $plugin['plugin'] ?>"><?php echo $plugin['name'] ?></option>
         <?php endforeach ?>
      </select>
   </div>

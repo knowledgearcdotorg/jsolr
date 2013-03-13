@@ -26,19 +26,6 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	/**
 	 * @inheritdoc
 	 */
-	protected function preRender()
-	{
-		$document = JFactory::getDocument();
-		$document->addScript('/media/com_jsolrsearch/js/jquery/jquery.js');
-		$document->addScript('/media/com_jsolrsearch/js/jsolrsearch.js');
-		$document->addScript('/media/com_jsolrsearch/js/jquery-ui/jquery-ui-1.10.1.custom.min.js');
-		
-		$document->addStyleSheet('/media/com_jsolrsearch/css/ui-lightness/jquery-ui-1.10.1.custom.min.css');
-	}
-	
-	/**
-	 * @inheritdoc
-	 */
 	public function getInputFacetFilter()
 	{
 		$id = $this->element['name'];

@@ -41,7 +41,8 @@ class JSolrSearchViewBasic extends JView
     {
         $this->form = $this->get('Form');
         $this->items = $this->get('Items');
-        $this->components = $this->get('ComponentsList');
+        $this->plugins = $this->get('ComponentsList');
+        $this->current_plugin = $this->get('CurrentPlugin');
         parent::display($tpl);
     }
     
