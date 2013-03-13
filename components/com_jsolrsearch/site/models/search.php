@@ -128,37 +128,6 @@ class JSolrSearchModelSearch extends JModelForm
       
       return JRoute::_($url->toString(), false);
    }
-   
-   public function buildQuery($params)
-   {
-      $q = "";
-   
-      if (JArrayHelper::getValue($params, "aq")) {
-         $q .= JArrayHelper::getValue($params, "aq");
-      }
-   
-      if (JArrayHelper::getValue($params, "eq")) {
-         $q .= "\"".JArrayHelper::getValue($params, "eq")."\"";
-      }
-   
-      $oq = array();
-   
-      for ($i=0; $i<3; $i++) {
-         if (trim(JArrayHelper::getValue($params, "oq".$i))) {
-            $oq[] = trim(JArrayHelper::getValue($params, "oq".$i));
-         }
-      }
-   
-      if (count($oq)) {
-         $q .= " " . implode(" OR ", $oq);
-      }
-   
-      if (JArrayHelper::getValue($params, "nq")) {
-         $q .= " -".preg_replace('!\s+!', ' -', JArrayHelper::getValue($params, "nq"));
-      }
-   
-      return trim($q);
-   }
 
    /**
     * Method to get the advanced search form.

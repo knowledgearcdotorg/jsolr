@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-    <!-- dir to load form fields from -->
-    
     <fieldset 
         name="metadata"
         label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
