@@ -51,6 +51,7 @@ class JSolrSearchModelSearch extends JModelForm
    public function getItems()
    {
       try {
+        $this->getComponentsList();
         JPluginHelper::importPlugin("jsolrsearch");
         $dispatcher =& JDispatcher::getInstance();
 
@@ -59,6 +60,13 @@ class JSolrSearchModelSearch extends JModelForm
         $form = $this->getForm();
 
         $query = $form->fillQuery()->getQuery();
+
+        $plugin = $this->getCurrentPlugin();
+
+        if (!empty($plugin)) {
+          $query->mergeFilters('extension:' . $plugin);
+        }
+
         $response = $query->search();
         
         $headers = json_decode($response->getRawResponse())->responseHeader;
@@ -101,8 +109,9 @@ class JSolrSearchModelSearch extends JModelForm
       
       $url->setVar("option", "com_jsolrsearch");
       $url->setVar("view", "basic");
+      $plugin = $this->getCurrentPlugin();
 
-      foreach ($params['jform'] as $key=>$value) {
+      foreach ($params[$plugin] as $key=>$value) {
          switch ($key) {
             case "task":
             case "eq":
@@ -119,39 +128,12 @@ class JSolrSearchModelSearch extends JModelForm
                break;
          }
       }
+
+      if (isset($params['plugin'])) {
+        $url->setVar('plugin', $params['plugin']);
+      }
       
       return JRoute::_($url->toString(), false);
-   }
-   
-   public function buildQuery($params)
-   {
-      $q = "";
-   
-      if (JArrayHelper::getValue($params, "aq")) {
-         $q .= JArrayHelper::getValue($params, "aq");
-      }
-   
-      if (JArrayHelper::getValue($params, "eq")) {
-         $q .= "\"".JArrayHelper::getValue($params, "eq")."\"";
-      }
-   
-      $oq = array();
-   
-      for ($i=0; $i<3; $i++) {
-         if (trim(JArrayHelper::getValue($params, "oq".$i))) {
-            $oq[] = trim(JArrayHelper::getValue($params, "oq".$i));
-         }
-      }
-   
-      if (count($oq)) {
-         $q .= " " . implode(" OR ", $oq);
-      }
-   
-      if (JArrayHelper::getValue($params, "nq")) {
-         $q .= " -".preg_replace('!\s+!', ' -', JArrayHelper::getValue($params, "nq"));
-      }
-   
-      return trim($q);
    }
 
    /**
@@ -168,7 +150,8 @@ class JSolrSearchModelSearch extends JModelForm
       }
 
       $context = $this->get('option').'.'.$this->getName();
-      $this->form = $this->loadForm($context, $this->getName(), array('control' => 'jform', 'load_data' => $loadData));
+      $plugin = $this->getCurrentPlugin();
+      $this->form = $this->loadForm($context, $this->getName(), array('control' => $plugin, 'load_data' => $loadData));
 
       if (empty($this->form)) {
          return false;
@@ -208,10 +191,34 @@ class JSolrSearchModelSearch extends JModelForm
    {
       $path = null;
 
-      if (JRequest::getString("o")) {
-         $extension = JArrayHelper::getValue(explode("_", JRequest::getCmd("o"), 2), 1);
+      $plugin = $this->getCurrentPlugin();
 
-         $path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS."forms", "advanced.xml");
+      $components = $this->getComponentsList();
+
+      foreach ($components as $comp) {
+        if ($comp['plugin'] == $plugin) {
+          $file = $comp['path'] . DS . 'tools.xml';
+
+          if (file_exists($file)) {
+            $path = $file;
+          } else {
+            $file = $comp['path'] . DS . 'facets.xml';
+
+            if (file_exists($file)) {
+              $path = $file;
+            }
+          }
+        }
+      }
+
+      if (is_null($path)) {
+        $dir = __DIR__ . DS . 'forms' . DS;
+
+        if (file_exists($dir . 'tools.xml')) {
+          $path = $dir . 'tools.xml';
+        } elseif (file_exists($dir . 'facets.xml')) {
+          $path = $dir . 'facets.xml';
+        }
       }
       
       return $path;
@@ -317,5 +324,26 @@ class JSolrSearchModelSearch extends JModelForm
     $date = JFactory::getDate($dateTime);
     
     return $date->format(JText::_("DATE_FORMAT_LC2"));
+  }
+
+  public function getComponentsList()
+  {
+    JPluginHelper::importPlugin("jsolrsearch");
+    $dispatcher =& JDispatcher::getInstance();
+
+    return $dispatcher->trigger('onJSolrSearchRegisterComponents');
+  }
+
+  public function getCurrentPlugin()
+  {
+    $uri = JFactory::getURI();
+
+    $plugin = JRequest::getVar('plugin', NULL, 'post');
+
+    if (!empty($plugin)) {
+      return $plugin;
+    }
+
+    return $uri->getVar('plugin');
   }
 }

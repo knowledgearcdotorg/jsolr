@@ -27,6 +27,19 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
 ?>
 
 <?php echo $this->loadFormTemplate()?>
+
+<div class="jsolr-results">
+<?php
+foreach ($this->items as $item) :
+        echo $this->loadResultTemplate($item);
+endforeach;
+?>
+</div>
+   
+<div class="pagination">
+   <?php // echo $this->get("Pagination")->getPagesLinks(); ?>
+</div>

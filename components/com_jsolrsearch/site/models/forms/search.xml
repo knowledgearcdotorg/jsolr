@@ -8,14 +8,6 @@
 		label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
 		addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
 		
-		<!-- only our JSolrFormField's should be used here -->
-		<field 
-			name="q"
-			facet="created"
-			type="JSolr.Daterange"
-			label="Data utworzenia"
-			size="40"
-			class="inputbox jsolrquery"
-			maxlength="50"/>
+		<!-- only JSolrFormFields should be used here -->
 	</fieldset>
 </form>

@@ -17,6 +17,7 @@ defined('JPATH_BASE') or die;
 
 jimport('jsolr.form.fields.rangeabstract');
 jimport('jsolr.helper.jsolr');
+jimport('jsolr.helper.jhtml');
 
 //JSorl prefix!
 class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
@@ -26,38 +27,53 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	/**
 	 * @inheritdoc
 	 */
-	protected function preRender()
-	{
-		$document = JFactory::getDocument();
-		$document->addScript('/media/com_jsolrsearch/js/jquery/jquery.js');
-		$document->addScript('/media/com_jsolrsearch/js/jquery-ui/jquery-ui-1.10.1.custom.min.js');
-		
-		$document->addStyleSheet('/media/com_jsolrsearch/css/ui-lightness/jquery-ui-1.10.1.custom.min.css');
-	}
-	
-	/**
-	 * @inheritdoc
-	 */
 	public function getInputFacetFilter()
 	{
+		$id = $this->element['name'];
 		$html = '';
 		$name = (string)$this->element['name'];
+		$value = explode('|', $this->value['value']);
+
+		if ($value[0] == '') {
+			unset($value[0]);
+		}
+
+		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . implode('|', $value) .'" />';
 
 		$html .= '<ul data-type="jdaterange">';
 
-		foreach ($this->getFinalOptions() as $label => $value) {
-			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange', 'data-value' => $value)) . '</li>';
+		foreach ($this->getFinalOptions() as $label => $v) {
+			if (!(in_array($v, $value))) {
+				if ($this->isMultiple()) {
+					if ($v != '') {
+						$v = array_merge($value, array($v));
+					} else {
+						$v = array();
+					}
+
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				} else {
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				}
+
+				
+			} else {
+				if ($this->isMultiple()) {
+					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+				} else {
+					$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+				}
+			}
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', COM_JSOLRSEARCH_DATERANGE_CUSTOM);
+			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
 			$name = $this->name;
-			$id = $this->element['name'];
 			
 			$html .= '<span>';
 
-			$html .= JHTML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
-			$html .= JHTML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
+			$html .= JSolrHtML::datepicker($this->value['from'], $name . '[from]', "{$id}_from");
+			$html .= JSolrHtML::datepicker($this->value['to'], $name . '[to]', "{$id}_to");
 
 			$html .= '</span>';
 		
@@ -102,37 +118,48 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	{
 		$facet = (string)$this->element['facet'];
 
+		$filter = '';
+
 		if (is_array($this->value)) {
 			$from 	= $this->value['from'];
 			$to 	= $this->value['to'];
+			$value  = $this->value['value'];
 
 			if (!empty($from) && !empty($to)) {
 				$from 	= JSolrHelper::getSolrDate($from);
 				$to 	= JSolrHelper::getSolrDate($to);
 
-				return $facet . ':[' . $from . ' TO ' . $to . ']';
-			}
-		} elseif (!empty($this->value)){
-			switch ($this->value) {
-				case 'd':
-					return $facet . ':[NOW-1DAY TO NOW]';
-					break;
+				$filter = $facet . ':[' . $from . ' TO ' . $to . ']';
+			} elseif (!empty($value)){
+				$filters = array();
 
-				case 'w':
-					return $facet . ':[NOW-7DAY TO NOW]';
-					break;
+				foreach (explode('|', $value) as $val) {
+					switch ($value) {
+						case 'd':
+							$filters[] = '[NOW-1DAY TO NOW]';
+							break;
 
-				case 'm':
-					return $facet . ':[NOW-1MONTH TO NOW]';
-					break;
+						case 'w':
+							$filters[] = '[NOW-7DAY TO NOW]';
+							break;
 
-				case 'y':
-					return $facet . ':[NOW-1YEAR TO NOW]';
-					break;
+						case 'm':
+							$filters[] = '[NOW-1MONTH TO NOW]';
+							break;
+
+						case 'y':
+							$filters[] = '[NOW-1YEAR TO NOW]';
+							break;
+					}
+				}
+
+				if (count($filters)) {
+					$filter = $facet . ':' . implode(' OR ', $filters);
+				}
 			}
 		}
 
-		return '';
+		return $filter;
 	}
 	
 	/**
@@ -140,7 +167,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	protected function getDefaultOptions()
 	{
-		return array(COM_JSOLRSEARCH_DATERANGE_ANYTIME => '',COM_JSOLRSEARCH_DATERANGE_24_HOURS => 'd', COM_JSOLRSEARCH_DATERANGE_PREV_WEEK => 'w', COM_JSOLRSEARCH_DATERANGE_PREV_MONTH => 'm', COM_JSOLRSEARCH_DATERANGE_PREV_YEAR => 'y');
+		return array(JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME) => '',JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY) => 'd', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK) => 'w', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH) => 'm', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR) => 'y');
 	}
 
 	function fillQuery()

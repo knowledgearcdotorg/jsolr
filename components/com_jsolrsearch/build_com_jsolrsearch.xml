@@ -41,6 +41,11 @@
 				<include name="**/**"/>
 			</fileset>
 		</copy>
+		<copy todir="${dest.media}/com_jsolrsearch/images">
+			<fileset dir="${src}/images" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
 		<copy todir="${dest.media}/com_jsolrsearch/css">
 			<fileset dir="${src}/css" defaultexcludes="true">
 				<include name="**/**"/>

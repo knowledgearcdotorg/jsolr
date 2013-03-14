@@ -1,0 +1,3 @@
+src=.
+dest=/path/to/your/joomla/installation
+package.dest=/where/create/packages

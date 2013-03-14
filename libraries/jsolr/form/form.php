@@ -51,7 +51,7 @@ class JSolrForm extends JForm
 	 */
 	public function getType()
 	{
-		return $this->type;
+		return (int)$this->type;
 	}
 	
 	/**
@@ -95,7 +95,7 @@ class JSolrForm extends JForm
 	}
 	
 	public function createQuery() {
-        $this->query = JSolrSearchFactory::getQuery('*:*')
+        return $this->query = JSolrSearchFactory::getQuery('*:*')
             ->useQueryParser("edismax")
             ->retrieveFields("*,score")
             ->highlight(200, "<strong>", "</strong>", 1);
@@ -103,7 +103,7 @@ class JSolrForm extends JForm
 	
 	public function getQuery() {
 		if( empty($this->query) ) {
-			$this->createQuery();
+			return $this->createQuery();
 		}
 		return $this->query;
 	}
@@ -114,8 +114,6 @@ class JSolrForm extends JForm
 
 		foreach ($this->getFieldsets() as $fieldset) {
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-
-
 				$filter = $field->fillQuery();
 			}
 		}
@@ -142,6 +140,16 @@ class JSolrForm extends JForm
 	{
 		// Reference to array with form instances
 		$forms = &self::$forms;
+
+		$document = JFactory::getDocument();
+		$document->addScript('/media/com_jsolrsearch/js/jquery/jquery.js');
+		$document->addScript('/media/com_jsolrsearch/js/bootstrap.min.js');
+		$document->addScript('/media/com_jsolrsearch/js/bootstrap-datepicker.js');
+		$document->addScript('/media/com_jsolrsearch/js/jsolrsearch.js');
+		
+		$document->addStyleSheet('/media/com_jsolrsearch/css/bootstrap.min.css');
+		$document->addStyleSheet('/media/com_jsolrsearch/css/datepicker.css');
+		$document->addStyleSheet('/media/com_jsolrsearch/css/jsolrsearch.css');
 	
 		// Only instantiate the form if it does not already exist.
 		if (!isset($forms[$name]))

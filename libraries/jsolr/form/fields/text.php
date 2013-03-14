@@ -39,7 +39,7 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 		
-		return '<input type="text" name="' . htmlspecialchars($this->name) . '" value="' .htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" id="' . $this->element['name'] . '" ' . $attr . '/>';
+		return '<li><input type="text" name="' . htmlspecialchars($this->name) . '" value="' .htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" id="' . $this->element['name'] . '" ' . $attr . '/></li>';
 	}
 	
 	/**
@@ -70,7 +70,6 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 	
 	function getFilter()
 	{
-		$filter = '';
 		$name = (string)$this->element['name'];
 		$facet = (string)$this->element['facet'];
 
@@ -80,15 +79,19 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 			return '';
 		}
 
-		return $facet . ':' . $value . '';
+		$filter = $facet . ':' . $value;
+
+		return $filter;
 	}
 	
 	public function fillQuery() {
 		$filter = $this->getFilter();
 
 		if( !empty($filter) ) {
-			$this->form->getQuery()
-				->mergeFilters( $filter );
+			$jSolrQuery =& $this->form->getQuery();
+			$jSolrQuery->mergeFilters( $filter );
 		}
+
+		return $this;
 	}
 }
