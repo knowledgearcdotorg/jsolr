@@ -3,3 +3,4 @@ build.properties
 .buildpath
 .project
 .settings/
+/build.properties
