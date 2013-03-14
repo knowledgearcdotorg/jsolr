@@ -18,7 +18,7 @@ defined('JPATH_BASE') or die;
 jimport('jsolr.form.fields.price');
 jimport('jsolr.helper.jsolr');
 
-class JSolrFormFieldNumberPrice extends JSolrFormFieldNumberRange
+class JSolrFormFieldPrice extends JSolrFormFieldNumberRange
 {
     protected $type = 'JSolr.Price';
 
