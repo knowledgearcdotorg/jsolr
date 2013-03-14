@@ -17,6 +17,7 @@ defined('JPATH_BASE') or die;
 
 jimport('jsolr.form.fields.rangeabstract');
 jimport('jsolr.helper.jsolr');
+jimport('jsolr.helper.jhtml');
 
 //JSorl prefix!
 class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
@@ -71,8 +72,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			
 			$html .= '<span>';
 
-			$html .= JHTML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
-			$html .= JHTML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
+			$html .= JSolrHtML::datepicker($this->value['from'], $name . '[from]', "{$id}_from");
+			$html .= JSolrHtML::datepicker($this->value['to'], $name . '[to]', "{$id}_to");
 
 			$html .= '</span>';
 		

@@ -143,10 +143,13 @@ class JSolrForm extends JForm
 
 		$document = JFactory::getDocument();
 		$document->addScript('/media/com_jsolrsearch/js/jquery/jquery.js');
+		$document->addScript('/media/com_jsolrsearch/js/bootstrap.min.js');
+		$document->addScript('/media/com_jsolrsearch/js/bootstrap-datepicker.js');
 		$document->addScript('/media/com_jsolrsearch/js/jsolrsearch.js');
-		$document->addScript('/media/com_jsolrsearch/js/jquery-ui/jquery-ui-1.10.1.custom.min.js');
 		
-		$document->addStyleSheet('/media/com_jsolrsearch/css/ui-lightness/jquery-ui-1.10.1.custom.min.css');
+		$document->addStyleSheet('/media/com_jsolrsearch/css/bootstrap.min.css');
+		$document->addStyleSheet('/media/com_jsolrsearch/css/datepicker.css');
+		$document->addStyleSheet('/media/com_jsolrsearch/css/jsolrsearch.css');
 	
 		// Only instantiate the form if it does not already exist.
 		if (!isset($forms[$name]))
