@@ -213,7 +213,6 @@ class JSolrSearchModelSearch extends JModelForm
 
       if (is_null($path)) {
         $dir = __DIR__ . DS . 'forms' . DS;
-
         if (file_exists($dir . 'tools.xml')) {
           $path = $dir . 'tools.xml';
         } elseif (file_exists($dir . 'facets.xml')) {
