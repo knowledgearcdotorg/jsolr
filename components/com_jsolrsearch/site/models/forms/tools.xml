@@ -2,5 +2,13 @@
 <form>
     <fieldset>
         <!-- only JSolrFormFields should be used here -->
+        <field 
+            name="created_at"
+            facet="created"
+            type="JSolr.DateRange"
+            label="Creation date"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
     </fieldset>
 </form>
