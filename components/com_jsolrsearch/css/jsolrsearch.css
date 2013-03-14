@@ -2,8 +2,9 @@
     list-style-type: none;
 }
 
-.jsolr-search-result-form ul.nav {
-    float: left;
+.jsolr-search-result-form ul.dropdown-menu {
+    padding: 0;
+    margin: 0;
 }
 
 .jsolr-search-result-form .jrange-custom span {

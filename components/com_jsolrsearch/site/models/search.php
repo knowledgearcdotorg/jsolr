@@ -197,17 +197,27 @@ class JSolrSearchModelSearch extends JModelForm
 
       foreach ($components as $comp) {
         if ($comp['plugin'] == $plugin) {
-          $file = $comp['path'] . DS . 'facets.xml';
+          $file = $comp['path'] . DS . 'tools.xml';
 
           if (file_exists($file)) {
             $path = $file;
           } else {
-            $file = $comp['path'] . DS . 'tools.xml';
+            $file = $comp['path'] . DS . 'facets.xml';
 
             if (file_exists($file)) {
               $path = $file;
             }
           }
+        }
+      }
+
+      if (is_null($path)) {
+        $dir = __DIR__ . DS . 'forms' . DS;
+
+        if (file_exists($dir . 'tools.xml')) {
+          $path = $dir . 'tools.xml';
+        } elseif (file_exists($dir . 'facets.xml')) {
+          $path = $dir . 'facets.xml';
         }
       }
       
