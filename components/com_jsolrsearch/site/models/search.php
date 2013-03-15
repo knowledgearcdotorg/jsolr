@@ -48,6 +48,19 @@ class JSolrSearchModelSearch extends JModelForm
    protected $form;
    protected $lang;
 
+   protected static $forms_facet = array();
+   protected static $forms_tools = array();
+
+   static function getFacetForms()
+   {
+     return self::$forms_facet;
+   }
+
+   static function getSearchToolsForms()
+   {
+     return self::$forms_tools;
+   }
+
    public function getItems()
    {
       try {
