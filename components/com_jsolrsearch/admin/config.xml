@@ -32,13 +32,19 @@
 	</fieldset>
         
         <fieldset 
-		name="filter_tools"
+		name="facet_filters"
 		label="MOD_JSOLRFILTERTOOLBAR_CONFIG_FIELDSET_LABEL"
 		description="">
+		<field 
+			name="facet_show" 
+			type="checkbox" 
+			label="COM_JSOLRSEARCH_FACETS_SHOW" 
+            description="COM_JSOLRSEARCH_FACETS_SHOW_DESCRIPTION" />
+
 		<field 
 			name="filter_count" 
 			type="text" 
 			label="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_LABEL" 
-                        description="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_DESCRIPTION" />
+            description="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_DESCRIPTION" />
 	</fieldset>
 </config>

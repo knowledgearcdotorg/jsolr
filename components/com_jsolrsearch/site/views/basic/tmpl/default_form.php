@@ -2,16 +2,6 @@
 <?php JHTML::_('behavior.formvalidation') ?>
 <form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="form-validate jsolr-search-result-form">
 
-  <div id="jSolrOptions">
-     Select component:
-     <select name="plugin" id="jsolr_form_plugin_select">
-        <?php foreach ($this->plugins as $plugin): ?>
-          <option value="">ALL</option>
-           <option <?php if ($plugin['plugin'] == $this->current_plugin): ?> selected="selected"<?php endif ?> value="<?php echo $plugin['plugin'] ?>"><?php echo $plugin['name'] ?></option>
-        <?php endforeach ?>
-     </select>
-  </div>
-
   <?php $form = $this->get('Form') ?>
   <?php if ($form->getType() == JSolrForm::TYPE_SEARCHTOOLS): ?>
     <?php foreach($form->getFieldsets() as $fieldset ) : ?>

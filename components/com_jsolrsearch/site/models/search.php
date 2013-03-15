@@ -61,6 +61,19 @@ class JSolrSearchModelSearch extends JModelForm
      return self::$forms_tools;
    }
 
+   static function addForm(JSolrForm $form)
+   {
+     switch ($form->getType()) {
+        case JSolrForm::TYPE_FACETFILTERS:
+          self::$forms_facet[] = $form;
+          break;
+
+        case JSolrForm::TYPE_SEARCHTOOLS:
+          self::$forms_tools[] = $form;
+          break;
+     }
+   }
+
    public function getItems()
    {
       try {
@@ -210,16 +223,11 @@ class JSolrSearchModelSearch extends JModelForm
 
       foreach ($components as $comp) {
         if ($comp['plugin'] == $plugin) {
-          $file = $comp['path'] . DS . 'tools.xml';
+          $file = $comp['path'];
 
           if (file_exists($file)) {
             $path = $file;
-          } else {
-            $file = $comp['path'] . DS . 'facets.xml';
-
-            if (file_exists($file)) {
-              $path = $file;
-            }
+            break;
           }
         }
       }

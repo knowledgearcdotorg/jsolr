@@ -187,4 +187,17 @@ class JSolrForm extends JForm
 	
 		return $forms[$name];
 	}
+
+	function loadFile($file, $reset = true, $xpath = false)
+	{
+		if (strpos($file, '.xml') !== FALSE) {
+			$substr = substr($file, strlen($file) - 9, 9);
+
+			$this->type = $substr == 'tools.xml' ? self::TYPE_SEARCHTOOLS : self::TYPE_FACETFILTERS;
+
+			JSolrSearchModelSearch::addForm($this);
+		}
+
+		return parent::loadFile($file, $reset, $xpath);
+	}
 }
