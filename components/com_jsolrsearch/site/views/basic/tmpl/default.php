@@ -39,6 +39,6 @@ endforeach;
 ?>
 </div>
    
-<div class="pagination">
-   <?php // echo $this->get("Pagination")->getPagesLinks(); ?>
+<div class="pagination jsolr-pagination">
+   <?php echo $this->get("Pagination")->getPagesLinks(); ?>
 </div>

@@ -13,8 +13,8 @@
             name="title"
             facet="title"
             type="JSolr.Text"
-            label="Search"
-            size="40"
+            label=""
+            size="140"
             class="inputbox jsolrquery"
             maxlength="50"/>
 	</fieldset>

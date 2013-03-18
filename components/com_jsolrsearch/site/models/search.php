@@ -36,6 +36,7 @@ jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
 jimport('joomla.application.component.modelform');
 jimport('jsolr.search.factory');
+jimport('joomla.html.pagination');
 
 jimport('jsolr.form.form');
 
@@ -47,6 +48,7 @@ class JSolrSearchModelSearch extends JModelForm
    protected $view_item = 'search';
    protected $form;
    protected $lang;
+   protected $pagination;
 
    protected static $forms_facet = array();
    protected static $forms_tools = array();
@@ -80,12 +82,14 @@ class JSolrSearchModelSearch extends JModelForm
         $this->getComponentsList();
         JPluginHelper::importPlugin("jsolrsearch");
         $dispatcher =& JDispatcher::getInstance();
+        $start = JRequest::getVar('start', 0);
 
         $params = JComponentHelper::getParams($this->get('option'), true);
 
         $form = $this->getForm();
 
         $query = $form->fillQuery()->getQuery();
+        $query->offset($start);
 
         $plugin = $this->getCurrentPlugin();
 
@@ -99,6 +103,7 @@ class JSolrSearchModelSearch extends JModelForm
 
         $this->set('total', $response->response->numFound);
         $this->set('qTime', $headers->QTime);
+        $rows = $headers->params->rows;
 
         $items = array();
 
@@ -117,9 +122,13 @@ class JSolrSearchModelSearch extends JModelForm
                   }
               }
 
-              $items[] = $document;
+              if (!in_array($document, $items)) {
+                $items[] = $document;
+              }
             }
         }
+
+        $this->pagination = new JPagination($response->response->numFound, $start, $rows);
 
         return $items;
       } catch (Exception $e) {
@@ -127,6 +136,11 @@ class JSolrSearchModelSearch extends JModelForm
       }
 
       return $response;
+   }
+
+   function getPagination()
+   {
+     return $this->pagination;
    }
 
    public function buildQueryURL($params)
@@ -216,30 +230,6 @@ class JSolrSearchModelSearch extends JModelForm
    private function _getCustomFormPath()
    {
       $path = null;
-
-      $plugin = $this->getCurrentPlugin();
-
-      $components = $this->getComponentsList();
-
-      foreach ($components as $comp) {
-        if ($comp['plugin'] == $plugin) {
-          $file = $comp['path'];
-
-          if (file_exists($file)) {
-            $path = $file;
-            break;
-          }
-        }
-      }
-
-      if (is_null($path)) {
-        $dir = __DIR__ . DS . 'forms' . DS;
-        if (file_exists($dir . 'tools.xml')) {
-          $path = $dir . 'tools.xml';
-        } elseif (file_exists($dir . 'facets.xml')) {
-          $path = $dir . 'facets.xml';
-        }
-      }
       
       return $path;
    }

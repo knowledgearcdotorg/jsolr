@@ -22,3 +22,12 @@
     margin-bottom: 5px;
     padding: 10px;
 }
+
+#main .jsolr-pagination {
+    text-align: center;
+}
+#main .jsolr-pagination ul li {
+  float:left;
+  margin: 0;
+  padding: 0;
+}
