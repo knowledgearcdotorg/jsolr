@@ -17,5 +17,12 @@
             size="140"
             class="inputbox jsolrquery"
             maxlength="50"/>
+        <field 
+            name="submit"
+            type="JSolr.Submit"
+            label=""
+            size="140"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
 	</fieldset>
 </form>
