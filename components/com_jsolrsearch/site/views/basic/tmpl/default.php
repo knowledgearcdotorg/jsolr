@@ -31,14 +31,16 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <?php echo $this->loadFormTemplate()?>
 
-<div class="jsolr-results">
-<?php
-foreach ($this->items as $item) :
-        echo $this->loadResultTemplate($item);
-endforeach;
-?>
-</div>
-   
-<div class="pagination jsolr-pagination">
-   <?php echo $this->get("Pagination")->getPagesLinks(); ?>
-</div>
+<?php if (!is_null($this->items)): ?>
+   <div class="jsolr-results">
+   <?php
+   foreach ($this->items as $item) :
+          echo $this->loadResultTemplate($item);
+   endforeach;
+   ?>
+   </div>
+      
+   <div class="pagination jsolr-pagination">
+      <?php echo $this->get("Pagination")->getPagesLinks(); ?>
+   </div>
+<?php endif ?>

@@ -89,43 +89,49 @@ class JSolrSearchModelSearch extends JModelForm
         $form = $this->getForm();
 
         $query = $form->fillQuery()->getQuery();
-        $query->offset($start);
 
-        $plugin = $this->getCurrentPlugin();
+        if ($form->isFiltered()) {
+          $query->offset($start);
 
-        if (!empty($plugin)) {
-          $query->mergeFilters('extension:' . $plugin);
-        }
+          $plugin = $this->getCurrentPlugin();
 
-        $response = $query->search();
-        
-        $headers = json_decode($response->getRawResponse())->responseHeader;
+          if (!empty($plugin)) {
+            $query->mergeFilters('extension:' . $plugin);
+          }
 
-        $this->set('total', $response->response->numFound);
-        $this->set('qTime', $headers->QTime);
-        $rows = $headers->params->rows;
+          $response = $query->search();
+          
+          $headers = json_decode($response->getRawResponse())->responseHeader;
 
-        $items = array();
+          $this->set('total', $response->response->numFound);
+          $this->set('qTime', $headers->QTime);
+          $rows = $headers->params->rows;
 
-        foreach (json_decode($response->getRawResponse())->response->docs as $document) {
-            $docs = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
-                $document,
-                $response->highlighting,
-                JArrayHelper::getValue($query->params(), "fl.fragsize"),
-                $this->getLanguage(false))
-            );
+          $items = array();
 
-            foreach ($docs as $document) {
-              foreach ($document as $key => $value) {
-                  if (is_array($value)) {
-                      $document->$key = $value[0];
-                  }
+          foreach (json_decode($response->getRawResponse())->response->docs as $document) {
+              $docs = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
+                  $document,
+                  $response->highlighting,
+                  JArrayHelper::getValue($query->params(), "fl.fragsize"),
+                  $this->getLanguage(false))
+              );
+
+              foreach ($docs as $document) {
+                foreach ($document as $key => $value) {
+                    if (is_array($value)) {
+                        $document->$key = $value[0];
+                    }
+                }
+
+                if (!in_array($document, $items)) {
+                  $items[] = $document;
+                }
               }
+          }
 
-              if (!in_array($document, $items)) {
-                $items[] = $document;
-              }
-            }
+        } else {
+          $items = NULL;
         }
 
         $this->pagination = new JPagination($response->response->numFound, $start, $rows);
@@ -151,7 +157,9 @@ class JSolrSearchModelSearch extends JModelForm
       $url->setVar("view", "basic");
       $plugin = $this->getCurrentPlugin();
 
-      foreach ($params[$plugin] as $key=>$value) {
+      $point = empty($plugin) ? $params : $params[$plugin];
+
+      foreach ($point as $key=>$value) {
          switch ($key) {
             case "task":
             case "eq":
@@ -230,6 +238,12 @@ class JSolrSearchModelSearch extends JModelForm
    private function _getCustomFormPath()
    {
       $path = null;
+
+      $currentPlugin = $this->getCurrentPlugin();
+
+      if (!$plugin) {
+        $path = __DIR__ . DS . 'forms' . DS . 'tools.xml';
+      }
       
       return $path;
    }

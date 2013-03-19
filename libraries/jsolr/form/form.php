@@ -43,6 +43,12 @@ class JSolrForm extends JForm
 	 * @var integer
 	 */
 	protected $type;
+
+	/**
+	 * true if any filter is applied, otherwise false
+	 * @var boolean
+	 */
+	protected $filtered = false;
 	
 	protected $query;
 	
@@ -52,6 +58,11 @@ class JSolrForm extends JForm
 	public function getType()
 	{
 		return (int)$this->type;
+	}
+
+	public function isFiltered()
+	{
+		return $this->filtered;
 	}
 	
 	/**
@@ -114,7 +125,9 @@ class JSolrForm extends JForm
 
 		foreach ($this->getFieldsets() as $fieldset) {
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				$filter = $field->fillQuery();
+				if ($field->fillQuery()) {
+					$this->filtered = true;
+				}
 			}
 		}
 		return $this;

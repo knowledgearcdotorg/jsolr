@@ -175,8 +175,11 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		$filter = $this->getFilter();
 
 		if ($filter) {
-			$jSolrQuery = $this->form->getQuery()->mergeFilters($filter);
+			$this->form->getQuery()->mergeFilters($filter);
+			return true;
 		}
+
+		return false;
 	}
 }
 
