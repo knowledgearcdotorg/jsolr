@@ -28,6 +28,11 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	 * Returns rendered HTML form field for search tool
 	 */
 	abstract protected function getInputSearchTool();
+
+    /**
+     * Method to get value of form field as a text. Maybe used to displaying it on frontend as current selected options
+     */
+	abstract public function getValueText();
 	
 	/**
 	 * Returns rendered field

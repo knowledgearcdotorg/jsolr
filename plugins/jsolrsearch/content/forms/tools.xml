@@ -7,15 +7,6 @@
         
         <!-- only JSolrFormFields should be used here -->
         <field 
-            name="title_of_art"
-            facet="title"
-            type="JSolr.Text"
-            label="title of an artcle"
-            size="40"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
-
-        <field 
             name="created_at"
             facet="created"
             type="JSolr.DateRange"

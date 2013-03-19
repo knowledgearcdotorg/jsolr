@@ -118,4 +118,16 @@ class JSolrSearchViewBasic extends JView
     {
         return $this->loadTemplate('form');
     }
+
+
+    /**
+     * @return bool true if search tools should be displayed by default, otherwise false
+     */
+    public function showSearchToolsOnStart()
+    {
+        $router =& JSite::getRouter();
+        $vars = $router->getVars();
+
+        return count($vars) > 3 ? true : false;
+    }
 }

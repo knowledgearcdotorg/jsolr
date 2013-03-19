@@ -95,4 +95,9 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 
 		return false;
 	}
+
+	function getValueText()
+	{
+		return empty($this->value) ? '<i>Empty</i>' : $this->value ;
+	}
 }

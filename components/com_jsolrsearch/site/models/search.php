@@ -15,7 +15,7 @@
    The JSolrSearch component for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+   GNU General Public License for more details.https://www.google.com.au/search?hl=en&safe=off&site=&source=hp&q=Nintendo&oq=Nintendo&gs_l=hp.3..0l10.1369.2958.0.3237.8.6.0.2.2.2.527.2233.0j1j1j1j1j2.6.0.les%3B..0.0...1c.1.5.hp.gLNc7juiz2c
 
    You should have received a copy of the GNU General Public License
    along with the JSolrSearch component for Joomla!.  If not, see 
@@ -241,8 +241,15 @@ class JSolrSearchModelSearch extends JModelForm
 
       $currentPlugin = $this->getCurrentPlugin();
 
+      $path = __DIR__ . DS . 'forms' . DS . 'tools.xml';
+
       if (!$plugin) {
-        $path = __DIR__ . DS . 'forms' . DS . 'tools.xml';
+        foreach ($this->getComponentsList() as $component) {
+          if ($component['plugin'] == $currentPlugin) {
+            $path = $component['path'];
+            break;
+          }
+        }
       }
       
       return $path;

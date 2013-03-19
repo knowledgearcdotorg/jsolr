@@ -29,6 +29,16 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	public function getInputFacetFilter()
 	{
+		$html = ''; // TODO
+		
+		return $html;
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	public function getInputSearchTool()
+	{
 		$id = $this->element['name'];
 		$html = '';
 		$name = (string)$this->element['name'];
@@ -42,7 +52,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 
 		$html .= '<ul data-type="jdaterange">';
 
-		foreach ($this->getFinalOptions() as $label => $v) {
+		foreach ($this->getFinalOptions() as $v => $label) {
 			if (!(in_array($v, $value))) {
 				if ($this->isMultiple()) {
 					if ($v != '') {
@@ -81,33 +91,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		}
 
 		$html .= '</ul>';
-		
-		return $html;
-	}
-	
-	/**
-	 * @inheritdoc
-	 */
-	public function getInputSearchTool()
-	{
-		$attr = '';
-		
-		// Initialize some field attributes.
-		$attr .= $this->element['class'] ? ' class="'.(string) $this->element['class'].'"' : '';
-		
-		// To avoid user's confusion, readonly="true" should imply disabled="true".
-		if ( (string) $this->element['readonly'] == 'true' || (string) $this->element['disabled'] == 'true') {
-			$attr .= ' disabled="disabled"';
-		}
-		
-		$attr .= $this->element['size'] ? ' size="'.(int) $this->element['size'].'"' : '';
-		$attr .= $this->multiple ? ' multiple="multiple"' : '';
-		
-		// Initialize JavaScript field attributes.
-		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
-		
-		$html = ''; // TODO
-		
+
 		return $html;
 	}
 	
@@ -167,7 +151,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	protected function getDefaultOptions()
 	{
-		return array(JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME) => '',JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY) => 'd', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK) => 'w', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH) => 'm', JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR) => 'y');
+		return array('' => JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME),'d' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY),'w' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK), 'm' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH), 'y' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR));
 	}
 
 	function fillQuery()
@@ -180,6 +164,26 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		}
 
 		return false;
+	}
+
+	function getValueText()
+	{
+		if (is_array($this->value)) {
+			$from 	= $this->value['from'];
+			$to 	= $this->value['to'];
+			$value  = $this->value['value'];
+
+			if (!empty($from) && !empty($to)) {
+				return COM_JSOLRSEARCH_DATERANGE_FROM . ' ' . $from . COM_JSOLRSEARCH_DATERANGE_TO . ' ' . $to;
+			}elseif (!empty($value)){
+				$options = $this->getFinalOptions();
+				return $options[$value];
+			}
+		}
+
+		$options = $this->getFinalOptions();
+
+		return $options[''];
 	}
 }
 

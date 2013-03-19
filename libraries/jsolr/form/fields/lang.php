@@ -56,4 +56,20 @@ class JSolrFormFieldLang extends JSolrFormFieldSelectAbstract {
 
         return false;
     }
+
+    function getValueText()
+    {
+        if (!is_array($this->value) || count($this->value) == 0) {
+            return JText::_(COM_JSOLRSEARCH_LANGUAGE_ALL);
+        }
+
+        $result = array();
+        $options = $this->getFinalOptions();
+
+        foreach ($this->value as $v) {
+            $result[] = $options[$v];
+        }
+
+        return implode(', ', $result);
+    }
 }

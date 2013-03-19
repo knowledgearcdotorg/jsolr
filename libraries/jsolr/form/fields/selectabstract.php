@@ -141,4 +141,9 @@ abstract class JSolrFormFieldSelectAbstract extends JSolrFormFieldAbstract
 	
 		return $options;
 	}
+
+	function getValueText()
+	{
+		
+	}
 }

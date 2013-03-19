@@ -54,4 +54,18 @@ jQuery(document).ready(function($) {
 	$('.jsolr-search-result-form .dropdown input, .jsolr-search-result-form .dropdown label, .jsolr-search-result-form ul span').click(function(e) {
 	  e.stopPropagation();
 	});
+
+	$('#jsolr-search-tools').click(function(){
+		$('#jsolr-search-tools-list').toggle();
+		return false;
+	});
+
+	$('#jsolr-search-submit').click(function(){
+		$('.jsolr-search-result-form').submit();
+		return false;
+	});
+
+	$('.jsolr-search-result-form a[href=#]').click(function(){
+		return false;
+	});
 });
