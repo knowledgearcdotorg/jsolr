@@ -24,32 +24,14 @@
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<haydenyoung@wijiti.com> 
+ * Michał Kocztorz				<michalkocztorz@wijiti.com> 
  * 
  */
 
 defined('_JEXEC') or die('Restricted access');
 
-JHTML::_('behavior.mootools');
-JHTML::_('behavior.calendar');
 
 $document = JFactory::getDocument();
 $document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
 $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
-?>
-<div id="jSolrOptions">
-	<ul>
-	<?php 
-	foreach (modJSolrFilterHelper::getFilterOptions() as $key=>$value) : 
-		if ($value) :
-	?>
-		<li class="jsolr-filter-item jsolr-filter-option"><?php echo $value; ?></li>
-	<?php
-		endif; 
-	endforeach;
-	?>
-	</ul>
-</div>
-
-<?php
-modJSolrFilterHelper::renderFilterContext();
 ?>

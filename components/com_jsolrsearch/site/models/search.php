@@ -67,11 +67,11 @@ class JSolrSearchModelSearch extends JModelForm
    {
      switch ($form->getType()) {
         case JSolrForm::TYPE_FACETFILTERS:
-          self::$forms_facet = $form;
+          self::$form_facet_filter = $form;
           break;
 
         case JSolrForm::TYPE_SEARCHTOOLS:
-          self::$forms_tools = $form;
+          self::$form_search_tools = $form;
           break;
      }
    }
