@@ -84,8 +84,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			
 			$html .= '<span>';
 
-			$html .= JSolrHtML::datepicker($this->value['from'], $name . '[from]', "{$id}_from");
-			$html .= JSolrHtML::datepicker($this->value['to'], $name . '[to]', "{$id}_to");
+			$html .= JSolrHtML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
+			$html .= JSolrHtML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
 
 			$html .= '</span>';
 		

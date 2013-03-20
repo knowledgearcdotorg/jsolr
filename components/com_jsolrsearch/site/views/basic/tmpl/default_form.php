@@ -19,6 +19,9 @@
 
   <div class="jsolr-clear"></div>
 
+<?php $plugin = $this->get('CurrentPlugin') ?>
+<?php if (!is_null($this->items) && !empty($plugin)): ?>
+
   <div class="btn-group">
     <?php echo JHTML::link(JURI::current(), JText::_('Everything'), array('class' => 'btn jsolr-every pull-left')) ?>
 
@@ -69,6 +72,7 @@
   </div>
 
   <?php endif ?>
+<?php endif ?>
 
   <?php echo JHTML::_('form.token'); ?>
 </form>

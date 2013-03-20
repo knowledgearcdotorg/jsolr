@@ -24,8 +24,8 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * Name                    Email
- * Hayden Young               <haydenyoung@wijiti.com> 
+ * @author Hayden Young <haydenyoung@wijiti.com>
+ * @author Bartłomiej Kiełbasa <bartlomiej.kielbasa@wijiti.com> 
  * 
  */
 
@@ -81,7 +81,7 @@ class JSolrSearchModelSearch extends JModelForm
       try {
         $this->getComponentsList();
         JPluginHelper::importPlugin("jsolrsearch");
-        $dispatcher =& JDispatcher::getInstance();
+        $dispatcher = JDispatcher::getInstance();
         $start = JRequest::getVar('start', 0);
 
         $params = JComponentHelper::getParams($this->get('option'), true);
@@ -89,6 +89,9 @@ class JSolrSearchModelSearch extends JModelForm
         $form = $this->getForm();
 
         $query = $form->fillQuery()->getQuery();
+
+        $response = NULL;
+        $rows = 0;
 
         if ($form->isFiltered()) {
           $query->offset($start);
@@ -134,7 +137,7 @@ class JSolrSearchModelSearch extends JModelForm
           $items = NULL;
         }
 
-        $this->pagination = new JPagination($response->response->numFound, $start, $rows);
+        $this->pagination = new JPagination($this->get('total'), $start, $rows);
 
         return $items;
       } catch (Exception $e) {
@@ -243,7 +246,7 @@ class JSolrSearchModelSearch extends JModelForm
 
       $path = __DIR__ . DS . 'forms' . DS . 'tools.xml';
 
-      if (!$plugin) {
+      if (!empty($currentPlugin)) {
         foreach ($this->getComponentsList() as $component) {
           if ($component['plugin'] == $currentPlugin) {
             $path = $component['path'];
@@ -360,7 +363,7 @@ class JSolrSearchModelSearch extends JModelForm
   public function getComponentsList()
   {
     JPluginHelper::importPlugin("jsolrsearch");
-    $dispatcher =& JDispatcher::getInstance();
+    $dispatcher = JDispatcher::getInstance();
 
     return $dispatcher->trigger('onJSolrSearchRegisterComponents');
   }
