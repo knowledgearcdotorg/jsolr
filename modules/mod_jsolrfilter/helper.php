@@ -24,15 +24,38 @@
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<haydenyoung@wijiti.com> 
+ * Michał Kocztorz				<michalkocztorz@wijiti.com> 
  * 
  */
 
-/**
- * Provides a number of helper methods that provide additional information to the module.
- * 
- * @package JCAR
- * @subpackage Modules
- */
+if (!class_exists( 'JSolrSearchModelSearch' )){
+	JLoader::import( 'search', JPATH_BASE . DS . 'components' . DS . 'com_jsolr' . DS . 'models' );
+}
 class modJSolrFilterHelper
 {
+	protected static $searchModel = null;
+	
+	/**
+	 * Loads controller search model. Gets an instance.
+	 * Instance of module may not be necessary.
+	 * @return JSolrSearchModelSearch
+	 */
+	public static function getSearchModel() {
+		if( is_null(self::$searchModel) ) {
+			self::$searchModel = JModel::getInstance( 'Search', 'JSolrSearchModel' );
+		}
+		return self::$searchModel;
+	}
+	
+	public static function showFilter() {
+		return !is_null(JSolrSearchModelSearch::getFacetFilterForm());
+	}
+	
+	/**
+	 * 
+	 * @return JSolrForm
+	 */
+	public static function getForm() {
+		return JSolrSearchModelSearch::getFacetFilterForm();
+	}
 }

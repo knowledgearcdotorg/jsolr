@@ -48,6 +48,46 @@ abstract class JSolrFormFieldAbstract extends JFormField
 		return $html;
 	}
 	
+	/**
+	 * Returns label for facet filter. Defaults to parent::getLabel if not overridden.
+	 */
+	protected function getLabelFacetFilter() {
+		return parent::getLabel();
+	}
+	
+	/**
+	 * Returns label for search tool. Defaults to parent::getLabel if not overridden.
+	 */
+	protected function getLabelSearchTool() {
+		return parent::getLabel();
+	}
+
+	/**
+	 * Returns rendered field
+	 */
+	public function getLabel()
+	{
+		$html = $this->preRenderLabel(); 
+		
+		$html .= $this->form->getType() == JSolrForm::TYPE_FACETFILTERS ? 
+				$this->getLabelFacetFilter(): $this->getLabelSearchTool();
+		
+		$html .= $this->postRenderLabel();
+		return $html;
+	}
+	
+	/**
+	 * String added before label.
+	 * @return string
+	 */
+	public function preRenderLabel() { return ''; }
+	
+	/**
+	 * String added after label
+	 * @return string
+	 */
+	public function postRenderLabel() { return ''; } 
+	
 	abstract public function fillQuery();
 	
 	/**
