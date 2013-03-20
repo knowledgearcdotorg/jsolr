@@ -40,7 +40,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	public function getInputSearchTool()
 	{
 		$id = $this->element['name'];
-		$html = '';
+		//$html = '<li>'; zmiana
+		$html = '<ul>';
 		$name = (string)$this->element['name'];
 		$value = explode('|', $this->value['value']);
 
@@ -50,7 +51,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 
 		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . implode('|', $value) .'" />';
 
-		$html .= '<ul data-type="jdaterange">';
+		//$html .= '<ul data-type="jdaterange">'; zmiana
+		$html .= '';
 
 		foreach ($this->getFinalOptions() as $v => $label) {
 			if (!(in_array($v, $value))) {
@@ -90,6 +92,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$html .= '</li>';
 		}
 
+		//$html .= '</ul></li>';zmiana
 		$html .= '</ul>';
 
 		return $html;
@@ -174,7 +177,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$value  = $this->value['value'];
 
 			if (!empty($from) && !empty($to)) {
-				return COM_JSOLRSEARCH_DATERANGE_FROM . ' ' . $from . COM_JSOLRSEARCH_DATERANGE_TO . ' ' . $to;
+				return JText::_(COM_JSOLRSEARCH_DATERANGE_FROM) . ' ' . $from . ' ' . JText::_(COM_JSOLRSEARCH_DATERANGE_TO) . ' ' . $to;
 			}elseif (!empty($value)){
 				$options = $this->getFinalOptions();
 				return $options[$value];

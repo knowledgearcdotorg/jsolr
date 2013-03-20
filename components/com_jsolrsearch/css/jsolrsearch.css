@@ -2,6 +2,10 @@
   display: none;
 }
 
+.jsolr-clear {
+  clear: both;
+}
+
 .jsolr-search-result-form ul, .jsolr-search-result-form li {
     list-style-type: none;
 }
@@ -34,4 +38,21 @@
   float:left;
   margin: 0;
   padding: 0;
+}
+
+.pull-left {
+  float: left;
+}
+
+.btn-group .btn {
+  height: 20px;
+  padding: 5px;
+}
+.jsolr-option-current {
+   padding-left: 20px;
+   font-weight: bold;
+}
+
+.jsolr-search-result-form ul.nav li select {
+  width: 100%;
 }

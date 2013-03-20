@@ -54,7 +54,7 @@ abstract class JSolrFormFieldSelectAbstract extends JSolrFormFieldAbstract
 			$html[] = JHtml::_('select.genericlist', $options, $this->name, trim($attr), 'value', 'text', $this->value, $this->id);
 		}
 	
-		return implode($html);
+		return '<ul><li>'.implode($html) . '</li></ul>';
 	}
 	
 	/**

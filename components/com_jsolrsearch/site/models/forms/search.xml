@@ -14,14 +14,14 @@
             facet="title"
             type="JSolr.Text"
             label=""
-            size="140"
+            size="20"
             class="inputbox jsolrquery"
             maxlength="50"/>
         <field 
             name="submit"
             type="JSolr.Submit"
             label=""
-            size="140"
+            size="20"
             class="inputbox jsolrquery"
             maxlength="50"/>
 	</fieldset>

@@ -28,7 +28,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	public function getInputFacetFilter()
 	{
 		$id = $this->element['name'];
-		$html = '';
+		$html = '<li>';
 		$name = (string)$this->element['name'];
 		$value = explode('|', $this->value['value']);
 
@@ -76,7 +76,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 			$html .= '</li>';
 		}
 
-		$html .= '</ul>';
+		$html .= '</ul></li>';
 		
 		return $html;
 	}
@@ -87,7 +87,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	public function getInputSearchTool()
 	{
 		$id 	= $this->element['name'];
-		$html 	= '';
+		$html 	= '<ul>';
 		$name 	= (string)$this->element['name'];
 
 		$from 	= $this->value['from'];
@@ -95,8 +95,6 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		$value 	= $this->value['value'];
 
 		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . $value .'" />';
-
-		$html .= '<ul data-type="jnumberrange">';
 
 		foreach ($this->getFinalOptions() as $value => $label) {
 			$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange-option jnumberrange-option', 'data-value' => $value, 'data-name' => $id, 'id' => 'numberrange_option_' . $id)) . '</li>';

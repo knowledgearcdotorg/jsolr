@@ -8,7 +8,7 @@
     <?php foreach($form->getFieldsets() as $fieldset ) : ?>
       <?php if ($fieldset->name == 'main'): ?>
         <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-        <li class="dropdown">
+        <li class="pull-left">
           <label><?php echo $field->label ?></label>
           <span><?php echo $field->getInput() ?></span>
         </li>
@@ -16,6 +16,8 @@
       <?php endif ?>
     <?php endforeach;?>
   </ul>
+
+  <div class="jsolr-clear"></div>
 
   <div class="btn-group">
     <?php echo JHTML::link(JURI::current(), JText::_('Everything'), array('class' => 'btn jsolr-every pull-left')) ?>
@@ -27,7 +29,7 @@
     <?php echo JHTML::link('#', JText::_("Search Tools"), array('id' => 'jsolr-search-tools', 'class' => 'btn pull-left')) ?>
   </div>
 
-  <div class="pull-right"><a href="#" id="jsolr-search-submit" class="btn btn-primary pull-left"><?php echo JText::_("Search"); ?></a></div>
+  <div class="jsolr-clear"></div>
 
   <?php if ($form->getType() != JSolrForm::TYPE_SEARCHTOOLS): ?>
       <?php foreach($form->getFieldsets() as $fieldset ) : ?>
@@ -54,12 +56,9 @@
           <?php foreach($form->getFieldsets() as $fieldset ) : ?>
             <?php if ($fieldset->name != 'main'): ?>
                 <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button"><?php echo $field->getValueText() ?><strong class="caret"></strong></a>
-
-                      <ul class="dropdown-menu" aria-labelledby="drop" role="menu">
-                        <?php echo $field->getInput() ?>
-                      </ul>
+                <li>
+                    <a href="#"><?php echo $field->getValueText() ?><strong class="caret"></strong></a>
+                      <?php echo $field->getInput() ?>
                 </li>
                 <?php endforeach;?>
             <?php endif ?>

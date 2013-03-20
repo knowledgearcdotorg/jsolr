@@ -46,11 +46,16 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('.datepicker').datepicker({
-		autoclose: true
-	});
+	if ($('.datepicker').datepicker != undefined) {
+		$('.datepicker').datepicker({
+			autoclose: true
+		});
+	}
 
-	$('.dropdown-toggle').dropdown();
+	if ($('.dropdown-toggle').dropdown != undefined) {
+		$('.dropdown-toggle').dropdown();
+	}
+
 	$('.jsolr-search-result-form .dropdown input, .jsolr-search-result-form .dropdown label, .jsolr-search-result-form ul span').click(function(e) {
 	  e.stopPropagation();
 	});

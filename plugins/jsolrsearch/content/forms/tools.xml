@@ -20,7 +20,7 @@
             facet="id"
             type="JSolr.NumberRange"
             label="ID"
-            size="40"
+            step="30"
             multi="true"
             class="inputbox jsolrquery"
             maxlength="50"/>
