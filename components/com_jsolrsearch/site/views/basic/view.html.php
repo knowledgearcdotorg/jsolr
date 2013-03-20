@@ -40,8 +40,8 @@ class JSolrSearchViewBasic extends JView
 	public function display($tpl = null)
     {
         $this->form = $this->get('Form');
-        $this->facetForms =& JSolrSearchModelSearch::getFacetFilterForm();
-        $this->toolsForms =& JSolrSearchModelSearch::getSearchToolsForm();
+        $this->facetForms = JSolrSearchModelSearch::getFacetFilterForm();
+        $this->toolsForms = JSolrSearchModelSearch::getSearchToolsForm();
         $this->items = $this->get('Items');
         $this->plugins = $this->get('ComponentsList');
         $this->current_plugin = $this->get('CurrentPlugin');
