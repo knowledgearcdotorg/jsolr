@@ -24,8 +24,8 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * Name                    Email
- * Hayden Young               <haydenyoung@wijiti.com> 
+ * @author Hayden Young <haydenyoung@wijiti.com>
+ * @author Bartłomiej Kiełbasa <bartlomiej.kielbasa@wijiti.com> 
  * 
  */
 
@@ -246,7 +246,7 @@ class JSolrSearchModelSearch extends JModelForm
 
       $path = __DIR__ . DS . 'forms' . DS . 'tools.xml';
 
-      if (!$currentPlugin) {
+      if (!empty($currentPlugin)) {
         foreach ($this->getComponentsList() as $component) {
           if ($component['plugin'] == $currentPlugin) {
             $path = $component['path'];
