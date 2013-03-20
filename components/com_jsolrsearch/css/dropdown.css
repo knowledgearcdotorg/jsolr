@@ -143,3 +143,34 @@ html[xmlns] #main ul.nav {
 * html #main ul.nav {
 	height: 1%;
 }
+
+#main ul.nav-more {
+	width: auto;
+	height: auto;
+	border-radius: 0;
+	background-color: transparent;
+	padding: 0px;
+}
+
+#main ul.nav-more a {
+	padding: 0px;
+	margin: 0px;
+}
+
+#main ul.nav-more li{
+	width: auto;
+	height: auto;
+	text-align: center;
+	background-color: transparent;
+	padding: 0;
+}
+
+#main ul.nav-more ul.more-list {
+	margin-top: -15px;
+	width: 100px;
+	text-align: center;
+}
+
+#main ul.nav-more ul.more-list li {
+	text-align: center;
+}

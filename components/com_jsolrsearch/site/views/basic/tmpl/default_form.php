@@ -25,12 +25,27 @@
   <div class="btn-group">
     <?php echo JHTML::link(JURI::current(), JText::_('Everything'), array('class' => 'btn jsolr-every pull-left')) ?>
 
-    <?php $i = 0; $max = $this->getMaxComponentsLimit() ?>
+    <?php $i = 0; $max = $this->getComponentsLimit(); $components = $this->get('ComponentsList') ?>
+    <?php $count = count($components) ?>
 
-    <?php foreach ($this->get('ComponentsList') as $component): ?>
-      <?php echo JHTML::link($this->updateUri(array('plugin' => $component['plugin'])), $component['name'], array('class' => 'btn pull-left')) ?>
-      <?php ++$i ?>
-    <?php endforeach ?>
+    <?php for ($i = 0; $i < $count; ++$i): ?>
+      <?php if ($i == $max): ?>
+        <ul class="nav nav-more pull-left">
+          <li>
+            <a href="#"><?php echo JText::_(COM_JSOLRSEARCH_COMPONENTS_MORE) ?></a>
+
+            <ul class="more-list">
+              <?php for(; $i < $count; ++$i): ?>
+                <li><?php echo JHTML::link($this->updateUri(array('plugin' => $components[$i]['plugin'])), $components[$i]['name'], array('class' => 'btn pull-left')) ?></li>
+              <?php endfor ?>
+            </ul>
+          </li>
+        </ul>
+
+        <?php break?>
+      <?php endif ?>
+      <?php echo JHTML::link($this->updateUri(array('plugin' => $components[$i]['plugin'])), $components[$i]['name'], array('class' => 'btn pull-left')) ?>
+    <?php endfor ?>
 
     <?php echo JHTML::link('#', JText::_("Search Tools"), array('id' => 'jsolr-search-tools', 'class' => 'btn pull-left')) ?>
   </div>
