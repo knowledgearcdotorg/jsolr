@@ -40,8 +40,8 @@ class JSolrSearchViewBasic extends JView
 	public function display($tpl = null)
     {
         $this->form = $this->get('Form');
-        $this->facetForms =& JSolrSearchModelSearch::getFacetForms();
-        $this->toolsForms =& JSolrSearchModelSearch::getSearchToolsForms();
+        $this->facetForms =& JSolrSearchModelSearch::getFacetFilterForm();
+        $this->toolsForms =& JSolrSearchModelSearch::getSearchToolsForm();
         $this->items = $this->get('Items');
         $this->plugins = $this->get('ComponentsList');
         $this->current_plugin = $this->get('CurrentPlugin');
@@ -128,6 +128,6 @@ class JSolrSearchViewBasic extends JView
         $router =& JSite::getRouter();
         $vars = $router->getVars();
 
-        return count($vars) > 3 ? true : false;
+        return count($vars) > 2 ? true : false;
     }
 }
