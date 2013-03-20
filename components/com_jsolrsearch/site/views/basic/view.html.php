@@ -140,4 +140,15 @@ class JSolrSearchViewBasic extends JView
     {
         return 1; // TODO: move to component's configuration
     }
+
+    public function updateUri(array $params = array())
+    {
+        $uri = JFactory::getURI();
+
+        foreach ($params as $key => $value) {
+            $uri->setVar($key, $value);
+        }
+
+        return $uri->toString();
+    }
 }

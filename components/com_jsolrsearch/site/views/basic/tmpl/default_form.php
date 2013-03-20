@@ -28,7 +28,7 @@
     <?php $i = 0; $max = $this->getMaxComponentsLimit() ?>
 
     <?php foreach ($this->get('ComponentsList') as $component): ?>
-      <?php echo JHTML::link(JURI::current() . '?plugin=' . $component['plugin'], $component['name'], array('class' => 'btn pull-left')) ?>
+      <?php echo JHTML::link($this->updateUri(array('plugin' => $component['plugin'])), $component['name'], array('class' => 'btn pull-left')) ?>
       <?php ++$i ?>
     <?php endforeach ?>
 
