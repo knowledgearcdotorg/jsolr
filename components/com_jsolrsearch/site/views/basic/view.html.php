@@ -130,4 +130,14 @@ class JSolrSearchViewBasic extends JView
 
         return count($vars) > 2 ? true : false;
     }
+
+    /**
+     * Method to get the number of components that will be dispalyed
+     * More components than this number will be displayed in dropdown menu with label "More"
+     * @return integer
+     */
+    public function getMaxComponentsLimit()
+    {
+        return 1; // TODO: move to component's configuration
+    }
 }

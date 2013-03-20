@@ -20,13 +20,16 @@
   <div class="jsolr-clear"></div>
 
 <?php $plugin = $this->get('CurrentPlugin') ?>
-<?php if (!is_null($this->items) && !empty($plugin)): ?>
+<?php if (!is_null($this->items) || !empty($plugin)): ?>
 
   <div class="btn-group">
     <?php echo JHTML::link(JURI::current(), JText::_('Everything'), array('class' => 'btn jsolr-every pull-left')) ?>
 
+    <?php $i = 0; $max = $this->getMaxComponentsLimit() ?>
+
     <?php foreach ($this->get('ComponentsList') as $component): ?>
       <?php echo JHTML::link(JURI::current() . '?plugin=' . $component['plugin'], $component['name'], array('class' => 'btn pull-left')) ?>
+      <?php ++$i ?>
     <?php endforeach ?>
 
     <?php echo JHTML::link('#', JText::_("Search Tools"), array('id' => 'jsolr-search-tools', 'class' => 'btn pull-left')) ?>
