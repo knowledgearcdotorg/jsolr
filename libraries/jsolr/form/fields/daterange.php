@@ -40,7 +40,6 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	public function getInputSearchTool()
 	{
 		$id = $this->element['name'];
-		//$html = '<li>'; zmiana
 		$html = '<ul>';
 		$name = (string)$this->element['name'];
 		$value = explode('|', $this->value['value']);
@@ -51,7 +50,6 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 
 		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . implode('|', $value) .'" />';
 
-		//$html .= '<ul data-type="jdaterange">'; zmiana
 		$html .= '';
 
 		foreach ($this->getFinalOptions() as $v => $label) {
@@ -92,7 +90,6 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$html .= '</li>';
 		}
 
-		//$html .= '</ul></li>';zmiana
 		$html .= '</ul>';
 
 		return $html;
@@ -187,6 +184,11 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		$options = $this->getFinalOptions();
 
 		return $options[''];
+	}
+
+	function getLabelSearchTool()
+	{
+		return $this->getValueText() . '<span class="more"></span>';
 	}
 }
 

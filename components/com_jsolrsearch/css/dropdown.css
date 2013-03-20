@@ -55,7 +55,6 @@
 }
 #main ul.nav ul a {
 	font-weight: normal;
-	text-shadow: 0 1px 1px rgba(255, 255, 255, .9);
 }
 /* level 3+ list */
 #main ul.nav ul ul {
@@ -117,4 +116,16 @@ html[xmlns] #main ul.nav {
 
 #main ul.nav-more ul.more-list li {
 	text-align: center;
+}
+
+#main span.more {
+	width:0px;
+	height:0px;
+	position:relative; 
+	top:10px;
+	border-left:50px solid transparent;
+	border-top:50px solid black;
+	border-right:50px solid transparent;
+	border-bottom:50px solid transparent;
+	border-width: 5px;
 }

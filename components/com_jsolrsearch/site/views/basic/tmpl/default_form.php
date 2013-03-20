@@ -32,7 +32,7 @@
       <?php if ($i == $max): ?>
         <ul class="nav nav-more pull-left">
           <li>
-            <a href="#"><?php echo JText::_(COM_JSOLRSEARCH_COMPONENTS_MORE) ?></a>
+            <a href="#"><?php echo JText::_(COM_JSOLRSEARCH_COMPONENTS_MORE) ?><span class="more"></span></a>
 
             <ul class="more-list">
               <?php for(; $i < $count; ++$i): ?>
@@ -57,7 +57,7 @@
       <?php if ($fieldset->name != 'main'): ?>
           <fieldset>
             <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-              <label><?php echo $field->label ?></label>
+              <label><?php echo $field->getLabel() ?></label>
               <span><?php echo $field->getInput() ?></span>
             <?php endforeach ?>
           </fieldset>
@@ -78,7 +78,7 @@
             <?php if ($fieldset->name != 'main'): ?>
                 <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
                 <li>
-                    <a href="#"><?php echo $field->getValueText() ?><strong class="caret"></strong></a>
+                    <a href="#"><?php echo $field->getLabel() ?><strong class="caret"></strong></a>
                       <?php echo $field->getInput() ?>
                 </li>
                 <?php endforeach;?>
