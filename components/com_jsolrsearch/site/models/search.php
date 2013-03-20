@@ -50,28 +50,28 @@ class JSolrSearchModelSearch extends JModelForm
    protected $lang;
    protected $pagination;
 
-   protected static $forms_facet = array();
-   protected static $forms_tools = array();
+   protected static $form_facet_filter = NULL;
+   protected static $form_search_tools = NULL;
 
-   static function getFacetForms()
+   static function getFacetFilterForm()
    {
-     return self::$forms_facet;
+     return self::$form_facet_filter;
    }
 
-   static function getSearchToolsForms()
+   static function getSearchToolsForm()
    {
-     return self::$forms_tools;
+     return self::$form_search_tools;
    }
 
    static function addForm(JSolrForm $form)
    {
      switch ($form->getType()) {
         case JSolrForm::TYPE_FACETFILTERS:
-          self::$forms_facet[] = $form;
+          self::$forms_facet = $form;
           break;
 
         case JSolrForm::TYPE_SEARCHTOOLS:
-          self::$forms_tools[] = $form;
+          self::$forms_tools = $form;
           break;
      }
    }
