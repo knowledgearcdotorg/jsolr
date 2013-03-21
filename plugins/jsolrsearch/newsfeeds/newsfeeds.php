@@ -107,4 +107,13 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 
 		return implode("...", $hl);
 	}
+
+	public function onJSolrSearchRegisterComponents()
+	{
+		return array(
+			'name' => 'Newsfeeds',
+			'plugin' => $this->extension,
+			'path' => __DIR__ . DS . 'forms' . DS . 'facets.xml'
+		);
+	}
 }
