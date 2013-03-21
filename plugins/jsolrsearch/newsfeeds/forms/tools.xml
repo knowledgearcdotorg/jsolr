@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset 
+        name="metadata"
+        label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
+        addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
+        
+        <!-- only JSolrFormFields should be used here -->
+        <field 
+            name="created_at"
+            facet="created"
+            type="JSolr.DateRange"
+            label="Creation date"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+
+        <field 
+            name="identity"
+            facet="id"
+            type="JSolr.NumberRange"
+            label="ID"
+            step="30"
+            multi="true"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+
+        <field 
+            name="lang"
+            facet="lang"
+            type="JSolr.Lang"
+            label="Language"
+            size="4"
+            multiple="true"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+    </fieldset>
+</form>

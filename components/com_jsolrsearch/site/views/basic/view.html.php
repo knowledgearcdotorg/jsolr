@@ -84,6 +84,8 @@ class JSolrSearchViewBasic extends JView
     	$themeOverridePath = JPATH_THEMES.DS.JFactory::getApplication()->getTemplate().DS.
     		'html'.DS.'com_jsolrsearch'.DS.'plugins';
     	
+	    $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
+	    
 	    if (JPath::find($pluginOverridePath, $extension."_result.php") ||
 	    	JPath::find($themeOverridePath, $extension."_result.php")) {
 	    	$this->setLayout($extension);
