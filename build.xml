@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSolr" default="help" basedir=".">
+<project name="JSolr" default="update" basedir=".">
 	<property	file="build.properties"/>
 	<property	name="dest.administrator"				value="${dest}/administrator"/>
 	<property	name="dest.administrator.components"	value="${dest.administrator}/components"/>
@@ -30,6 +30,19 @@
 			<property 	name="dest.modules" 					value="${dest.modules}"/>
 			<property 	name="dest.libs" 						value="${dest.libs}"/>
 			<property 	name="dest.cli" 						value="${dest.cli}"/>
+        </subant>
+	</target>
+	
+	<target name="updateModuleOnly" description="Updates module in an existing Joomla install.">
+		<echo message="Updating module in the Joomla! environment."/>
+		
+		<subant target="updateModuleOnly">
+			<fileset dir=".">
+				<include name="**/**/build_*.xml"/>
+			</fileset>
+			<property	name="src"								value="${src}"/>
+			<property	name="dest"								value="${dest}"/>
+			<property 	name="dest.modules" 					value="${dest.modules}"/>
         </subant>
 	</target>
 	
