@@ -83,18 +83,6 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 
 		return $filter;
 	}
-	
-	public function fillQuery() {
-		$filter = $this->getFilter();
-
-		if( !empty($filter) ) {
-			$jSolrQuery =& $this->form->getQuery();
-			$jSolrQuery->mergeFilters( $filter );
-			return true;
-		}
-
-		return false;
-	}
 
 	function getValueText()
 	{

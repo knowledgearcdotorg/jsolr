@@ -252,18 +252,6 @@ class JSolrFormFieldLang extends JSolrFormFieldSelectAbstract {
         return $filter;
     }
 
-    function fillQuery()
-    {
-        $filter = $this->getFilter();
-
-        if ($filter) {
-            $this->form->getQuery()->mergeFilters($filter);
-            return true;
-        }
-
-        return false;
-    }
-
     function getValueText()
     {
         if (!is_array($this->value) || count($this->value) == 0) {

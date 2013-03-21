@@ -19,12 +19,7 @@ class JSolrFormFieldSubmit extends JSolrFormFieldAbstract {
 
         return '';
     }
-
-    function fillQuery()
-    {
-        return false;
-    }
-
+    
     function getValueText()
     {
         return '';

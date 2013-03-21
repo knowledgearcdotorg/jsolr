@@ -154,18 +154,6 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		return array('' => JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME),'d' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY),'w' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK), 'm' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH), 'y' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR));
 	}
 
-	function fillQuery()
-	{
-		$filter = $this->getFilter();
-
-		if ($filter) {
-			$this->form->getQuery()->mergeFilters($filter);
-			return true;
-		}
-
-		return false;
-	}
-
 	function getValueText()
 	{
 		if (is_array($this->value)) {
