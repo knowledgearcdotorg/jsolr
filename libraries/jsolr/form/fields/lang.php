@@ -13,7 +13,7 @@ jimport('jsolr.form.fields.abstract');
 class JSolrFormFieldLang extends JSolrFormFieldSelectAbstract {
 
     /**
-     * Method to get default list of countires
+     * Method to get default list of languages
      * @return array
      */
     protected function getDefaultOptions()
