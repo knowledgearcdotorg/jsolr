@@ -35,14 +35,14 @@ $document = JFactory::getDocument();
 $document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
 $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
 ?>
-MODULE
+
 <div>
 	<?php foreach($form->getFieldsets() as $fieldset ) : ?>
 		<?php if ($fieldset->name != 'main'): ?>
 			<?php foreach ($form->getFieldset($fieldset->name) as $field): ?>
 				<div>
-					<?php echo $field->getLabel() ?>
-					<?php echo $field->getInput() ?>
+					<h4><?php echo $field->getLabel() ?></h4>
+					<div><?php echo $field->getInput() ?></div>
 				</div>
 			<?php endforeach;?>
 		<?php endif ?>
