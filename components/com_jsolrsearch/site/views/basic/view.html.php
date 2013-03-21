@@ -87,6 +87,7 @@ class JSolrSearchViewBasic extends JView
 	    if (JPath::find($pluginOverridePath, $extension."_result.php") ||
 	    	JPath::find($themeOverridePath, $extension."_result.php")) {
             $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
+            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
 	    	$this->setLayout($extension);
 	    } else {
 	    	$this->setLayout('results');
@@ -109,6 +110,7 @@ class JSolrSearchViewBasic extends JView
 	    	JPath::find($themeOverridePath, $extension."_results.php")) {
 	    	$this->setLayout($extension);
             $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
+            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
 	    	return $this->loadTemplate('results');
 	    } else {
 	    	$this->setLayout('results');
