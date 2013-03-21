@@ -56,3 +56,21 @@
 .jsolr-search-result-form ul.nav li select {
   width: 100%;
 }
+
+#jsolr-search-tools {
+  border: 1px solid black;
+}
+
+#main .jsolr-search-result-form .main-search {
+  margin-bottom: 10px;
+}
+
+#main .jsolr-search-result-form .main-search ul {
+  padding: 0;
+  margin: 0;
+}
+
+#main .jsolr-search-result-form .btn-group, #jsolr-search-tools-list, #main .jsolr-results {
+  margin-top: 20px;
+}
+

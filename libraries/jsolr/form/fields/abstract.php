@@ -28,6 +28,18 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	 * Returns rendered HTML form field for search tool
 	 */
 	abstract protected function getInputSearchTool();
+	
+	public function fillQuery()
+	{
+		$filter = $this->getFilter();
+
+		if( !empty($filter) ) {
+			$this->form->getQuery()->mergeFilters( $filter );
+			return true;
+		}
+
+		return false;
+	}
 
     /**
      * Method to get value of form field as a text. Maybe used to displaying it on frontend as current selected options
@@ -87,8 +99,6 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	 * @return string
 	 */
 	public function postRenderLabel() { return ''; } 
-	
-	abstract public function fillQuery();
 	
 	/**
 	 * Called before rendering field

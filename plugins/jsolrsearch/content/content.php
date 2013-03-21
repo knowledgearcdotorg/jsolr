@@ -116,6 +116,7 @@ class plgJSolrSearchContent extends JSolrSearchSearch
 			'name' => 'Articles',
 			'plugin' => $this->extension,
 			'path' => __DIR__ . DS . 'forms' . DS . 'tools.xml'
+			// 'path' => __DIR__ . DS . 'forms' . DS . 'facets.xml'
 		);
 	}
 }

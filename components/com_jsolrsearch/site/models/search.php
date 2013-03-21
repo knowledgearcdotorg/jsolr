@@ -353,13 +353,6 @@ class JSolrSearchModelSearch extends JModelForm
     }
   }
 
-  private function _localizeDateTime($dateTime)
-  {
-    $date = JFactory::getDate($dateTime);
-    
-    return $date->format(JText::_("DATE_FORMAT_LC2"));
-  }
-
   public function getComponentsList()
   {
     JPluginHelper::importPlugin("jsolrsearch");
