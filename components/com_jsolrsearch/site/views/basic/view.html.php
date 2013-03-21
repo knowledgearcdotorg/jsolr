@@ -88,6 +88,8 @@ class JSolrSearchViewBasic extends JView
 	    
 	    if (JPath::find($pluginOverridePath, $extension."_result.php") ||
 	    	JPath::find($themeOverridePath, $extension."_result.php")) {
+            $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
+            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
 	    	$this->setLayout($extension);
 	    } else {
 	    	$this->setLayout('results');
@@ -109,6 +111,8 @@ class JSolrSearchViewBasic extends JView
 	    if (JPath::find($pluginOverridePath, $extension."_results.php") ||
 	    	JPath::find($themeOverridePath, $extension."_results.php")) {
 	    	$this->setLayout($extension);
+            $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
+            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
 	    	return $this->loadTemplate('results');
 	    } else {
 	    	$this->setLayout('results');
@@ -140,7 +144,7 @@ class JSolrSearchViewBasic extends JView
      */
     public function getComponentsLimit()
     {
-        return 1; // TODO: move to component's configuration
+        return 2; // TODO: move to component's configuration
     }
 
     public function updateUri(array $params = array())

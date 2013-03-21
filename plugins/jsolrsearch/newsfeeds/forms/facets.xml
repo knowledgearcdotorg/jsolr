@@ -7,7 +7,7 @@
         
         <!-- only JSolrFormFields should be used here -->
         <field 
-            name="title_of_art"
+            name="title2"
             facet="title"
             type="JSolr.Text"
             label="Title"
