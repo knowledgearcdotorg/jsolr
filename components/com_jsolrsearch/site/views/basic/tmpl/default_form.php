@@ -53,20 +53,6 @@
   <div class="jsolr-clear"></div>
 
   <?php if ($form->getType() != JSolrForm::TYPE_SEARCHTOOLS): ?>
-      <?php foreach($form->getFieldsets() as $fieldset ) : ?>
-      <?php if ($fieldset->name != 'main'): ?>
-          <fieldset>
-            <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-              <label><?php echo $field->getLabel() ?></label>
-              <span><?php echo $field->getInput() ?></span>
-            <?php endforeach ?>
-          </fieldset>
-
-          <fieldset>
-              <label class="pull-right"><input type="submit" value="<?php echo JText::_("Search"); ?>" class="btn btn-primary" /></label>
-          </fieldset>
-      <?php endif ?>
-    <?php endforeach;?>
 
   <?php else: ?>
 

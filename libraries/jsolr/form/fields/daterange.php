@@ -29,8 +29,59 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	public function getInputFacetFilter()
 	{
-		$html = ''; // TODO
+		$id = $this->element['name'];
+		$html = '<ul>';
+		$name = (string)$this->element['name'];
+		$value = explode('|', $this->value['value']);
+
+		if ($value[0] == '') {
+			unset($value[0]);
+		}
+
+		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . implode('|', $value) .'" />';
+
+		$html .= '';
+
+		foreach ($this->getFinalOptions() as $v => $label) {
+			if (!(in_array($v, $value))) {
+				if ($this->isMultiple()) {
+					if ($v != '') {
+						$v = array_merge($value, array($v));
+					} else {
+						$v = array();
+					}
+
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				} else {
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+				}
+
+				
+			} else {
+				if ($this->isMultiple()) {
+					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+				} else {
+					$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+				}
+			}
+		}
+
+		if ($this->useCustomRange()) {
+			$html .= '<li class="jdaterange-custom jrange-custom .jsolr-hidden">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
+			$name = $this->name;
+			
+			$html .= '<span>';
+
+			$html .= JSolrHtML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
+			$html .= JSolrHtML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
+
+			$html .= '</span>';
 		
+			$html .= '</li>';
+		}
+
+		$html .= '</ul>';
+
 		return $html;
 	}
 	

@@ -4,7 +4,7 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('a.jrange-option').click(function(){
+	$('.jsolr-search-result-form a.jrange-option').click(function(){
 		var elem = $(this);
 
 		if (elem.attr('data-value') == '') {
@@ -82,6 +82,22 @@ jQuery(document).ready(function($) {
 			return false;
 		}
 	});
+
+	$('.moduletable a.jrange-option').click(function(){
+		var elem = $(this);
+
+		if (elem.attr('data-value') == '') {
+			$('#' + elem.attr('data-name') + '_value').val('');
+		} else {
+			$('#' + elem.attr('data-name') + '_value').val(elem.attr('data-value'));
+		}
+		
+		$('#' + elem.attr('data-name') + '_from').val('');
+		$('#' + elem.attr('data-name') + '_to').val('');
+
+		jsolrsearch.update();
+		return false;
+	});
 });
 
 var jsolrsearch = {
@@ -93,11 +109,11 @@ var jsolrsearch = {
 	init: function() {
 		this.results = jQuery('.jsolr-results');
 		this.pagination = jQuery('.jsolr-pagination');
-		this.form = jQuery('.jsolr-search-result-form');
+		this.form = jQuery('.jsolr-search-result-form, .jsolr-module-filter');
 	},
 
-	update: function() {
-		var url = this.createUrl();
+	update: function(params = []) {
+		var url = this.createUrl(params);
 		this.sendRequest(url);
 
 		history.pushState({'url': url}, document.title, url);
@@ -109,8 +125,17 @@ var jsolrsearch = {
 		$.each(this.form.find('input'), function(key, elem){
 			elem = $(elem);
 
-			if (elem.attr('name') != 'undefined' && elem.val() != '') {
-				attrs.push(elem.attr('name') + '=' + elem.val());
+			var name = elem.attr('name');
+
+			if (name != undefined) {
+
+				if (name.substr(0, 4) == 'com_') {
+					var start	= name.indexOf("[");
+					var end		= name.indexOf(']');
+
+					name = name.substr(start + 1, end - start - 1) + name.substr(end + 1);
+				}
+				attrs.push(name + '=' + elem.val());
 			}
 		});
 

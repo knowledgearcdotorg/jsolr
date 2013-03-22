@@ -6,14 +6,6 @@
         addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
         
         <!-- only JSolrFormFields should be used here -->
-        <field 
-            name="title2"
-            facet="title"
-            type="JSolr.Text"
-            label="Title"
-            size="40"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
 
         <field 
             name="created_at"
