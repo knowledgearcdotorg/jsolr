@@ -109,7 +109,9 @@ var jsolrsearch = {
 		$.each(this.form.find('input'), function(key, elem){
 			elem = $(elem);
 
-			attrs.push(elem.attr('name') + '=' + elem.val());
+			if (elem.attr('name') != 'undefined' && elem.val() != '') {
+				attrs.push(elem.attr('name') + '=' + elem.val());
+			}
 		});
 
 		return this.baseUrl + '?' + attrs.join('&');
