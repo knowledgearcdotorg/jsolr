@@ -77,8 +77,10 @@ jQuery(document).ready(function($) {
 	jsolrsearch.init();
 
 	$('.jsolr-search-result-form').submit(function(){
-		jsolrsearch.update();
-		return false;
+		if (jsolrsearch.results.length) {
+			jsolrsearch.update();
+			return false;
+		}
 	});
 });
 
