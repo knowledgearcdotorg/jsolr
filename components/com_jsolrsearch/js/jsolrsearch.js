@@ -75,6 +75,11 @@ jQuery(document).ready(function($) {
 	});
 
 	jsolrsearch.init();
+
+	$('.jsolr-search-result-form').submit(function(){
+		jsolrsearch.update();
+		return false;
+	});
 });
 
 var jsolrsearch = {
@@ -90,7 +95,10 @@ var jsolrsearch = {
 	},
 
 	update: function() {
-		this.sendRequest(this.createUrl());
+		var url = this.createUrl();
+		this.sendRequest(url);
+
+		history.pushState({'url': url}, document.title, url);
 	},
 
 	createUrl: function() {
