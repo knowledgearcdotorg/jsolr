@@ -73,4 +73,51 @@ jQuery(document).ready(function($) {
 	$('.jsolr-search-result-form a[href=#]').click(function(){
 		return false;
 	});
+
+	jsolrsearch.init();
 });
+
+var jsolrsearch = {
+	results: null,
+	pagination: null,
+	form: null,
+	baseUrl: '/index.php/component/jsolrsearch/basic',
+
+	init: function() {
+		this.results = jQuery('.jsolr-results');
+		this.pagination = jQuery('.jsolr-pagination');
+		this.form = jQuery('.jsolr-search-result-form');
+	},
+
+	update: function() {
+		this.sendRequest(this.createUrl());
+	},
+
+	createUrl: function() {
+		var attrs = [];
+
+		$.each(this.form.find('input'), function(key, elem){
+			elem = $(elem);
+
+			attrs.push(elem.attr('name') + '=' + elem.val());
+		});
+
+		return this.baseUrl + '?' + attrs.join('&');
+	},
+
+    sendRequest: function(url)
+    {
+    	this.results.fadeOut();
+
+    	jQuery.getJSON(url + '&ajax=1', function(response){
+    		jsolrsearch.updateTemplate(response.results, response.pagination);
+    	});
+    },
+
+    updateTemplate: function(results, pagination)
+    {
+    	this.results.html(results);
+    	this.pagination.html(pagination);
+    	this.results.fadeIn();
+    }
+}

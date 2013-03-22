@@ -45,6 +45,12 @@ class JSolrSearchViewBasic extends JView
         $this->items = $this->get('Items');
         $this->plugins = $this->get('ComponentsList');
         $this->current_plugin = $this->get('CurrentPlugin');
+
+        if ($this->isAjax()) {
+            echo $this->buildAjaxResponse();
+            jexit(); 
+        }
+
         parent::display($tpl);
     }
     
@@ -125,6 +131,10 @@ class JSolrSearchViewBasic extends JView
         return $this->loadTemplate('form');
     }
 
+    public function loadPaginationTemplate()
+    {
+        return $this->loadTemplate('pagination');
+    }
 
     /**
      * @return bool true if search tools should be displayed by default, otherwise false
@@ -156,5 +166,22 @@ class JSolrSearchViewBasic extends JView
         }
 
         return $uri->toString();
+    }
+
+    public function isAjax()
+    {
+        $uri = JFactory::getURI();
+
+        return $uri->hasVar('ajax');
+    }
+
+    public function buildAjaxResponse()
+    {
+        $result = new stdClass;
+
+        $result->results = $this->loadResultsTemplate();
+        $result->pagination = $this->loadPaginationTemplate();
+
+        return json_encode($result);
     }
 }

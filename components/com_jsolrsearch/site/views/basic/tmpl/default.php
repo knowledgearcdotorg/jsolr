@@ -39,17 +39,10 @@ $document->addStyleSheet('/media/com_jsolrsearch/css/dropdown.css');
 
 <?php if (!is_null($this->items)): ?>
    <div class="jsolr-results">
-   <?php
-   if (!count($this->items)) {
-      echo '<span>' . JText::_(COM_JSOLRSEARCH_NO_RESULTS) . '</span>';
-   }
-   foreach ($this->items as $item) :
-          echo $this->loadResultTemplate($item);
-   endforeach;
-   ?>
+      <?php echo $this->loadResultsTemplate() ?>
    </div>
       
    <div class="pagination jsolr-pagination">
-      <?php echo $this->get("Pagination")->getPagesLinks(); ?>
+      <?php echo $this->loadPaginationTemplate(); ?>
    </div>
 <?php endif ?>
