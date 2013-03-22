@@ -4,3 +4,5 @@ build.properties
 .project
 .settings/
 /build.properties
+
+*sublime-*
