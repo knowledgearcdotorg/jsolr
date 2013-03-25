@@ -22,7 +22,7 @@ jimport('jsolr.helper.jhtml');
 //JSorl prefix!
 class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 {
-	protected $type = 'JSolr.DateRange'; //JSorl prefix
+	protected $type = 'JSolr.DateRange'; //JSolr prefix
 	
 	/**
 	 * @inheritdoc
@@ -90,10 +90,10 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	public function getInputSearchTool()
 	{
-		$id = $this->element['name'];
+		$id = JArrayHelper::getValue($this->element, 'name');
 		$html = '<ul>';
-		$name = (string)$this->element['name'];
-		$value = explode('|', $this->value['value']);
+		$name = JArrayHelper::getValue($this->element, 'name', null, 'string');
+		$value = explode('|', JArrayHelper::getValue($this->value, 'value', null, 'string'));
 
 		if ($value[0] == '') {
 			unset($value[0]);
@@ -133,8 +133,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			
 			$html .= '<span>';
 
-			$html .= JSolrHtML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
-			$html .= JSolrHtML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
+			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'from', '', 'string'), $name . '[from]', "{$id}_from");
+			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'to', '', 'string'), $name . '[to]', "{$id}_to");
 
 			$html .= '</span>';
 		
