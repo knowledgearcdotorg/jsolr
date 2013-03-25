@@ -287,7 +287,7 @@ class JSolrFormFieldCountry extends JSolrFormFieldSelectAbstract {
     function getValueText()
     {
         if (!is_array($this->value) || count($this->value) == 0) {
-            return JText::_(COM_JSOLRSEARCH_LANGUAGE_ALL);
+            return JText::_("COM_JSOLRSEARCH_LANGUAGE_ALL");
         }
 
         $result = array();

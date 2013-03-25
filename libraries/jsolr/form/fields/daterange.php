@@ -67,7 +67,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom .jsolr-hidden">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
+			$html .= '<li class="jdaterange-custom jrange-custom .jsolr-hidden">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_DATERANGE_CUSTOM"));
 			$name = $this->name;
 			
 			$html .= '<span>';
@@ -128,7 +128,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
+			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_DATERANGE_CUSTOM"));
 			$name = $this->name;
 			
 			$html .= '<span>';
@@ -202,7 +202,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	protected function getDefaultOptions()
 	{
-		return array('' => JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME),'d' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY),'w' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK), 'm' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH), 'y' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR));
+		return array('' => JText::_("COM_JSOLRSEARCH_DATERANGE_ANYTIME"),'d' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTDAY"),'w' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTWEEK"), 'm' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTMONTH"), 'y' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTYEAR"));
 	}
 
 	function getValueText()
@@ -213,7 +213,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$value  = $this->value['value'];
 
 			if (!empty($from) && !empty($to)) {
-				return JText::_(COM_JSOLRSEARCH_DATERANGE_FROM) . ' ' . $from . ' ' . JText::_(COM_JSOLRSEARCH_DATERANGE_TO) . ' ' . $to;
+				return JText::_("COM_JSOLRSEARCH_DATERANGE_FROM") . ' ' . $from . ' ' . JText::_("COM_JSOLRSEARCH_DATERANGE_TO") . ' ' . $to;
 			}elseif (!empty($value)){
 				$options = $this->getFinalOptions();
 				return $options[$value];

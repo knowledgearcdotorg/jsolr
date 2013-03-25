@@ -32,7 +32,7 @@
       <?php if ($i == $max): ?>
         <ul class="nav nav-more pull-left">
           <li>
-            <a href="#"><?php echo JText::_(COM_JSOLRSEARCH_COMPONENTS_MORE) ?><span class="more"></span></a>
+            <a href="#"><?php echo JText::_("COM_JSOLRSEARCH_COMPONENTS_MORE") ?><span class="more"></span></a>
 
             <ul class="more-list">
               <?php for(; $i < $count; ++$i): ?>
