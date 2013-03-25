@@ -41,7 +41,7 @@ class JSolrSearchViewConfiguration extends JView
     	
     	$document = JFactory::getDocument();
 
-    	$document->addScript(JURI::root() . "media/com_jsolrsearch/js/admin/jsolrsearch.js");        
+    	$document->addScript(JURI::base() . "media/com_jsolrsearch/js/admin/jsolrsearch.js");        
     	
     	$this->addToolbar();
 

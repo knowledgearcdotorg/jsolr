@@ -28,11 +28,11 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 $document = JFactory::getDocument();
-$document->addScript('/media/com_jsolrsearch/js/jquery/jquery.js');
-$document->addScript('/media/com_jsolrsearch/js/jsolrsearch.js');
+$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jquery/jquery.js');
+$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jsolrsearch.js');
 
-$document->addStyleSheet('/media/com_jsolrsearch/css/jsolrsearch.css');
-$document->addStyleSheet('/media/com_jsolrsearch/css/dropdown.css');
+$document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
+$document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/dropdown.css');
 
 ?>
 <?php echo $this->loadFormTemplate()?>

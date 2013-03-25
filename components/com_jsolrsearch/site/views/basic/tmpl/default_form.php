@@ -4,18 +4,15 @@
 
 <form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="form-validate jsolr-search-result-form">
   <input type="hidden" name="plugin" value="<?php echo $this->get('CurrentPlugin') ?>" />
-  <ul class="main-search">
+  <fieldset class="word">
     <?php foreach($form->getFieldsets() as $fieldset ) : ?>
       <?php if ($fieldset->name == 'main'): ?>
         <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-        <li class="pull-left">
-          <label><?php echo $field->label ?></label>
           <span><?php echo $field->getInput() ?></span>
-        </li>
         <?php endforeach;?>
       <?php endif ?>
     <?php endforeach;?>
-  </ul>
+  </fieldset>
 
   <div class="jsolr-clear"></div>
 
