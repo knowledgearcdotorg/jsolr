@@ -29,7 +29,7 @@
  */
 
 if (!class_exists( 'JSolrSearchModelSearch' )){
-	JLoader::import( 'search', JPATH_BASE . DS . 'components' . DS . 'com_jsolrsearch' . DS . 'models' );
+	JLoader::import( 'search', JPATH_BASE.'/components/com_jsolrsearch/models' );
 }
 class modJSolrFilterHelper
 {

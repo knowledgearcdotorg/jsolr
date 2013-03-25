@@ -31,9 +31,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controller');
-
-class JSolrIndexController extends JController
+class JSolrIndexController extends JControllerLegacy
 {
 	protected $default_view = 'configuration';
 

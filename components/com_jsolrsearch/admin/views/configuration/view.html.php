@@ -37,7 +37,7 @@ class JSolrSearchViewConfiguration extends JView
 {
     function display($tpl = null)
     {
-    	JHTML::_('behavior.mootools');
+    	JHtml::_('behavior.framework', true);
     	
     	$document = JFactory::getDocument();
 

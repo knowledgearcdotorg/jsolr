@@ -34,7 +34,7 @@ jimport('joomla.error.log');
 
 jimport('jsolr.search.search');
 
-require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
 class plgJSolrSearchJReviews extends JSolrSearchSearch
 {

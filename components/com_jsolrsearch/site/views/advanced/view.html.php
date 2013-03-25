@@ -36,7 +36,7 @@ class JSolrSearchViewAdvanced extends JView
 	
     public function display($tpl = null)
     {
-		JHTML::_('behavior.mootools');
+		JHtml::_('behavior.framework', true);
     	
 		$document = JFactory::getDocument();
 

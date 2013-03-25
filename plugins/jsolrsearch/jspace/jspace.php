@@ -32,7 +32,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.error.log');
 
-require_once JPATH_ROOT.DS."administrator".DS."components".DS."com_jsolrsearch".DS."helpers".DS."plugin.php";
+require_once JPATH_ROOT."/administrator/components/com_jsolrsearch/helpers/plugin.php";
 
 class plgJSolrSearchJSpace extends JSolrSearchPlugin 
 {

@@ -46,9 +46,9 @@ class plgJSolrSearchExample extends JSolrSearchSearch
       return array(
          'name' => 'Example',
          'plugin' => $this->extension,
-         'path' => __DIR__ . DS . 'forms' . DS . 'tools.xml'
+         'path' => __DIR__ . '/forms/tools.xml'
          // or
-         // 'path' => __DIR__ . DS . 'forms' . DS . 'facets.xml'
+         // 'path' => __DIR__ . '/forms/facets.xml'
       );
    }
 }

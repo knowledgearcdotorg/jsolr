@@ -52,7 +52,7 @@ class JSolrSearchViewBrowse extends JView
 
 		foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
 			$extension = str_replace("com_", "", JArrayHelper::getValue(array_keys($result), 0));
-			$pluginOverridePath = JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS.'views';
+			$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
 	    	
 	    	if (array_search($pluginOverridePath, $templates) == false && 
 	    		is_dir($pluginOverridePath)) {
@@ -60,8 +60,8 @@ class JSolrSearchViewBrowse extends JView
 		    }    	
 		}
     	
-    	$themeOverridePath = JPATH_THEMES.DS.JFactory::getApplication()->getTemplate().DS.
-    		'html'.DS.'com_jsolrsearch'.DS.'plugins';
+    	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
+    		'/html/com_jsolrsearch/plugins';
 
 		if (array_search($themeOverridePath, $templates) == false && 
     		is_dir($themeOverridePath)) {
@@ -80,9 +80,9 @@ class JSolrSearchViewBrowse extends JView
     	
     	$templates = JArrayHelper::getValue($this->get('_path'), 'template');
     	
-    	$pluginOverridePath = JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS.'views';
-    	$themeOverridePath = JPATH_THEMES.DS.JFactory::getApplication()->getTemplate().DS.
-    		'html'.DS.'com_jsolrsearch'.DS.'plugins';
+    	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
+    	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
+    		'/html/com_jsolrsearch/plugins';
     	
 	    if (JPath::find($pluginOverridePath, $extension."_facets.php") ||
 	    	JPath::find($themeOverridePath, $extension."_facets.php")) {

@@ -40,7 +40,7 @@ jimport('joomla.html.pagination');
 
 jimport('jsolr.form.form');
 
-require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
 
 class JSolrSearchModelSearch extends JModelForm
@@ -244,7 +244,7 @@ class JSolrSearchModelSearch extends JModelForm
 
       $currentPlugin = $this->getCurrentPlugin();
 
-      $path = __DIR__ . DS . 'forms' . DS . 'tools.xml';
+      $path = __DIR__ . '/forms/tools.xml';
 
       if (!empty($currentPlugin)) {
         foreach ($this->getComponentsList() as $component) {

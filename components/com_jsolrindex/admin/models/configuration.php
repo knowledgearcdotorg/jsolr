@@ -33,13 +33,12 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.registry.registry');
 jimport('joomla.filesystem.file');
-jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
 
 jimport('jsolr.apache.solr.service');
 jimport('jsolr.apache.solr.exception');
 
-class JSolrIndexModelConfiguration extends JModel
+class JSolrIndexModelConfiguration extends JModelLegacy
 {
 	public function __construct()
 	{
@@ -136,7 +135,7 @@ class JSolrIndexModelConfiguration extends JModel
 				try {
 					$client = new Apche_Solr_Service($this->getAttachmentHost(), $params->get("remote_tika_port"), $params->get("remote_tika_path"));
 					$response = $client->extract(
-						JPATH_COMPONENT_ADMINISTRATOR.DS."test.odt",
+						JPATH_COMPONENT_ADMINISTRATOR."/test.odt",
 						array("extractOnly"=>"true")
 					);
 

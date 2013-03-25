@@ -32,7 +32,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.error.log');
 
-require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
 jimport('joomla.database.table.category');
 jimport('joomla.database.table.content');
@@ -115,8 +115,8 @@ class plgJSolrSearchContent extends JSolrSearchSearch
 		return array(
 			'name' => 'Articles',
 			'plugin' => $this->extension,
-			'path' => __DIR__ . DS . 'forms' . DS . 'tools.xml'
-			// 'path' => __DIR__ . DS . 'forms' . DS . 'facets.xml'
+			'path' => __DIR__ . '/forms/tools.xml'
+			// 'path' => __DIR__ . '/forms/facets.xml'
 		);
 	}
 }
