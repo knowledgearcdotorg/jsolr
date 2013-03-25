@@ -27,7 +27,7 @@ class JSolrFormFieldPrice extends JSolrFormFieldNumberRange
         $step   = $this->getStep();
         $start  = $this->getStart();
         $end    = $this->getEnd();
-        $options = array('' => JText::_(COM_JSOLRSEARCH_NUMBERRANGE_ALL));
+        $options = array('' => JText::_("COM_JSOLRSEARCH_NUMBERRANGE_ALL"));
 
         while($start < $end) {
             if ($start + $step <= $end) {
