@@ -318,10 +318,10 @@ class JSolrSearchQuery
 		if (is_string($filters)) {
 			$filters = array($filters);
 		}
-		if (!is_array($this->params['fq'])) {
+		if (!is_array(JArrayHelper::getValue($this->params, "fq"))) {
 			$this->params['fq'] = $filters;
 		} else {
-			$this->params['fq'] = array_merge($this->params['fq'], $filters);
+			$this->params['fq'] = array_merge(JArrayHelper::getValue($this->params, "fq"), $filters);
 		}
 		return $this;
 	}

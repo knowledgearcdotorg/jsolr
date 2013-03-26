@@ -112,11 +112,13 @@ class JSolrSearchModelSearch extends JModelForm
 
           $items = array();
 
+          $qparams = $query->params();
+
           foreach (json_decode($response->getRawResponse())->response->docs as $document) {
               $docs = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
                   $document,
                   $response->highlighting,
-                  JArrayHelper::getValue($query->params(), "fl.fragsize"),
+                  $fragsize = JArrayHelper::getValue($qparams, "fl.fragsize"),
                   $this->getLanguage(false))
               );
 
