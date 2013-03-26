@@ -171,9 +171,9 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 
 		while($start < $end) {
 			if ($start + $step <= $end) {
-				$options[$start . '_' . ($start + $step)] = 'From ' . $start . ' to ' . ($start + $step); 
+				$options[$start . '_' . ($start + $step)] = sprintf(JText::_("COM_JSOLRSEARCH_NUMBERRANGE_FROM_TO"), $start, $start + $step); 
 			} else {
-				$options[$start . '_' . $end] = 'From ' . $start . ' to ' . $end; 
+				$options[$start . '_' . $end] = sprintf(JText::_("COM_JSOLRSEARCH_NUMBERRANGE_FROM_TO"), $start, $end);
 			}
 
 			$start += $step;
