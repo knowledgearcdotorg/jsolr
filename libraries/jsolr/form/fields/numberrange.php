@@ -28,7 +28,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	public function getInputFacetFilter()
 	{
 		$id = $this->element['name'];
-		$html = '<li>';
+		$html = '';
 		$name = (string)$this->element['name'];
 		$value = explode('|', $this->value['value']);
 
@@ -57,7 +57,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 				if ($this->isMultiple()) {
 					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
 				} else {
-					$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jnumberrange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id)) . '</li>';
 				}
 			}
 		}
@@ -66,17 +66,17 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
 			$name = $this->name;
 			
-			$html .= '<span>';
+			$html .= '<span class="jsolr-hidden">';
 
-			$html .= JHTML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
-			$html .= JHTML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
+			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_FROM) .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
+			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_TO) .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
 
 			$html .= '</span>';
 		
 			$html .= '</li>';
 		}
 
-		$html .= '</ul></li>';
+		$html .= '</ul>';
 		
 		return $html;
 	}
@@ -133,10 +133,10 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 			$to 	= $this->value['to'];
 			$value  = $this->value['value'];
 
-			if (!empty($from) || !empty($to)) {
-				if (empty($from)) {
+			if (is_numeric($from) || is_numeric($to)) {
+				if (!is_numeric($from)) {
 					$from = '*';
-				} elseif (empty($to)) {
+				} elseif (!is_numeric($to)) {
 					$to = '*';
 				}
 
@@ -147,7 +147,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 				foreach (explode('|', $value) as $val) {
 					$val = explode('_', $val);
 
-					$filters[] = '[' . (int)$val[0] . ' TO ' . (int)$val[1] . ']';
+					$filters[] = '[' . $val[0] . ' TO ' . $val[1] . ']';
 				}
 
 				if (count($filters)) {
@@ -164,7 +164,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		$step 	= $this->getStep();
 		$start 	= $this->getStart();
 		$end 	= $this->getEnd();
-		$options = array('' => JText::_(COM_JSOLRSEARCH_NUMBERRANGE_ALL));
+		$options = array('' => JText::_('COM_JSOLRSEARCH_NUMBERRANGE_ALL'));
 
 		while($start < $end) {
 			if ($start + $step <= $end) {

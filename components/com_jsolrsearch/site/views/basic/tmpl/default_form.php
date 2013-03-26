@@ -47,7 +47,9 @@
       <?php echo JHTML::link($this->updateUri(array('plugin' => $components[$i]['plugin'])), $components[$i]['name'], array('class' => 'btn pull-left')) ?>
     <?php endfor ?>
 
-    <?php echo JHTML::link('#', JText::_("Search Tools"), array('id' => 'jsolr-search-tools', 'class' => 'btn pull-left')) ?>
+    <?php if ($this->showSearchToolsButton()): ?>
+      <?php echo JHTML::link('#', JText::_("Search Tools"), array('id' => 'jsolr-search-tools', 'class' => 'btn pull-left')) ?>
+    <?php endif ?>
   </div>
 
   <div class="jsolr-clear"></div>

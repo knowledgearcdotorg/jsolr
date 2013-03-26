@@ -85,15 +85,19 @@ jQuery(document).ready(function($) {
 
 	$('.moduletable a.jrange-option').click(function(){
 		var elem = $(this);
+		var name = elem.attr('data-name');
 
 		if (elem.attr('data-value') == '') {
-			$('#' + elem.attr('data-name') + '_value').val('');
+			$('#' + name + '_value').val('');
 		} else {
-			$('#' + elem.attr('data-name') + '_value').val(elem.attr('data-value'));
+			$('#' + name + '_value').val(elem.attr('data-value'));
 		}
+
+		$('[data-name="' + name + '"]').removeClass('jrange-option-selected');
+		elem.addClass('jrange-option-selected');
 		
-		$('#' + elem.attr('data-name') + '_from').val('');
-		$('#' + elem.attr('data-name') + '_to').val('');
+		$('#' + name + '_from').val('');
+		$('#' + name + '_to').val('');
 
 		jsolrsearch.update();
 		return false;
@@ -103,12 +107,14 @@ jQuery(document).ready(function($) {
 var jsolrsearch = {
 	results: null,
 	pagination: null,
+	facetsSelected: null,
 	form: null,
 	baseUrl: '/index.php/component/jsolrsearch/basic',
 
 	init: function() {
 		this.results = jQuery('.jsolr-results');
 		this.pagination = jQuery('.jsolr-pagination');
+		this.facetsSelected = jQuery('#jsolr-facet-filters-selected');
 		this.form = jQuery('.jsolr-search-result-form, .jsolr-module-filter');
 	},
 
@@ -147,14 +153,15 @@ var jsolrsearch = {
     	this.results.fadeOut();
 
     	jQuery.getJSON(url + '&ajax=1', function(response){
-    		jsolrsearch.updateTemplate(response.results, response.pagination);
+    		jsolrsearch.updateTemplate(response);
     	});
     },
 
-    updateTemplate: function(results, pagination)
+    updateTemplate: function(response)
     {
-    	this.results.html(results);
-    	this.pagination.html(pagination);
+    	this.results.html(response.results);
+    	this.pagination.html(response.pagination);
+    	this.facetsSelected.html(response.facets_selected);
     	this.results.fadeIn();
     }
 }

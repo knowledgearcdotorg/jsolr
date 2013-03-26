@@ -37,6 +37,10 @@ $document->addStyleSheet('/media/com_jsolrsearch/css/dropdown.css');
 ?>
 <?php echo $this->loadFormTemplate()?>
 
+<div id="jsolr-facet-filters-selected">
+   <?php echo $this->loadFacetFiltersSelectedTemplate() ?>
+</div>
+
 <?php if (!is_null($this->items)): ?>
    <div class="jsolr-results">
       <?php echo $this->loadResultsTemplate() ?>

@@ -15,5 +15,14 @@
             size="40"
             class="inputbox jsolrquery"
             maxlength="50"/>
+
+        <field 
+            name="ids"
+            facet="id"
+            type="JSolr.NumberRange"
+            label="IDS"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
     </fieldset>
 </form>

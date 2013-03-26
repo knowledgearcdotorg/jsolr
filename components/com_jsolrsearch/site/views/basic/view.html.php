@@ -136,6 +136,11 @@ class JSolrSearchViewBasic extends JView
         return $this->loadTemplate('pagination');
     }
 
+    public function loadFacetFiltersSelectedTemplate()
+    {
+        return $this->loadTemplate('facets_selected');
+    }
+
     /**
      * @return bool true if search tools should be displayed by default, otherwise false
      */
@@ -145,6 +150,15 @@ class JSolrSearchViewBasic extends JView
         $vars = $router->getVars();
 
         return count($vars) > 2 ? true : false;
+    }
+
+    /**
+     * Method to get information if "Search Tools" button should be rendered
+     * @return true if the button should be visiable, otherwise return false
+     */
+    public function showSearchToolsButton()
+    {
+        return is_null(JSolrSearchModelSearch::getFacetFilterForm());
     }
 
     /**
@@ -181,6 +195,7 @@ class JSolrSearchViewBasic extends JView
 
         $result->results = $this->loadResultsTemplate();
         $result->pagination = $this->loadPaginationTemplate();
+        $result->facets_selected = $this->loadFacetFiltersSelectedTemplate();
 
         return json_encode($result);
     }

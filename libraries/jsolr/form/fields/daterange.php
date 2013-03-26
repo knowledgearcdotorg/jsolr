@@ -56,12 +56,12 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 				}
 
-				
+
 			} else {
 				if ($this->isMultiple()) {
 					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
 				} else {
-					$html .= '<li><span class="jsolr-option-current">' . $label . '</span></li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 				}
 			}
 		}
@@ -70,7 +70,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$html .= '<li class="jdaterange-custom jrange-custom .jsolr-hidden">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
 			$name = $this->name;
 			
-			$html .= '<span>';
+			$html .= '<span class="jsolr-hidden">';
 
 			$html .= JSolrHtML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
 			$html .= JSolrHtML::calendar($this->value['to'], $name . '[to]', "{$id}_to");

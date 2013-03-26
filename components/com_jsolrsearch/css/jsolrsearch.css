@@ -74,3 +74,6 @@
   margin-top: 20px;
 }
 
+.jsolr-module-filter a.jrange-option-selected {
+  color: black;
+}
