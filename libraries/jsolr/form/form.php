@@ -106,9 +106,12 @@ class JSolrForm extends JForm
 	}
 	
 	public function createQuery() {
+		$mainframe = JFactory::getApplication();
+
         return $this->query = JSolrSearchFactory::getQuery('*:*')
             ->useQueryParser("edismax")
             ->retrieveFields("*,score")
+            ->limit($mainframe->getCfg('list_limit'))
             ->highlight(200, "<strong>", "</strong>", 1);
 	}
 	
