@@ -32,13 +32,11 @@
  
 defined( '_JEXEC' ) or die( 'Restricted access' );
  
-jimport( 'joomla.application.component.view');
- 
-class JSolrIndexViewConfiguration extends JView
+class JSolrIndexViewConfiguration extends JViewLegacy
 {
     function display($tpl = null)
     {
-    	JHTML::_('behavior.mootools');
+    	JHtml::_('behavior.framework', true);
     	
     	$document = JFactory::getDocument();
 

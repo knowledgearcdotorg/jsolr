@@ -38,19 +38,19 @@ class com_JSolrIndexInstallerScript
 {	
 	public function install($parent)
 	{
-		$src = "administrator".DS."components".DS."com_jsolrindex".DS."jsolr_crawler.php";
-		$dest = "cli".DS."jsolr_crawler.php";
+		$src = "administrator/components/com_jsolrindex/jsolr_crawler.php";
+		$dest = "cli/jsolr_crawler.php";
 		
 		if (JFile::move($src, $dest, JPATH_ROOT)) {
-			echo "<p>Crawler installed in ".JPATH_ROOT.DS."cli successfully. Use the crawler file to run an indexing cron job across your Joomla! site.</p>";
+			echo "<p>Crawler installed in ".JPATH_ROOT."/cli successfully. Use the crawler file to run an indexing cron job across your Joomla! site.</p>";
 		} else {
-			echo "<p>Crawler failed to install in ".JPATH_ROOT.DS."cli. You will need to copy it manually from ".JPATH_COMPONENT_ADMINISTRATOR.".</p>";
+			echo "<p>Crawler failed to install in ".JPATH_ROOT."/cli. You will need to copy it manually from ".JPATH_COMPONENT_ADMINISTRATOR.".</p>";
 		}
 
 		$installer = new JInstaller();
 		$installer->setOverwrite(true);
 		
-		$pkg_path = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jsolrindex'.DS.'extensions'.DS;
+		$pkg_path = JPATH_ADMINISTRATOR.'/components/com_jsolrindex/extensions/';
 		if (JFolder::create($pkg_path)) {
 			if ($handle = opendir($pkg_path)) {
 				while ($pkg = readdir($handle)) {

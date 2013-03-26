@@ -43,7 +43,7 @@ class com_JSolrSearchInstallerScript
 		$installer = new JInstaller();
 		$installer->_overwrite = true;
 		
-		$pkg_path = JPATH_ADMINISTRATOR.DS.'components'.DS.self::COM_JSOLRSEARCH.DS.'extensions'.DS;
+		$pkg_path = JPATH_ADMINISTRATOR.'/components/'.self::COM_JSOLRSEARCH.'/extensions/';
 		
 		if ($handle = opendir($pkg_path)) {
 			while ($pkg = readdir($handle)) {

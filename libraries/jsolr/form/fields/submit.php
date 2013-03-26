@@ -27,11 +27,11 @@ class JSolrFormFieldSubmit extends JSolrFormFieldAbstract {
 
     function getInputFacetFilter()
     {
-        return '<input type="submit" value="' . JText::_(COM_JSOLRSEARCH_BUTTON_SUBMIT) . '" class="btn btn-primary" />';
+        return '<input type="submit" value="' . JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT") . '" class="btn btn-primary" />';
     }
 
     function getInputSearchTool()
     {
-        return '<input type="submit" value="' . JText::_(COM_JSOLRSEARCH_BUTTON_SUBMIT) . '" class="btn btn-primary" />';
+        return '<input type="submit" value="' . JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT") . '" class="btn btn-primary" />';
     }
 }

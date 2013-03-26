@@ -63,7 +63,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
+			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_DATERANGE_CUSTOM"));
 			$name = $this->name;
 			
 			$html .= '<span class="jsolr-hidden">';
@@ -101,13 +101,13 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jnumberrange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_NUMBERRANGE_CUSTOM));
+			$html .= '<li class="jnumberrange-custom jrange-custom">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_NUMBERRANGE_CUSTOM"));
 			$name = $this->name;
 			
 			$html .= '<span>';
 
-			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_FROM) .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
-			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_TO) .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
+			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_FROM") .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
+			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_TO") .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
 
 			$html .= '</span>';
 		
@@ -164,7 +164,8 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		$step 	= $this->getStep();
 		$start 	= $this->getStart();
 		$end 	= $this->getEnd();
-		$options = array('' => JText::_('COM_JSOLRSEARCH_NUMBERRANGE_ALL'));
+
+		$options = array('' => JText::_("COM_JSOLRSEARCH_NUMBERRANGE_ALL"));
 
 		while($start < $end) {
 			if ($start + $step <= $end) {

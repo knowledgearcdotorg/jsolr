@@ -22,7 +22,7 @@ jimport('jsolr.helper.jhtml');
 //JSorl prefix!
 class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 {
-	protected $type = 'JSolr.DateRange'; //JSorl prefix
+	protected $type = 'JSolr.DateRange'; //JSolr prefix
 	
 	/**
 	 * @inheritdoc
@@ -67,7 +67,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom .jsolr-hidden">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
+			$html .= '<li class="jdaterange-custom jrange-custom .jsolr-hidden">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_DATERANGE_CUSTOM"));
 			$name = $this->name;
 			
 			$html .= '<span class="jsolr-hidden">';
@@ -90,10 +90,10 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	public function getInputSearchTool()
 	{
-		$id = $this->element['name'];
+		$id = JArrayHelper::getValue($this->element, 'name');
 		$html = '<ul>';
-		$name = (string)$this->element['name'];
-		$value = explode('|', $this->value['value']);
+		$name = JArrayHelper::getValue($this->element, 'name', null, 'string');
+		$value = explode('|', JArrayHelper::getValue($this->value, 'value', null, 'string'));
 
 		if ($value[0] == '') {
 			unset($value[0]);
@@ -128,13 +128,13 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 		}
 
 		if ($this->useCustomRange()) {
-			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_(COM_JSOLRSEARCH_DATERANGE_CUSTOM));
+			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_DATERANGE_CUSTOM"));
 			$name = $this->name;
 			
 			$html .= '<span>';
 
-			$html .= JSolrHtML::calendar($this->value['from'], $name . '[from]', "{$id}_from");
-			$html .= JSolrHtML::calendar($this->value['to'], $name . '[to]', "{$id}_to");
+			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'from', '', 'string'), $name . '[from]', "{$id}_from");
+			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'to', '', 'string'), $name . '[to]', "{$id}_to");
 
 			$html .= '</span>';
 		
@@ -202,7 +202,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 	 */
 	protected function getDefaultOptions()
 	{
-		return array('' => JText::_(COM_JSOLRSEARCH_DATERANGE_ANYTIME),'d' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTDAY),'w' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTWEEK), 'm' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTMONTH), 'y' => JText::_(COM_JSOLRSEARCH_DATERANGE_LASTYEAR));
+		return array('' => JText::_("COM_JSOLRSEARCH_DATERANGE_ANYTIME"),'d' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTDAY"),'w' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTWEEK"), 'm' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTMONTH"), 'y' => JText::_("COM_JSOLRSEARCH_DATERANGE_LASTYEAR"));
 	}
 
 	function getValueText()
@@ -213,7 +213,7 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$value  = $this->value['value'];
 
 			if (!empty($from) && !empty($to)) {
-				return JText::_(COM_JSOLRSEARCH_DATERANGE_FROM) . ' ' . $from . ' ' . JText::_(COM_JSOLRSEARCH_DATERANGE_TO) . ' ' . $to;
+				return JText::_("COM_JSOLRSEARCH_DATERANGE_FROM") . ' ' . $from . ' ' . JText::_("COM_JSOLRSEARCH_DATERANGE_TO") . ' ' . $to;
 			}elseif (!empty($value)){
 				$options = $this->getFinalOptions();
 				return $options[$value];

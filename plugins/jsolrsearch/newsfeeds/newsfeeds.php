@@ -33,7 +33,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 jimport('joomla.error.log');
 jimport('jsolr.search.search');
 
-require_once(JPATH_ROOT.DS."components".DS."com_newsfeeds".DS."helpers".DS."route.php");
+require_once(JPATH_ROOT."/components/com_newsfeeds/helpers/route.php");
 
 class plgJSolrSearchNewsfeeds extends JSolrSearchSearch 
 {
@@ -112,6 +112,6 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 		return array(
 			'name' => 'Newsfeeds',
 			'plugin' => $this->extension,
-			'path' => __DIR__ . DS . 'forms' . DS . 'facets.xml');
+			'path' => __DIR__ . '/forms/facets.xml');
 	}
 }

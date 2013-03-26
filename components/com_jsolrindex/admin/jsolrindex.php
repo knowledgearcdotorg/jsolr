@@ -30,10 +30,8 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controller');
-
 JLoader::register('JSolrIndexHelper', dirname(__FILE__) . '/helpers/jsolrindex.php');
 
-$controller	= JController::getInstance('jsolrindex');
+$controller	= JControllerLegacy::getInstance('jsolrindex');
 $controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

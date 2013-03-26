@@ -17,7 +17,6 @@ if (file_exists('config.php')) {
 }
 
 // Define expected Joomla constants.
-define('DS',			DIRECTORY_SEPARATOR);
 define('_JEXEC',		1);
 
 if (!defined('JPATH_BASE'))
@@ -38,8 +37,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 // Include relative constants, JLoader and the jimport and jexit functions.
 
-require_once JPATH_BASE.DS.'includes'.DS.'defines.php';
-require_once JPATH_LIBRARIES.DS.'joomla'.DS.'import.php';
+require_once JPATH_BASE.'/includes/defines.php';
+require_once JPATH_LIBRARIES.'/joomla/import.php';
 require_once JPATH_BASE . '/libraries/joomla/session/session.php';
 
 $session = JFactory::getSession();

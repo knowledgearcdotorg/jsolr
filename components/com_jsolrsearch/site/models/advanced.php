@@ -39,7 +39,7 @@ jimport('jsolr.search.factory');
 
 jimport('jsolr.form.form');
 
-require_once(JPATH_ROOT.DS."components".DS."com_content".DS."helpers".DS."route.php");
+require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
 
 class JSolrSearchModelAdvanced extends JModelForm
@@ -176,7 +176,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 		if (JRequest::getString("o")) {
 			$extension = JArrayHelper::getValue(explode("_", JRequest::getCmd("o"), 2), 1);
 
-			$path = JPath::find(JPATH_PLUGINS.DS."jsolrsearch".DS.$extension.DS."forms", "advanced.xml");
+			$path = JPath::find(JPATH_PLUGINS."/jsolrsearch/".$extension."/forms", "advanced.xml");
 		}
 		
 		return $path;

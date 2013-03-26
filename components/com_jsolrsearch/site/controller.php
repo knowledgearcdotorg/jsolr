@@ -30,9 +30,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.controller');
-
-class JSolrSearchController extends JController 
+class JSolrSearchController extends JControllerLegacy 
 {	
 	function advanced()
 	{

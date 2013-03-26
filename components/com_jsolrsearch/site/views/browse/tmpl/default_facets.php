@@ -30,7 +30,7 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_BASE.DS.'components'.DS.'com_jsolrsearch'.DS.'helpers'.DS.'route.php');
+require_once(JPATH_BASE.'/components/com_jsolrsearch/helpers/route.php');
 
 $operators = $this->state->get('facet.operators');
 ?>
