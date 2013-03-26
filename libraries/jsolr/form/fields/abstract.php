@@ -44,7 +44,10 @@ abstract class JSolrFormFieldAbstract extends JFormField
     /**
      * Method to get value of form field as a text. Maybe used to displaying it on frontend as current selected options
      */
-	abstract public function getValueText();
+	public function getValueText()
+	{
+		return $this->getLabel();
+	}
 	
 	/**
 	 * Returns rendered field

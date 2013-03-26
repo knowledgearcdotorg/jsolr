@@ -2,12 +2,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-class JFormFieldList extends JFormField
+class JSolrFormFieldList extends JSolrFormFieldAbstract
 {
 
 	protected $type = 'JSolr.List';
 
-	protected function getInputFacetFilters()
+	protected function getInputFacetFilter()
 	{
 		// Initialize variables.
 		$html = array();
@@ -46,7 +46,7 @@ class JFormFieldList extends JFormField
 		return implode($html);
 	}
 
-	protected function getInputSearchTools()
+	protected function getInputSearchTool()
 	{
 		// Initialize variables.
 		$html = array();
