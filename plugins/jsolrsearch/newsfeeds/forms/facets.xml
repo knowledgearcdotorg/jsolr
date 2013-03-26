@@ -19,7 +19,7 @@
         <field 
             name="ids"
             facet="id"
-            type="JSolr.NumberRange"
+            type="JSolr.PriceRange"
             label="IDS"
             size="40"
             class="inputbox jsolrquery"

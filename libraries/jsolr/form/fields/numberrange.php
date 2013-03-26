@@ -27,10 +27,10 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	 */
 	public function getInputFacetFilter()
 	{
-		$id = $this->element['name'];
+		$id = JArrayHelper::getValue($this->element, 'name'); ;
 		$html = '';
-		$name = (string)$this->element['name'];
-		$value = explode('|', $this->value['value']);
+		$name = (string)JArrayHelper::getValue($this->element, 'name');
+		$value = explode('|', JArrayHelper::getValue($this->value, 'value'));
 
 		if ($value[0] == '') {
 			unset($value[0]);
@@ -65,11 +65,13 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 		if ($this->useCustomRange()) {
 			$html .= '<li class="jdaterange-custom jrange-custom">' . JHTML::_('link', '#', JText::_("COM_JSOLRSEARCH_DATERANGE_CUSTOM"));
 			$name = $this->name;
+			$from 	= JArrayHelper::getValue($this->value, 'from');
+			$to 	= JArrayHelper::getValue($this->value, 'to');
 			
 			$html .= '<span class="jsolr-hidden">';
 
-			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_FROM) .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
-			$html .= '<label>' . JText::_(COM_JSOLRSEARCH_TO) .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
+			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_FROM') .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
+			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_TO') .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
 
 			$html .= '</span>';
 		
@@ -86,13 +88,13 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	 */
 	public function getInputSearchTool()
 	{
-		$id 	= $this->element['name'];
+		$id 	= JArrayHelper::getValue($this->element, 'name');
 		$html 	= '<ul>';
-		$name 	= (string)$this->element['name'];
+		$name 	= (string)JArrayHelper::getValue($this->element, 'name');
 
-		$from 	= $this->value['from'];
-		$to 	= $this->value['to'];
-		$value 	= $this->value['value'];
+		$from 	= JArrayHelper::getValue($this->value, 'from');
+		$to 	= JArrayHelper::getValue($this->value, 'to');
+		$value 	= JArrayHelper::getValue($this->value, 'value');
 
 		$html .= '<input type="hidden" id="' .$id. '_value" name="' . $this->name .'[value]" value="' . $value .'" />';
 
@@ -124,14 +126,14 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 	 */
 	public function getFilter()
 	{
-		$facet = (string)$this->element['facet'];
+		$facet = JArrayHelper::getValue($this->element, 'facet');
 
 		$filter = '';
 
 		if (is_array($this->value)) {
-			$from 	= $this->value['from'];
-			$to 	= $this->value['to'];
-			$value  = $this->value['value'];
+			$from 	= JArrayHelper::getValue($this->value, 'from');
+			$to 	= JArrayHelper::getValue($this->value, 'to');
+			$value 	= JArrayHelper::getValue($this->value, 'value');
 
 			if (is_numeric($from) || is_numeric($to)) {
 				if (!is_numeric($from)) {
