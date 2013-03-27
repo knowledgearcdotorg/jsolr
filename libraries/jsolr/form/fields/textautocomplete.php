@@ -5,7 +5,7 @@
  * @author		$LastChangedBy: bartlomiejkielbasa $
  * @package		JSolr
  *
- * @author Bartlomiej Kielbasa <bartlomiejkielbasa@wijiti.com> * * 
+ * @author Bartlomiej Kielbasa <bartlomiejkielbasa@wijiti.com>
  */
 
 defined('JPATH_BASE') or die;
@@ -51,6 +51,7 @@ class JSolrFormFieldTextAutoComplete extends JSolrFormFieldText
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 
 		$attr .= ' data-fields="' . $this->getFields() . '" ';
+		$attr .= ' data-showFacet="' . $this->getShowFacet() . '" ';
 		
 		return '<input type="text" name="' . htmlspecialchars($this->name) . '" value="' .htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" id="' . $this->element['name'] . '" ' . $attr . '/>';
 	}
@@ -79,12 +80,18 @@ class JSolrFormFieldTextAutoComplete extends JSolrFormFieldText
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 
 		$attr .= ' data-fields="' . $this->getFields() . '" ';
+		$attr .= ' data-showFacet="' . $this->getShowFacet() . '" ';
 		
 		return '<ul><li><input type="text" name="' . htmlspecialchars($this->name) . '" value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" id="' . $this->element['name'] . '" ' . $attr . '/></li></ul>';
 	}
 
 	function getFields()
 	{
-		JArrayHelper::getValue($this->element, "fields", 'title_ac^50,author_ac^50');
+		return JArrayHelper::getValue($this->element, "fields", 'title_ac^50,author_ac^50');
+	}
+
+	function getShowFacet()
+	{
+		return JArrayHelper::getValue($this->element, "showFacet", 'title_ac');
 	}
 }

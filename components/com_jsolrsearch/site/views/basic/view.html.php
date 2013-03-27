@@ -140,8 +140,6 @@ class JSolrSearchViewBasic extends JViewLegacy
     function getPagination()
     {
         $pagination = $this->get('Pagination');
-        $pagination->set('ajax', NULL);
-
         return $pagination;
     }
 

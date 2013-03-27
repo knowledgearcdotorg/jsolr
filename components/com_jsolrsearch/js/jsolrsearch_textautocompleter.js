@@ -4,6 +4,6 @@ jQuery(document).ready(function(){
 	jQuery.each(jQuery('.jsolr-autocompleter'), function(index, elem) {
 		elem = jQuery(elem);
 
-		var completer = new Autocompleter.Request.JSON(elem.attr('id'), jsolrsearch_autocomplete_url + '?fields=' + elem.attr('data-fields'), {'postVar': 'q'});
+		var completer = new Autocompleter.Request.JSON(elem.attr('id'), jsolrsearch_autocomplete_url + '?fields=' + elem.attr('data-fields') + '&showFacet=' + elem.attr('data-showFacet'), {'postVar': 'q'});
 	});
 });

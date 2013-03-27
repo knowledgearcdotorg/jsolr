@@ -37,13 +37,14 @@ class JSolrSearchViewAutocomplete extends JView
     	$model 	= $this->getModel();
     	$uri 	= JFactory::getURI();
     	$fields = $uri->getVar('fields');
+    	$show = $uri->getVar('showFacet');
     	$q 		= JRequest::getVar('q', NULL, 'post');
 
     	if (empty($fields)) {
     		$fields = 'title_ac^50,author_ac^50';
     	}
 
-    	echo json_encode($model->getResults($q, $fields));
+    	echo json_encode($model->getResults($q, $fields, $show));
         jexit();
     }
 }
