@@ -137,6 +137,14 @@ class JSolrSearchViewBasic extends JViewLegacy
         return $this->loadTemplate('pagination');
     }
 
+    function getPagination()
+    {
+        $pagination = $this->get('Pagination');
+        $pagination->set('ajax', NULL);
+
+        return $pagination;
+    }
+
     public function loadFacetFiltersSelectedTemplate()
     {
         return $this->loadTemplate('facets_selected');

@@ -35,6 +35,9 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.cs
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/dropdown.css');
 
 ?>
+<script type="text/javascript">
+	var jsolrsearch_autocomplete_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
+</script>
 <?php echo $this->loadFormTemplate()?>
 
 <div id="jsolr-facet-filters-selected">

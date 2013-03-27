@@ -15,7 +15,10 @@
 	
     <files folder="libraries">
         <folder>apache</folder>
+        <folder>form</folder>
+        <folder>helper</folder>
         <folder>index</folder>
+        <folder>language</folder>
         <folder>search</folder>
         <filename>factory.php</filename>
     </files>

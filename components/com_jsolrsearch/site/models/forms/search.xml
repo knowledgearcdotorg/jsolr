@@ -12,7 +12,7 @@
 		<field 
             name="title"
             facet="title"
-            type="JSolr.Text"
+            type="JSolr.TextAutoComplete"
             label=""
             size="20"
             class="inputbox jsolrquery"

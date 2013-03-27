@@ -1,1 +1,1 @@
-<?php echo $this->get("Pagination")->getPagesLinks(); ?>
+<?php echo $this->getPagination()->getPagesLinks(); ?>

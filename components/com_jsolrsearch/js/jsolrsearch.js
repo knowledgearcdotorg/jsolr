@@ -160,7 +160,7 @@ var jsolrsearch = {
     updateTemplate: function(response)
     {
     	this.results.html(response.results);
-    	this.pagination.html(response.pagination);
+    	this.pagination.html(response.pagination.replace(/\&amp;ajax\=1/ig, ''));
     	this.facetsSelected.html(response.facets_selected);
     	this.results.fadeIn();
     }
