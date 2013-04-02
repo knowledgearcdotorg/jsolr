@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('.moduletable [type=checkbox]').change(function(){
+	$('.moduletable [type=checkbox], .moduletable select').change(function(){
 		jsolrsearch.update();
 		return false;
 	});
@@ -133,7 +133,7 @@ var jsolrsearch = {
 	createUrl: function() {
 		var attrs = [];
 
-		$.each(this.form.find('input, [type=checkbox]'), function(key, elem){
+		$.each(this.form.find('input, [type=checkbox], select'), function(key, elem){
 			elem = $(elem);
 
 			if (elem.attr('type') == 'checkbox' && !elem.is(':checked')) {
@@ -150,7 +150,17 @@ var jsolrsearch = {
 
 					name = name.substr(start + 1, end - start - 1) + name.substr(end + 1);
 				}
-				attrs.push(name + '=' + elem.val());
+
+				var val = elem.val();
+
+				if (elem.is('select')) {
+					console.log(val);
+					$.each(val, function(key, s){
+						attrs.push(name + '=' + s);
+					});
+				} else {
+					attrs.push(name + '=' + val);
+				}
 			}
 		});
 
