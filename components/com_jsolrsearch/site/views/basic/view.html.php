@@ -178,13 +178,29 @@ class JSolrSearchViewBasic extends JViewLegacy
         return 2; // TODO: move to component's configuration
     }
 
-    public function updateUri(array $params = array())
+    public function updateUri(array $add = array(), array $del = array())
     {
-        $uri = JFactory::getURI();
+        $uri = clone JFactory::getURI();
 
-        foreach ($params as $key => $value) {
+        foreach ($add as $key => $value) {
             $uri->setVar($key, $value);
         }
+
+        foreach ($del as $key) {
+            $start = strpos($key, '[');
+
+            if ($start !== NULL) {
+                $key = substr($key, $start + 1);
+                $start = strpos($key, ']');
+                $key = substr($key, 0, $start);
+            }
+            
+            $uri->delVar($key);
+        }
+
+        $uri->delVar('ajax');
+
+        $uri->setVar('plugin', @$_GET['plugin']);
 
         return $uri->toString();
     }

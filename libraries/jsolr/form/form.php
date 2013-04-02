@@ -222,10 +222,22 @@ class JSolrForm extends JForm
 			if ($fieldset->name == 'main') continue;
 
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				if (!empty($field->value)) {
+				$value = $field->getValue();
+				if (!empty($value)) {
+					if (is_array($value)) {
+						if (isset($value['from'])) {
+							if (empty($value['from'])  && empty($value['to']) && empty($value['value'])) {
+								continue;
+							}
+						} elseif (count($value) && $value[0] == 'null') {
+							continue;
+						}
+					}
+
 					$result[] = array(
 						'label' => $field->getLabel(),
-						'value' => $field->value
+						'value' => $field->getValueText(),
+						'name'  => $field->name,
 					);
 				}
 			}

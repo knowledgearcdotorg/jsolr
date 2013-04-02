@@ -149,4 +149,19 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
 
 		return '';
 	}
+
+	function getValueText()
+    {
+        if (!is_array($this->value) || count($this->value) == 0) {
+            return NULL;
+        }
+
+        $result = array();
+
+        foreach ($this->value as $v) {
+            $result[] = $v;
+        }
+
+        return implode(', ', $result);
+    }
 }

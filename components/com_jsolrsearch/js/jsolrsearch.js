@@ -143,7 +143,6 @@ var jsolrsearch = {
 			var name = elem.attr('name');
 
 			if (name != undefined) {
-
 				if (name.substr(0, 4) == 'com_') {
 					var start	= name.indexOf("[");
 					var end		= name.indexOf(']');

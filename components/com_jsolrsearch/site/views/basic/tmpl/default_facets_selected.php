@@ -1,5 +1,15 @@
+<?php $form = JSolrSearchModelSearch::getFacetFilterForm() ?>
+<?php if (!is_null($form)): ?>
 <ul>
-	<?php foreach ($this->get('Form')->getAppliedFacetFilters() as $field): ?>
-	<li><span class="jsolr-label"><?php echo $field['label'] ?></span></li>
+	<?php foreach ($form->getAppliedFacetFilters() as $field): ?>
+	<?php if ($field['value'] == 'null' || empty($field['value'])) continue ?>
+	<li>
+		<span class="jsolr-label"><?php echo $field['label'] ?></span>
+		<span class="jsolr-value"><?php echo $field['value'] ?></span>
+
+		<?php echo JHTML::link($this->updateUri(array(), array($field['name'], 'ajax')), '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />', array('jsolr-del')) ?>
+	</li>
 	<?php endforeach ?>
 </ul>
+<?php endif ?>
+<div class="jsolr-clear"></div>

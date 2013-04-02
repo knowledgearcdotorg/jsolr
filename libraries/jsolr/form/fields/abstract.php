@@ -90,6 +90,11 @@ abstract class JSolrFormFieldAbstract extends JFormField
 		$html .= $this->postRenderLabel();
 		return $html;
 	}
+
+	public function getValue()
+	{
+		return $this->value;
+	}
 	
 	/**
 	 * String added before label.
