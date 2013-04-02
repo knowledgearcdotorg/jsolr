@@ -51,5 +51,18 @@
             <option value="en-GB">COM_JSOLR_LANG_EN_GB</option>
             <option value="pl-PL">COM_JSOLR_LANG_PL</option>
         </field>
+
+        <field 
+            name="lang_radio"
+            facet="lang"
+            type="JSolr.Radio"
+            label="Langs (radio)"
+            size="4"
+            class="inputbox jsolrquery"
+            maxlength="5">
+            <option value="en-US">COM_JSOLR_LANG_EN_US</option>
+            <option value="en-GB">COM_JSOLR_LANG_EN_GB</option>
+            <option value="pl-PL">COM_JSOLR_LANG_PL</option>
+        </field>
     </fieldset>
 </form>

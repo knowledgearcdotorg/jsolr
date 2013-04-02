@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('.moduletable [type=checkbox], .moduletable select').change(function(){
+	$('.moduletable [type=checkbox], .moduletable select, .moduletable [type=radio]').change(function(){
 		jsolrsearch.update();
 		return false;
 	});
@@ -136,7 +136,7 @@ var jsolrsearch = {
 		$.each(this.form.find('input, [type=checkbox], select'), function(key, elem){
 			elem = $(elem);
 
-			if (elem.attr('type') == 'checkbox' && !elem.is(':checked')) {
+			if ((elem.attr('type') == 'checkbox' || elem.attr('type') == 'radio' ) && !elem.is(':checked')) {
 				return;
 			}
 
@@ -153,8 +153,7 @@ var jsolrsearch = {
 
 				var val = elem.val();
 
-				if (elem.is('select')) {
-					console.log(val);
+				if (elem.is('select') && $.isArray(key)) {
 					$.each(val, function(key, s){
 						attrs.push(name + '=' + s);
 					});

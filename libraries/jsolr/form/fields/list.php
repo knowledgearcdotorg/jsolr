@@ -133,16 +133,16 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 		$facet = $this->element['facet'];
 		$value = $this->value;
 
+		$filter = '';
+
 		if (!empty($value)) {
 			if (is_string($value)) {
-				return $facet . ':' . $value;
-			}
-
-			if (is_array($value)) {
-				return $facet . ':' . implode(' OR ', $value);
+				$filter = $facet . ':' . $value;
+			} elseif (is_array($value) && $value[0] != 'null') {
+				$filter = $facet . ':' . implode(' OR ', $value);
 			}
 		}
 
-		return '';
+		return $filter;
 	}
 }
