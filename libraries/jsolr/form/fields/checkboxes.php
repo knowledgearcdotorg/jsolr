@@ -10,7 +10,7 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
 
 	protected $forceMultiple = true;
 
-	protected function getInputSearchTools()
+	protected function getInputSearchTool()
 	{
 		// Initialize variables.
 		$html = array();

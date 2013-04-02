@@ -102,6 +102,11 @@ jQuery(document).ready(function($) {
 		jsolrsearch.update();
 		return false;
 	});
+
+	$('.moduletable [type=checkbox]').change(function(){
+		jsolrsearch.update();
+		return false;
+	});
 });
 
 var jsolrsearch = {
@@ -128,8 +133,12 @@ var jsolrsearch = {
 	createUrl: function() {
 		var attrs = [];
 
-		$.each(this.form.find('input'), function(key, elem){
+		$.each(this.form.find('input, [type=checkbox]'), function(key, elem){
 			elem = $(elem);
+
+			if (elem.attr('type') == 'checkbox' && !elem.is(':checked')) {
+				return;
+			}
 
 			var name = elem.attr('name');
 

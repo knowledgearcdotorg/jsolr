@@ -4,26 +4,26 @@
  * @subpackage	Index
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
-
-   The JSolr library for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
-   or (at your option) any later version.
-
-   The JSolr library for Joomla! is distributed in the hope that it will be 
-   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with the JSolrIndex component for Joomla!.  If not, see 
-   <http://www.gnu.org/licenses/>.
-
+ *
+ *   The JSolr library for Joomla! is free software: you can redistribute it 
+ *   and/or modify it under the terms of the GNU General Public License as 
+ *   published by the Free Software Foundation, either version 3 of the License, 
+ *   or (at your option) any later version.
+ *
+ *   The JSolr library for Joomla! is distributed in the hope that it will be 
+ *   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with the JSolrIndex component for Joomla!.  If not, see 
+ *   <http://www.gnu.org/licenses/>.
+ *
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * Name							Email
- * Michał Kocztorz				<michalkocztorz@wijiti.com> 
+ * @author Michał Kocztorz <michalkocztorz@wijiti.com> 
+ * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
  * 
  */
  
@@ -205,5 +205,32 @@ class JSolrForm extends JForm
 		}
 
 		return parent::loadFile($file, $reset, $xpath);
+	}
+
+	/**
+	 * Method to get all applied facet filters in the form
+	 * @return array
+	 * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
+	 */
+	function getAppliedFacetFilters()
+	{
+		$result = array();
+
+		if ($this->getType() != self::TYPE_FACETFILTERS) return $result;
+
+		foreach ($this->getFieldsets() as $fieldset) {
+			if ($fieldset->name == 'main') continue;
+
+			foreach ($this->getFieldset($fieldset->name) as $field) {
+				if (!empty($field->value)) {
+					$result[] = array(
+						'label' => $field->getLabel(),
+						'value' => $field->value
+					);
+				}
+			}
+		}
+
+		return $result;
 	}
 }
