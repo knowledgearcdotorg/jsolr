@@ -73,6 +73,9 @@
   width: 10px;
   height: 10px;
 }
+#main #jsolr-facet-filters-selected .jsolr-del a:hover {
+  background: transparent;
+}
 #main #jsolr-facet-filters-selected ul,
 #main #jsolr-facet-filters-selected ul li {
   display: block;

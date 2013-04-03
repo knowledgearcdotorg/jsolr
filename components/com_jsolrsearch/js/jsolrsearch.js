@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	$('.moduletable a.jrange-option').click(function(){
+	$('.jsolr-module-filter a.jrange-option').click(function(){
 		var elem = $(this);
 		var name = elem.attr('data-name');
 
@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('.moduletable [type=checkbox], .moduletable select, .moduletable [type=radio]').change(function(){
+	$('.jsolr-module-filter [type=checkbox], .jsolr-module-filter select, .jsolr-module-filter [type=radio]').change(function(){
 		jsolrsearch.update();
 		return false;
 	});
@@ -186,18 +186,23 @@ var jsolrsearch = {
     },
 
     updateFacetFiltersEvents: function() {
-		this.facetsSelected.find('a').click(function(){
-			$(this).parent().addClass('to-delete');
-			var name = $(this).attr('date-name').replace('[', '\\[').replace(']', '\\]');
+		this.facetsSelected.find('a').click(function(e){
+			$(e.currentTarget).parent().addClass('to-delete');
+			var name = $(e.currentTarget).attr('date-name').replace('[', '\\[').replace(']', '\\]');
 
 			var el = jQuery('[name="' + name + '"]');
 
 			if (el.size() > 0) {
-				el.prop('selected', false);
-				el.prop('checked', false);
+				el.attr('selected', false);
+				el.attr('checked', false);
 				el.change();
 			} else { // link
-				jQuery('[data-selector="' + name + '"]').click();
+				var selector = '[data-selector="' + name + '"]';
+
+				elem = jQuery(selector);
+
+				console.log(elem);
+				elem.click();
 			}
 
     		return false;
