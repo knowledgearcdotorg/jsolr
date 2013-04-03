@@ -200,8 +200,6 @@ class JSolrSearchViewBasic extends JViewLegacy
 
         $uri->delVar('ajax');
 
-        $uri->setVar('plugin', @$_GET['plugin']);
-
         return $uri->toString();
     }
 
