@@ -20,8 +20,12 @@
 }
 #main .jsolr-result {
   background-color: #F5F5F5;
-  border: 1px solid #E3E3E3;
-  border-radius: 5px 5px 5px 5px;
+  border: 1px solid #e3e3e3;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
   margin-bottom: 5px;
   padding: 10px;
 }
@@ -48,7 +52,7 @@
   width: 100%;
 }
 #main #jsolr-search-tools {
-  border: 1px solid black;
+  border: 1px solid #e3e3e3;
 }
 #main .jsolr-search-result-form .main-search {
   margin-bottom: 10px;
@@ -68,7 +72,6 @@
 #main #jsolr-facet-filters-selected .jsolr-del {
   width: 10px;
   height: 10px;
-  background-image: url(../images/close.png);
 }
 #main #jsolr-facet-filters-selected ul,
 #main #jsolr-facet-filters-selected ul li {
@@ -82,10 +85,19 @@
   margin-right: 5px;
   border: 1px solid silver;
   padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
 }
 #main #jsolr-facet-filters-selected .jsolr-label {
   font-weight: bold;
 }
 #main #jsolr-facet-filters-selected .jsolr-value {
   font-style: italic;
+}
+#main .to-delete {
+  color: red;
+  border-color: red;
 }

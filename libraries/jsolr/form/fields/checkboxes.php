@@ -159,7 +159,8 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
         $result = array();
 
         foreach ($this->value as $v) {
-            $result[] = $v;
+        	$v = str_replace('-', '_', $v);
+            $result[] = JText::_('COM_JSOLR_LANG_' . strtoupper($v));
         }
 
         return implode(', ', $result);

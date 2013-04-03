@@ -42,7 +42,11 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 
 		$html .= '';
 
+		$first = true;
+
 		foreach ($this->getFinalOptions() as $v => $label) {
+			$selector = $first? $this->name : '';
+
 			if (!(in_array($v, $value))) {
 				if ($this->isMultiple()) {
 					if ($v != '') {
@@ -51,19 +55,21 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 						$v = array();
 					}
 
-					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jdaterange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 				} else {
-					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jdaterange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 				}
 
 
 			} else {
 				if ($this->isMultiple()) {
-					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-selector' => $selector, 'data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
 				} else {
-					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jdaterange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jdaterange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'daterange_option_' . $id)) . '</li>';
 				}
 			}
+
+			$first = false;
 		}
 
 		if ($this->useCustomRange()) {

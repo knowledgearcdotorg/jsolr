@@ -126,4 +126,9 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	{
 		return (isset($this->element['multi'])) ? $this->element['multi'] == 'true' : false;
 	}
+
+	function getNameText()
+	{
+		return $this->element['name'];
+	}
 }

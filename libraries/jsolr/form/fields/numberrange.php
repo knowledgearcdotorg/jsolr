@@ -40,7 +40,11 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 
 		$html .= '<ul data-type="jnumberrange">';
 
+		$first = true;
+
 		foreach ($this->getFinalOptions() as $v => $label) {
+			$selector = $first? $this->name : '';
+			
 			if (!(in_array($v, $value))) {
 				if ($this->isMultiple()) {
 					if ($v != '') {
@@ -49,17 +53,19 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 						$v = array();
 					}
 
-					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jnumberrange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id . '_' . implode('_', $v))) . '</li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jnumberrange-option jrange-option', 'data-value' => implode('|', $v), 'data-name' => $id, 'id' => 'daterange_option_' . $id . '_' . implode('_', $v))) . '</li>';
 				} else {
-					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jnumberrange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id. '_' . $v)) . '</li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jnumberrange-option jrange-option', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id. '_' . $v)) . '</li>';
 				}
 			} else {
 				if ($this->isMultiple()) {
-					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-selector' => $selector, 'data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
 				} else {
-					$html .= '<li>' . JHTML::_('link', '#', $label, array('class' => 'jrange jnumberrange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id. '_' . $v)) . '</li>';
+					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jnumberrange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id. '_' . $v)) . '</li>';
 				}
 			}
+
+			$first = false;
 		}
 
 		if ($this->useCustomRange()) {
@@ -70,8 +76,8 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 			
 			$html .= '<span class="jsolr-hidden">';
 
-			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_FROM') .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
-			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_TO') .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
+			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_FROM') .'<input type="text" name="' . $name .'[from]" id="' . $id . '_from" value="' . $from .'" /></label>';
+			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_TO') .'<input type="text" name="' . $name .'[to]" id="' . $id . '_to" value="' . $to .'" /></label>';
 
 			$html .= '</span>';
 		

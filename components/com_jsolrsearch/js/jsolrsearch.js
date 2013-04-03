@@ -122,12 +122,10 @@ var jsolrsearch = {
 		this.facetsSelected = jQuery('#jsolr-facet-filters-selected');
 		this.form = jQuery('.jsolr-search-result-form, .jsolr-module-filter');
 
-		// this.facetsSelected.find('a').click(function(){
-  //   		return false;
-  //   	});
+    	this.updateFacetFiltersEvents();
 	},
 
-	update: function(params = []) {
+	update: function(params) {
 		var url = this.createUrl(params);
 		this.sendRequest(url);
 
@@ -183,9 +181,26 @@ var jsolrsearch = {
     	this.results.html(response.results);
     	this.pagination.html(response.pagination.replace(/\&amp;ajax\=1/ig, ''));
     	this.facetsSelected.html(response.facets_selected);
-    	// this.facetsSelected.find('a').click(function(){
-    	// 	return false;
-    	// });
     	this.results.fadeIn();
+    	this.updateFacetFiltersEvents();
+    },
+
+    updateFacetFiltersEvents: function() {
+		this.facetsSelected.find('a').click(function(){
+			$(this).parent().addClass('to-delete');
+			var name = $(this).attr('date-name').replace('[', '\\[').replace(']', '\\]');
+
+			var el = jQuery('[name="' + name + '"]');
+
+			if (el.size() > 0) {
+				el.prop('selected', false);
+				el.prop('checked', false);
+				el.change();
+			} else { // link
+				jQuery('[data-selector="' + name + '"]').click();
+			}
+
+    		return false;
+    	});
     }
 }
