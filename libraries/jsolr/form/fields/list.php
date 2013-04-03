@@ -145,4 +145,23 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 
 		return $filter;
 	}
+
+	function getValueText()
+	{
+		$value = $this->value;
+
+		foreach ($this->element->children() as $option) {
+			// Only add <option /> elements.
+			if ($option->getName() != 'option')
+			{
+				continue;
+			}
+
+			if ($option['value'] == $value) {
+				return JText::_((string)$option);
+			}
+		}
+
+		return '';
+	}
 }

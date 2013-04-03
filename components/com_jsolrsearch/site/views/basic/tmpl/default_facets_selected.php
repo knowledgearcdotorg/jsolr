@@ -7,7 +7,7 @@
 		<span class="jsolr-label"><?php echo $field['label'] ?></span>
 		<span class="jsolr-value"><?php echo $field['value'] ?></span>
 
-		<?php echo JHTML::link($this->updateUri(array(), array($field['name'], 'ajax', @$_GET['plugin'])), '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />', array('jsolr-del')) ?>
+		<?php echo JHTML::link($this->updateUri(array(), array($field['name'], 'ajax', @$_GET['plugin'])), '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />', array('class'=>'jsolr-del')) ?>
 	</li>
 	<?php endforeach ?>
 </ul>
