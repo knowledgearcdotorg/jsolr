@@ -122,9 +122,9 @@ var jsolrsearch = {
 		this.facetsSelected = jQuery('#jsolr-facet-filters-selected');
 		this.form = jQuery('.jsolr-search-result-form, .jsolr-module-filter');
 
-		this.facetsSelected.find('a').click(function(){
-    		return false;
-    	});
+		// this.facetsSelected.find('a').click(function(){
+  //   		return false;
+  //   	});
 	},
 
 	update: function(params = []) {
@@ -183,9 +183,9 @@ var jsolrsearch = {
     	this.results.html(response.results);
     	this.pagination.html(response.pagination.replace(/\&amp;ajax\=1/ig, ''));
     	this.facetsSelected.html(response.facets_selected);
-    	this.facetsSelected.find('a').click(function(){
-    		return false;
-    	});
+    	// this.facetsSelected.find('a').click(function(){
+    	// 	return false;
+    	// });
     	this.results.fadeIn();
     }
 }
