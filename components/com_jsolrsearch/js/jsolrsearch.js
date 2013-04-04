@@ -129,7 +129,6 @@ var jsolrsearch = {
 		this.sendRequest(url);
 
 		if (typeof history.pushState === 'undefined') { // if broswer does not support history.pushState for example IE9-
-			window.location = url;
 		} else {
 			history.pushState({'url': url}, document.title, url);
 		}
