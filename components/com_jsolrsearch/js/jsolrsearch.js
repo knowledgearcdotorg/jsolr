@@ -128,7 +128,11 @@ var jsolrsearch = {
 		var url = this.createUrl(params);
 		this.sendRequest(url);
 
-		history.pushState({'url': url}, document.title, url);
+		if (typeof history.pushState === 'undefined') { // if broswer does not support history.pushState for example IE9-
+			window.location = url;
+		} else {
+			history.pushState({'url': url}, document.title, url);
+		}
 	},
 
 	createUrl: function() {

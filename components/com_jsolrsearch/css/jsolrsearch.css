@@ -111,6 +111,7 @@
 }
 #main #jsolr-facet-filters-selected .jsolr-label {
   font-weight: bold;
+  display: block;
 }
 #main #jsolr-facet-filters-selected .jsolr-value {
   font-style: italic;

@@ -340,19 +340,27 @@ class JSolrSearchModelSearch extends JModelForm
   {
     $lang = $this->lang;
 
+    $result = $lang;
+
     // Language code must take the form xx-XX.
     if (!$lang || count(explode("-", $lang)) < 2) {
       $lang = JLanguageHelper::detectLanguage();
     }
 
     if ($includeRegion) {
-      return $lang;
+      $result =  $lang;
     } else {
       $parts = explode('-', $lang);
 
       // just return the xx part of the xx-XX language.
-      return JArrayHelper::getValue($parts, 0);
+      $result =  JArrayHelper::getValue($parts, 0);
     }
+
+    if (empty($result)) {
+      $result = 'en';
+    }
+
+    return $result;
   }
 
   public function getComponentsList()
