@@ -153,10 +153,13 @@ class JSolrSearchViewBasic extends JViewLegacy
      */
     public function showSearchToolsOnStart()
     {
-        $router = JSite::getRouter();
-        $vars = $router->getVars();
+        $form = JSolrSearchModelSearch::getSearchToolsForm();
 
-        return count($vars) > 2 ? true : false;
+        if (is_null($form)) {
+            return false;
+        }
+
+        return count($form->getAppliedSearchTools()) > 0;
     }
 
     /**

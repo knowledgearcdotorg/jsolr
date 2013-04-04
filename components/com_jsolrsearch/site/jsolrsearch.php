@@ -30,7 +30,7 @@
  */
 
 defined('_JEXEC') or die('Restricted access');
- 
+
 $controller = JControllerLegacy::getInstance('jsolrsearch');
 $controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();

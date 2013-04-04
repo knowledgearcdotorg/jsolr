@@ -1,4 +1,5 @@
 @border_color: #E3E3E3;
+@background_color: #F5F5F5;
 
 .rounded-corners (@radius: 5px) {
   -webkit-border-radius: @radius;
@@ -8,14 +9,14 @@
   border-radius: @radius;
 }
 
-#main{
-	.jsolr-hidden {
-		display: none;
-	}
-	.jsolr-clear {
-	  clear: both;
-	}
+.jsolr-hidden {
+	display: none;
+}
+.jsolr-clear {
+  clear: both;
+}
 
+#main{
 	.jsolr-search-result-form ul, .jsolr-search-result-form li {
 	    list-style-type: none;
 	}
@@ -34,7 +35,7 @@
 	}
 
 	.jsolr-result {
-	    background-color: #F5F5F5;
+	    background-color: @background_color;
 	    border: 1px solid @border_color;
 	    .rounded-corners;
 	    margin-bottom: 5px;
@@ -43,15 +44,27 @@
 
 	.jsolr-pagination {
 	    text-align: center;
-	}
-	.jsolr-pagination ul li {
-	  float:left;
-	  margin: 0;
-	  padding: 0;
+
+	    ul li {
+		  float:left;
+		  margin: 0;
+		  padding: 0;
+		}
 	}
 
 	.pull-left {
 	  float: left;
+	}
+
+	.jsolr-plugins-list {
+		.jsolr-plugins-selected {
+			font-weight: bold;
+		}
+
+		.jsolr-plugins-every {
+	    	text-decoration: none;
+	    	font-weight: bold;
+		}
 	}
 
 	.btn-group .btn {
@@ -69,6 +82,7 @@
 
 	#jsolr-search-tools {
 	  border: 1px solid @border_color;
+	  .rounded-corners;
 	}
 
 	.jsolr-search-result-form .main-search {
@@ -88,36 +102,41 @@
 	  color: black;
 	}
 
-	#jsolr-facet-filters-selected .jsolr-del {
-	    width: 10px;
-	    height: 10px;
+	#jsolr-facet-filters-selected {
+		margin-top: 10px;
 
-	    a:hover {
-	    	background: transparent;
-	    }
-	}
+		.jsolr-del {
+		    width: 10px;
+		    height: 10px;
 
-	#jsolr-facet-filters-selected ul, #jsolr-facet-filters-selected ul li {
-	  display: block;
-	  list-style: none;
-	  margin: 0;
-	  padding: 0;
-	}
+		    a:hover {
+		    	background: transparent;
+		    }
+		}
 
-	#jsolr-facet-filters-selected ul li {
-	  float: left;
-	  margin-right: 5px;
-	  border: 1px solid silver;
-	  padding: 5px;
-	  .rounded-corners;
-	}
+		ul, ul li {
+		  display: block;
+		  list-style: none;
+		  margin: 0;
+		  padding: 0;
+		}
 
-	#jsolr-facet-filters-selected .jsolr-label {
-	  font-weight: bold;
-	}
+		ul li {
+		  float: left;
+		  margin-right: 5px;
+		  border: 1px solid silver;
+		  padding: 5px;
+		  .rounded-corners;
+		}
 
-	#jsolr-facet-filters-selected .jsolr-value {
-	  font-style: italic;
+		.jsolr-label {
+		  font-weight: bold;
+		}
+
+		.jsolr-value {
+		  font-style: italic;
+		}
+
 	}
 
 	.to-delete {

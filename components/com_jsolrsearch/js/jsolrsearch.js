@@ -83,8 +83,8 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	$('.jsolr-module-filter a.jrange-option').click(function(){
-		var elem = $(this);
+	$('.jsolr-module-filter a.jrange-option').click(function(e){
+		var elem = $(e.currentTarget);
 		var name = elem.attr('data-name');
 
 		if (elem.attr('data-value') == '') {
@@ -114,7 +114,6 @@ var jsolrsearch = {
 	pagination: null,
 	facetsSelected: null,
 	form: null,
-	baseUrl: '/index.php/component/jsolrsearch/basic',
 
 	init: function() {
 		this.results = jQuery('.jsolr-results');
@@ -164,7 +163,7 @@ var jsolrsearch = {
 			}
 		});
 
-		return this.baseUrl + '?' + attrs.join('&');
+		return jsolrsearch_search_url + '?' + attrs.join('&');
 	},
 
     sendRequest: function(url)
@@ -200,9 +199,7 @@ var jsolrsearch = {
 				var selector = '[data-selector="' + name + '"]';
 
 				elem = jQuery(selector);
-
-				console.log(elem);
-				elem.click();
+				elem[0].click();
 			}
 
     		return false;

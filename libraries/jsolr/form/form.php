@@ -245,4 +245,43 @@ class JSolrForm extends JForm
 
 		return $result;
 	}
+
+	/**
+	 * Method to get all applied search tools in the form
+	 * @return array
+	 * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
+	 */
+	function getAppliedSearchTools()
+	{
+		$result = array();
+
+		if ($this->getType() != self::TYPE_SEARCHTOOLS) return $result;
+
+		foreach ($this->getFieldsets() as $fieldset) {
+			if ($fieldset->name == 'main') continue;
+
+			foreach ($this->getFieldset($fieldset->name) as $field) {
+				$value = $field->getValue();
+				if (!empty($value)) {
+					if (is_array($value)) {
+						if (isset($value['from'])) {
+							if (empty($value['from'])  && empty($value['to']) && empty($value['value'])) {
+								continue;
+							}
+						} elseif (count($value) && $value[0] == 'null') {
+							continue;
+						}
+					}
+
+					$result[] = array(
+						'label' => $field->getLabel(),
+						'value' => $field->getValueText(),
+						'name'  => $field->name,
+					);
+				}
+			}
+		}
+
+		return $result;
+	}
 }

@@ -6,21 +6,21 @@
  * @subpackage Search
  * @copyright  Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
-
-   The JSolrSearch component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
-   or (at your option) any later version.
-
-   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
-   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.https://www.google.com.au/search?hl=en&safe=off&site=&source=hp&q=Nintendo&oq=Nintendo&gs_l=hp.3..0l10.1369.2958.0.3237.8.6.0.2.2.2.527.2233.0j1j1j1j1j2.6.0.les%3B..0.0...1c.1.5.hp.gLNc7juiz2c
-
-   You should have received a copy of the GNU General Public License
-   along with the JSolrSearch component for Joomla!.  If not, see 
-   <http://www.gnu.org/licenses/>.
-
+ *
+ *   The JSolrSearch component for Joomla! is free software: you can redistribute it 
+ *   and/or modify it under the terms of the GNU General Public License as 
+ *   published by the Free Software Foundation, either version 3 of the License, 
+ *   or (at your option) any later version.
+ *
+ *   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
+ *   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.https://www.google.com.au/search?hl=en&safe=off&site=&source=hp&q=Nintendo&oq=Nintendo&gs_l=hp.3..0l10.1369.2958.0.3237.8.6.0.2.2.2.527.2233.0j1j1j1j1j2.6.0.les%3B..0.0...1c.1.5.hp.gLNc7juiz2c
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with the JSolrSearch component for Joomla!.  If not, see 
+ *   <http://www.gnu.org/licenses/>.
+ *
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
@@ -182,15 +182,15 @@ class JSolrSearchModelSearch extends JModelForm
          }
       }
 
-      if (isset($params['plugin'])) {
-        $url->setVar('plugin', $params['plugin']);
+      if (isset($params['o'])) {
+        $url->setVar('o', $params['o']);
       }
       
       return JRoute::_($url->toString(), false);
    }
 
    /**
-    * Method to get the advanced search form.
+    * Method to get the search form.
     *
     * @param   array $data    An optional array of data for the form to interrogate.
     * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
@@ -367,12 +367,12 @@ class JSolrSearchModelSearch extends JModelForm
   {
     $uri = JFactory::getURI();
 
-    $plugin = JRequest::getVar('plugin', NULL, 'post');
+    $plugin = JRequest::getVar('o', NULL, 'post');
 
     if (!empty($plugin)) {
       return $plugin;
     }
 
-    return $uri->getVar('plugin');
+    return $uri->getVar('o');
   }
 }

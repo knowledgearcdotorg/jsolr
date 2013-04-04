@@ -23,6 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * @author Hayden Young <haydenyoung@wijiti.com>
+ * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com>
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
@@ -37,6 +38,7 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/dropdown.css')
 ?>
 <script type="text/javascript">
 	var jsolrsearch_autocomplete_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
+	var jsolrsearch_search_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
 </script>
 <?php echo $this->loadFormTemplate()?>
 

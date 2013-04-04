@@ -10,7 +10,7 @@
 		
 		<!-- only JSolrFormFields should be used here -->
 		<field 
-            name="title"
+            name="q"
             facet="title"
             type="JSolr.TextAutoComplete"
             label=""
