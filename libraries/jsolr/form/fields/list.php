@@ -80,6 +80,7 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 		else
 		{
 			$html[] = JHtml::_('select.genericlist', $options, $this->name, trim($attr), 'value', 'text', $this->value, $this->id);
+			$html[] = '<br /><a href="#" data-clear="' . $this->id . '">' . JText::_('COM_JSOLRSEARCH_CLEAR') .'</a>';
 		}
 
 		return implode($html);

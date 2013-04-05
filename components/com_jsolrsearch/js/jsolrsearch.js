@@ -15,11 +15,25 @@ jQuery(document).ready(function($) {
 		
 		$('#' + elem.attr('data-name') + '_from').val('');
 		$('#' + elem.attr('data-name') + '_to').val('');
+
 		var p = elem.parent().parent().parent();
 		p.find('span.jsolr-current').html(elem.html());
-		console.log(p);
 
 		$('.jsolr-search-result-form').submit();
+
+		return false;
+	});
+
+	jQuery('.jsolr-search-result-form select').change(function(){
+		jsolrsearch.update();
+		return false;
+	});
+
+	jQuery('.jsolr-search-result-form ul.nav a[data-clear!=""]').click(function(){
+		var elem = jQuery('#' + jQuery(this).attr('data-clear'));
+
+		jsolrsearch.clearElement(elem);
+		jsolrsearch.update();
 
 		return false;
 	});
@@ -28,7 +42,6 @@ jQuery(document).ready(function($) {
 		var elem = $(this);
 
 		vals = $('#' + elem.attr('data-name') + '_value').val();
-
 		vals = vals.split('|');
 
 		var index = vals.indexOf(elem.attr('data-value'));
@@ -38,7 +51,6 @@ jQuery(document).ready(function($) {
 		}
 
 		$('#' + elem.attr('data-name') + '_value').val(vals.join('|'));
-
 		$('.jsolr-search-result-form').submit();
 
 		return false;
@@ -176,7 +188,7 @@ var jsolrsearch = {
 
 			var name = elem.attr('name');
 
-			if (name != undefined) {
+			if (name != undefined && name != '') {
 				if (name.substr(0, 4) == 'com_') {
 					var start	= name.indexOf("[");
 					var end		= name.indexOf(']');
@@ -186,8 +198,16 @@ var jsolrsearch = {
 
 				var val = elem.val();
 
+				if (val == '' || val == null) {
+					return;
+				}
+
 				if (elem.is('select') && $.isArray(key)) {
 					$.each(val, function(key, s){
+						if (s == '' || s == null) {
+							return;
+						}
+
 						attrs.push(name + '=' + s);
 					});
 				} else {
@@ -226,8 +246,7 @@ var jsolrsearch = {
 			var el = jQuery('[name="' + name + '"]');
 
 			if (el.size() > 0) {
-				el.attr('selected', false);
-				el.attr('checked', false);
+				this.clearElement(el);
 				jsolrsearch.update();
 			} else { // link
 				var selector = '[data-selector="' + name + '"]';
@@ -238,5 +257,15 @@ var jsolrsearch = {
 
     		return false;
     	});
+    },
+
+    clearElement: function(elem) {
+    	elem.attr('selected', false);
+		elem.attr('checked', false);
+
+		elem = elem.children();
+
+		elem.attr('selected', false);
+		elem.attr('checked', false);
     }
 }

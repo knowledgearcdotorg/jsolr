@@ -52,6 +52,7 @@ abstract class JSolrFormFieldSelectAbstract extends JSolrFormFieldAbstract
 		// Create a regular list.
 		else {
 			$html[] = JHtml::_('select.genericlist', $options, $this->name, trim($attr), 'value', 'text', $this->value, $this->id);
+			$html[] = '<br /><a href="#" data-clear="' . $this->id . '">' . JText::_('COM_JSOLRSEARCH_CLEAR') .'</a>';
 		}
 	
 		return '<ul><li>'.implode($html) . '</li></ul>';
