@@ -229,7 +229,7 @@ class JSolrForm extends JForm
 							if (empty($value['from'])  && empty($value['to']) && empty($value['value'])) {
 								continue;
 							}
-						} elseif (count($value) && $value[0] == 'null') {
+						} elseif (count($value) && JArrayHelper::getValue($value, 0) == 'null') {
 							continue;
 						}
 					}
