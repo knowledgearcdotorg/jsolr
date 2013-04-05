@@ -14,6 +14,7 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
 	{
 		// Initialize variables.
 		$html = array();
+		$html[] = '<ul>';
 
 		// Initialize some field attributes.
 		$class = $this->element['class'] ? ' class="checkboxes ' . (string) $this->element['class'] . '"' : ' class="checkboxes"';
@@ -25,7 +26,6 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
 		$options = $this->getOptions();
 
 		// Build the checkbox field output.
-		$html[] = '<ul>';
 		foreach ($options as $i => $option)
 		{
 
@@ -44,10 +44,10 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
 			$html[] = '<label for="' . $this->id . $i . '"' . $class . '>' . JText::_($option->text) . '</label>';
 			$html[] = '</li>';
 		}
-		$html[] = '</ul>';
 
 		// End the checkbox field output.
 		$html[] = '</fieldset>';
+		$html[] = '</ul>';
 
 		return implode($html);
 	}

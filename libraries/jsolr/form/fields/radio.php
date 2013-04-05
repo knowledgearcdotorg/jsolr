@@ -67,7 +67,7 @@ class JSolrFormFieldRadio extends JSolrFormFieldAbstract
 	protected function getInputSearchTool()
 	{
 		// Initialize variables.
-		$html = array();
+		$html = array('<ul class="jsolr-radio">');
 
 		// Initialize some field attributes.
 		$class = $this->element['class'] ? ' class="radio ' . (string) $this->element['class'] . '"' : ' class="radio"';
@@ -81,7 +81,7 @@ class JSolrFormFieldRadio extends JSolrFormFieldAbstract
 		// Build the radio field output.
 		foreach ($options as $i => $option)
 		{
-
+			$html[] = '<li>';
 			// Initialize some option attributes.
 			$checked = ((string) $option->value == (string) $this->value) ? ' checked="checked"' : '';
 			$class = !empty($option->class) ? ' class="' . $option->class . '"' : '';
@@ -95,10 +95,14 @@ class JSolrFormFieldRadio extends JSolrFormFieldAbstract
 
 			$html[] = '<label for="' . $this->id . $i . '"' . $class . '>'
 				. JText::alt($option->text, preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)) . '</label>';
+
+			$html[] = '</li>';
 		}
 
 		// End the radio field output.
 		$html[] = '</fieldset>';
+
+		$html[] = '</ul>';
 
 		return implode($html);
 	}

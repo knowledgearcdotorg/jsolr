@@ -49,7 +49,7 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 	protected function getInputSearchTool()
 	{
 		// Initialize variables.
-		$html = array();
+		$html = array('<ul><li>');
 		$attr = '';
 
 		// Initialize some field attributes.
@@ -82,6 +82,8 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 			$html[] = JHtml::_('select.genericlist', $options, $this->name, trim($attr), 'value', 'text', $this->value, $this->id);
 			$html[] = '<br /><a href="#" data-clear="' . $this->id . '">' . JText::_('COM_JSOLRSEARCH_CLEAR') .'</a>';
 		}
+
+		$html[] = '</li></ul>';
 
 		return implode($html);
 	}

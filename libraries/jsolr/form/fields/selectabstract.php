@@ -64,7 +64,7 @@ abstract class JSolrFormFieldSelectAbstract extends JSolrFormFieldAbstract
 	protected function getInputFacetFilter()
 	{
 		// Initialize variables.
-		$html = array();
+		$html = array('<ul><li>');
 		$attr = '';
 	
 		// Initialize some field attributes.
@@ -93,6 +93,8 @@ abstract class JSolrFormFieldSelectAbstract extends JSolrFormFieldAbstract
 		else {
 			$html[] = JHtml::_('select.genericlist', $options, $this->name, trim($attr), 'value', 'text', $this->value, $this->id);
 		}
+
+		$html[] = '</li></ul>';
 	
 		return implode($html);
 	}

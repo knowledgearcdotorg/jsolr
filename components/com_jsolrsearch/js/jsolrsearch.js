@@ -118,7 +118,7 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 
-	$('.jsolr-module-filter [type=checkbox], .jsolr-module-filter select, .jsolr-module-filter [type=radio]').change(function(){
+	$('.jsolr-module-filter [type=checkbox], .jsolr-module-filter select, .jsolr-module-filter [type=radio], #jsolr-search-tools-list [type=checkbox], #jsolr-search-tools-list select, #jsolr-search-tools-list [type=radio]').change(function(){
 		jsolrsearch.update();
 		return false;
 	});
