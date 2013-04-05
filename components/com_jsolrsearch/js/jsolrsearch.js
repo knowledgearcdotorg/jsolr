@@ -15,7 +15,9 @@ jQuery(document).ready(function($) {
 		
 		$('#' + elem.attr('data-name') + '_from').val('');
 		$('#' + elem.attr('data-name') + '_to').val('');
-		elem.parent().parent().parent().find('span.jsolr-current').html(elem.html());
+		var p = elem.parent().parent().parent();
+		p.find('span.jsolr-current').html(elem.html());
+		console.log(p);
 
 		$('.jsolr-search-result-form').submit();
 
@@ -106,6 +108,32 @@ jQuery(document).ready(function($) {
 
 	$('.jsolr-module-filter [type=checkbox], .jsolr-module-filter select, .jsolr-module-filter [type=radio]').change(function(){
 		jsolrsearch.update();
+		return false;
+	});
+
+	$('#jsolr-search-tools-list .jrange-custom input[type=submit]').click(function(){
+		jsolrsearch.update();
+		var elem = $(this).parent().parent().parent().parent().find('span.jsolr-current');
+
+		var p = $(this).parent();
+
+		var from = '';
+		var to = '';
+
+		var first = p.find(':nth-child(1)');
+
+		if (first.size() == 3) {
+			from = jQuery(first[1]).val();
+			to = jQuery(first[2]).val();
+		} else {
+			from = first.val();
+			to = p.find(':nth-child(3)').val();
+		}
+
+		if (from != '' || to != '') {
+			elem.html('From ' + from + ' to ' + to);
+		}
+
 		return false;
 	});
 });

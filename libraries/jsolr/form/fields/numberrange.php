@@ -116,8 +116,8 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 			
 			$html .= '<span>';
 
-			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_FROM") .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
-			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_TO") .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
+			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_FROM") .'<input type="text" name="' . $name .'[from]" value="' . $from .'" id="' . $id . '_from" /></label>';
+			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_TO") .'<input type="text" name="' . $name .'[to]" value="' . $to .'" id="' . $id . '_to" /></label>';
 
 			$html .= '<br /><input type="submit" value="' . JText::_('COM_JSOLRSEARCH_BUTTON_SUBMIT') . '" class="btn jsolr-submit" />';
 
