@@ -63,7 +63,7 @@
             <?php if ($fieldset->name != 'main'): ?>
                 <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
                 <li>
-                    <a href="#"><?php echo $field->getLabel() ?><strong class="caret"></strong></a>
+                    <a href="#"><span ><?php echo $field->getLabel() ?></span><strong class="caret"></strong></a>
                       <?php echo $field->getInput() ?>
                 </li>
                 <?php endforeach;?>

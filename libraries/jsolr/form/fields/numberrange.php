@@ -79,6 +79,8 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_FROM') .'<input type="text" name="' . $name .'[from]" id="' . $id . '_from" value="' . $from .'" /></label>';
 			$html .= '<label>' . JText::_('COM_JSOLRSEARCH_TO') .'<input type="text" name="' . $name .'[to]" id="' . $id . '_to" value="' . $to .'" /></label>';
 
+			$html .= '<br /><input type="submit" value="' . JText::_('COM_JSOLRSEARCH_BUTTON_SUBMIT') . '" class="btn jsolr-submit" />';
+
 			$html .= '</span>';
 		
 			$html .= '</li>';
@@ -116,6 +118,8 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 
 			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_FROM") .'<input type="text" name="' . $name .'[from]" value="' . $from .'" /></label>';
 			$html .= '<label>' . JText::_("COM_JSOLRSEARCH_TO") .'<input type="text" name="' . $name .'[to]" value="' . $to .'" /></label>';
+
+			$html .= '<br /><input type="submit" value="' . JText::_('COM_JSOLRSEARCH_BUTTON_SUBMIT') . '" class="btn jsolr-submit" />';
 
 			$html .= '</span>';
 		

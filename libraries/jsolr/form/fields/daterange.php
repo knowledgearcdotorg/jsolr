@@ -81,6 +81,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'from'), $name . '[from]', "{$id}_from");
 			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'to'), $name . '[to]', "{$id}_to");
 
+			$html .= '<br /><input type="submit" value="' . JText::_('COM_JSOLRSEARCH_BUTTON_SUBMIT') . '" class="btn jsolr-submit" />';
+
 			$html .= '</span>';
 		
 			$html .= '</li>';
@@ -141,6 +143,8 @@ class JSolrFormFieldDateRange extends JSolrFormFieldRangeAbstract
 
 			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'from', '', 'string'), $name . '[from]', "{$id}_from");
 			$html .= JSolrHtML::calendar(JArrayHelper::getValue($this->value, 'to', '', 'string'), $name . '[to]', "{$id}_to");
+
+			$html .= '<br /><input type="submit" value="' . JText::_('COM_JSOLRSEARCH_BUTTON_SUBMIT') . '" class="btn jsolr-submit" />';
 
 			$html .= '</span>';
 		

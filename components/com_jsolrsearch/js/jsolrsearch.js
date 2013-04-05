@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
 		
 		$('#' + elem.attr('data-name') + '_from').val('');
 		$('#' + elem.attr('data-name') + '_to').val('');
+		elem.parent().parent().parent().find('span.jsolr-current').html(elem.html());
 
 		$('.jsolr-search-result-form').submit();
 
@@ -129,6 +130,7 @@ var jsolrsearch = {
 		this.sendRequest(url);
 
 		if (typeof history.pushState === 'undefined') { // if broswer does not support history.pushState for example IE9-
+			window.location = url;
 		} else {
 			history.pushState({'url': url}, document.title, url);
 		}
@@ -187,7 +189,8 @@ var jsolrsearch = {
     	this.updateFacetFiltersEvents();
     },
 
-    updateFacetFiltersEvents: function() {
+    updateFacetFiltersEvents: function()
+    {
 		this.facetsSelected.find('a').click(function(e){
 			$(e.currentTarget).parent().addClass('to-delete');
 			var name = $(e.currentTarget).attr('date-name').replace('[', '\\[').replace(']', '\\]');
@@ -197,7 +200,9 @@ var jsolrsearch = {
 			if (el.size() > 0) {
 				el.attr('selected', false);
 				el.attr('checked', false);
-				el.change();
+				console.log(el);
+				console.log(el[0]);
+				jsolrsearch.update();
 			} else { // link
 				var selector = '[data-selector="' + name + '"]';
 
