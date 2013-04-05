@@ -200,8 +200,6 @@ var jsolrsearch = {
 			if (el.size() > 0) {
 				el.attr('selected', false);
 				el.attr('checked', false);
-				console.log(el);
-				console.log(el[0]);
 				jsolrsearch.update();
 			} else { // link
 				var selector = '[data-selector="' + name + '"]';
