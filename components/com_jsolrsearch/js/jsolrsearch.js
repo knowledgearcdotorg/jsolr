@@ -246,7 +246,7 @@ var jsolrsearch = {
 			var el = jQuery('[name="' + name + '"]');
 
 			if (el.size() > 0) {
-				this.clearElement(el);
+				jsolrsearch.clearElement(el);
 				jsolrsearch.update();
 			} else { // link
 				var selector = '[data-selector="' + name + '"]';
