@@ -38,7 +38,8 @@
 		<field 
 			name="facet_show" 
 			type="checkbox" 
-			label="COM_JSOLRSEARCH_FACETS_SHOW" 
+			label="COM_JSOLRSEARCH_FACETS_SHOW"
+			value="1"
             description="COM_JSOLRSEARCH_FACETS_SHOW_DESCRIPTION" />
 
 		<field 
