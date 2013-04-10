@@ -50,8 +50,8 @@ class JSolrFormFieldTextAutoComplete extends JSolrFormFieldText
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 
-		$attr .= ' data-fields="' . $this->getFields() . '" ';
-		$attr .= ' data-showFacet="' . $this->getShowFacet() . '" ';
+		$url = JRoute::_("index.php?option=com_jsolrsearch&view=autocomplete&fields=" . $this->getFields() . "&showFacet=" . $this->getShowFacet() . "&Itemid=0");
+		$attr .= ' data-autocompleteurl="' . $url . '" ';
 		
 		return '<input type="text" name="' . htmlspecialchars($this->name) . '" value="' .htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" id="' . $this->element['name'] . '" ' . $attr . '/>';
 	}
@@ -79,8 +79,8 @@ class JSolrFormFieldTextAutoComplete extends JSolrFormFieldText
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="'.(string) $this->element['onchange'].'"' : '';
 
-		$attr .= ' data-fields="' . $this->getFields() . '" ';
-		$attr .= ' data-showFacet="' . $this->getShowFacet() . '" ';
+		$url = JRoute::_("index.php?option=com_jsolrsearch&view=autocomplete&fields=" . $this->getFields() . "&showFacet=" . $this->getShowFacet() . "&Itemid=0");
+		$attr .= ' data-autocompleteurl="' . $url . '" ';
 		
 		return '<ul><li><input type="text" name="' . htmlspecialchars($this->name) . '" value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" id="' . $this->element['name'] . '" ' . $attr . '/></li></ul>';
 	}
