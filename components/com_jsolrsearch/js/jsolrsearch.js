@@ -221,7 +221,6 @@ var jsolrsearch = {
 			}
 		});
 		
-		var jsolrsearch_search_url = $(this.form).data('searchurl');
 		return jsolrsearch_search_url + '?' + attrs.join('&');
 	},
 
