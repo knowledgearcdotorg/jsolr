@@ -151,11 +151,14 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	protected function buildKey($document)
 	{
-		$extension = JArrayHelper::getValue($document->getField('extension'), 'value');
+		$extension = $document->getField('extension');
+		$extension = JArrayHelper::getValue($extension, 'value');
 		$extension = JArrayHelper::getValue($extension, 0);
-		$view = JArrayHelper::getValue($document->getField('view'), 'value');
+		$view = $document->getField('view');
+		$view = JArrayHelper::getValue($view, 'value');
 		$view = JArrayHelper::getValue($view, 0);
-		$id = JArrayHelper::getValue($document->getField('id'), 'value');
+		$id = $document->getField('id');
+		$id = JArrayHelper::getValue($id, 'value');
 		$id = JArrayHelper::getValue($id, 0);
 		return $extension.'.'.$view.'.'.$id;
 	}
@@ -173,13 +176,16 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$documents = array();
 
 		$i = 0;
-		foreach ($items as $item) {
-			$documents[$i] = $this->prepare($item);
+		if (is_array($items)) {
+			foreach ($items as $item) {
+				$documents[$i] = $this->prepare($item);
 
-			$key = JArrayHelper::getValue($documents[$i]->getField('key'), 'value');
-			$ids[$i] = JArrayHelper::getValue($key, 0);
-			
-			$i++;
+				$key = $documents[$i]->getField('key');
+				$key = JArrayHelper::getValue($key, 'value');
+				$ids[$i] = JArrayHelper::getValue($key, 0);
+				
+				$i++;
+			}
 		}
 
 		try {
