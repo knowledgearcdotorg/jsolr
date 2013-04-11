@@ -54,9 +54,9 @@ class JSolrSearchController extends JController
 		echo json_encode(array("success"=>$success, "message"=>$msg));
 	}
 
-	function display()
+	function display($cachable = false, $urlparams = false)
 	{
-		parent::display();
+		parent::display($cachable, $urlparams);
 		
 		return $this;
 	}

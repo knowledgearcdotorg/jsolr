@@ -82,7 +82,7 @@ class JSolrIndexModelConfiguration extends JModelLegacy
 			return false;
 		}
 
-    	$dispatcher =& JDispatcher::getInstance();
+    	$dispatcher = JDispatcher::getInstance();
     	
 		JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
 
