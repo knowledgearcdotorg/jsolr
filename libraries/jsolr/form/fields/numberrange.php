@@ -59,7 +59,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 				}
 			} else {
 				if ($this->isMultiple()) {
-					$html .= '<li><span class="jsolr-option-current">' . $label . JHTML::link('#', JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-selector' => $selector, 'data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
+					$html .= '<li><span class="jsolr-option-current">' . JHTML::link('#', $label . JHTML::image(JURI::base(false) . 'media/com_jsolrsearch/images/close.png'), array('data-selector' => $selector, 'data-value' => $v, 'class' => 'jrange-remove', 'data-name' => $id)) . ' </span></li>';
 				} else {
 					$html .= '<li>' . JHTML::_('link', '#', $label, array('data-selector' => $selector, 'class' => 'jrange jnumberrange-option jrange-option jrange-option-selected', 'data-value' => $v, 'data-name' => $id, 'id' => 'numerrange_option_' . $id. '_' . $v)) . '</li>';
 				}
