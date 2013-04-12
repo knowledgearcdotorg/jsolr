@@ -32,7 +32,12 @@ jQuery(document).ready(function($) {
 	jQuery('.jsolr-search-result-form ul.nav a[data-clear!=""]').click(function(){
 		var elem = jQuery('#' + jQuery(this).attr('data-clear'));
 
+		if (elem.size() == 0) {
+			elem = jQuery('.' + jQuery(this).attr('data-clear'));
+		}
+		
 		jsolrsearch.clearElement(elem);
+
 		jsolrsearch.update();
 
 		return false;

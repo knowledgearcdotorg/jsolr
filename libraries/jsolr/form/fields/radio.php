@@ -90,11 +90,13 @@ class JSolrFormFieldRadio extends JSolrFormFieldAbstract
 			// Initialize some JavaScript option attributes.
 			$onclick = !empty($option->onclick) ? ' onclick="' . $option->onclick . '"' : '';
 
-			$html[] = '<input type="radio" id="' . $this->id . $i . '" name="' . $this->name . '"' . ' value="'
+			$html[] = '<input type="radio" id="' . $this->id . $i . '" class="' . $this->id . '" name="' . $this->name . '"' . ' value="'
 				. htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $class . $onclick . $disabled . '/>';
 
 			$html[] = '<label for="' . $this->id . $i . '"' . $class . '>'
 				. JText::alt($option->text, preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)) . '</label>';
+
+			$html[] = '<br /><a href="#" data-clear="' . $this->id . '">' . JText::_('COM_JSOLRSEARCH_CLEAR') .'</a>';
 
 			$html[] = '</li>';
 		}

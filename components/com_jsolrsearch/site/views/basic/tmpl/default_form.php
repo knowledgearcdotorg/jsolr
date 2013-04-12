@@ -63,7 +63,7 @@
             <?php if ($fieldset->name != 'main'): ?>
                 <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
                 <li>
-                    <a href="#"><span class="jsolr-current" date-all="<?php echo htmlspecialchars($field->getLabel()) ?>"><?php echo $field->getLabel() ?></span><strong class="caret"></strong></a>
+                    <a href="#"><span class="jsolr-current" data-all="<?php echo htmlspecialchars($field->getLabel()) ?>"><?php echo $field->getValueText() ?></span><strong class="caret"></strong></a>
                     <?php echo $field->getInput() ?>
                 </li>
                 <?php endforeach;?>
