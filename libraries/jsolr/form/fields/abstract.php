@@ -131,4 +131,24 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	{
 		return $this->element['name'];
 	}
+
+  	/**
+	 * Method to escape strings/array of strings
+	 * @return string|array
+  	 */
+	function escape(&$value)
+	{
+		$result = array();
+
+		if (is_array($value)) {
+			foreach ($value as $val)
+			{
+				$result[] = $this->escape($val);
+			}
+		} else {
+			$result = JSolrSearchFactory::getService()->escape($value);
+		}
+
+		return $result;
+	}
 }

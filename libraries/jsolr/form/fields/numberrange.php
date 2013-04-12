@@ -159,7 +159,7 @@ class JSolrFormFieldNumberRange extends JSolrFormFieldDateRange
 				foreach (explode('|', $value) as $val) {
 					$val = explode('_', $val);
 
-					$filters[] = '[' . $val[0] . ' TO ' . $val[1] . ']';
+					$filters[] = '[' . $this->escape($val[0]) . ' TO ' . $this->escape($val[1]) . ']';
 				}
 
 				if (count($filters)) {

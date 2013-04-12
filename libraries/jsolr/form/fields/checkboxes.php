@@ -143,7 +143,7 @@ class JSolrFormFieldCheckboxes extends JSolrFormFieldAbstract
 
 		if (!empty($value)) {
 			if (count($value)) {
-				return $facet . ':' . implode(' OR ', $value);
+				return $facet . ':' . implode(' OR ', $this->escape($value));
 			}
 		}
 

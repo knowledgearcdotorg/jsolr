@@ -79,7 +79,7 @@ class JSolrFormFieldText extends JSolrFormFieldAbstract
 			return '';
 		}
 
-		$filter = $facet . ':' . $value;
+		$filter = $facet . ':' . $this->escape($value);
 
 		return $filter;
 	}

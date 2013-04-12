@@ -275,9 +275,9 @@ class JSolrFormFieldCountry extends JSolrFormFieldSelectAbstract {
 
         if (!empty($this->value)) {
             if (is_string($this->value)) {
-                $filter = $facet . ':' . $this->value;
+                $filter = $facet . ':' .$this->escape($this->value);
             } elseif (is_array($this->value)) {
-                $filter = $facet . ':' . implode(' OR ', $this->value);
+                $filter = $facet . ':' . implode(' OR ', $this->escape($this->value));
             }
         }        
 

@@ -179,11 +179,11 @@ class JSolrFormFieldRadio extends JSolrFormFieldAbstract
 
 		if (!empty($value)) {
 			if (is_string($value)) {
-				$filter = $facet . ':' . $value;
+				$filter = $facet . ':' . $this->escape($value);
 			}
 
 			if (is_array($value)) {
-				$filter = $facet . ':' . implode(' OR ', $value);
+				$filter = $facet . ':' . implode(' OR ', $this->escape($value));
 			}
 		}
 

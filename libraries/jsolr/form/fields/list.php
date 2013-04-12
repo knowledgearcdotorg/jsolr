@@ -140,9 +140,9 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 
 		if (!empty($value)) {
 			if (is_string($value)) {
-				$filter = $facet . ':' . $value;
+				$filter = $facet . ':' . $this->escape($value);
 			} elseif (is_array($value) && $value[0] != 'null') {
-				$filter = $facet . ':' . implode(' OR ', $value);
+				$filter = $facet . ':' . implode(' OR ', $this->escape($value));
 			}
 		}
 

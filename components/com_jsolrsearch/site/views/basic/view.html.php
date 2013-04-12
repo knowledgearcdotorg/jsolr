@@ -196,7 +196,7 @@ class JSolrSearchViewBasic extends JViewLegacy
      */
     public function getComponentsLimit()
     {
-        return $this->params->get('filter_count',2);
+        return $this->params->get('filter_count',3);
     }
 
     public function updateUri(array $add = array(), array $del = array())
