@@ -153,6 +153,8 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 	{
 		$value = $this->value;
 
+		$result = array();
+
 		foreach ($this->element->children() as $option) {
 			// Only add <option /> elements.
 			if ($option->getName() != 'option')
@@ -160,11 +162,15 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 				continue;
 			}
 
-			if ($option['value'] == $value) {
-				return JText::_((string)$option);
+			if (is_array($value)) {
+				if (in_array((string)$option['value'], $value)) {
+					$result[] = $this->escape(JText::_((string)$option));
+				}
+			}elseif ($option['value'] == $value) {
+				$result[] = $this->escape(JText::_((string)$option));
 			}
 		}
 
-		return '';
+		return implode(', ', $result);
 	}
 }

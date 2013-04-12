@@ -136,7 +136,7 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	 * Method to escape strings/array of strings
 	 * @return string|array
   	 */
-	function escape(&$value)
+	function escape($value)
 	{
 		$result = array();
 
