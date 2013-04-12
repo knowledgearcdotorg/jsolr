@@ -83,7 +83,7 @@ class com_JSolrIndexInstallerScript
 	
 	public function uninstall($parent)
 	{
-		$src = JPATH_ROOT.DS."cli".DS."jsolr_crawler.php";
+		$src = JPATH_ROOT."/cli/jsolr_crawler.php";
 		
 		if (JFile::delete($src)) {
 			echo "<p>Crawler uninstalled from ".$src." successfully.</p>";

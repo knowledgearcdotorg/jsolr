@@ -110,7 +110,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	 */
 	public function onFindResultTemplatePath($option)
 	{
-		$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;		
+		$pluginsPath = JPATH_PLUGINS."/jsolrsearch/";		
 		
 		$path = false;
 
@@ -119,10 +119,10 @@ abstract class JSolrSearchSearch extends JPlugin
 			return $path;	
 		}
 
-		$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."results", $option.".php");
+		$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName()."/views/results", $option.".php");
 
 		if (!$path) {
-			$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."result", "default.php");
+			$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName()."/views/result", "default.php");
 		}
 		
 		return $path;
@@ -137,7 +137,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	 */
 	public function onFindResultsTemplatePath($o)
 	{
-		$pluginsPath = JPATH_PLUGINS.DS."jsolrsearch".DS;		
+		$pluginsPath = JPATH_PLUGINS."/jsolrsearch/";		
 		
 		$path = false;
 
@@ -150,7 +150,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	
 		while (!$path && $option = current($options)) {
 			if (array_key_exists($option, $this->onJSolrSearchExtensionGet())) {
-				$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName().DS."views".DS."results", "default.php");
+				$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName()."/views/results", "default.php");
 			}
 			
 			next($options);
