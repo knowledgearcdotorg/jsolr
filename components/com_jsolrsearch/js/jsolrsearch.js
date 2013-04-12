@@ -241,6 +241,7 @@ var jsolrsearch = {
     	this.updateUrls(response.url);
     	this.results.fadeIn();
     	this.updateFacetFiltersEvents();
+    	jQuery('.jsolr-plugins-list').fadeIn();
     },
 
     updateFacetFiltersEvents: function()

@@ -17,9 +17,9 @@
   <div class="jsolr-clear"></div>
 
 <?php $plugin = $this->get('CurrentPlugin') ?>
-<?php if (!is_null($this->items) || !empty($plugin)): ?>
+<?php if (true): ?>
 
-  <div class="btn-group jsolr-plugins-list">
+  <div class="btn-group jsolr-plugins-list <?php if (is_null($this->items) && empty($plugin)): ?> jsolr-hidden<?php endif ?>">
     <?php echo JHTML::link($this->updateUri(array('o' => '')), JText::_('Everything'), array('data-category' => '', 'class' => 'btn jsolr-plugins-every jsolr-plugins pull-left' . ($this->get('CurrentPlugin') ? '' : ' jsolr-plugins-selected'))) ?>
 
     <?php $i = 0; $max = $this->getComponentsLimit(); $components = $this->get('ComponentsList') ?>

@@ -57,15 +57,16 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/dropdown.css')
 <div class="jsolr-filters-results">
 <?php endif; ?>
 
-	<?php if (!is_null($this->items)): ?>
+	
 	   <div class="jsolr-results">
+	   	<?php if (!is_null($this->items)): ?>
 	      <?php echo $this->loadResultsTemplate(); ?>
+	    <?php endif ?>
 	   </div>
 	      
 	   <div class="pagination jsolr-pagination">
 	      <?php echo $this->loadPaginationTemplate(); ?>
 	   </div>
-<?php endif ?>
 
 <?php if( $this->showFilters ): ?>
 </div>
