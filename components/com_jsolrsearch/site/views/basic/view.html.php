@@ -210,7 +210,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         foreach ($del as $key) {
             $start = strpos($key, '[');
 
-            if ($start !== NULL) {
+            if ($start !== false) {
                 $key = substr($key, $start + 1);
                 $start = strpos($key, ']');
                 $key = substr($key, 0, $start);
@@ -238,6 +238,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         $result->results = $this->loadResultsTemplate();
         $result->pagination = $this->loadPaginationTemplate();
         $result->facets_selected = $this->loadFacetFiltersSelectedTemplate();
+        $result->url = $this->updateUri(array(), array('o'));
 
         return json_encode($result);
     }

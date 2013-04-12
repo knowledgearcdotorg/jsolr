@@ -20,7 +20,7 @@
 <?php if (!is_null($this->items) || !empty($plugin)): ?>
 
   <div class="btn-group jsolr-plugins-list">
-    <?php echo JHTML::link($this->updateUri(array('o' => '')), JText::_('Everything'), array('class' => 'btn jsolr-plugins-every jsolr-plugins pull-left' . ($this->get('CurrentPlugin') ? '' : ' jsolr-plugins-selected'))) ?>
+    <?php echo JHTML::link($this->updateUri(array('o' => '')), JText::_('Everything'), array('data-category' => '', 'class' => 'btn jsolr-plugins-every jsolr-plugins pull-left' . ($this->get('CurrentPlugin') ? '' : ' jsolr-plugins-selected'))) ?>
 
     <?php $i = 0; $max = $this->getComponentsLimit(); $components = $this->get('ComponentsList') ?>
     <?php $count = count($components) ?>
@@ -33,7 +33,7 @@
 
             <ul class="more-list">
               <?php for(; $i < $count; ++$i): ?>
-                <li><?php echo JHTML::link($this->updateUri(array('o' => $components[$i]['plugin'])), $components[$i]['name'], array('class' => 'btn pull-left' . ($components[$i]['plugin'] == $this->get('CurrentPlugin') ? ' jsolr-plugins-selected' : ' jsolr-plugins'))) ?></li>
+                <li><?php echo JHTML::link($this->updateUri(array('o' => $components[$i]['plugin'])), $components[$i]['name'], array('data-category' => $components[$i]['plugin'], 'class' => 'btn pull-left' . ($components[$i]['plugin'] == $this->get('CurrentPlugin') ? ' jsolr-plugins-selected' : ' jsolr-plugins'))) ?></li>
               <?php endfor ?>
             </ul>
           </li>
@@ -41,7 +41,7 @@
 
         <?php break?>
       <?php endif ?>
-      <?php echo JHTML::link($this->updateUri(array('o' => $components[$i]['plugin'])), $components[$i]['name'], array('class' => 'btn pull-left' . ($components[$i]['plugin'] == $this->get('CurrentPlugin') ? ' jsolr-plugins-selected' : ' jsolr-plugins'))) ?>
+      <?php echo JHTML::link($this->updateUri(array('o' => $components[$i]['plugin'])), $components[$i]['name'], array('data-category' => $components[$i]['plugin'], 'class' => 'btn pull-left' . ($components[$i]['plugin'] == $this->get('CurrentPlugin') ? ' jsolr-plugins-selected' : ' jsolr-plugins'))) ?>
     <?php endfor ?>
 
     <?php if ($this->showSearchToolsButton()): ?>

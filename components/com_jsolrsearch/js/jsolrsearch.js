@@ -221,7 +221,6 @@ var jsolrsearch = {
 			}
 		});
 		
-		var jsolrsearch_search_url = $(this.form).data('searchurl');
 		return jsolrsearch_search_url + '?' + attrs.join('&');
 	},
 
@@ -239,6 +238,7 @@ var jsolrsearch = {
     	this.results.html(response.results);
     	this.pagination.html(response.pagination.replace(/\&amp;ajax\=1/ig, ''));
     	this.facetsSelected.html(response.facets_selected);
+    	this.updateUrls(response.url);
     	this.results.fadeIn();
     	this.updateFacetFiltersEvents();
     },
@@ -273,5 +273,11 @@ var jsolrsearch = {
 
 		elem.attr('selected', false);
 		elem.attr('checked', false);
+    },
+
+    updateUrls: function (url) {
+    	jQuery.each(jQuery('.jsolr-plugins-list a[href!="#"]'), function(){
+    		jQuery(this).attr('href', url + '&o=' + jQuery(this).attr('data-category'));
+    	});
     }
 }
