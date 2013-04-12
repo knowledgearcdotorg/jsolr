@@ -259,7 +259,7 @@ var jsolrsearch = {
 				var selector = '[data-selector="' + name + '"]';
 
 				elem = jQuery(selector);
-				elem[0].click();
+				elem.click();
 			}
 
     		return false;
