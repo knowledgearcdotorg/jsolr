@@ -28,34 +28,29 @@
  * 
  */
 
-if (!class_exists( 'JSolrSearchModelSearch' )){
-	JLoader::import( 'search', JPATH_BASE.'/components/com_jsolrsearch/models' );
-}
-class modJSolrFilterHelper
-{
-	protected static $searchModel = null;
+defined('_JEXEC') or die('Restricted access');
+
+?>
+<?php if( JSolrSearchModelSearch::showFilter() ): ?>
+	<?php 
 	
-	/**
-	 * Loads controller search model. Gets an instance.
-	 * Instance of module may not be necessary.
-	 * @return JSolrSearchModelSearch
-	 */
-	public static function getSearchModel() {
-		if( is_null(self::$searchModel) ) {
-			self::$searchModel = JModel::getInstance( 'Search', 'JSolrSearchModel' );
-		}
-		return self::$searchModel;
-	}
+	$document = JFactory::getDocument();
+	$document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
+	$document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
 	
-	public static function showFilter() {
-		return JSolrSearchModelSearch::showFilter();
-	}
-	
-	/**
-	 * 
-	 * @return JSolrForm
-	 */
-	public static function getForm() {
-		return JSolrSearchModelSearch::getFacetFilterForm();
-	}
-}
+	$form = $this->form;
+	?>
+	<div class="jsolr-module jsolr-module-filter">
+		<?php foreach($form->getFieldsets() as $fieldset ) : ?>
+			<?php if ($fieldset->name != 'main'): ?>
+				<?php foreach ($form->getFieldset($fieldset->name) as $field): ?>
+					<div>
+						<h4><?php echo $field->getLabel() ?></h4>
+						<div><?php echo $field->getInput() ?></div>
+					</div>
+				<?php endforeach;?>
+			<?php endif ?>
+		<?php endforeach;?>
+	</div>
+<?php endif; ?>
+

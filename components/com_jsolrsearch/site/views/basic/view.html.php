@@ -30,6 +30,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 jimport( 'joomla.application.component.view');
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
+jimport('joomla.application.module');
+jimport('joomla.application.component');
  
 class JSolrSearchViewBasic extends JViewLegacy
 {	
@@ -45,11 +47,18 @@ class JSolrSearchViewBasic extends JViewLegacy
         $this->items = $this->get('Items');
         $this->plugins = $this->get('ComponentsList');
         $this->current_plugin = $this->get('CurrentPlugin');
+        $this->params = JComponentHelper::getParams('com_jsolrsearch',true);
 
         if ($this->isAjax()) {
             echo $this->buildAjaxResponse();
             jexit(); 
         }
+        
+        
+        $mod = JModuleHelper::getModule('mod_jsolrfilter');
+        $this->moduleEnabled = ($mod->id != 0);
+        
+        $this->showFilters = !$this->moduleEnabled && JSolrSearchModelSearch::showFilter() && $this->params->get('facet_show',false);
 
         parent::display($tpl);
     }
@@ -126,6 +135,15 @@ class JSolrSearchViewBasic extends JViewLegacy
 	    	return $this->loadTemplate('default');
 	    }
 	}
+	
+	/**
+	 * Return template with facet filters.
+	 * @author Michał Kocztorz
+	 * @return string
+	 */
+	public function loadFacetFiltersTemplate() {
+        return $this->loadTemplate('filters');
+	}
 
     public function loadFormTemplate()
     {
@@ -178,7 +196,7 @@ class JSolrSearchViewBasic extends JViewLegacy
      */
     public function getComponentsLimit()
     {
-        return 2; // TODO: move to component's configuration
+        return $this->params->get('filter_count',2);
     }
 
     public function updateUri(array $add = array(), array $del = array())

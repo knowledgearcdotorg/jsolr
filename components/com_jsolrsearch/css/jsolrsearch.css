@@ -120,3 +120,15 @@
   color: red;
   border-color: red;
 }
+
+
+.jsolr-filters{
+	width: 200px;
+	float: left;
+	padding:3px;
+	margin:3px;
+	border: 3px solid #f4f4f4;
+}
+.jsolr-filters-results {
+	overflow: hidden;
+}

@@ -46,12 +46,27 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/dropdown.css')
    <?php echo $this->loadFacetFiltersSelectedTemplate() ?>
 </div>
 
-<?php if (!is_null($this->items)): ?>
-   <div class="jsolr-results">
-      <?php echo $this->loadResultsTemplate() ?>
+<?php if( $this->showFilters ): ?>
+   <div class="jsolr-filters">
+      <?php echo $this->loadFacetFiltersTemplate(); ?>
    </div>
-      
-   <div class="pagination jsolr-pagination">
-      <?php echo $this->loadPaginationTemplate(); ?>
-   </div>
+<?php endif; ?>
+
+
+<?php if( $this->showFilters ): ?>
+<div class="jsolr-filters-results">
+<?php endif; ?>
+
+	<?php if (!is_null($this->items)): ?>
+	   <div class="jsolr-results">
+	      <?php echo $this->loadResultsTemplate(); ?>
+	   </div>
+	      
+	   <div class="pagination jsolr-pagination">
+	      <?php echo $this->loadPaginationTemplate(); ?>
+	   </div>
 <?php endif ?>
+
+<?php if( $this->showFilters ): ?>
+</div>
+<?php endif; ?>

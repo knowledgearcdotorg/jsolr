@@ -2,7 +2,7 @@
 <?php JHTML::_('behavior.formvalidation') ?>
 <?php $form = $this->get('Form') ?>
 
-<form action="<?php echo JRoute::_(JURI::base()."index.php?option=com_jsolrsearch&task=search"); ?>" method="post" name="adminForm" class="form-validate jsolr-search-result-form">
+<form action="<?php echo JRoute::_("index.php?option=com_jsolrsearch&task=search"); ?>" data-searchurl="<?php echo JRoute::_("index.php?option=com_jsolrsearch"); ?>" method="post" name="adminForm" class="form-validate jsolr-search-result-form">
   <input type="hidden" name="o" value="<?php echo $this->get('CurrentPlugin') ?>" />
   <fieldset class="word">
     <?php foreach($form->getFieldsets() as $fieldset ) : ?>

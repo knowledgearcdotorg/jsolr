@@ -57,6 +57,13 @@ class JSolrSearchModelSearch extends JModelForm
    {
      return self::$form_facet_filter;
    }
+   
+	/**
+    * @return bool
+    */
+   public static function showFilter() {
+   	return !is_null(self::getFacetFilterForm());
+   }
 
    static function getSearchToolsForm()
    {
