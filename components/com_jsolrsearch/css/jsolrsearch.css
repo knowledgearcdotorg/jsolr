@@ -18,6 +18,16 @@
 #main .jsolr-search-result-form .jrange-custom span.add-on {
   display: inline;
 }
+#main .jsolr-filters {
+  width: 200px;
+  float: left;
+  padding: 3px;
+  margin: 3px;
+  border: 3px solid #f4f4f4;
+}
+#main .jsolr-filters-results {
+  overflow: hidden;
+}
 #main .jsolr-result {
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
