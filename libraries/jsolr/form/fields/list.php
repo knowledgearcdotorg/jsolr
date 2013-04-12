@@ -164,7 +164,7 @@ class JSolrFormFieldList extends JSolrFormFieldAbstract
 
 			if (is_array($value)) {
 				if (in_array((string)$option['value'], $value)) {
-					$result[] = $this->escape(JText::_((string)$option));
+					$result[] = JText::_((string)$option);
 				}
 			}elseif ($option['value'] == $value) {
 				$result[] = $this->escape(JText::_((string)$option));
