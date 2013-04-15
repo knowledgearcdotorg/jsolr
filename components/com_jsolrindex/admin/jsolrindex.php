@@ -32,6 +32,8 @@ defined('_JEXEC') or die('Restricted access');
 
 JLoader::register('JSolrIndexHelper', dirname(__FILE__) . '/helpers/jsolrindex.php');
 
-$controller	= JControllerLegacy::getInstance('jsolrindex');
+$JControllerName = class_exists('JControllerLegacy') ? 'JControllerLegacy' : 'JController';
+
+$controller	= $JControllerName::getInstance('jsolrindex');
 $controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

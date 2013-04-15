@@ -33,6 +33,8 @@ jimport('joomla.application.component.controller');
 
 JLoader::register('JSolrSearchHelper', dirname(__FILE__) . '/helpers/jsolrsearch.php');
 
-$controller	= JController::getInstance('jsolrsearch');
+$JControllerName = class_exists('JControllerLegacy') ? 'JControllerLegacy' : 'JController';
+
+$controller	= $JControllerName::getInstance('jsolrsearch');
 $controller->execute(JRequest::getCmd('task'));
 $controller->redirect();

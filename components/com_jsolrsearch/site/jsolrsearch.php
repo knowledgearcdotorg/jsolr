@@ -31,6 +31,8 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-$controller = JControllerLegacy::getInstance('jsolrsearch');
+$JControllerName = class_exists('JControllerLegacy') ? 'JControllerLegacy' : 'JController';
+
+$controller = $JControllerName::getInstance('jsolrsearch');
 $controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();
