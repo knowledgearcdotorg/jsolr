@@ -220,8 +220,10 @@ var jsolrsearch = {
 				}
 			}
 		});
+
+		var baseUri = this.baseUri();
 		
-		return this.baseUri() + '?' + attrs.join('&');
+		return baseUri + (baseUri.indexOf('?') == -1 ? '?' :'&') + attrs.join('&');
 	},
 
     sendRequest: function(url)
