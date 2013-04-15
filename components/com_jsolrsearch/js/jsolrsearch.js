@@ -221,7 +221,7 @@ var jsolrsearch = {
 			}
 		});
 		
-		return jsolrsearch_search_url + '?' + attrs.join('&');
+		return this.baseUri() + '?' + attrs.join('&');
 	},
 
     sendRequest: function(url)
@@ -280,5 +280,11 @@ var jsolrsearch = {
     	jQuery.each(jQuery('.jsolr-plugins-list a[href!="#"]'), function(){
     		jQuery(this).attr('href', url + '&o=' + jQuery(this).attr('data-category'));
     	});
+    },
+
+    baseUri: function(){
+    	var uri = window.location;
+
+    	return uri.pathname;
     }
 }
