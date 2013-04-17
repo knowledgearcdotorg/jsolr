@@ -213,10 +213,10 @@ var jsolrsearch = {
 							return;
 						}
 
-						attrs.push(name + '=' + s);
+						attrs.push(name + '=' + escape(s));
 					});
 				} else {
-					attrs.push(name + '=' + val);
+					attrs.push(name + '=' + escape(val));
 				}
 			}
 		});
