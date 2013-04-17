@@ -20,13 +20,12 @@
 <?php if (true): ?>
 
   <div class="btn-group jsolr-plugins-list <?php if (is_null($this->items) && empty($plugin)): ?> jsolr-hidden<?php endif ?>">
-    <?php echo JHTML::link($this->updateUri(array('o' => '')), JText::_('Everything'), array('data-category' => '', 'class' => 'btn jsolr-plugins-every jsolr-plugins pull-left' . ($this->get('CurrentPlugin') ? '' : ' jsolr-plugins-selected'))) ?>
-
     <?php $i = 0; $max = $this->getComponentsLimit(); $components = $this->get('ComponentsList') ?>
+    <?php $components = array_merge(array(array('plugin' => '', 'name' => JText::_('Everything'))), $components) ?>
     <?php $count = count($components) ?>
 
     <?php for ($i = 0; $i < $count; ++$i): ?>
-      <?php if ($i == $max): ?>
+      <?php if ($i == $max + 1): ?>
         <ul class="nav nav-more pull-left">
           <li>
             <a href="#"><?php echo JText::_("COM_JSOLRSEARCH_COMPONENTS_MORE") ?><span class="more"></span></a>
