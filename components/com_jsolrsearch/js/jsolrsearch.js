@@ -243,6 +243,7 @@ var jsolrsearch = {
     	this.updateUrls(response.url);
     	this.results.fadeIn();
     	this.updateFacetFiltersEvents();
+    	this.stopAutocompleters();
     	jQuery('.jsolr-plugins-list').fadeIn();
     },
 
@@ -287,5 +288,16 @@ var jsolrsearch = {
     baseUri: function(){
 
     	return jQuery('#jsolr-search-result-form').attr('data-baseurl');
+    },
+
+    stopAutocompleters: function()
+    {
+    	if (typeof self.autocompleters === 'undefined') {
+    		return;
+    	}
+
+    	jQuery.each(self.autocompleters, function(index, elem){
+    		elem.hideChoices(true);
+    	});
     }
 }
