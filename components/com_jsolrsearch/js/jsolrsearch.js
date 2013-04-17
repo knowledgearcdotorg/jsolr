@@ -285,8 +285,7 @@ var jsolrsearch = {
     },
 
     baseUri: function(){
-    	var uri = window.location;
 
-    	return uri.pathname;
+    	return jQuery('#jsolr-search-result-form').attr('data-baseurl');
     }
 }
