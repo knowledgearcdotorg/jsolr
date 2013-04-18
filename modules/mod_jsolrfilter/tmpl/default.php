@@ -36,7 +36,7 @@ $document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
 $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
 ?>
 
-<div class="jsolr-module jsolr-module-filter">
+<div class="jsolr-module jsolr-module-filter jsolr-content">
 	<?php foreach($form->getFieldsets() as $fieldset ) : ?>
 		<?php if ($fieldset->name != 'main'): ?>
 			<?php foreach ($form->getFieldset($fieldset->name) as $field): ?>
