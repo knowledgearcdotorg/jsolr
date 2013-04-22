@@ -16,16 +16,6 @@
             maxlength="50"/>
 
         <field 
-            name="identity"
-            facet="id"
-            type="JSolr.NumberRange"
-            label="ID"
-            step="30"
-            multi="true"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
-
-        <field 
             name="lang"
             facet="lang"
             type="JSolr.Lang"

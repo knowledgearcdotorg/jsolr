@@ -36,38 +36,41 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.cs
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/dropdown.css');
 
 ?>
-<script type="text/javascript">
-	var jsolrsearch_autocomplete_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
-	var jsolrsearch_search_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
-</script>
-<?php echo $this->loadFormTemplate()?>
 
-<div id="jsolr-facet-filters-selected">
-   <?php echo $this->loadFacetFiltersSelectedTemplate() ?>
-</div>
+<div class="jsolr-content jsolr-main">
+	<script type="text/javascript">
+		var jsolrsearch_autocomplete_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
+		var jsolrsearch_search_url = '<?php echo JRoute::_('index.php/component/jsolrsearch/basic') ?>';
+	</script>
+	<?php echo $this->loadFormTemplate()?>
 
-<?php if( $this->showFilters ): ?>
-   <div class="jsolr-filters">
-      <?php echo $this->loadFacetFiltersTemplate(); ?>
-   </div>
-<?php endif; ?>
+	<div id="jsolr-facet-filters-selected">
+	   <?php echo $this->loadFacetFiltersSelectedTemplate() ?>
+	</div>
 
-
-<?php if( $this->showFilters ): ?>
-<div class="jsolr-filters-results">
-<?php endif; ?>
-
-	
-	   <div class="jsolr-results">
-	   	<?php if (!is_null($this->items)): ?>
-	      <?php echo $this->loadResultsTemplate(); ?>
-	    <?php endif ?>
+	<?php if( $this->showFilters ): ?>
+	   <div class="jsolr-filters">
+	      <?php echo $this->loadFacetFiltersTemplate(); ?>
 	   </div>
-	      
-	   <div class="pagination jsolr-pagination">
-	      <?php echo $this->loadPaginationTemplate(); ?>
-	   </div>
+	<?php endif; ?>
 
-<?php if( $this->showFilters ): ?>
+
+	<?php if( $this->showFilters ): ?>
+	<div class="jsolr-filters-results">
+	<?php endif; ?>
+
+		
+		   <div class="jsolr-results">
+		   	<?php if (!is_null($this->items)): ?>
+		      <?php echo $this->loadResultsTemplate(); ?>
+		    <?php endif ?>
+		   </div>
+		      
+		   <div class="pagination jsolr-pagination">
+		      <?php echo $this->loadPaginationTemplate(); ?>
+		   </div>
+
+	<?php if( $this->showFilters ): ?>
+	</div>
+	<?php endif; ?>
 </div>
-<?php endif; ?>

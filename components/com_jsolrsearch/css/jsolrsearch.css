@@ -4,41 +4,41 @@
 .jsolr-clear {
   clear: both;
 }
-#main .jsolr-search-result-form ul,
-#main .jsolr-search-result-form li {
+.jsolr-content .jsolr-search-result-form ul,
+.jsolr-content .jsolr-search-result-form li {
   list-style-type: none;
 }
-#main .jsolr-filters {
+.jsolr-content .jsolr-filters {
   width: 200px;
   float: left;
   padding: 3px;
   margin: 3px;
   border: 3px solid #f4f4f4;
 }
-#main .jsolr-filters-results {
+.jsolr-content .jsolr-filters-results {
   overflow: hidden;
 }
-#main .jsolr-search-result-form ul.dropdown-menu {
+.jsolr-content .jsolr-search-result-form ul.dropdown-menu {
   padding: 0;
   margin: 0;
 }
-#main .jsolr-search-result-form .jrange-custom span {
+.jsolr-content .jsolr-search-result-form .jrange-custom span {
   display: none;
 }
-#main .jsolr-search-result-form .jrange-custom span.add-on {
+.jsolr-content .jsolr-search-result-form .jrange-custom span.add-on {
   display: inline;
 }
-#main .jsolr-filters {
+.jsolr-content .jsolr-filters {
   width: 200px;
   float: left;
   padding: 3px;
   margin: 3px;
   border: 3px solid #f4f4f4;
 }
-#main .jsolr-filters-results {
+.jsolr-content .jsolr-filters-results {
   overflow: hidden;
 }
-#main .jsolr-result {
+.jsolr-content .jsolr-result {
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   -webkit-border-radius: 5px;
@@ -49,36 +49,36 @@
   margin-bottom: 5px;
   padding: 10px;
 }
-#main .jsolr-pagination {
+.jsolr-content .jsolr-pagination {
   text-align: center;
 }
-#main .jsolr-pagination ul li {
+.jsolr-content .jsolr-pagination ul li {
   float: left;
   margin: 0;
   padding: 0;
 }
-#main .pull-left {
+.jsolr-content .pull-left {
   float: left;
 }
-#main .jsolr-plugins-list .jsolr-plugins-selected {
+.jsolr-content .jsolr-plugins-list .jsolr-plugins-selected {
   font-weight: bold;
 }
-#main .jsolr-plugins-list .jsolr-plugins-every {
+.jsolr-content .jsolr-plugins-list .jsolr-plugins-every {
   text-decoration: none;
   font-weight: bold;
 }
-#main .btn-group .btn {
+.jsolr-content .btn-group .btn {
   height: 20px;
   padding: 5px;
 }
-#main .jsolr-option-current {
+.jsolr-content .jsolr-option-current {
   padding-left: 20px;
   font-weight: bold;
 }
-#main .jsolr-search-result-form ul.nav li select {
+.jsolr-content .jsolr-search-result-form ul.nav li select {
   width: 100%;
 }
-#main #jsolr-search-tools {
+.jsolr-content #jsolr-search-tools {
   border: 1px solid #e3e3e3;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -86,39 +86,39 @@
   -o-border-radius: 5px;
   border-radius: 5px;
 }
-#main .jsolr-search-result-form .main-search {
+.jsolr-content .jsolr-search-result-form .main-search {
   margin-bottom: 10px;
 }
-#main .jsolr-search-result-form .main-search ul {
+.jsolr-content .jsolr-search-result-form .main-search ul {
   padding: 0;
   margin: 0;
 }
-#main .jsolr-search-result-form .btn-group,
-#main #jsolr-search-tools-list,
-#main .jsolr-results {
+.jsolr-content .jsolr-search-result-form .btn-group,
+.jsolr-content #jsolr-search-tools-list,
+.jsolr-content .jsolr-results {
   margin-top: 20px;
 }
-#main .jsolr-module-filter a.jrange-option-selected {
+.jsolr-content .jsolr-module-filter a.jrange-option-selected {
   color: black;
 }
-#main #jsolr-facet-filters-selected {
+.jsolr-content #jsolr-facet-filters-selected {
   margin-top: 10px;
 }
-#main #jsolr-facet-filters-selected .jsolr-del {
+.jsolr-content #jsolr-facet-filters-selected .jsolr-del {
   width: 10px;
   height: 10px;
 }
-#main #jsolr-facet-filters-selected .jsolr-del a:hover {
+.jsolr-content #jsolr-facet-filters-selected .jsolr-del a:hover {
   background: transparent;
 }
-#main #jsolr-facet-filters-selected ul,
-#main #jsolr-facet-filters-selected ul li {
+.jsolr-content #jsolr-facet-filters-selected ul,
+.jsolr-content #jsolr-facet-filters-selected ul li {
   display: block;
   list-style: none;
   margin: 0;
   padding: 0;
 }
-#main #jsolr-facet-filters-selected ul li {
+.jsolr-content #jsolr-facet-filters-selected ul li {
   float: left;
   margin-right: 5px;
   border: 1px solid silver;
@@ -129,14 +129,14 @@
   -o-border-radius: 5px;
   border-radius: 5px;
 }
-#main #jsolr-facet-filters-selected .jsolr-label {
+.jsolr-content #jsolr-facet-filters-selected .jsolr-label {
   font-weight: bold;
   display: block;
 }
-#main #jsolr-facet-filters-selected .jsolr-value {
+.jsolr-content #jsolr-facet-filters-selected .jsolr-value {
   font-style: italic;
 }
-#main .to-delete {
+.jsolr-content .to-delete {
   color: red;
   border-color: red;
 }

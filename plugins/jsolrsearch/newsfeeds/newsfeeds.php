@@ -112,6 +112,6 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 		return array(
 			'name' => 'Newsfeeds',
 			'plugin' => $this->extension,
-			'path' => __DIR__ . '/forms/facets.xml');
+			'path' => __DIR__ . '/forms/tools.xml');
 	}
 }
