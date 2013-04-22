@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Index
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 - 2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
 
    The JSolr library for Joomla! is free software: you can redistribute it 
@@ -34,6 +34,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.plugin.plugin');
 
+jimport('jsolr.index.factory');
 jimport('jsolr.apache.solr.service');
 jimport('jsolr.apache.solr.document');
 
@@ -67,31 +68,6 @@ abstract class JSolrIndexCrawler extends JPlugin
 	* Prepares an article for indexing.
 	*/
 	protected abstract function getDocument(&$record);
-	
-	protected function getDeleteQueryById($ids)
-	{
-		$i = 0;
-		
-		$query = "";
-		
-		if (count($ids)) {
-			$query.="-key:(";
-		
-			foreach ($ids as $id) {
-				if ($i > 0) {
-					$query .= " OR ";	
-				}
-				
-				$query .= $id;
-				
-				$i++;	
-			}
-			
-			$query .= ")";
-		}
-		
-		return $query;
-	}
 
 	/**
 	 * Get's the language, either from the item or from the Joomla environment.
@@ -189,25 +165,9 @@ abstract class JSolrIndexCrawler extends JPlugin
 		}
 
 		try {
-			$params = JComponentHelper::getParams("com_jsolrindex", true);
-			
-			if (!$params) {
-				return;
-			}
+			$solr = JSolrIndexFactory::getService();
 
-			$url = $params->get('host');
-			
-			if ($params->get('username') && $params->get('password')) {
-				$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-			}
-
-			$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
-
-			if (count($ids)) {
-				$solr->deleteByQuery($this->getDeleteQueryById($ids));
-			} else {
-				$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
-			}
+			$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
 			
 			$solr->addDocuments($documents, false, true, true);
 			

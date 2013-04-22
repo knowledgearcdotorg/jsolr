@@ -357,25 +357,9 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		}
 
 		try {
-			$params = JComponentHelper::getParams("com_jsolrindex", true);
-			
-			if (!$params) {
-				return;
-			}
+			$solr = JSolrIndexFactory::getService(); 
 
-			$url = $params->get('host');
-			
-			if ($params->get('username') && $params->get('password')) {
-				$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-			}
-
-			$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
-
-			if (count($ids)) {
-				$solr->deleteByQuery($this->getDeleteQueryById($ids));
-			} else {
-				$solr->deleteByQuery('extension:'.$this->get('extension'));
-			}
+			$solr->deleteByQuery('extension:'.$this->get('extension'));
 			
 			$solr->addDocuments($documents);
 			
