@@ -37,7 +37,7 @@ jimport('jsolr.apache.solr.document');
 /**
  * The JSolr factory class.
  */
-class JSolrFactory extends JObject 
+abstract class JSolrFactory extends JObject 
 {
 	/**
 	 * @static
