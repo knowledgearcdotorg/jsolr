@@ -13,7 +13,7 @@
   float: left;
   padding: 3px;
   margin: 3px;
-  border: 3px solid #f4f4f4;
+  border: 3px solid #f4f4fm4;
 }
 .jsolr-content .jsolr-filters-results {
   overflow: hidden;
@@ -48,14 +48,6 @@
   border-radius: 5px;
   margin-bottom: 5px;
   padding: 10px;
-}
-.jsolr-content .jsolr-pagination {
-  text-align: center;
-}
-.jsolr-content .jsolr-pagination ul li {
-  float: left;
-  margin: 0;
-  padding: 0;
 }
 .jsolr-content .pull-left {
   float: left;
@@ -139,4 +131,13 @@
 .jsolr-content .to-delete {
   color: red;
   border-color: red;
+}
+.jsolr-content .jsolr-pagination {
+  text-align: center;
+}
+.jsolr-content .jsolr-pagination ul li {
+  float: left;
+  margin: 2px;
+  padding: 0;
+  list-style-type: none;
 }

@@ -124,4 +124,13 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 		
 		return implode("...", $hlContent);
 	}
+
+	public function onJSolrSearchRegisterComponents()
+	{
+		return array(
+			'name' => 'Reviews',
+			'plugin' => $this->extension,
+			'path' => __DIR__ . '/forms/facets.xml'
+		);
+	}
 }
