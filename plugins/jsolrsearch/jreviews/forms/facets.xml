@@ -1,27 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-    <fieldset 
-        name="metadata"
-        label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
-        addfieldpath="/plugins/jsolrsearch/jreviews/forms/fields/">
+    <fieldset
+        name="meta"
+        addfieldpath="/plugins/jsolrsearch/jreviews/forms/fields">
         
         <!-- only JSolrFormFields should be used here -->
         <field 
-            name="lang"
-            facet="lang"
+            name="category"
+            facet="category_en"
             type="JSolr.Category"
-            label="Language"
-            size="4"
+            label="Category"
             multiple="true"
             class="inputbox jsolrquery"
             maxlength="50"/>
 
         <field 
-            name="lang"
-            facet="lang"
-            type="JReview.ReadingLevel"
-            label="Reading lever"
+            name="jrreadinglevel"
+            facet="jrreadinglevel_s_multi"
+            type="JReviews.Readinglevel"
+            label="Reading level"
             class="inputbox jsolrquery"
+            size="8"
+            maxlength="50" />
+
+        <field 
+            name="jrjrfiction"
+            facet="jrjrfiction_s_multi"
+            type="JSolr.Radio"
+            label="Fiction/Non-Fiction "
+            class="inputbox jsolrquery"
+            maxlength="50">
+            <option value="Fiction">Fiction</option>
+            <option value="Non-Fiction">Non-Fiction</option>
+        </field>
+
+        <field 
+            name="jrkeywords"
+            facet="jrkeywords_s_multi"
+            type="JReviews.Keywords"
+            label="Fiction/Non-Fiction "
+            class="inputbox jsolrquery"
+            multiple="true"
+            size="8"
+            maxlength="50" />
+
+        <field 
+            name="jrpartofseries"
+            facet="jrpartofseries_s_multi"
+            type="JSolr.Radio"
+            label="Part of a Series"
+            class="inputbox jsolrquery"
+            maxlength="50">
+            <option value="Part-of-a-Series">Part of a Series</option>
+        </field>
+
+        <field 
+            name="country"
+            facet="country"
+            type="JSolr.Country"
+            label="Country"
+            class="inputbox jsolrquery"
+            multiple="true"
             maxlength="50" />
     </fieldset>
 </form>

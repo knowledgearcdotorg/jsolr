@@ -4,9 +4,9 @@ defined('JPATH_PLATFORM') or die;
 
 jimport('jsolr.form.fields.list');
 
-class JReviewsFormFieldReadinglevel extends JSolrFormFieldList
+class JReviewsFormFieldKeywords extends JSolrFormFieldList
 {
-	protected $type = 'JReviews.Readinglevel';
+	protected $type = 'JReviews.Keywords';
 
 	protected function getOptions()
 	{
@@ -35,8 +35,8 @@ class JReviewsFormFieldReadinglevel extends JSolrFormFieldList
 	{
 		$q = 'SELECT `text`, `value`, optionid' .
 	        ' FROM #__jreviews_fieldoptions' .
-	        ' WHERE fieldid = 15' .
-	        ' ORDER BY ordering ASC';
+	        ' WHERE fieldid = 16' .
+	        ' ORDER BY ordering ASC LIMIT 100';
 
         $db = JFactory::getDbo();
 	    $db->setQuery($q);
