@@ -8,7 +8,7 @@
  * @author Bartlomiej Kielbasa <bartlomiejkielbasa@wijiti.com> *
  */
 
-jimport('jsolr.form.fields.abstract');
+jimport('jsolr.form.fields.selectabstract');
 
 class JSolrFormFieldCountry extends JSolrFormFieldSelectAbstract {
 
