@@ -40,6 +40,9 @@ jimport('joomla.html.pagination');
 
 jimport('jsolr.form.form');
 
+ // error_reporting(E_ALL);
+ // ini_set("display_errors", 1); 
+
 require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
 
@@ -150,6 +153,8 @@ class JSolrSearchModelSearch extends JModelForm
 
         return $items;
       } catch (Exception $e) {
+        JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+        $this->pagination = new JPagination;
         return NULL;
       }
 
