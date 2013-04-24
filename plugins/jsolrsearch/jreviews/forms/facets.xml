@@ -47,11 +47,11 @@
         <field 
             name="jrpartofseries"
             facet="jrpartofseries_s_multi"
-            type="JSolr.Radio"
+            type="JSolr.Checkbox"
             label="Part of a Series"
             class="inputbox jsolrquery"
+            checkedValue="Part-of-a-Series"
             maxlength="50">
-            <option value="Part-of-a-Series">Part of a Series</option>
         </field>
 
         <field 

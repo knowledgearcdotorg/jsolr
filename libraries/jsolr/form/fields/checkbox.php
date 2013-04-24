@@ -14,7 +14,7 @@ class JSolrFormFieldCheckbox extends JSolrFormFieldAbstract
 {
 	public $type = 'JSolr.Checkbox';
 
-	function getInputSearchTools()
+	function getInputSearchTool()
 	{
 		// Initialize some field attributes.
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
@@ -25,7 +25,7 @@ class JSolrFormFieldCheckbox extends JSolrFormFieldAbstract
 		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
 
 		return '<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
-			. htmlspecialchars((string) $this->element['value'], ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . '/>';
+			. htmlspecialchars((string) $this->getCheckedValue(), ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . '/>';
 	}
 
 	function getInputFacetFilter()
@@ -39,7 +39,7 @@ class JSolrFormFieldCheckbox extends JSolrFormFieldAbstract
 		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
 
 		return '<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
-			. htmlspecialchars((string) $this->element['value'], ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . '/>';
+			. htmlspecialchars((string) $this->getCheckedValue(), ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . '/>';
 	}
 
 	function getValueText()
@@ -52,9 +52,14 @@ class JSolrFormFieldCheckbox extends JSolrFormFieldAbstract
 		$facet = $this->element['facet'];
 
 		if (!empty($this->value)) {
-			return $facet . ':true';
+			return $facet . ':' . $this->getCheckedValue();
 		}
 
 		return '';
+	}
+
+	protected function getCheckedValue()
+	{
+		return JArrayHelper::getValue($this->element, 'checkedValue', 'true');
 	}
 }
