@@ -4,5 +4,6 @@ build.properties
 .project
 .settings/
 /build.properties
+.idea
 
 *sublime-*

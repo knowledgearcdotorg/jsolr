@@ -19,7 +19,7 @@ class JSolrFormFieldCheckbox extends JSolrFormFieldAbstract
 		// Initialize some field attributes.
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
-		$checked = ((string) $this->element['value'] == $this->value) ? ' checked="checked"' : '';
+		$checked = (!empty($this->value)) ? ' checked="checked"' : '';
 
 		// Initialize JavaScript field attributes.
 		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
@@ -33,7 +33,7 @@ class JSolrFormFieldCheckbox extends JSolrFormFieldAbstract
 		// Initialize some field attributes.
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
-		$checked = ((string) $this->element['value'] == $this->value) ? ' checked="checked"' : '';
+		$checked = (!empty($this->value)) ? ' checked="checked"' : '';
 
 		// Initialize JavaScript field attributes.
 		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';

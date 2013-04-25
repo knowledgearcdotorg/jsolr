@@ -3,9 +3,9 @@
 defined('JPATH_PLATFORM') or die;
 /* error_reporting(E_ALL);
  ini_set("display_errors", 1); */
-jimport('jsolr.form.fields.list');
+jimport('jsolr.form.fields.checkboxes');
 
-class JSolrFormFieldCategory extends JSolrFormFieldList
+class JSolrFormFieldCategory extends JSolrFormFieldCheckboxes
 {
 	protected $type = 'JSolr.Category';
 
@@ -14,7 +14,7 @@ class JSolrFormFieldCategory extends JSolrFormFieldList
 		// Initialize variables.
 		$options = array();
 
-        $cats = $this->getCategoriesTree();
+        $cats = $this->getCategories($this->getParentCategory());
 
 		foreach ($cats as $option)
 		{
@@ -40,21 +40,6 @@ class JSolrFormFieldCategory extends JSolrFormFieldList
 		reset($options);
 
 		return $options;
-	}
-
-	function getCategoriesTree()
-	{
-		$db = JFactory::getDbo();
-	        $db->setQuery(
-	        'SELECT id, title' .
-	        ' FROM #__categories' .
-	        ' WHERE parent_id = 0' .
-	        ' ORDER BY title ASC'
-	    );
-
-	    $rootCategory = $db->loadObject();
-
-	    return $this->getCategories($rootCategory->id);
 	}
 
 	function getCategories($parent_id)
@@ -89,7 +74,7 @@ class JSolrFormFieldCategory extends JSolrFormFieldList
 
 		$result = array();
 
-		$cats = $this-> getCategoriesTree();
+		$cats = $this->getCategories($this->getParentCategory());
 
 		foreach ($cats as $option) {
 			if (is_array($value)) {
@@ -119,4 +104,9 @@ class JSolrFormFieldCategory extends JSolrFormFieldList
 
 		return implode(', ', $result);
 	}
+
+    function getParentCategory()
+    {
+        return JArrayHelper::getValue($this->element, 'parentCategory', 0);
+    }
 }

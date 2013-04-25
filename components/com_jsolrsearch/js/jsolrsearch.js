@@ -168,11 +168,22 @@ var jsolrsearch = {
 		this.form = jQuery('.jsolr-search-result-form, .jsolr-module-filter');
 
     	this.updateFacetFiltersEvents();
+    	this.initOnpopstate();
+
+    	if (typeof history.pushState === 'undefined') { // if broswer does not support history.pushState for example IE9-
+			window.location = window.location.href;
+		} else {
+			history.pushState({'url': window.location.href}, document.title, window.location.href);
+		}
 	},
 
-	update: function(params) {
+	update: function(params, updatePushState = true) {
 		var url = this.createUrl(params);
 		this.sendRequest(url);
+
+		if (!updatePushState) {
+			return true;
+		}
 
 		if (typeof history.pushState === 'undefined') { // if broswer does not support history.pushState for example IE9-
 			window.location = url;
@@ -299,5 +310,40 @@ var jsolrsearch = {
     	jQuery.each(self.autocompleters, function(index, elem){
     		elem.hideChoices(true);
     	});
+    },
+
+    onpopstate: function (ev)
+    {
+    	$.each(jsolrsearch.form.find('input, [type=checkbox], select'), function(key, elem){
+    		jsolrsearch.clearElement(jQuery(elem));
+    	});
+
+    	console.log(window.location.href);
+    	console.log(history);
+
+    	var url = document.location.search.substr(1, 9999999).split('&');
+    	var form = jQuery(jsolrsearch.form);
+    	
+    	jQuery.each(url, function(index, elem){
+    		elem = elem.replace('[', '').replace(']', '').split('=');
+    		var e = form.find('[name$="\\[' + elem[0] + '\\]"]');
+
+    		if (!e.length) {
+    			e = form.find("[name$='\\[" + elem[0] + "\\]\\[\\]']");
+    		}
+
+    		e.val(elem[1]);
+    	});
+
+    	jsolrsearch.update({}, false);
+    },
+
+    initOnpopstate: function()
+    {
+    	if (typeof window.onpopstate === 'undefined') {
+    		return;
+    	}
+
+    	window.onpopstate = this.onpopstate;
     }
 }

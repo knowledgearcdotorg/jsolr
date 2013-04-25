@@ -12,6 +12,8 @@
             label="Category"
             multiple="true"
             class="inputbox jsolrquery"
+            size="8"
+            parentCategory="9"
             maxlength="50"/>
 
         <field 
@@ -38,11 +40,21 @@
             name="jrkeywords"
             facet="jrkeywords_s_multi"
             type="JReviews.Keywords"
-            label="Fiction/Non-Fiction "
+            label="Keywords"
             class="inputbox jsolrquery"
             multiple="true"
             size="8"
             maxlength="50" />
+
+        <field 
+            name="reluctant"
+            facet="jrreluctantreader_s_multi"
+            type="JSolr.Checkbox"
+            label="Reluctant Reader"
+            class="inputbox jsolrquery"
+            checkedValue="Good-for-Reluctant-Readers"
+            maxlength="50">
+        </field>
 
         <field 
             name="jrpartofseries"
