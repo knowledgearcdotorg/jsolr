@@ -318,21 +318,30 @@ var jsolrsearch = {
     		jsolrsearch.clearElement(jQuery(elem));
     	});
 
-    	console.log(window.location.href);
-    	console.log(history);
-
     	var url = document.location.search.substr(1, 9999999).split('&');
     	var form = jQuery(jsolrsearch.form);
     	
     	jQuery.each(url, function(index, elem){
     		elem = elem.replace('[', '').replace(']', '').split('=');
+    		elem[1] = decodeURIComponent(elem[1]);
+
     		var e = form.find('[name$="\\[' + elem[0] + '\\]"]');
 
     		if (!e.length) {
     			e = form.find("[name$='\\[" + elem[0] + "\\]\\[\\]']");
     		}
 
-    		e.val(elem[1]);
+    		if (e.is(':checkbox') || e.is(':radio')) {
+    			jQuery.each(e, function(index, w) {
+    				w = jQuery(w);
+
+    				if (w.val() == elem[1]) {
+    					w.prop('checked', true);
+    				}
+    			});
+    		} else {
+    			e.val(elem[1]);
+    		}
     	});
 
     	jsolrsearch.update({}, false);
