@@ -11,7 +11,7 @@
 		<authorUrl>http://www.wijiti.com</authorUrl>
 		<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
 		<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 		<description>MOD_JSOLRFILTER_XML_DESCRIPTION</description>
 		<files>
 			<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
@@ -27,4 +27,22 @@
 	 	<languages>
 	 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.ini</language>
 	 	</languages>
+    <config>
+        <fields name="params">
+            <fieldset
+                name="advanced">
+                <field
+                    name="layout"
+                    type="modulelayout"
+                    label="JFIELD_ALT_LAYOUT_LABEL"
+                    description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
+                <field
+                    name="moduleclass_sfx"
+                    type="text"
+                    label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                    description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+
+            </fieldset>
+        </fields>
+    </config>
 </extension>

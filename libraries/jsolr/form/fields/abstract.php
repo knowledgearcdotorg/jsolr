@@ -54,6 +54,7 @@ abstract class JSolrFormFieldAbstract extends JFormField
 	 */
 	public function getInput()
 	{
+// 		$this->element['class'] .= ' ' . get_class($this) . ' ';
 		$html = $this->preRender();
 		
 		$html .= $this->form->getType() == JSolrForm::TYPE_FACETFILTERS ? 
