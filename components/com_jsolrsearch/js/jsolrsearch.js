@@ -177,7 +177,10 @@ var jsolrsearch = {
 		}
 	},
 
-	update: function(params, updatePushState = true) {
+	update: function(params, updatePushState) {
+		if (typeof(updatePushState) == 'undefined') {
+			updatePushState = true;
+		}
 		var url = this.createUrl(params);
 		this.sendRequest(url);
 
