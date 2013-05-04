@@ -44,6 +44,8 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 	
 	private $jrFields = array();
 	
+	private $jrFieldNames = array();
+	
 	/**
 	* Prepares a listing for indexing.
 	*/
@@ -167,20 +169,24 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 	
 	private function _getJRFields()
 	{
-		// Create a new query object.
-		$db		= JFactory::getDbo();
-		$query	= $db->getQuery(true);
-		$user	= JFactory::getUser();
-
-		// Select extra fields from jreviews content.
-		$query
-			->select('jf.name')
-			->from('#__jreviews_fields AS jf')
-			->where("location='content'");
-			
-		$db->setQuery($query);
+		if (!$this->jrFieldNames) {
+			// Create a new query object.
+			$db		= JFactory::getDbo();
+			$query	= $db->getQuery(true);
+			$user	= JFactory::getUser();
+	
+			// Select extra fields from jreviews content.
+			$query
+				->select('jf.name')
+				->from('#__jreviews_fields AS jf')
+				->where("location='content'");
+				
+			$db->setQuery($query);
 		
-		return $db->loadColumn();
+			$this->jrFieldNames = $db->loadColumn();
+		}
+		
+		return $this->jrFieldNames;
 	}
 	
 	/**
