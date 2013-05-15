@@ -37,6 +37,12 @@ class JSolrSearchFactory extends JSolrFactory
 {
 	protected static $component = 'com_jsolrsearch';
 
+	/**
+	 * Gets an instance of the JSolrSearchQuery class.
+	 * 
+	 * @param string $query The initial query to search for.
+	 * @return JSolrSearchQuery An instance of the JSolrSearchQuery class.
+	 */
 	public static function getQuery($query = null)
 	{
 		$solr = self::getService();

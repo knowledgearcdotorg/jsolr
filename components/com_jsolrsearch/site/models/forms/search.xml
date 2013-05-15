@@ -10,19 +10,12 @@
 		
 		<!-- only JSolrFormFields should be used here -->
 		<field 
-            name="q"
-            facet="title"
-            type="JSolr.TextAutoComplete"
+            name="q"        
+            type="jsolr.textsuggest"
             label=""
             size="20"
             class="inputbox jsolrquery"
-            maxlength="50"/>
-        <field 
-            name="submit"
-            type="JSolr.Submit"
-            label=""
-            size="20"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
+            maxlength="50"
+            query="title_ac"/>
 	</fieldset>
 </form>

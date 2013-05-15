@@ -3,20 +3,11 @@
     <fieldset name="default">
         <!-- only JSolrFormFields should be used here -->
         <field 
-            name="created_at"
-            facet="created"
-            type="JSolr.DateRange"
-            label="Creation date"
+            name="qdr"
+            filter="modified"
+            type="jsolr.calendar"
+            label="Date"
             size="40"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
-        <field 
-            name="lang"
-            facet="lang"
-            type="JSolr.Lang"
-            label="Language"
-            multiple="true"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
+            class="inputbox jsolrquery"/>
     </fieldset>
 </form>

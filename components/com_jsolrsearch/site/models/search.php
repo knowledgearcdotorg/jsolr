@@ -4,7 +4,7 @@
  * 
  * @package    JSolr
  * @subpackage Search
- * @copyright  Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
  *
  *   The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -52,7 +52,10 @@ class JSolrSearchModelSearch extends JModelForm
    protected $form;
    protected $lang;
    protected $pagination;
+   private $filtered;
 
+   protected $context = 'com_jsolrsearch.search';
+   
    protected static $form_facet_filter = NULL;
    protected static $form_search_tools = NULL;
 
@@ -85,121 +88,179 @@ class JSolrSearchModelSearch extends JModelForm
           break;
      }
    }
-
-   public function getItems()
+   
+   /**
+    * (non-PHPdoc)
+    * @see JModelList::populateState()
+    */
+   public function populateState($ordering = null, $direction = null)
    {
-      try {
-        $this->getComponentsList();
-        JPluginHelper::importPlugin("jsolrsearch");
-        $dispatcher = JDispatcher::getInstance();
-        $start = JRequest::getVar('start', 0);
+		$application = JFactory::getApplication();
+   
+		$q = $application->input->get("q", null, "string");
+		$extension = $application->input->getString("o", null, "string");
 
-        $params = JComponentHelper::getParams($this->get('option'), true);
+		if ($q) {
+			$this->setState('query.q', $q);
+			
+			$this->setState('query.o', $extension);
+   		
+			$lang = $application->input->getString("lr", null);
+   			
+			if (!$lang) {
+				$lang = $application->input->getString("lang", null);
+			}
+   			
+			$this->setState('query.lang', $lang);
+			
+			$value = $application->getUserStateFromRequest('global.list.limit', 'limit', $application->getCfg('list_limit'), 'uint');
+			$limit = $value;
+			$this->setState('list.limit', $limit);
+			
+			$value = $application->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0);
+			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+			$this->setState('list.start', $limitstart);
+		}
 
-        $form = $this->getForm();
-
-        $query = $form->fillQuery()->getQuery();
-
-        $response = NULL;
-        $rows = 0;
-
-        if ($form->isFiltered()) {
-          $query->offset($start);
-
-          $plugin = $this->getCurrentPlugin();
-
-          if (!empty($plugin)) {
-            $query->mergeFilters('extension:' . $plugin);
-          }
-
-          $response = $query->search();
-          
-          $headers = json_decode($response->getRawResponse())->responseHeader;
-
-          $this->set('total', $response->response->numFound);
-          $this->set('qTime', $headers->QTime);
-          $rows = $headers->params->rows;
-
-          $items = array();
-
-          $qparams = $query->params();
-
-          foreach (json_decode($response->getRawResponse())->response->docs as $document) {
-              $docs = $dispatcher->trigger('onJSolrSearchResultPrepare', array(
-                  $document,
-                  $response->highlighting,
-                  $fragsize = JArrayHelper::getValue($qparams, "fl.fragsize"),
-                  $this->getLanguage(false))
-              );
-
-              foreach ($docs as $document) {
-                foreach ($document as $key => $value) {
-                    if (is_array($value)) {
-                        $document->$key = $value[0];
-                    }
-                }
-
-                if (!in_array($document, $items)) {
-                  $items[] = $document;
-                }
-              }
-          }
-
-        } else {
-          $items = NULL;
-        }
-
-        $this->pagination = new JPagination($this->get('total'), $start, $rows);
-
-        return $items;
-      } catch (Exception $e) {
-        JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
-        $this->pagination = new JPagination;
-        return NULL;
-      }
-
-      return $response;
+		parent::populateState($ordering, $direction);
    }
+   
+   private function _query()
+   {
+		$hl = array();
+		$filters = array();
+		$facets = array();
+   
+		$params = JComponentHelper::getParams($this->get('option'), true);
+   
+		$form = $this->getForm();
+
+		// get filters from current form fields. 
+		foreach ($form->getFieldsets() as $fieldset) {
+			foreach ($form->getFieldset($fieldset->name) as $field) {
+				if (in_array('JSolrFilterable', class_implements($field)) == true) {
+					if ($field->getFilter()) {
+						$this->filtered = true;					
+						$filters[] = $field->getFilter();
+					}
+				}
+			}
+		}
+
+   		JPluginHelper::importPlugin("jsolrsearch");
+   		$dispatcher =& JDispatcher::getInstance();
+      
+   		// Get any additional filters which may be needed as part of the search query.
+   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState(), $this->getLanguage(false))) as $result) {
+   			foreach ($result as $item) {
+   				if ($item) {
+   					$filters[] = $item;
+   				}
+   			}
+   		}
+   
+   		// Get Highlight fields for results.
+   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd', array()) as $result) {
+   			foreach ($result as $item) {
+   				$hl[] = $item.'_'.$this->getLanguage(false);
+   			}
+   		}
+
+   		// get query filter params and boosts from plugin.
+   		$qf = $dispatcher->trigger('onJSolrSearchQFAdd', array());
+
+   		$query = JSolrSearchFactory::getQuery($this->getState('query.q', '*:*'))
+			->useQueryParser("edismax")
+			->retrieveFields("*,score")
+			->filters($filters)
+			->highlight(200, "<strong>", "</strong>", 1, implode(" ", $hl));
+
+   		$query->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit')));
+		$query->offset($this->getState("list.start", 0));
+   
+   		/*if (count($qf)) {
+   			$query->queryFields($this->_buildQF($qf));
+   		}*/
+   			
+   		if (count($form->getFacets())) {
+   			$query->facetFields($form->getFacets());
+   			$query->facet(1);
+   		}
+
+   		if ($extension = $this->getState('query.o', null)) {
+   			$query->mergeFilters('extension:' . $extension);
+   		}
+   		
+		return $query;
+   }
+
+	public function getItems()
+	{
+		try {
+			JPluginHelper::importPlugin("jsolrsearch");
+			$dispatcher = JDispatcher::getInstance();
+
+			$params = JComponentHelper::getParams($this->get('option'), true);
+
+			$query = $this->_query();
+
+			$response = null;
+			$rows = 0;
+
+			if ($this->getState('query.q') || $this->filtered) {
+				$response = $query->search();
+
+				$headers = json_decode($response->getRawResponse())->responseHeader;
+
+				$this->set('total', $response->response->numFound);
+				$this->set('qTime', $headers->QTime);
+				$rows = $headers->params->rows;
+
+				$items = $response->response->docs;
+          
+				// Share the results. Useful for modules, etc which may display these
+				// results in other ways. Provide facets also.
+				$app = JFactory::getApplication('site');
+				$app->setUserState('com_jsolrsearch.results', $items);
+				$app->setUserState('com_jsolrsearch.facets', $response->facet_counts->facet_fields);
+
+			} else {
+				$items = array();
+			}
+
+			$this->pagination = new JPagination($this->get('total'), $this->getState('list.start'), $rows);
+
+			return $items;
+		} catch (Exception $e) {
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+			$this->pagination = new JPagination($this->get('total', 0), 0, 0);
+			return null;
+		}
+	}
 
    function getPagination()
    {
      return $this->pagination;
    }
 
-   public function buildQueryURL($params)
-   {
-      $url = new JURI("index.php");
+	public function getQueryURI()
+	{
+		$uri = new JURI("index.php");
       
-      $url->setVar("option", "com_jsolrsearch");
-      $url->setVar("view", "basic");
-      $plugin = $this->getCurrentPlugin();
+		$uri->setVar("option", "com_jsolrsearch");
+		$uri->setVar("view", "basic");
+		$uri->setVar("Itemid", JRequest::getVar('Itemid'));
 
-      $point = empty($plugin) ? $params : $params[$plugin];
-
-      foreach ($point as $key=>$value) {
-         switch ($key) {
-            case "task":
-            case "eq":
-            case "aq":
-            case "oq0":
-            case "oq1":
-            case "oq2":
-            case "nq":
-            case "option":
-               break;
+		if ($this->getState('query.q', null)) {
+			$uri->setVar('q', $this->getState('query.q'));
+		}
+		
+		if ($this->getState('query.o', null)) {
+			$uri->setVar('o', $this->getState('query.o'));
+		}
       
-            default:
-               $url->setVar($key, $value);
-               break;
-         }
-      }
-
-      if (isset($params['o'])) {
-        $url->setVar('o', $params['o']);
-      }
-      
-      return JRoute::_($url->toString(), false);
-   }
+		return $uri;
+	}
 
    /**
     * Method to get the search form.
@@ -215,8 +276,7 @@ class JSolrSearchModelSearch extends JModelForm
       }
 
       $context = $this->get('option').'.'.$this->getName();
-      $plugin = $this->getCurrentPlugin();
-      $this->form = $this->loadForm($context, $this->getName(), array('control' => $plugin, 'load_data' => $loadData));
+      $this->form = $this->loadForm($context, $this->getName(), array('load_data'=>$loadData));
 
       if (empty($this->form)) {
          return false;
@@ -228,6 +288,9 @@ class JSolrSearchModelSearch extends JModelForm
    protected function preprocessForm(JForm $form, $data, $group = 'plugin')
    {
       $form->loadFile($this->_getCustomFormPath(), false);
+
+      $form->setURI($this->getQueryURI());
+      
       parent::preprocessForm($form, $data, $group);
    }
 
@@ -254,16 +317,14 @@ class JSolrSearchModelSearch extends JModelForm
 
    private function _getCustomFormPath()
    {
-      $path = null;
-
-      $currentPlugin = $this->getCurrentPlugin();
+      $path = null;      
 
       $path = __DIR__ . '/forms/tools.xml';
 
-      if (!empty($currentPlugin)) {
-        foreach ($this->getComponentsList() as $component) {
-          if ($component['plugin'] == $currentPlugin) {
-            $path = $component['path'];
+      if ($this->getState('query.o')) {
+        foreach ($this->getExtensions() as $item) {
+          if (JArrayHelper::getValue($item, 'plugin') == $this->getState('query.o')) {
+            $path = JArrayHelper::getValue($item, 'path');
             break;
           }
         }
@@ -375,24 +436,26 @@ class JSolrSearchModelSearch extends JModelForm
     return $result;
   }
 
-  public function getComponentsList()
+  public function getExtensions()
   {
     JPluginHelper::importPlugin("jsolrsearch");
     $dispatcher = JDispatcher::getInstance();
 
-    return $dispatcher->trigger('onJSolrSearchRegisterComponents');
-  }
+    $array = $dispatcher->trigger('onJSolrSearchRegisterComponents');
 
-  public function getCurrentPlugin()
-  {
-    $uri = JFactory::getURI();
-
-    $plugin = JRequest::getVar('o', NULL, 'post');
-
-    if (!empty($plugin)) {
-      return $plugin;
+    $array = array_merge(array(array('plugin' => '', 'name' => JText::_('Everything'))), $array);
+    
+    for ($i = 0; $i < count($array); $i++) {
+    	$uri = $this->getQueryURI();
+    	
+    	if ($array[$i]['plugin'])
+    		$uri->setVar('o', $array[$i]['plugin']);
+    	else
+    		$uri->delVar('o');
+    	
+    	$array[$i]['uri'] = (string)$uri;
     }
-
-    return $uri->getVar('o');
+    
+    return $array;
   }
 }

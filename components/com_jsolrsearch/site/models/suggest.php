@@ -36,49 +36,53 @@ jimport('joomla.application.component.modellist');
 
 jimport('jsolr.search.factory');
 
-class JSolrSearchModelAutocomplete extends JModelList
+class JSolrSearchModelSuggest extends JModelList
 {
-   /**
-    * @return array
-    */
-   function getResults($q = '', $fields = '', $show = 'title_ac')
-   {
-      $query = JSolrSearchFactory::getQuery('*:*')
-         ->useQueryParser("edismax")
-         ->retrieveFields("*,score")
-         ->limit(10) // TODO: move to config
-         ->highlight(200, "<strong>", "</strong>", 1);
+	/**
+	 * @return array
+	 */
+	function getItems()
+	{   	
+	   	$q = JFactory::getApplication()->input->getString('q');
+	   	$fields = JFactory::getApplication()->input->getString('fields');
+	   	$suggest = JFactory::getApplication()->input->getString('suggest');
 
-      $fields = explode(',', $fields);
+		$query = JSolrSearchFactory::getQuery('*:*')
+			->useQueryParser("edismax")
+			->retrieveFields("*,score")
+			->limit(10) // TODO: move to config
+			->highlight(200, "<strong>", "</strong>", 1);
 
-      $resutls = array();
+		$fields = explode(',', $fields);
 
-      if (empty($q)) {
-         return $resutls;
-      }
+		$items = array();
 
-      foreach ($fields as &$field) {
-         $field = explode('^', $field);
-         $field = $field[0];
-         $field = $field .':' . $q . '*';
-      }
+		if (empty($q)) {
+			return $items;
+		}
 
-      $filters = implode(' OR ', $fields);
+		foreach ($fields as &$field) {
+			$field = explode('^', $field);
+			$field = $field[0];
+			$field = $field .':' . $q . '*';
+		}
 
-      $query->filters($filters);
+		$filters = implode(' OR ', $fields);
 
-      $response = $query->search();
-      $response = json_decode($response->getRawResponse());
+		$query->filters($filters);
 
-      foreach ($response->response->docs as $doc) {
-         if (is_array($doc->$show)) {
-            $v = (array)$doc->$show;
-            $resutls[] = $v[0];
-         } else {
-            $resutls[] = $doc->$show;
-         }
-      }
+		$response = $query->search();
+		$response = json_decode($response->getRawResponse());
 
-      return $resutls;
-   }
+		foreach ($response->response->docs as $doc) {
+			if (is_array($doc->$suggest)) {
+				$v = (array)$doc->$suggest;
+				$items[] = $v[0];
+			} else {
+				$items[] = $doc->$suggest;
+			}
+		}
+
+		return $items;
+	}
 }

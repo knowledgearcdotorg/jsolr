@@ -46,14 +46,12 @@ class JSolrSearchViewBasic extends JViewLegacy
         $this->toolsForms = JSolrSearchModelSearch::getSearchToolsForm();
         $this->items = $this->get('Items');
         $this->plugins = $this->get('ComponentsList');
-        $this->current_plugin = $this->get('CurrentPlugin');
         $this->params = JComponentHelper::getParams('com_jsolrsearch',true);
 
         if ($this->isAjax()) {
             echo $this->buildAjaxResponse();
             jexit(); 
         }
-        
         
         $mod = JModuleHelper::getModule('mod_jsolrfilter');
         $this->moduleEnabled = ($mod->id != 0);
@@ -217,6 +215,12 @@ class JSolrSearchViewBasic extends JViewLegacy
             }
             
             $uri->delVar($key);
+        }
+        
+        foreach ($uri->getQuery(true) as $key=>$value) {
+        	if (strpos($key, 'q_') === 0) {
+        		$uri->delVar($key);
+        	}
         }
 
         $uri->delVar('ajax');

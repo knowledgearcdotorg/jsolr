@@ -49,6 +49,10 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		
 		$created = JFactory::getDate($record->created);
 		$modified = JFactory::getDate($record->modified);
+
+		if ($created > $modified) {
+			$modified = $created;
+		}
 		
 		$lang = $this->getLanguage($record, false);
 

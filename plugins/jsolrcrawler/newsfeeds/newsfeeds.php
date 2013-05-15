@@ -66,6 +66,7 @@ class plgJSolrCrawlerNewsfeeds extends JSolrIndexCrawler
 		if ($record->catid) {
 			$doc->addField("parent_id", $record->catid);
 			$doc->addField("category_$lang", $record->category);
+			$doc->addField("category_fc", $record->category); // facet
 		}
 		
 		return $doc;

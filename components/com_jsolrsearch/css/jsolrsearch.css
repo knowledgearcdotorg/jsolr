@@ -141,3 +141,16 @@
   padding: 0;
   list-style-type: none;
 }
+ul.jsolr-dropdown-list {
+	margin: 10px 0 !important;
+	padding: 0 5px 10px 0 !important;
+}
+li.jsolr-dropdown-option {
+    margin: 4px !important;
+    padding: 0 !important;
+}
+li.jsolr-dropdown-option a {
+    display: block;
+    padding: 2px;
+    width: 100%;
+}

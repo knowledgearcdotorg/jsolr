@@ -80,28 +80,12 @@ jQuery(document).ready(function($) {
 	  e.stopPropagation();
 	});
 
-	$('#jsolr-search-tools').click(function(){
-		$('#jsolr-search-tools-list').toggle();
-		return false;
-	});
-
 	$('#jsolr-search-submit').click(function(){
 		$('.jsolr-search-result-form').submit();
 		return false;
 	});
 
-	$('.jsolr-search-result-form a[href=#]').click(function(){
-		return false;
-	});
-
 	jsolrsearch.init();
-
-	$('.jsolr-search-result-form').submit(function(){
-		if (jsolrsearch.results.length) {
-			jsolrsearch.update();
-			return false;
-		}
-	});
 
 	$('.jsolr-module-filter a.jrange-option').click(function(e){
 		var elem = $(e.currentTarget);
@@ -158,16 +142,13 @@ jQuery(document).ready(function($) {
 var jsolrsearch = {
 	results: null,
 	pagination: null,
-	facetsSelected: null,
 	form: null,
 
 	init: function() {
 		this.results = jQuery('.jsolr-results');
 		this.pagination = jQuery('.jsolr-pagination');
-		this.facetsSelected = jQuery('#jsolr-facet-filters-selected');
 		this.form = jQuery('.jsolr-search-result-form, .jsolr-module-filter');
 
-    	this.updateFacetFiltersEvents();
     	this.initOnpopstate();
 
     	if (typeof history.pushState === 'undefined') { // if broswer does not support history.pushState for example IE9-
@@ -253,34 +234,11 @@ var jsolrsearch = {
     {
     	this.results.html(response.results);
     	this.pagination.html(response.pagination.replace(/\&amp;ajax\=1/ig, ''));
-    	this.facetsSelected.html(response.facets_selected);
     	this.updateUrls(response.url);
     	this.results.fadeIn();
     	this.updateFacetFiltersEvents();
     	this.stopAutocompleters();
     	jQuery('.jsolr-plugins-list').fadeIn();
-    },
-
-    updateFacetFiltersEvents: function()
-    {
-		this.facetsSelected.find('a').click(function(e){
-			$(e.currentTarget).parent().addClass('to-delete');
-			var name = $(e.currentTarget).attr('date-name').replace('[', '\\[').replace(']', '\\]');
-
-			var el = jQuery('[name="' + name + '"]');
-
-			if (el.size() > 0) {
-				jsolrsearch.clearElement(el);
-				jsolrsearch.update();
-			} else { // link
-				var selector = '[data-selector="' + name + '"]';
-
-				elem = jQuery(selector);
-				elem.click();
-			}
-
-    		return false;
-    	});
     },
 
     clearElement: function(elem) {

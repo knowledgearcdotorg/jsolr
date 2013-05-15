@@ -50,7 +50,7 @@ class JSolrForm extends JForm
 	 */
 	protected $filtered = false;
 	
-	protected $query;
+	private $uri;
 	
 	/**
 	 * @return integer one of the consts JSolrForm::TYPE_FACETFILTERS or JSolrForm::TYPE_SEARCHTOOLS
@@ -105,35 +105,19 @@ class JSolrForm extends JForm
 		return $filters;
 	}
 	
-	public function createQuery() {
-		$mainframe = JFactory::getApplication();
-
-        return $this->query = JSolrSearchFactory::getQuery('*:*')
-            ->useQueryParser("edismax")
-            ->retrieveFields("*,score")
-            ->limit($mainframe->getCfg('list_limit'))
-            ->highlight(200, "<strong>", "</strong>", 1);
-	}
-	
-	public function getQuery() {
-		if( empty($this->query) ) {
-			return $this->createQuery();
-		}
-		return $this->query;
-	}
-	
-	public function fillQuery() {
-		$uri = JFactory::getURI();
-		$params = $uri->getQuery(true);
+	public function getFacets()
+	{
+		$facets = array();
 
 		foreach ($this->getFieldsets() as $fieldset) {
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				if ($field->fillQuery()) {
-					$this->filtered = true;
+				if (!property_exists($field, 'facet')) {
+					$facets[] = $field->facet;
 				}
 			}
 		}
-		return $this;
+		
+		return $facets;		
 	}
 	
 	
@@ -222,8 +206,9 @@ class JSolrForm extends JForm
 			if ($fieldset->name == 'main') continue;
 
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				$value = $field->getValue();
-				if (!empty($value)) {
+				$value = JFactory::getApplication()->input->getString($field->filterQuery);
+
+				if (!empty($value)) {					
 					if (is_array($value)) {
 						if (isset($value['from'])) {
 							if (empty($value['from'])  && empty($value['to']) && empty($value['value'])) {
@@ -235,10 +220,11 @@ class JSolrForm extends JForm
 					}
 
 					$result[] = array(
-						'label' => $field->getLabel(),
-						'value' => $field->getValueText(),
+						'label' => $field->label,
+						'value' => $value,
 						'name'  => $field->name,
-					);
+						'filter'=> $field->filterQuery
+					);					
 				}
 			}
 		}
@@ -261,7 +247,7 @@ class JSolrForm extends JForm
 			if ($fieldset->name == 'main') continue;
 
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				$value = $field->getValue();
+				$value = $field->value;
 				if (!empty($value)) {
 					if (is_array($value)) {
 						if (isset($value['from'])) {
@@ -274,8 +260,8 @@ class JSolrForm extends JForm
 					}
 
 					$result[] = array(
-						'label' => $field->getLabel(),
-						'value' => $field->getValueText(),
+						'label' => $field->label,
+						'value' => $field->value,
 						'name'  => $field->name,
 					);
 				}
@@ -283,5 +269,15 @@ class JSolrForm extends JForm
 		}
 
 		return $result;
+	}
+	
+	public function setURI($uri)
+	{
+		$this->uri = $uri;
+	}
+	
+	public function getURI()
+	{
+		return $this->uri;
 	}
 }
