@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
 		   </div>
 		      
 		   <div class="pagination jsolr-pagination">
-		      <?php echo $this->loadPaginationTemplate(); ?>
+		      <?php echo $this->get('Pagination')->getPagesLinks(); ?>
 		   </div>
 
 	<?php if( $this->showFilters ): ?>

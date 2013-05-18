@@ -402,14 +402,14 @@ class JSolrSearchQuery
 	 */
 	public function highlight($fragsize = NULL, $markup_pre = NULL, $markup_post = NULL, $snippets = 1, $fields = NULL) 
 	{
-		$this->params += array(
+		$this->params = array_merge($this->params, array(
 			'hl' => 'true',
 			'hl.fragsize' => $fragsize,
 			'hl.snippets' => $snippets,
 			'hl.fl' => $fields,
 			'hl.simple.pre' => $markup_pre,
-			'hl.simple.post' => $markup_post,
-		);
+			'hl.simple.post' => $markup_post));
+
 		return $this;
 	}
   

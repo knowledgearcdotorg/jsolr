@@ -47,20 +47,22 @@ abstract class JSolrSearchSearch extends JPlugin
 		$this->loadLanguage();
 	}
 	
+	public abstract function onJSolrSearchURIGet($document);
+	
 	/**
 	 * Lists fields and the boosts to associate with each.
 	 * 
 	 * Override this method to add more query field values.
 	 */
-	public function onJSolrSearchQFAdd()
+	public function onJSolrSearchQFAdd($language)
 	{	
 		$qf = array();
 
-		foreach ($this->get('params')->toArray() as $key=>$value) {
-				if (strpos($key, "boost_") === 0) {
-					$qfKey = str_replace("boost_", "", $key);
-					$qf[$qfKey] = floatval($value);
-				}
+		$boosts = explode(' ', $this->get('params')->get('boost', null));
+
+		foreach ($boosts as $boost) {
+			if ($boost)			
+				$qf[] = $this->localize($boost, $language);
 		}
 
 		return $qf;
@@ -76,7 +78,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	 * The [search_name] is used for stripping the correct operators off of 
 	 * the query.
 	 */
-	final public function onJSolrSearchOperatorsGet()
+	final public function onJSolrSearchOperatorsGet($language)
 	{
 		return $this->operators;
 	}
@@ -84,9 +86,16 @@ abstract class JSolrSearchSearch extends JPlugin
 	/**
 	 * Lists fields that have highlighting applied on the found text. 
 	 */
-	final public function onJSolrSearchHLAdd()
+	final public function onJSolrSearchHLAdd($language)
 	{
-		return $this->highlighting;
+		$hl = array();
+		
+		foreach ($this->highlighting as $higlighting) {
+			if ($higlighting)
+				$hl[] = $this->localize($higlighting, $language);
+		}
+		
+		return $hl;
 	}
 	
 	final public function onJSolrSearchExtensionGet()
@@ -99,86 +108,17 @@ abstract class JSolrSearchSearch extends JPlugin
 		return $extension;
 	}
 	
-	/**
-	 * Retrieve the individual result template for this plugin.
-	 * 
-	 * @param string $option The option used to identify the associated 
-	 * template.
-	 * 
-	 * @return string The path to the individual result template for this 
-	 * plugin.
-	 */
-	public function onFindResultTemplatePath($option)
+	protected function localize($field, $language)
 	{
-		$pluginsPath = JPATH_PLUGINS."/jsolrsearch/";		
+		$code = $language;
 		
-		$path = false;
-
-		// if the o query string has not been set, exit immediately.
-		if (!$option) {
-			return $path;	
+		if (!$code) {
+			$code = JFactory::getLanguage()->getTag();
 		}
 
-		$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName()."/views/results", $option.".php");
+		$parts = explode('-', $code);
+		$code = JArrayHelper::getValue($parts, 0);
 
-		if (!$path) {
-			$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName()."/views/result", "default.php");
-		}
-		
-		return $path;
-	}
-	
-	/**
-	 * Retrieve the custom results template for this plugin.
-	 * 
-	 * @param string $o The currently selected option(s).
-	 * 
-	 * @return string The path to the custom results template for this plugin. 
-	 */
-	public function onFindResultsTemplatePath($o)
-	{
-		$pluginsPath = JPATH_PLUGINS."/jsolrsearch/";		
-		
-		$path = false;
-
-		// if the o query string has not been set, exit immediately.
-		if (!$o) {
-			return $path;	
-		}
-		
-		$options = explode(",", $o);
-	
-		while (!$path && $option = current($options)) {
-			if (array_key_exists($option, $this->onJSolrSearchExtensionGet())) {
-				$path = JPath::find($pluginsPath.$this->getTemplateDirectoryName()."/views/results", "default.php");
-			}
-			
-			next($options);
-		}
-		
-		return $path;
-	}
-	
-	/**
-	 * Maps a Solr document to a generic result object.
-	 * 
-	 * @param JSolrApacheSolrDocument $document A Solr document.
-	 * @param stdClass $hl Highlighted fields.
-	 * @param int $hlFragSize The size of the highlighted fragment.
-	 * @param string $lang The language the result should be returned in.
-	 * 
-	 * @return stdClass A generic result object.
-	 */
-	public function onJSolrSearchResultPrepare($document, $hl, $hlFragSize, $lang)
-	{
-		return $document;
-	}
-	
-	/**
-	 * @deprecated
-	 */
-	protected function getTemplateDirectoryName()
-	{
-		return str_ireplace("jsolr", "", $this->get("_name"));
+		return str_replace("*", $code, $field);
 	}
 }

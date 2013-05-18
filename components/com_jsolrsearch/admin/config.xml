@@ -31,7 +31,7 @@
 			size="45"/>
 	</fieldset>
         
-        <fieldset 
+	<fieldset 
 		name="facet_filters"
 		label="MOD_JSOLRFILTERTOOLBAR_CONFIG_FIELDSET_LABEL"
 		description="">
@@ -47,5 +47,17 @@
 			type="text" 
 			label="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_LABEL" 
             description="MOD_JSOLRFILTERTOOLBAR_CONFIG_1_DESCRIPTION" />
+	</fieldset>
+	
+	<fieldset
+		name="advanced"
+		label="COM_JSOLRSEARCH_ADVANCED_LABEL"
+		description="COM_JSOLRSEARCH_ADVANCED_DESCRIPTION">
+		<field
+			name="mm"
+			type="text"
+			label="COM_JSOLRSEARCH_ADVANCED_MM_LABEL"
+			description="COM_JSOLRSEARCH_ADVANCED_MM_DESCRIPTION"
+			default="1"/>	
 	</fieldset>
 </config>

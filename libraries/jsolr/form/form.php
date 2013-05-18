@@ -280,4 +280,18 @@ class JSolrForm extends JForm
 	{
 		return $this->uri;
 	}
+	
+	public function getFacetedURI()
+	{
+		$uri = clone $this->getURI();
+		
+		$input = new JInput();
+		foreach ($input->getArray($_GET) as $key=>$value) {
+			if (strpos($key, 'q_') === 0) {
+				$uri->setVar($key, $value);
+			}
+		}
+		
+		return $uri;
+	}
 }

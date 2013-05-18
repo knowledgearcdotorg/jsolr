@@ -1,78 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
     <fieldset
-        name="meta"
-        addfieldpath="/plugins/jsolrsearch/jreviews/forms/fields">
+        name="meta">
         
         <!-- only JSolrFormFields should be used here -->
         <field 
-            name="category"
-            facet="category_en"
-            type="JSolr.Category"
-            label="Category"
-            multiple="true"
-            class="inputbox jsolrquery"
-            size="8"
-            parentCategory="9"
-            maxlength="50"/>
-
-        <field 
-            name="jrreadinglevel"
-            facet="jrreadinglevel_s_multi"
-            type="JReviews.Readinglevel"
-            label="Reading level"
-            class="inputbox jsolrquery"
-            size="8"
-            maxlength="50" />
-
-        <field 
-            name="jrjrfiction"
-            facet="jrjrfiction_s_multi"
-            type="JSolr.Radio"
-            label="Fiction/Non-Fiction "
-            class="inputbox jsolrquery"
-            maxlength="50">
-            <option value="Fiction">Fiction</option>
-            <option value="Non-Fiction">Non-Fiction</option>
-        </field>
-
-        <field 
-            name="jrkeywords"
-            facet="jrkeywords_s_multi"
-            type="JReviews.Keywords"
-            label="Keywords"
-            class="inputbox jsolrquery"
-            multiple="true"
-            size="8"
-            maxlength="50" />
-
-        <field 
             name="reluctant"
-            facet="jrreluctantreader_s_multi"
-            type="JSolr.Checkbox"
-            label="Reluctant Reader"
+            facet="jrreluctantreader_fc"
+            filter="jrreluctantreader_s_multi"
+            type="jsolr.toggle"
+            label=""
             class="inputbox jsolrquery"
-            checkedValue="Good-for-Reluctant-Readers"
-            maxlength="50">
-        </field>
+            value="Good for Reluctant Readers"/>
 
         <field 
-            name="jrpartofseries"
-            facet="jrpartofseries_s_multi"
-            type="JSolr.Checkbox"
-            label="Part of a Series"
+            name="partofseries"
+            facet="jrpartofseries_fc"
+            filter="jrpartofseries_s_multi"
+            type="jsolr.toggle"
+            label=""
             class="inputbox jsolrquery"
-            checkedValue="Part-of-a-Series"
-            maxlength="50">
-        </field>
+            value="Part of a Series"/>
+
+        <field 
+            name="category"
+            facet="category_fc"
+            filter="category_en"
+            type="jsolr.facets"
+            label="Category"
+            class="inputbox jsolrquery"
+            count="true"/>
+
+        <field 
+            name="readinglevel"
+            facet="jrreadinglevel_fc"
+            filter="jrreadinglevel_s_multi"           
+            type="jsolr.facets"
+            label="Reading level"
+            class="inputbox jsolrquery"/>
+
+        <field 
+            name="fiction"
+            facet="jrjrfiction_fc"
+            filter="jrjrfiction_s_multi"
+            type="jsolr.facets"
+            label="Fiction/Non-Fiction"
+            class="inputbox jsolrquery"/>
+
+        <field 
+            name="keywords"
+            facet="jrkeywords_fc"
+            filter="jrkeywords_s_multi"
+            type="jsolr.facets"
+            label="Keywords"
+            class="inputbox jsolrquery"/>
 
         <field 
             name="country"
-            facet="country"
-            type="JSolr.Country"
+            filter="jrcountry_s_multi"
+            facet="jrcountry_fc"
+            type="jsolr.facets"
             label="Country"
-            class="inputbox jsolrquery"
-            multiple="true"
-            maxlength="50" />
+            class="inputbox jsolrquery"/>
     </fieldset>
+    
 </form>

@@ -27,11 +27,12 @@
  
 defined( '_JEXEC' ) or die( 'Restricted access' );
  
-jimport( 'joomla.application.component.view');
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
 jimport('joomla.application.module');
 jimport('joomla.application.component');
+
+jimport('jsolr.search.formatter');
  
 class JSolrSearchViewBasic extends JViewLegacy
 {	
@@ -45,13 +46,9 @@ class JSolrSearchViewBasic extends JViewLegacy
         $this->facetForms = JSolrSearchModelSearch::getFacetFilterForm();
         $this->toolsForms = JSolrSearchModelSearch::getSearchToolsForm();
         $this->items = $this->get('Items');
+        $this->state = $this->get('State');
         $this->plugins = $this->get('ComponentsList');
         $this->params = JComponentHelper::getParams('com_jsolrsearch',true);
-
-        if ($this->isAjax()) {
-            echo $this->buildAjaxResponse();
-            jexit(); 
-        }
         
         $mod = JModuleHelper::getModule('mod_jsolrfilter');
         $this->moduleEnabled = ($mod->id != 0);
@@ -63,7 +60,7 @@ class JSolrSearchViewBasic extends JViewLegacy
     
     /**
      * Loads a single result template, or loads the default template if no 
-     * override is found.
+     * override is found. 
      * 
      * This method will look for the template override in the following directories
      * (and in the following order):
@@ -98,7 +95,7 @@ class JSolrSearchViewBasic extends JViewLegacy
     		'/html/com_jsolrsearch/plugins';
     	
 	    $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
-	    
+
 	    if (JPath::find($pluginOverridePath, $extension."_result.php") ||
 	    	JPath::find($themeOverridePath, $extension."_result.php")) {
             $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
@@ -111,10 +108,33 @@ class JSolrSearchViewBasic extends JViewLegacy
 	    return $this->loadTemplate('result');
     }
 
+    /**
+     * Loads a results template for a particular extension, or loads the 
+     * default template if no override is found.
+     *
+     * This method will look for the template override in the following directories
+     * (and in the following order):
+     *
+     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/plugins
+     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/basic
+     * JPATH_PLUGINS/jsolrsearch/<extension>/views/basic
+     *
+     * where <template_name> is the name of the current template, and
+     * <extension> is the indexed extension parameter in the solr document
+     * sans the "com_" prefix.
+     *
+     * The file name <extension>_results.php must be used when overriding
+     * the default results layout where <extension is the indexed extension
+     * parameter in the solr document sans the "com_" prefix
+     * (E.g. newsfeeds_results.php).
+     *
+     * @return string The output of the template override or the default
+     * template if no override is found.
+     */
 	public function loadResultsTemplate()
 	{
     	$extension = str_replace("com_", "", JRequest::getCmd('o'));
-    	
+
         $_path =$this->get('_path');
     	$templates = JArrayHelper::getValue($_path, 'template');
     	
@@ -124,6 +144,7 @@ class JSolrSearchViewBasic extends JViewLegacy
     	
 	    if (JPath::find($pluginOverridePath, $extension."_results.php") ||
 	    	JPath::find($themeOverridePath, $extension."_results.php")) {
+
 	    	$this->setLayout($extension);
             $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
             $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
@@ -136,7 +157,6 @@ class JSolrSearchViewBasic extends JViewLegacy
 	
 	/**
 	 * Return template with facet filters.
-	 * @author Michał Kocztorz
 	 * @return string
 	 */
 	public function loadFacetFiltersTemplate() {
@@ -148,34 +168,9 @@ class JSolrSearchViewBasic extends JViewLegacy
         return $this->loadTemplate('form');
     }
 
-    public function loadPaginationTemplate()
-    {
-        return $this->loadTemplate('pagination');
-    }
-
-    function getPagination()
-    {
-        $pagination = $this->get('Pagination');
-        return $pagination;
-    }
-
     public function loadFacetFiltersSelectedTemplate()
     {
         return $this->loadTemplate('facets_selected');
-    }
-
-    /**
-     * @return bool true if search tools should be displayed by default, otherwise false
-     */
-    public function showSearchToolsOnStart()
-    {
-        $form = JSolrSearchModelSearch::getSearchToolsForm();
-
-        if (is_null($form)) {
-            return false;
-        }
-
-        return count($form->getAppliedSearchTools()) > 0;
     }
 
     /**
@@ -195,55 +190,5 @@ class JSolrSearchViewBasic extends JViewLegacy
     public function getComponentsLimit()
     {
         return $this->params->get('filter_count',3);
-    }
-
-    public function updateUri(array $add = array(), array $del = array())
-    {
-        $uri = clone JFactory::getURI();
-
-        foreach ($add as $key => $value) {
-            $uri->setVar($key, $value);
-        }
-
-        foreach ($del as $key) {
-            $start = strpos($key, '[');
-
-            if ($start !== false) {
-                $key = substr($key, $start + 1);
-                $start = strpos($key, ']');
-                $key = substr($key, 0, $start);
-            }
-            
-            $uri->delVar($key);
-        }
-        
-        foreach ($uri->getQuery(true) as $key=>$value) {
-        	if (strpos($key, 'q_') === 0) {
-        		$uri->delVar($key);
-        	}
-        }
-
-        $uri->delVar('ajax');
-
-        return $uri->toString();
-    }
-
-    public function isAjax()
-    {
-        $uri = JFactory::getURI();
-
-        return $uri->hasVar('ajax');
-    }
-
-    public function buildAjaxResponse()
-    {
-        $result = new stdClass;
-
-        $result->results = $this->loadResultsTemplate();
-        $result->pagination = $this->loadPaginationTemplate();
-        $result->facets_selected = $this->loadFacetFiltersSelectedTemplate();
-        $result->url = $this->updateUri(array(), array('o'));
-
-        return json_encode($result);
     }
 }

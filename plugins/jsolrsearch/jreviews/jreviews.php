@@ -64,65 +64,14 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 		
 		$this->set('operators', $array);
 	}
-	
-	/**
-	* Format a com_jreviews listing and return a generic result item.
-	* 
-	* @param mixed $document
-	* @param mixed $hl
-	* @param int $hlFragSize
-	* @param string $lang
-	*/
-	public function onJSolrSearchResultPrepare($document, $hl, $hlFragSize, $lang) 
-	{
-		$id = $document->key;
-		$title = "title_$lang";
-		$category = "category_$lang";
-		
-		if ($document->extension == $this->get('extension')) {
-			if (isset($hl->$id->$title)) {
-        		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
-			} else {
-				$hlTitle = $document->$title;
-			}
-			
-			if (isset($hl->$id->$category)) {
-        		$hlCategory = JArrayHelper::getValue($hl->$id->$category, 0);
-			} else {
-				$hlCategory = $document->$category;
-			}
 
-			$document->title = $hlTitle;
-			$document->href = ContentHelperRoute::getArticleRoute($document->id, $document->parent_id);
-			$document->snippet = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
-			$document->category = $hlCategory;
-			
-			return $document;
+	public function onJSolrSearchURIGet($document)
+	{
+		if ($this->get('extension') == $document->extension) {
+			return ContentHelperRoute::getArticleRoute($document->id, $document->parent_id);
 		}
 		
 		return null;
-	}
-	
-	private function _getHlContent($document, $highlighting, $fragSize, $lang)
-	{
-		$id = $document->key;
-		$hlContent = array();
-
-		$metadescription = "metadescription_$lang";
-		$content = "body_$lang";
-
-		if ($this->get('params')->get("use_hl_metadescription") == 1 && 
-			isset($highlighting->$id->$metadescription)) {
-			$hlContent[] = JArrayHelper::getValue($highlighting->$id->$metadescription, 0);
-		} else {
-			if (isset($highlighting->$id->$content)) {
-				foreach ($highlighting->$id->$content as $item) {
-					$hlContent[] = $item;	
-				}
-			}
-		}
-		
-		return implode("...", $hlContent);
 	}
 
 	public function onJSolrSearchRegisterComponents()

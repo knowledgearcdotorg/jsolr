@@ -8,13 +8,14 @@ $form = JSolrSearchModelSearch::getFacetFilterForm();
 	<?php if ($field['value'] == 'null' || empty($field['value'])) continue; ?>
 	
 	<?php
-	$url = $this->get('QueryURI');
+	$uri = clone $form->getFacetedURI();
+	$uri->delVar($field['filter']);
 	?>
 	<li>
 		<span class="jsolr-label"><?php echo $field['label'] ?></span>
 		<span class="jsolr-value"><?php echo $field['value'] ?></span>
 
-		<?php echo JHTML::link((string)$url, '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />'); ?>
+		<?php echo JHTML::link((string)$uri, '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />'); ?>
 	</li>
 	<?php endforeach ?>
 </ul>

@@ -1,7 +1,7 @@
 <?php
 /**
- * Abstract class for all JSolr form fields
  * @package		JSolr
+ * @subpackage	Form.Fields
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -61,15 +61,20 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 	
 		$facets = $this->getFacets();
 
-		foreach ($facets as $key=>$value)
-		{
+		foreach ($facets as $key=>$value) {
 			$class = '';
 			
 			if ($this->isSelected($key)) {
 				$class = ' class="selected"';
 			}
 			
-			$options[] = '<li'.$class.'><a href="'.$this->getFilterURI($key).'">'.$key.'</a><span>('.$value.')</span></li>';
+			$count = '';
+			
+			if (JArrayHelper::getValue($this->element, 'count', 'false', 'string') === 'true') {
+				$count = '<span>('.$value.')</span>';
+			}
+			
+			$options[] = '<li'.$class.'><a href="'.$this->getFilterURI($key).'">'.$key.'</a>'.$count.'</li>';
 		}
 	
 		reset($options);
@@ -95,7 +100,7 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 	
 	protected function getFilterURI($facet)
 	{
-		$url = JFactory::getURI();
+		$url = clone $this->form->getFacetedURI();
 		
 		if ($this->isSelected($facet)) {
 			$url->delVar($this->filterQuery);

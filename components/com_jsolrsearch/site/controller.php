@@ -41,7 +41,6 @@ class JSolrSearchController extends JControllerLegacy
 	function search()
 	{
 		$model = $this->getModel("search");
-		error_log((string)$model->getQueryURI());
 		$this->setRedirect((string)$model->getQueryURI());
 	}
 

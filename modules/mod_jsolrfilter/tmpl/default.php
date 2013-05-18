@@ -41,8 +41,10 @@ $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.cs
 		<?php if ($fieldset->name != 'main'): ?>
 			<?php foreach ($form->getFieldset($fieldset->name) as $field): ?>
 				<div>
-					<h4><?php echo $form->getLabel($field->fieldname); ?></h4>
-					<div><?php echo $form->getInput($field->fieldname); ?></div>
+					<?php if ($field->label) : ?>
+						<h4><?php echo $form->getLabel($field->name); ?></h4>
+					<?php endif; ?>
+					<div><?php echo $form->getInput($field->name); ?></div>
 				</div>
 			<?php endforeach;?>
 		<?php endif ?>

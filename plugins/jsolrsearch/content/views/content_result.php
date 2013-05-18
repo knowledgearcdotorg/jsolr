@@ -42,6 +42,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?>:</span><?php echo JSolrSearchFormatter::datetime($this->item->modified); ?>
 	</div>
 	<?php endif; ?>
-	
+
+	<div class="jsolr-result-description"><?php echo JSolrSearchFormatter::highlight($this->item->key, 'body_en'); ?></div>
 	<div class="jsolr-result-location"><?php echo $this->item->category; ?></div>
 </div>

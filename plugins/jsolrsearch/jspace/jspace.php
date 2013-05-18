@@ -49,17 +49,11 @@ class plgJSolrSearchJSpace extends JSolrSearchPlugin
 	/**
 	 * Add custom filters to the main query.
 	 * 
-	 * @param JObject $state An instance of JObject. Holds query variables of 
-	 * the class which triggered this plugin event.
 	 * @param string $language The current language.
 	 */
-	public function onJSolrSearchFQAdd($state, $language)
+	public function onJSolrSearchFQAdd($language)
 	{
 		$array = array('-view:bitstream');
-
-		if ($value = JArrayHelper::getValue($state->get('query.q.operators'), 'author')) {
-			$array[] = 'author:'.$value;	
-		}
 		
 		return $array;
 	}

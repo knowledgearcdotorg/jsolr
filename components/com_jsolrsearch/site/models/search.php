@@ -34,31 +34,43 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
-jimport('joomla.application.component.modelform');
 jimport('jsolr.search.factory');
 jimport('joomla.html.pagination');
+
+jimport('joomla.application.component.modelform');
 
 jimport('jsolr.form.form');
 
  // error_reporting(E_ALL);
  // ini_set("display_errors", 1); 
 
-require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
-
 
 class JSolrSearchModelSearch extends JModelForm
 {
-   protected $view_item = 'search';
-   protected $form;
-   protected $lang;
-   protected $pagination;
-   private $filtered;
+	const MM_DEFAULT = '1';
 
-   protected $context = 'com_jsolrsearch.search';
+	protected $form;
+	protected $lang;
+	protected $pagination;
+	private $filtered;
    
    protected static $form_facet_filter = NULL;
    protected static $form_search_tools = NULL;
 
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelList::populateState()
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+		
+		$this->set('option', 'com_jsolrsearch');
+		$this->set('context', $this->get('option').'.search');
+		
+		$this->set('params', JComponentHelper::getParams($this->get('option'), true));
+	}
+   
    static function getFacetFilterForm()
    {
      return self::$form_facet_filter;
@@ -110,7 +122,7 @@ class JSolrSearchModelSearch extends JModelForm
 			if (!$lang) {
 				$lang = $application->input->getString("lang", null);
 			}
-   			
+
 			$this->setState('query.lang', $lang);
 			
 			$value = $application->getUserStateFromRequest('global.list.limit', 'limit', $application->getCfg('list_limit'), 'uint');
@@ -130,8 +142,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$hl = array();
 		$filters = array();
 		$facets = array();
-   
-		$params = JComponentHelper::getParams($this->get('option'), true);
+		$qf = array();
    
 		$form = $this->getForm();
 
@@ -148,43 +159,39 @@ class JSolrSearchModelSearch extends JModelForm
 		}
 
    		JPluginHelper::importPlugin("jsolrsearch");
-   		$dispatcher =& JDispatcher::getInstance();
+   		$dispatcher = JDispatcher::getInstance();
       
    		// Get any additional filters which may be needed as part of the search query.
-   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState(), $this->getLanguage(false))) as $result) {
-   			foreach ($result as $item) {
-   				if ($item) {
-   					$filters[] = $item;
-   				}
-   			}
+   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState('query.lang'))) as $result) {
+   			$filters = array_merge($filters, $result);
    		}
    
    		// Get Highlight fields for results.
-   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd', array()) as $result) {
-   			foreach ($result as $item) {
-   				$hl[] = $item.'_'.$this->getLanguage(false);
-   			}
+   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd', array($this->getState('query.lang'))) as $result) {
+   			$hl = array_merge($hl, $result);
    		}
 
    		// get query filter params and boosts from plugin.
-   		$qf = $dispatcher->trigger('onJSolrSearchQFAdd', array());
+   		foreach ($dispatcher->trigger('onJSolrSearchQFAdd', array($this->getState('query.lang'))) as $result) {   			
+   			$qf = array_merge($qf, $result);
+   		}
 
    		$query = JSolrSearchFactory::getQuery($this->getState('query.q', '*:*'))
 			->useQueryParser("edismax")
 			->retrieveFields("*,score")
 			->filters($filters)
-			->highlight(200, "<strong>", "</strong>", 1, implode(" ", $hl));
+			->highlight(200, "<strong>", "</strong>", 3, implode(" ", $hl))
+			->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit')))
+			->offset($this->getState("list.start", 0))
+			->mergeParams(array('mm'=>$this->get('params')->def('mm', self::MM_DEFAULT)));
 
-   		$query->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit')));
-		$query->offset($this->getState("list.start", 0));
-   
-   		/*if (count($qf)) {
-   			$query->queryFields($this->_buildQF($qf));
-   		}*/
+   		if (count($qf)) {
+   			$query->queryFields($qf);
+   		}
    			
    		if (count($form->getFacets())) {
    			$query->facetFields($form->getFacets());
-   			$query->facet(1);
+   			$query->facet(1, true, 10);
    		}
 
    		if ($extension = $this->getState('query.o', null)) {
@@ -200,8 +207,6 @@ class JSolrSearchModelSearch extends JModelForm
 			JPluginHelper::importPlugin("jsolrsearch");
 			$dispatcher = JDispatcher::getInstance();
 
-			$params = JComponentHelper::getParams($this->get('option'), true);
-
 			$query = $this->_query();
 
 			$response = null;
@@ -212,23 +217,34 @@ class JSolrSearchModelSearch extends JModelForm
 
 				$headers = json_decode($response->getRawResponse())->responseHeader;
 
-				$this->set('total', $response->response->numFound);
-				$this->set('qTime', $headers->QTime);
+				$this->setState('total', $response->response->numFound);
+				$this->setState('qTime.raw', $headers->QTime);
+				$this->setState('qTime', round(((int)$this->state->get('qTime.raw'))/1000, 5, PHP_ROUND_HALF_UP));
 				$rows = $headers->params->rows;
 
 				$items = $response->response->docs;
           
+				for ($i = 0; $i < count($items); $i++) {
+					// Get Highlight fields for results.
+					foreach ($dispatcher->trigger('onJSolrSearchURIGet', array($items[$i])) as $result) {
+						if ($result) {							
+							$items[$i]->link = $result;
+						}
+					}
+				}
+
 				// Share the results. Useful for modules, etc which may display these
 				// results in other ways. Provide facets also.
 				$app = JFactory::getApplication('site');
 				$app->setUserState('com_jsolrsearch.results', $items);
 				$app->setUserState('com_jsolrsearch.facets', $response->facet_counts->facet_fields);
+				$app->setUserState('com_jsolrsearch.highlighting', $response->highlighting);
 
 			} else {
 				$items = array();
 			}
 
-			$this->pagination = new JPagination($this->get('total'), $this->getState('list.start'), $rows);
+			$this->pagination = new JPagination($this->getState('total'), $this->getState('list.start'), $rows);
 
 			return $items;
 		} catch (Exception $e) {
@@ -238,10 +254,10 @@ class JSolrSearchModelSearch extends JModelForm
 		}
 	}
 
-   function getPagination()
-   {
-     return $this->pagination;
-   }
+	function getPagination()
+	{
+		return $this->pagination;
+	}
 
 	public function getQueryURI()
 	{
