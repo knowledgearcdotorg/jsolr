@@ -32,10 +32,11 @@
 
 defined('JPATH_BASE') or die;
 
-jimport('jsolr.form.fields.dropdown');
-jimport('jsolr.form.fields.filterable');
+jimport('joomla.form.helper');
 
-class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilterable
+jimport('jsolr.form.fields.sortable');
+
+class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 {
 	/**
 	 * The form field type.
@@ -43,7 +44,7 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 	 * @var         string
 	 * @since       1.6
 	 */
-	protected $type = 'JSolr.Calendar';
+	protected $type = 'JSolr.Sort';
 	
 	protected static $_headLoaded = false;
 
@@ -58,34 +59,34 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 		return $ul;
 	}
 	
-	/**
-	 * Method to get the field options.
-	 *
-	 * @return  array  The field option objects.
-	 *
-	 * @since   11.1
-	 */
 	protected function getOptions()
 	{
-		
 		// Initialize variables.
 		$options = array();
 	
-		foreach ($this->_getDateRanges() as $key=>$value) {			
-			$selected = ((string) $key) == $this->value;
+		foreach ($this->element->children() as $option) {
+	
+			// Only add <option /> elements.
+			if ($option->getName() != 'option') {
+				continue;
+			}
 
 			$uri = clone JFactory::getURI();
-			
-			if (!empty($key)) {
-				$uri->setVar($this->name, $key);
+
+			if (!empty($option['value'])) {
+				$uri->setVar($this->name, (string) $option['value']);
 			} else {
 				$uri->delVar($this->name);
 			}
-			
-			$link = '<a href="'.(string)$uri.'">' . JText::_($value) . '</a>';
+
+			$selected = ((string) $option['value']) == $this->value;
+
+			$link = '<a href="'.(string)$uri.'">'.
+				JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)).
+				'</a>';
 
 			// Create a new option object based on the <option /> element.
-			$tmp = '<li class="jsolr-dropdown-option' . ( $selected ? ' jsolr-dropdown-option-selected' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$tmp = '<li class="jsolr-dropdown-option' . ( $selected ? ' jsolr-dropdown-option-selected' : '' ) . '" data-value="' . ((string) $option['value']) . '">'.$link.'</li>';
 	
 	
 			// Add the option object to the result set.
@@ -97,65 +98,25 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 		return $options;
 	}
 	
-	protected function getValueLabel() 
+	public function getSort()
 	{
-		$ret = "";
-		foreach ($this->_getDateRanges() as $key=>$value)
-		{	
-			$selected = $key == $this->value;
-			if( $selected ) {
-				return trim((string) $value);
-			}
-	
-		}
-	
-		return $ret;
-	}
-	
-	public function getFilter()
-	{
-		$filter = null;
-	
-		switch ($this->value) {
-			case 'h':
-				$filter = '[NOW-1HOUR TO NOW]';
-				break;
-				
-			case 'd':
-				$filter = '[NOW-1DAY TO NOW]';
-				break;
+		$value = JFactory::getApplication()->input->get($this->name);
 
-			case 'w':
-				$filter = '[NOW-7DAY TO NOW]';
-				break;
-
-			case 'm':
-				$filter = '[NOW-1MONTH TO NOW]';
-				break;
-
-			case 'y':
-				$filter = '[NOW-1YEAR TO NOW]';
-				break;
-		}
-
-		if ($filter) {
-			$filter = JArrayHelper::getValue($this->element, 'filter') . ':' . $filter;
-		}
-
-		return $filter;
-	}
-	
-	private function _getDateRanges()
-	{
-		$array = array(
-				''=>'LIB_JSOLR_CALENDAR_ANYTIME',
-				'h'=>'LIB_JSOLR_CALENDAR_HOUR',
-				'd'=>'LIB_JSOLR_CALENDAR_DAY',
-				'w'=>'LIB_JSOLR_CALENDAR_WEEK',
-				'm'=>'LIB_JSOLR_CALENDAR_MONTH',
-				'y'=>'LIB_JSOLR_CALENDAR_YEAR'
-		);
+		$sort = null;
 		
-		return $array;
+		foreach ($this->element->children() as $option) {			
+			if (JArrayHelper::getValue($option, 'value', null, 'string') == $value) {
+				$sort = JArrayHelper::getValue($option, 'field', null, 'string');
+				
+				if (JArrayHelper::getValue($option, 'direction', null, 'string')) {
+					$sort .= " ";
+					$sort .= JArrayHelper::getValue($option, 'direction', null, 'string');
+				}
+
+				continue;
+			}
+		}
+		
+		return $sort;
 	}
 }

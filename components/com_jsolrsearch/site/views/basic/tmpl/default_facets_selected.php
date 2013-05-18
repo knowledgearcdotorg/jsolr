@@ -8,8 +8,8 @@ $form = JSolrSearchModelSearch::getFacetFilterForm();
 	<?php if ($field['value'] == 'null' || empty($field['value'])) continue; ?>
 	
 	<?php
-	$uri = clone $form->getFacetedURI();
-	$uri->delVar($field['filter']);
+	$uri = clone JFactory::getURI();
+	$uri->delVar($field['name']);
 	?>
 	<li>
 		<span class="jsolr-label"><?php echo $field['label'] ?></span>

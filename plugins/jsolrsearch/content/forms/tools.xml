@@ -7,22 +7,18 @@
         
         <!-- only JSolrFormFields should be used here -->
         <field 
-            name="created_at"
-            facet="created"
-            type="JSolr.DateRange"
-            label="Creation date"
+            name="qdr"
+            filter="modified"
+            type="jsolr.calendar"
             size="40"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
+            class="inputbox jsolrquery"/>
 
         <field 
-            name="lang"
-            facet="lang"
-            type="JSolr.Lang"
-            label="Language"
-            size="4"
-            multiple="true"
-            class="inputbox jsolrquery"
-            maxlength="50"/>
+            name="sbd"
+            type="jsolr.sort"
+            class="inputbox jsolrquery">
+			<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
+			<option value="1" field="modified" direction="desc">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
+		</field>
     </fieldset>
 </form>

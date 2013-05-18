@@ -143,6 +143,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$filters = array();
 		$facets = array();
 		$qf = array();
+		$sort = array();
    
 		$form = $this->getForm();
 
@@ -153,6 +154,17 @@ class JSolrSearchModelSearch extends JModelForm
 					if ($field->getFilter()) {
 						$this->filtered = true;					
 						$filters[] = $field->getFilter();
+					}
+				}
+			}
+		}
+		
+		// get sort fields.
+		foreach ($form->getFieldsets() as $fieldset) {
+			foreach ($form->getFieldset($fieldset->name) as $field) {
+				if (in_array('JSolrSortable', class_implements($field)) == true) {
+					if ($field->getSort()) {
+						$sort[] = $field->getSort();
 					}
 				}
 			}
@@ -185,6 +197,10 @@ class JSolrSearchModelSearch extends JModelForm
 			->offset($this->getState("list.start", 0))
 			->mergeParams(array('mm'=>$this->get('params')->def('mm', self::MM_DEFAULT)));
 
+   		if (count($sort)) {
+   			$query->sort(implode(', ', $sort));
+   		}
+   		
    		if (count($qf)) {
    			$query->queryFields($qf);
    		}
@@ -304,8 +320,6 @@ class JSolrSearchModelSearch extends JModelForm
    protected function preprocessForm(JForm $form, $data, $group = 'plugin')
    {
       $form->loadFile($this->_getCustomFormPath(), false);
-
-      $form->setURI($this->getQueryURI());
       
       parent::preprocessForm($form, $data, $group);
    }

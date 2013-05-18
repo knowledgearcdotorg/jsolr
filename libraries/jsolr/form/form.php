@@ -50,8 +50,6 @@ class JSolrForm extends JForm
 	 */
 	protected $filtered = false;
 	
-	private $uri;
-	
 	/**
 	 * @return integer one of the consts JSolrForm::TYPE_FACETFILTERS or JSolrForm::TYPE_SEARCHTOOLS
 	 */
@@ -206,7 +204,7 @@ class JSolrForm extends JForm
 			if ($fieldset->name == 'main') continue;
 
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				$value = JFactory::getApplication()->input->getString($field->filterQuery);
+				$value = JFactory::getApplication()->input->getString($field->name);
 
 				if (!empty($value)) {					
 					if (is_array($value)) {
@@ -222,8 +220,7 @@ class JSolrForm extends JForm
 					$result[] = array(
 						'label' => $field->label,
 						'value' => $value,
-						'name'  => $field->name,
-						'filter'=> $field->filterQuery
+						'name'  => $field->name
 					);					
 				}
 			}
@@ -269,29 +266,5 @@ class JSolrForm extends JForm
 		}
 
 		return $result;
-	}
-	
-	public function setURI($uri)
-	{
-		$this->uri = $uri;
-	}
-	
-	public function getURI()
-	{
-		return $this->uri;
-	}
-	
-	public function getFacetedURI()
-	{
-		$uri = clone $this->getURI();
-		
-		$input = new JInput();
-		foreach ($input->getArray($_GET) as $key=>$value) {
-			if (strpos($key, 'q_') === 0) {
-				$uri->setVar($key, $value);
-			}
-		}
-		
-		return $uri;
 	}
 }

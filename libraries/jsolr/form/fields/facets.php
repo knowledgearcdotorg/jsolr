@@ -1,7 +1,31 @@
 <?php
 /**
- * @package		JSolr
- * @subpackage	Form.Fields
+ * Renders a list of facets.
+ * 
+ * @package		JSpace
+ * @subpackage	form.fields
+ * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
+ * @license     This file is part of the JSpace component for Joomla!.
+
+   The JSpace component for Joomla! is free software: you can redistribute it 
+   and/or modify it under the terms of the GNU General Public License as 
+   published by the Free Software Foundation, either version 3 of the License, 
+   or (at your option) any later version.
+
+   The JSpace component for Joomla! is distributed in the hope that it will be 
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with the JSpace component for Joomla!.  If not, see 
+   <http://www.gnu.org/licenses/>.
+
+ * Contributors
+ * Please feel free to add your name and email (optional) here if you have 
+ * contributed any source code changes.
+ * Name							Email
+ * Hayden Young					<haydenyoung@wijiti.com>  
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -84,7 +108,7 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 
 	public function getFilter()
 	{
-		$value = JFactory::getApplication()->input->getString($this->filterQuery);
+		$value = JFactory::getApplication()->input->getString($this->name);
 
 		return ($value) ? JArrayHelper::getValue($this->element, 'filter').':'.$value : null;
 	}
@@ -93,19 +117,19 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 	{
 		$url = JFactory::getURI();
 		
-		$filter = $url->getVar($this->filterQuery, null);
+		$filter = $url->getVar($this->name, null);
 
 		return ($filter == $facet) ? true : false;
 	}
 	
 	protected function getFilterURI($facet)
 	{
-		$url = clone $this->form->getFacetedURI();
+		$url = clone JFactory::getURI();
 		
 		if ($this->isSelected($facet)) {
-			$url->delVar($this->filterQuery);
+			$url->delVar($this->name);
 		} else {
-			$url->setVar($this->filterQuery, $facet);
+			$url->setVar($this->name, $facet);
 		}
 		
 		return (string)$url;

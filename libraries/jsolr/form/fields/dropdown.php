@@ -1,10 +1,9 @@
 <?php
 /**
- * Supports a collection picker.
+ * Provides a list of selectable values.
  * 
- * @author		$LastChangedBy: spauldingsmails $
  * @package		JSpace
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
    The JSpace component for Joomla! is free software: you can redistribute it 
@@ -26,7 +25,7 @@
  * contributed any source code changes.
  * Name							Email
  * Michał Kocztorz				<michalkocztorz@wijiti.com> 
- * 
+ * Hayden Young					<haydenyoung@wijiti.com>
  */
 
 defined('JPATH_BASE') or die;
@@ -37,7 +36,7 @@ jimport('jsolr.form.fields.filterable');
 
 JFormHelper::loadFieldClass('list');
 
-class JSolrFormFieldDropdown extends JFormFieldList implements JSolrFilterable
+class JSolrFormFieldDropdown extends JFormFieldList
 {
 	/**
 	 * The form field type.
@@ -226,10 +225,5 @@ CSS;
 JS;
 		$doc->addScriptDeclaration($js);
 		self::$_headLoaded = true;
-	}
-	
-	public function getFilter()
-	{
-		return null;
 	}
 }

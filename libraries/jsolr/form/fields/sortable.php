@@ -27,13 +27,7 @@
  * Name							Email
  * Hayden Young					<haydenyoung@wijiti.com>  
  */
-
-/**
- * A filter interface.
- * 
- * Implement this interface when the form field must provide a filter.
- */
-interface JSolrFilterable
+interface JSolrSortable
 {
-	public function getFilter();
+	public function getSort();
 }

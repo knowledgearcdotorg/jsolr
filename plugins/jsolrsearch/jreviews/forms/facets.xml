@@ -23,7 +23,7 @@
             value="Part of a Series"/>
 
         <field 
-            name="category"
+            name="cat"
             facet="category_fc"
             filter="category_en"
             type="jsolr.facets"
