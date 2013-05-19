@@ -44,7 +44,7 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 	{
 		parent::__construct($subject, $config);
 		
-		$this->set('highlighting', array("title", "body", "metadescription", "category"));
+		$this->set('highlighting', array("title", "title_*", "body_*", "metadescription_*", "category_*"));
 		
 		$db = JFactory::getDBO();
 		

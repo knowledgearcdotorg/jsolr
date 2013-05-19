@@ -47,7 +47,7 @@ class plgJSolrSearchContent extends JSolrSearchSearch
 	{
 		parent::__construct($subject, $config);
 		
-		$this->set('highlighting', array("title", "body_*", "metadescription_*", "category_*"));
+		$this->set('highlighting', array("title", "title_*", "body_*", "metadescription_*", "category_*"));
 	}
 	
 	public function onJSolrSearchURIGet($document)

@@ -23,16 +23,7 @@
 					<option value="0">No</option> 
 					<option value="1">Yes</option> 
 				</field>
-				
-				<field name="boost_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
-				<field name="boost_body" type="text" default="15.0" label="Body Boost" description="Boost the body field's relevancy."/>
-				<field name="boost_author" type="text" default="2.0" label="Category Boost" description="Boost the author field's relevancy."/>		
-				<field name="boost_metakeywords" type="text" default="5.0" label="Meta Keywords Boost" description="Boost the meta keywords relevancy."/>
-				<field name="boost_metadescription" type="text" default="10.0" label="Meta Description Boost" description="Boost the meta description field's relevancy."/>
-				<field name="boost_category" type="text" default="2.0" label="Category Boost" description="Boost the category's relevancy."/>
-				<field name="boost_tags_h1" type="text" default="10.0" label="H1 Tag Boost" description="Boost the H1 tag's relevancy."/>
-				<field name="boost_tags_h2_h3" type="text" default="7.5" label="H2 and H3 Tag Boost" description="Boost H2 and H3 tags' relevancies."/>
-				<field name="boost_tags_h4_h5_h6" type="text" default="5.0" label="H4, H5 and H6 Tag Boost" description="Boost the H4, H5 and H6 tags' relevancies."/>
+				<field name="boost" type="text" default="title^50.0 body_*^10.0 author^5.0 metakeywords_*^5.0 metadescription_*^5.0 category_*^1.0 tags_h1_*^10.0 tags_h2_h3_*^5.0 tags_h4_h5_h6_*^2.0" label="Boosts" description="Boost certain fields over others when matching a query to the indexed items. E.g. Make title twice as important as category when matching results; title^100.0 category^50.0."/>
 			</fieldset>
 		</fields>
 	</config>
