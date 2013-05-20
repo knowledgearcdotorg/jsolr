@@ -40,8 +40,8 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.cs
 
 $document->addScriptDeclaration('
 jQuery(document).ready(function() {
-	var jsolrsearch_autocomplete_url = "'.JRoute::_('index.php/component/jsolrsearch/basic').'";
-	var jsolrsearch_search_url = "'.JRoute::_('index.php/component/jsolrsearch/basic').'";		
+	var jsolrsearch_autocomplete_url = "'.JRoute::_('index.php?option=jsolrsearch&view=basic').'";
+	var jsolrsearch_search_url = "'.JRoute::_('index.php?option=jsolrsearch&view=basic').'";
 });
 ');
 ?>
