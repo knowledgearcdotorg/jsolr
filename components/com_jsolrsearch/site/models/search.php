@@ -124,15 +124,15 @@ class JSolrSearchModelSearch extends JModelForm
 			}
 
 			$this->setState('query.lang', $lang);
-			
-			$value = $application->getUserStateFromRequest('global.list.limit', 'limit', $application->getCfg('list_limit'), 'uint');
-			$limit = $value;
-			$this->setState('list.limit', $limit);
-			
-			$value = $application->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0);
-			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
-			$this->setState('list.start', $limitstart);
 		}
+
+		$value = $application->getUserStateFromRequest('global.list.limit', 'limit', $application->getCfg('list_limit'), 'uint');
+		$limit = $value;
+		$this->setState('list.limit', $limit);
+			
+		$value = $application->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0);
+		$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+		$this->setState('list.start', $limitstart);
 
 		parent::populateState($ordering, $direction);
    }
@@ -193,7 +193,7 @@ class JSolrSearchModelSearch extends JModelForm
 			->retrieveFields("*,score")
 			->filters($filters)
 			->highlight(200, "<strong>", "</strong>", 3, implode(" ", $hl))
-			->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit')))
+			->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
 			->offset($this->getState("list.start", 0))
 			->mergeParams(array('mm'=>$this->get('params')->def('mm', self::MM_DEFAULT)));
 
@@ -219,6 +219,10 @@ class JSolrSearchModelSearch extends JModelForm
 
 	public function getItems()
 	{
+		if (!$this->getState('query.q')) {
+			return null;
+		}
+		
 		try {
 			JPluginHelper::importPlugin("jsolrsearch");
 			$dispatcher = JDispatcher::getInstance();

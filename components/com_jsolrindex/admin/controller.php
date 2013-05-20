@@ -73,12 +73,20 @@ class JSolrIndexController extends JControllerLegacy
 	{
 		$model = $this->getModel($this->default_view);
 		
+		$start = new JDate('now');
+		
 		if ($success = $model->index()) {
 			$msg = JText::_("Index successful");
 		} else {
 			$msg = JText::_($model->getError());
 		}
+		
+		$end = new JDate('now');
 
+		$time = $start->diff($end);
+
+		$msg = $msg." (execution time: ".$time->format("%H:%M:%S").")";
+		
 		echo json_encode(array("success"=>$success, "message"=>$msg));		
 	}
 

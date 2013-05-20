@@ -100,7 +100,59 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 			$doc->addField("category_$lang", $record->category);
 			$doc->addField("category_fc", $record->category); // for faceting
 		}
+		
+		if (isset($record->images)) {
+			$parts = explode("|||", $record->images);
+			
+			if ($image = JArrayHelper::getValue($parts, 0)) {
+				$doc->addField("image_s", $image);
+			}
+		}
 
+		if (isset($record->user_rating)) {
+			$doc->addField("user_rating_tf", $record->user_rating);
+		}
+
+		if (isset($record->user_rating_count)) {
+			$doc->addField("user_rating_count_i", $record->user_rating_count);
+		}
+
+		if (isset($record->user_criteria_rating)) {
+			$doc->addField("user_criteria_rating_tf", $record->user_criteria_rating);
+		}
+		
+		if (isset($record->user_criteria_rating_count)) {
+			$doc->addField("user_criteria_rating_count_i", $record->user_criteria_rating_count);
+		}
+		
+		if (isset($record->review_count)) {
+			$doc->addField("review_count_i", $record->review_count);
+		}
+		
+		if (isset($record->editor_rating)) {
+			$doc->addField("editor_rating_tf", $record->editor_rating);
+		}
+		
+		if (isset($record->editor_rating_count)) {
+			$doc->addField("editor_rating_count_i", $record->editor_rating_count);
+		}
+		
+		if (isset($record->editor_criteria_rating)) {
+			$doc->addField("editor_criteria_rating_tf", $record->editor_criteria_rating);
+		}
+		
+		if (isset($record->editor_criteria_rating_count)) {
+			$doc->addField("editor_criteria_rating_count_s", $record->editor_criteria_rating_count);
+		}
+		
+		if (isset($record->editor_review_count)) {
+			$doc->addField("editor_review_count_s", $record->editor_review_count);
+		}
+
+		if (isset($record->favorites)) {
+			$doc->addField("favorites_i", $record->favorites);
+		}
+		
 		// Obtain the configured fields to index.		
 		if (array_search('jsolr_all', $this->params->def('index_fields')) === false) {
 			$indexes = $this->params->def('index_fields');
@@ -416,7 +468,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		$query->select('a.state, a.catid, a.created, a.created_by, a.hits');
 		$query->select('a.created_by_alias, a.modified, a.modified_by, a.attribs AS params');
 		$query->select('a.metakey, a.metadesc, a.metadata, a.language, a.access, a.version, a.ordering');
-		$query->select('a.publish_up AS publish_start_date, a.publish_down AS publish_end_date');
+		$query->select('a.publish_up AS publish_start_date, a.publish_down AS publish_end_date, a.images');
 		
 		$query->join('LEFT', '#__content AS a ON jc.contentid=a.id');
 
@@ -435,7 +487,14 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		// Join over the users for the author.
 		$query->select('ua.name AS author');
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
+		
+		$query->select('user_rating', 'user_rating_count', 'user_criteria_rating', 'user_criteria_rating_count', 'review_count', 'editor_rating', 'editor_rating_count', 'editor_criteria_rating', 'editor_criteria_rating_count', 'editor_review_count');
+		$query->join('LEFT', '#__jreviews_listing_totals AS lt ON lt.listing_id = jc.contentid');
 
+		$query->select('COUNT(f.favorite_id) AS favorites');
+		$query->join('LEFT', '#__jreviews_favorites AS f ON f.content_id = jc.contentid');
+		$query->group('jc.contentid');
+		
 		$conditions = array();
 
 		// Implement View Level Access

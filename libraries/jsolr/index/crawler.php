@@ -148,28 +148,29 @@ abstract class JSolrIndexCrawler extends JPlugin
 	{
 		$items = $this->getItems();
 
-		$ids = array();
-		$documents = array();
-
-		$i = 0;
-		if (is_array($items)) {
-			foreach ($items as $item) {
-				$documents[$i] = $this->prepare($item);
-
-				$key = $documents[$i]->getField('key');
-				$key = JArrayHelper::getValue($key, 'value');
-				$ids[$i] = JArrayHelper::getValue($key, 0);
-				
-				$i++;
-			}
-		}
 
 		try {
 			$solr = JSolrIndexFactory::getService();
-
-			$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
 			
-			$solr->addDocuments($documents, false, true, true);
+			$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
+
+			if (is_array($items)) {				
+				$documents = array();
+				$i = 0;
+				
+				foreach ($items as $item) {
+					$documents[$i] = $this->prepare($item);
+
+					$i++;
+
+					if ($i % 1000 == 0) {						
+						$solr->addDocuments($documents, false, true, true, 10000);
+						
+						$documents = array();
+						$i = 0;
+					}
+				}
+			}
 			
 			$solr->commit();
 		} catch (Exception $e) {
