@@ -11,6 +11,7 @@
 	<description>PLG_JSOLRSEARCH_JREVIEWS_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="jreviews">jreviews.php</filename>
+		<folder>forms</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jreviews.ini</language>

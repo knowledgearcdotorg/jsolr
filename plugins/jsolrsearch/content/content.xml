@@ -11,6 +11,8 @@
 	<description>PLG_JSOLRSEARCH_CONTENT_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="content">content.php</filename>
+		<folder>forms</folder>
+		<folder>views</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_content.ini</language>
