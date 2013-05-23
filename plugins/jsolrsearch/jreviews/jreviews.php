@@ -31,10 +31,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 
 jimport('joomla.error.log');
+jimport('joomla.cache.cache');
 
 jimport('jsolr.search.search');
-
-require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
 class plgJSolrSearchJReviews extends JSolrSearchSearch
 {
@@ -68,6 +67,8 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 	public function onJSolrSearchURIGet($document)
 	{
 		if ($this->get('extension') == $document->extension) {
+			require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
+			
 			return ContentHelperRoute::getArticleRoute($document->id, $document->parent_id);
 		}
 		
@@ -81,5 +82,49 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 			'plugin' => $this->extension,
 			'path' => __DIR__ . '/forms/facets.xml'
 		);
+	}
+	
+	public function onJSolrSearchOptionLookup($value)
+	{	
+		$conf = JFactory::getConfig();
+		$options = array(
+				'defaultgroup' => 'plg_jsolrsearch_jreviews',
+				'cachebase' => $conf->getValue('config.cache_path'),
+				'lifetime' => $conf->getValue('config.cachetime') * 60, // minutes to seconds
+				'language' => $conf->getValue('config.language'),
+				'storage' => $conf->getValue('config.storage', 'file'));
+		
+		$cache = new JCache($options);
+		$cache->setCaching(true);
+		
+		if (!$list = $cache->get('options', $options['defaultgroup'])) {
+			error_log('get options from db');		
+			$database = JFactory::getDbo(); 
+			
+			$query = $database->getQuery(true);
+			$query
+				->select(array('text', 'value'))
+				->from('#__jreviews_fieldoptions');
+			
+			$database->setQuery($query);
+			
+			$list = $database->loadObjectList();
+			
+			// cache these options so we don't need to keep loading from db.
+			$cache->store($list, $options['defaultgroup']);
+		}
+		
+		$found = false;
+		$text = "";
+		while (!$found && $item = current($list)) {
+			if ($item->value == $value) {
+				$found = true;
+				$text = $item->text;
+			}
+			
+			next($list);
+		}
+		
+		return $text;
 	}
 }
