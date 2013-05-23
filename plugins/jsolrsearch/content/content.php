@@ -31,9 +31,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 
 jimport('joomla.error.log');
-
-require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
-
 jimport('joomla.database.table.category');
 jimport('joomla.database.table.content');
 
@@ -53,6 +50,8 @@ class plgJSolrSearchContent extends JSolrSearchSearch
 	public function onJSolrSearchURIGet($document)
 	{
 		if ($this->get('extension') == $document->extension) {
+			require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
+			
 			return ContentHelperRoute::getArticleRoute($document->id, $document->parent_id);
 		}
 		
