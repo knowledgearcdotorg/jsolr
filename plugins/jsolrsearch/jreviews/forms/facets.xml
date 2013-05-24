@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
     <fieldset
-        name="meta">
+        name="meta"
+        addfieldpath="/plugins/jsolrsearch/jreviews/fields">
         
         <!-- only JSolrFormFields should be used here -->
         <field 
@@ -35,7 +36,7 @@
             name="readinglevel"
             facet="jrreadinglevel_fc"
             filter="jrreadinglevel_s_multi"           
-            type="jsolr.facets"
+            type="jsolr.listings"
             label="Reading level"
             class="inputbox jsolrquery"/>
 
@@ -51,7 +52,7 @@
             name="keywords"
             facet="jrkeywords_fc"
             filter="jrkeywords_s_multi"
-            type="jsolr.facets"
+            type="jsolr.listings"
             label="Keywords"
             class="inputbox jsolrquery"/>
 
