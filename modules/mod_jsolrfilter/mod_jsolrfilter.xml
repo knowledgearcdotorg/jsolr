@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension
         type="module"
-        version="2.5"
+        version="3.0"
         client="site"
         method="upgrade">
 		<name>mod_jsolrfilter</name>
@@ -9,9 +9,9 @@
 		<author>Wijiti</author>
 		<authorEmail>development@wijiti.com</authorEmail>
 		<authorUrl>http://www.wijiti.com</authorUrl>
-		<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+		<copyright>>Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.</copyright>
 		<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-		<version>0.1.1</version>
+		<version>0.3.0</version>
 		<description>MOD_JSOLRFILTER_XML_DESCRIPTION</description>
 		<files>
 			<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
@@ -26,6 +26,7 @@
 
 	 	<languages>
 	 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.ini</language>
+	 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.sys.ini</language>
 	 	</languages>
     <config>
         <fields name="params">
