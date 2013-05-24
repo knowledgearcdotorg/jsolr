@@ -146,8 +146,9 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	public function onIndex()
 	{
+		$chunk = 1000;
+		
 		$items = $this->getItems();
-
 
 		try {
 			$solr = JSolrIndexFactory::getService();
@@ -163,7 +164,10 @@ abstract class JSolrIndexCrawler extends JPlugin
 
 					$i++;
 
-					if ($i % 1000 == 0) {						
+					// index when either the number of items retrieved matches 
+					// the total number of items being indexed or when the 
+					// index chunk size has been reached. 
+					if ($i == count($items) || $i % $chunk == 0) {			
 						$solr->addDocuments($documents, false, true, true, 10000);
 						
 						$documents = array();
@@ -171,8 +175,6 @@ abstract class JSolrIndexCrawler extends JPlugin
 					}
 				}
 			}
-			
-			$solr->commit();
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
