@@ -84,6 +84,17 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 		);
 	}
 	
+	/**
+	 * A convenience event handler to obtain the text related to an option's 
+	 * value.
+	 * 
+	 * The event cache's the options for quicker lookup and to reduce load on 
+	 * the database. Therefore, there may be some delay between new items 
+	 * being added to JReviews and what is retrieved by this event. 
+	 * 
+	 * @param string $value The option's value.
+	 * @return string The text related to the option's value.
+	 */
 	public function onJSolrSearchOptionLookup($value)
 	{	
 		$conf = JFactory::getConfig();
