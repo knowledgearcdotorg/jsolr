@@ -119,6 +119,7 @@ class JSolrApacheSolrService
 	const SEARCH_SERVLET = 'select';
 	const THREADS_SERVLET = 'admin/threads';
 	const EXTRACT_SERVLET = 'update/extract';
+	const LUKE_SERVLET = 'admin/luke';
 
 	/**
 	 * Server identification strings
@@ -164,7 +165,7 @@ class JSolrApacheSolrService
 	 *
 	 * @var string
 	 */
-	protected $_pingUrl, $_updateUrl, $_searchUrl, $_threadsUrl;
+	protected $_pingUrl, $_updateUrl, $_searchUrl, $_threadsUrl, $_lukeUrl;
 
 	/**
 	 * Keep track of whether our URLs have been constructed
@@ -287,6 +288,7 @@ class JSolrApacheSolrService
 		$this->_searchUrl = $this->_constructUrl(self::SEARCH_SERVLET);
 		$this->_threadsUrl = $this->_constructUrl(self::THREADS_SERVLET, array('wt' => self::SOLR_WRITER ));
 		$this->_updateUrl = $this->_constructUrl(self::UPDATE_SERVLET, array('wt' => self::SOLR_WRITER ));
+		$this->_lukeUrl = $this->_constructUrl(self::LUKE_SERVLET, array('wt' => self::SOLR_WRITER ));
 
 		$this->_urlsInited = true;
 	}
@@ -639,6 +641,19 @@ class JSolrApacheSolrService
 		{
 			return false;
 		}
+	}
+	
+	/**
+	 * Call the /admin/luke servlet, can be used to quickly tell if a connection to the
+	 * server is able to be made.
+	 *
+	 * @return JSolrApacheSolrResponse
+	 *
+	 * @throws JSolrApacheSolrHttpTransportException If an error occurs during the service call
+	 */
+	public function luke()
+	{
+		return $this->_sendRawGet($this->_lukeUrl);
 	}
 
 	/**

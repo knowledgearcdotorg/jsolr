@@ -34,15 +34,15 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.registry.registry');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.helper');
+jimport('joomla.application.component.modelitem');
 
-jimport('jsolr.apache.solr.service');
-jimport('jsolr.apache.solr.exception');
+jimport('jsolr.index.factory');
 
-class JSolrIndexModelConfiguration extends JModelLegacy
+class JSolrIndexModelConfiguration extends JModelItem
 {
 	public function __construct()
 	{
-		parent::__construct();	
+		parent::__construct();
 	}
 	
 	public function getHost()
@@ -58,13 +58,35 @@ class JSolrIndexModelConfiguration extends JModelLegacy
 		return $url;
 	}
 	
+	public function getItem()
+	{
+		if (!$this->_item) {
+			$params = JComponentHelper::getParams('com_jsolrindex');
+			
+			$this->_item = new JObject();
+			$this->_item->set('host', $params->get('host', null));
+			$this->_item->set('port', $params->get('port', null));
+			$this->_item->set('path', $params->get('path', null));
+			$this->_item->set('index', null);
+			
+			$client = JSolrIndexFactory::getService();
+	
+			if ($this->test()) {
+				$response = $client->luke();
+				$this->_item->set('index', $params->set('index', $response->index));
+			} else {
+				$this->_item->set('index', $params->set('index', null));
+			}
+		}
+		
+		return $this->_item;
+	}
+	
 	public function test()
 	{
-		$params = JComponentHelper::getParams('com_jsolrindex');
-		
-		$client = new JSolrApacheSolrService($this->getHost(), $params->get('port'), $params->get('path'));
+		$client = JSolrIndexFactory::getService();
 
-		$response = $client->ping();
+		$response = $client->ping(10);
 		
 		if ($response === false) {
 			$this->setError(JText::_("COM_JSOLRINDEX_PING_FAILED"));
@@ -75,9 +97,7 @@ class JSolrIndexModelConfiguration extends JModelLegacy
 	}
 	
 	public function index()
-	{
-		$params = JComponentHelper::getParams('com_jsolrindex');
-		
+	{	
 		if (!$this->test()) {
 			return false;
 		}
@@ -105,7 +125,7 @@ class JSolrIndexModelConfiguration extends JModelLegacy
 			return false;
 		}		
 		
-		$client = new JSolrApacheSolrService($this->getHost(), $params->get('port'), $params->get('path'));
+		$client = JSolrIndexFactory::getService();
 		
 		try {
 			$client->deleteByQuery("*:*");
@@ -133,7 +153,7 @@ class JSolrIndexModelConfiguration extends JModelLegacy
 				
 			case "remote":
 				try {
-					$client = new Apche_Solr_Service($this->getAttachmentHost(), $params->get("remote_tika_port"), $params->get("remote_tika_path"));
+					$client = JSolrIndexFactory::getService();
 					$response = $client->extract(
 						JPATH_COMPONENT_ADMINISTRATOR."/test.odt",
 						array("extractOnly"=>"true")

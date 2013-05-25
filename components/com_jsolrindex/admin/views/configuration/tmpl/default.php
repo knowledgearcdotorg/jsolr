@@ -61,11 +61,107 @@ var jsolrindex = new Object({
 });
 ');
 ?>
-
-<div id="element-box">
-	<div class="m">
-		<fieldset>
+<div class="width-60 fltlft">
+	<div class="width-100">
+		<fieldset class="adminform">
+			<legend>Search Server Connection</legend>
+			<ul class="adminformlist">
+				<li>
+					<label 
+						title="" 
+						class="hasTip required" 
+						for="jform_host" 
+						id="jform_host-lbl"><?php echo JText::_('Host'); ?></label>
+					<input 
+						type="text" 
+						readonly="readonly" 
+						class="readonly" 
+						size="22" 
+						value="<?php echo $this->item->get('host'); ?>" 
+						title="<?php echo $this->item->get('host'); ?>">
+				</li>
+				<li>
+					<label 
+						title="" 
+						class="hasTip required" 
+						for="jform_port" 
+						id="jform_port-lbl"><?php echo JText::_('Port'); ?></label>
+					<input 
+						type="text" 
+						readonly="readonly" 
+						class="readonly" 
+						size="22" 
+						value="<?php echo $this->item->get('port'); ?>" 
+						title="<?php echo $this->item->get('port'); ?>">
+				</li>
+				<li>
+					<label 
+						title="" 
+						class="hasTip required" 
+						for="jform_path" 
+						id="jform_path-lbl"><?php echo JText::_('Path'); ?></label>
+					<input 
+						type="text" 
+						readonly="readonly" 
+						class="readonly" 
+						size="22" 
+						value="<?php echo $this->item->get('path'); ?>" 
+						title="<?php echo $this->item->get('path'); ?>">
+				</li>
+				<li>
+					<label 
+						title="" 
+						class="hasTip required" 
+						for="jform_connection" 
+						id="jform_connection-lbl"><?php echo JText::_('Connection'); ?></label>
+					<input 
+						type="text" 
+						readonly="readonly" 
+						class="readonly" 
+						size="22" 
+						value="<?php echo (is_null($this->item->get('index'))) ? JText::_('Failed') : JText::_('Successful'); ?>" 
+						title="<?php echo (is_null($this->item->get('index'))) ? JText::_('Failed') : JText::_('Successful'); ?>">
+				</li>
+				<?php if (!is_null($this->item->get('index'))) : ?>
+				<li>
+					<label 
+						title="" 
+						class="hasTip required" 
+						for="jform_numDocs" 
+						id="jform_numDocs-lbl"><?php echo JText::_('Documents indexed'); ?></label>
+					<input 
+						type="text" 
+						readonly="readonly" 
+						class="readonly" 
+						size="22" 
+						value="<?php echo $this->item->get('index')->numDocs; ?>" 
+						title="<?php echo $this->item->get('index')->numDocs; ?>">
+				</li>
+				<li>
+					<label 
+						title="" 
+						class="hasTip required" 
+						for="jform_lastModified" 
+						id="jform_lastModified-lbl"><?php echo JText::_('Last index at'); ?></label>
+					<input 
+						type="text" 
+						readonly="readonly" 
+						class="readonly" 
+						size="22" 
+						value="<?php echo JSolrSearchFormatter::datetime($this->item->get('index')->lastModified); ?>" 
+						title="<?php echo JSolrSearchFormatter::datetime($this->item->get('index')->lastModified); ?>">
+				</li>
+				<?php endif; ?>
+			</ul>
+		</fieldset>
+	</div>
+</div>
+		
+<div class="width-40 fltrt">
+	<div class="width-100">
+		<fieldset class="adminform">
 			<legend>Index Management</legend>
+			
 			<div id="jsolrIndexManagementMessage">&nbsp;</div>
 			
 			<div id="jSolrIndexManagementButtons">
@@ -74,8 +170,10 @@ var jsolrindex = new Object({
 				<button id="jsolrPurgeIndex"><?php echo JText::_("Purge index"); ?></button>
 			</div>
 		</fieldset>
-		
-		<fieldset>
+	</div>
+	
+	<div class="width-100">		
+		<fieldset class="adminform">
 			<legend>Attachment Indexing</legend>
 			<div id="jsolrIndexAttachmentIndexingMessage">&nbsp;</div>
 			
@@ -83,8 +181,5 @@ var jsolrindex = new Object({
 				<button id="jsolrIndexTestTika"><?php echo JText::_("Test Connection"); ?></button>				
 			</div>
 		</fieldset>
-
-		<div class="clr"></div>
 	</div>
-	<noscript>Warning! JavaScript must be enabled for proper operation of the Administrator backend.</noscript>
 </div>

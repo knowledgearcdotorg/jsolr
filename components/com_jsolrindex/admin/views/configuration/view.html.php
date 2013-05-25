@@ -31,12 +31,16 @@
  */
  
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+jimport('jsolr.search.formatter');
  
 class JSolrIndexViewConfiguration extends JViewLegacy
 {
     function display($tpl = null)
     {
     	JHtml::_('behavior.framework', true);
+    	
+    	$this->item = $this->get('Item');
     	
     	$document = JFactory::getDocument();
 
