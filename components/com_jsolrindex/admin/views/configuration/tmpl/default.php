@@ -53,10 +53,10 @@ var jsolrindex = new Object({
 		}
 	},
 	language : {
-		pleaseWait : "'.JText::_("Please wait...").'",
-		failed : "'.JText::_("Connection failed.").'",
-		cancelling : "'.JText::_("Cancelling...").'",
-		cancelled : "'.JText::_("Cancelled.").'"
+		pleaseWait : "'.JText::_("COM_JSOLRINDEX_CONFIGURATION_WAITING").'",
+		failed : "'.JText::_("COM_JSOLRINDEX_CONFIGURATION_FAILED").'",
+		cancelling : "'.JText::_("COM_JSOLRINDEX_CONFIGURATION_CANCELLING").'",
+		cancelled : "'.JText::_("COM_JSOLRINDEX_CONFIGURATION_CANCELLED").'"
 	}
 });
 ');
@@ -71,7 +71,7 @@ var jsolrindex = new Object({
 						title="" 
 						class="hasTip required" 
 						for="jform_host" 
-						id="jform_host-lbl"><?php echo JText::_('Host'); ?></label>
+						id="jform_host-lbl"><?php echo JText::_('COM_JSOLRINDEX_CONNECTION_HOST_LABEL'); ?></label>
 					<input 
 						type="text" 
 						readonly="readonly" 
@@ -85,7 +85,7 @@ var jsolrindex = new Object({
 						title="" 
 						class="hasTip required" 
 						for="jform_port" 
-						id="jform_port-lbl"><?php echo JText::_('Port'); ?></label>
+						id="jform_port-lbl"><?php echo JText::_('COM_JSOLRINDEX_CONNECTION_PORT_LABEL'); ?></label>
 					<input 
 						type="text" 
 						readonly="readonly" 
@@ -99,7 +99,7 @@ var jsolrindex = new Object({
 						title="" 
 						class="hasTip required" 
 						for="jform_path" 
-						id="jform_path-lbl"><?php echo JText::_('Path'); ?></label>
+						id="jform_path-lbl"><?php echo JText::_('COM_JSOLRINDEX_CONNECTION_PATH_LABEL'); ?></label>
 					<input 
 						type="text" 
 						readonly="readonly" 
@@ -113,14 +113,17 @@ var jsolrindex = new Object({
 						title="" 
 						class="hasTip required" 
 						for="jform_connection" 
-						id="jform_connection-lbl"><?php echo JText::_('Connection'); ?></label>
+						id="jform_connection-lbl"><?php echo JText::_('COM_JSOLRINDEX_CONFIGURATION_STATUS_LABEL'); ?></label>
 					<input 
 						type="text" 
 						readonly="readonly" 
 						class="readonly" 
 						size="22" 
-						value="<?php echo (is_null($this->item->get('index'))) ? JText::_('Failed') : JText::_('Successful'); ?>" 
-						title="<?php echo (is_null($this->item->get('index'))) ? JText::_('Failed') : JText::_('Successful'); ?>">
+						value="<?php echo (is_null($this->item->get('index'))) ? JText::_('COM_JSOLRINDEX_CONFIGURATION_STATUS_NOTCONNECTED') : JText::_('COM_JSOLRINDEX_CONFIGURATION_STATUS_CONNECTED'); ?>" 
+						title="<?php echo (is_null($this->item->get('index'))) ? JText::_('COM_JSOLRINDEX_CONFIGURATION_STATUS_NOTCONNECTED') : JText::_('COM_JSOLRINDEX_CONFIGURATION_STATUS_CONNECTED'); ?>">
+					<?php if (is_null($this->item->get('index'))) : ?>`
+					<?php echo JText::_('COM_JSOLRINDEX_CONFIGURATION_NOTCONNECTED_DESCRIPTION'); ?>
+					<?php endif; ?>
 				</li>
 				<?php if (!is_null($this->item->get('index'))) : ?>
 				<li>
@@ -128,7 +131,7 @@ var jsolrindex = new Object({
 						title="" 
 						class="hasTip required" 
 						for="jform_numDocs" 
-						id="jform_numDocs-lbl"><?php echo JText::_('Documents indexed'); ?></label>
+						id="jform_numDocs-lbl"><?php echo JText::_('COM_JSOLRINDEX_CONFIGURATION_NUMDOCS_LABEL'); ?></label>
 					<input 
 						type="text" 
 						readonly="readonly" 
@@ -142,7 +145,7 @@ var jsolrindex = new Object({
 						title="" 
 						class="hasTip required" 
 						for="jform_lastModified" 
-						id="jform_lastModified-lbl"><?php echo JText::_('Last index at'); ?></label>
+						id="jform_lastModified-lbl"><?php echo JText::_('COM_JSOLRINDEX_CONFIGURATION_LASTMODIFIED_LABEL'); ?></label>
 					<input 
 						type="text" 
 						readonly="readonly" 
@@ -165,9 +168,9 @@ var jsolrindex = new Object({
 			<div id="jsolrIndexManagementMessage">&nbsp;</div>
 			
 			<div id="jSolrIndexManagementButtons">
-				<button id="jsolrIndexTest"><?php echo JText::_("Test connection"); ?></button>
-				<button id="jsolrStartIndex"><?php echo JText::_("Start indexing"); ?></button>
-				<button id="jsolrPurgeIndex"><?php echo JText::_("Purge index"); ?></button>
+				<button id="jsolrIndexTest"><?php echo JText::_("COM_JSOLRINDEX_CONFIGURATION_TEST"); ?></button>
+				<button id="jsolrStartIndex"><?php echo JText::_("COM_JSOLRINDEX_CONFIGURATION_INDEX"); ?></button>
+				<button id="jsolrPurgeIndex"><?php echo JText::_("COM_JSOLRINDEX_CONFIGURATION_PURGE"); ?></button>
 			</div>
 		</fieldset>
 	</div>
@@ -178,7 +181,7 @@ var jsolrindex = new Object({
 			<div id="jsolrIndexAttachmentIndexingMessage">&nbsp;</div>
 			
 			<div id="jSolrAttachmentIndexingButtons">
-				<button id="jsolrIndexTestTika"><?php echo JText::_("Test Connection"); ?></button>				
+				<button id="jsolrIndexTestTika"><?php echo JText::_("COM_JSOLRINDEX_CONFIGURATION_TEST"); ?></button>				
 			</div>
 		</fieldset>
 	</div>

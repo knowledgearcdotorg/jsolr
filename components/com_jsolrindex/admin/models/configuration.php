@@ -34,7 +34,10 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.registry.registry');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.helper');
-jimport('joomla.application.component.modelitem');
+
+// only import model item for j! 2.5.
+if (version_compare(JVERSION, "3.0", "l"))
+	jimport('joomla.application.component.modelitem');
 
 jimport('jsolr.index.factory');
 
