@@ -29,20 +29,20 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <div class="jsolr-result">
-	<div class="jsolr-result-title"><a href="<?php echo  $this->item->link; ?>"><?php echo JSolrSearchFormatter::highlight($this->item->key, 'title', $this->item->title); ?></a></div>
+	<div class="jsolr-result-title"><a href="<?php echo  $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->item->key, 'title', $this->item->title); ?></a></div>
 	
 	<?php if ($this->item->created) : ?>
 	<div class="jsolr-result-date">
-		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?>:</span><?php echo JSolrSearchFormatter::datetime($this->item->created); ?>
+		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?>:</span><?php echo JSolrHelper::datetime($this->item->created); ?>
 	</div>
 	<?php endif; ?>
 
 	<?php if ($this->item->modified) : ?>
 	<div class="jsolr-result-date">			
-		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?>:</span><?php echo JSolrSearchFormatter::datetime($this->item->modified); ?>
+		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?>:</span><?php echo JSolrHelper::datetime($this->item->modified); ?>
 	</div>
 	<?php endif; ?>
 
-	<div class="jsolr-result-description"><?php echo JSolrSearchFormatter::highlight($this->item->key, 'body_en'); ?></div>
+	<div class="jsolr-result-description"><?php echo JSolrHelper::highlight($this->item->key, 'body_en'); ?></div>
 	<div class="jsolr-result-location"><?php echo $this->item->category; ?></div>
 </div>

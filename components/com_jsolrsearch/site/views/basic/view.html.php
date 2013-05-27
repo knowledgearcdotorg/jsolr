@@ -32,7 +32,7 @@ jimport('joomla.utilities.arrayhelper');
 jimport('joomla.application.module');
 jimport('joomla.application.component');
 
-jimport('jsolr.search.formatter');
+jimport('jsolr.helper');
  
 class JSolrSearchViewBasic extends JViewLegacy
 {	

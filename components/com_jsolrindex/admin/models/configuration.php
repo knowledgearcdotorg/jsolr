@@ -122,8 +122,6 @@ class JSolrIndexModelConfiguration extends JModelItem
 	
 	public function purge()
 	{
-		$params = JComponentHelper::getParams('com_jsolrindex');
-		
 		if (!$this->test()) {
 			return false;
 		}		

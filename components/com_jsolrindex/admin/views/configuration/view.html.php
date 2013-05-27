@@ -32,7 +32,7 @@
  
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-jimport('jsolr.search.formatter');
+jimport('jsolr.helper');
  
 class JSolrIndexViewConfiguration extends JViewLegacy
 {

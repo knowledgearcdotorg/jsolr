@@ -33,6 +33,7 @@ defined('_JEXEC') or die();
 require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
 
 jimport('jsolr.index.crawler');
+jimport('jsolr.helper');
 
 class plgJSolrCrawlerContent extends JSolrIndexCrawler
 {	
@@ -46,7 +47,7 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 	protected function getDocument(&$record)
 	{	
 		$doc = new JSolrApacheSolrDocument();
-		
+
 		$created = JFactory::getDate($record->created);
 		$modified = JFactory::getDate($record->modified);
 
@@ -63,12 +64,12 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 
 		$doc->addField("title_ac", $record->title); // for auto complete
 
-		$record->summary = self::prepareContent($record->summary, $record->params);
-		$record->body = self::prepareContent($record->body, $record->params);
+		$record->summary = JSolrHelper::prepareContent($record->summary, $record->params);
+		$record->body = JSolrHelper::prepareContent($record->body, $record->params);
 
 		$doc->addField("body_$lang", strip_tags($record->summary));	
 		$doc->addField("body_$lang", strip_tags($record->body));
-		
+
 		foreach (explode(',', $record->metakey) as $metakey) {
 			$doc->addField("metakeywords_$lang", trim($metakey));
 		}
@@ -79,18 +80,18 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		$doc->addField("author_fc", $record->author); // for faceting
 		$doc->addField("author_ac", $record->author); // for auto complete
 		
-		foreach ($this->_getTags($record, array("<h1>")) as $item) {
+		foreach (JSolrHelper::getTags($record, array("<h1>")) as $item) {
 			$doc->addField("tags_h1_$lang", $item);
 		}
-
-		foreach ($this->_getTags($record, array("<h2>", "<h3>")) as $item) {
+		
+		foreach (JSolrHelper::getTags($record, array("<h2>", "<h3>")) as $item) {
 			$doc->addField("tags_h2_h3_$lang", $item);
 		}
 		
-		foreach ($this->_getTags($record, array("<h4>", "<h5>", "<h6>")) as $item) {
+		foreach (JSolrHelper::getTags($record, array("<h4>", "<h5>", "<h6>")) as $item) {
 			$doc->addField("tags_h4_h5_h6_$lang", $item);
 		}
-		
+
 		$doc->addField("hits_i", (int)$record->hits);
 		
 		if ($record->catid) {
@@ -98,66 +99,8 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 			$doc->addField("category_$lang", $record->category);
 			$doc->addField("category_fc", $record->category); // for faceting
 		}
-		
+
 		return $doc;
-	}
-	
-	private function _getTags(&$article, $tags)
-	{		
-		$dom = new DOMDocument();
-		$dom->preserveWhiteSpace = false;
-		@$dom->loadHTML(strip_tags($article->summary . " " . $article->body, implode("", $tags)));
-	
-		$text = array();		
-
-		foreach ($tags as $tag) {
-			$content = $dom->getElementsByTagname(str_replace(array('<','>'), '', $tag));
-
-		    foreach ($content as $item) {
-	        	$text[] = $item->nodeValue;
-		    }
-		}
-
-		return $text;
-	}
-	
-	// @todo This method is adapted from the com_finder preparecontent method 
-	// but it doesn't really do anything (loadmodule and loadposition still 
-	// appear in the content even though they should be parsed out).
-	// Currently, it is assumed that this method handles other content manipulation 
-	// such as BBCode (used by certain 3rd party plugins to add complex javascript, 
-	// css and html to an article.
-	// Instead, this method should do more to clear out the markup including module 
-	// loading and other 3rd party content manipulation plugins.
-	public static function prepareContent($text, $params = null)
-    {
-		static $loaded;
-		
-		// Get the dispatcher.
-		$dispatcher = JDispatcher::getInstance();
-
-		// Load the content plugins if necessary.
-		if (empty($loaded)) {
-			JPluginHelper::importPlugin('content');
-			$loaded = true;
-		}
-
-		// Instantiate the parameter object if necessary.
-		if (!($params instanceof JRegistry)) {
-			$registry = new JRegistry;
-			$registry->loadString($params);
-			$params = $registry;
-		}
-
-		// Create a mock content object.
-		$content = JTable::getInstance('Content');
-		$content->text = $text;
-
-		// Fire the onContentPrepare event with the com_finder context to avoid 
-		// errors with loadmodule/loadposition plugins.
-		$dispatcher->trigger('onContentPrepare', array('com_finder.indexer', &$content, &$params, 0));
- 
-		return $content->text;
 	}
 	
 	public function onJSolrIndexAfterSave($context, $item)
@@ -244,6 +187,12 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 				$categories = implode(',', $categories);
 				$conditions[] = 'a.catid IN ('.$categories.')';
 			}
+		}
+		
+		if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
+			$lastModified = JFactory::getDate($lastModified);
+
+			$conditions[] = "(a.created > '".$lastModified."' OR a.modified > '".$lastModified."')";
 		}
 
 		if (count($conditions)) {

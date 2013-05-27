@@ -108,8 +108,7 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 		$cache = new JCache($options);
 		$cache->setCaching(true);
 		
-		if (!$list = $cache->get('options', $options['defaultgroup'])) {
-			error_log('get options from db');		
+		if (!$list = $cache->get('options', $options['defaultgroup'])) {	
 			$database = JFactory::getDbo(); 
 			
 			$query = $database->getQuery(true);

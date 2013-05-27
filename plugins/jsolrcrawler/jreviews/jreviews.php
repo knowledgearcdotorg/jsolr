@@ -33,8 +33,8 @@ defined('_JEXEC') or die();
 jimport('joomla.factory');
 jimport('joomla.database.table');
 
-jimport('jsolr.index.factory');
 jimport('jsolr.index.crawler');
+jimport('jsolr.helper');
 
 class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 {	
@@ -65,8 +65,8 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 
 		$doc->addField("title_ac", $record->title); // for auto complete
 
-		$record->summary = self::prepareContent($record->summary, $record->params);
-		$record->body = self::prepareContent($record->body, $record->params);
+		$record->summary = JSolrHelper::prepareContent($record->summary, $record->params);
+		$record->body = JSolrHelper::prepareContent($record->body, $record->params);
 
 		$doc->addField("body_$lang", strip_tags($record->summary));	
 		$doc->addField("body_$lang", strip_tags($record->body));
@@ -81,15 +81,15 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		$doc->addField("author_fc", $record->author); // for faceting
 		$doc->addField("author_ac", $record->author); // for auto complete
 		
-		foreach ($this->_getTags($record, array("<h1>")) as $item) {
+		foreach (JSolrHelper::getTags($record, array("<h1>")) as $item) {
 			$doc->addField("tags_h1_$lang", $item);
 		}
 
-		foreach ($this->_getTags($record, array("<h2>", "<h3>")) as $item) {
+		foreach (JSolrHelper::getTags($record, array("<h2>", "<h3>")) as $item) {
 			$doc->addField("tags_h2_h3_$lang", $item);
 		}
 		
-		foreach ($this->_getTags($record, array("<h4>", "<h5>", "<h6>")) as $item) {
+		foreach (JSolrHelper::getTags($record, array("<h4>", "<h5>", "<h6>")) as $item) {
 			$doc->addField("tags_h4_h5_h6_$lang", $item);
 		}
 		
@@ -266,25 +266,6 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		}
 		
 		return JArrayHelper::getValue($this->jrFields, $field, null); 
-	}
-	
-	private function _getTags(&$article, $tags)
-	{		
-		$dom = new DOMDocument();
-		$dom->preserveWhiteSpace = false;
-		@$dom->loadHTML(strip_tags($article->summary . " " . $article->body, implode("", $tags)));
-	
-		$text = array();		
-
-		foreach ($tags as $tag) {
-			$content = $dom->getElementsByTagname(str_replace(array('<','>'), '', $tag));
-
-		    foreach ($content as $item) {
-	        	$text[] = $item->nodeValue;
-		    }
-		}
-
-		return $text;
 	}
 	
 	// @todo This method is adapted from the com_finder preparecontent method 
@@ -514,6 +495,12 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 			}
 		}
 
+		if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
+			$lastModified = JFactory::getDate($lastModified);
+		
+			$conditions[] = "(a.created > '".$lastModified."' OR a.modified > '".$lastModified."')";
+		}
+		
 		if (count($conditions)) {
 			$query->where($conditions);
 		}

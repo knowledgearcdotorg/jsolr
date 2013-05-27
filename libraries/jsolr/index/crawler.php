@@ -61,6 +61,8 @@ abstract class JSolrIndexCrawler extends JPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
+		$this->loadLanguage();
+		
 		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, 'jsolr');
 	}
 	
@@ -81,12 +83,16 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	protected function getLanguage(&$item, $includeRegion = true)
 	{
-		if (isset($item->language) && $item->language != '*') {
+		if (isset($item->language) && $item->language != '*') {			
 			$lang = $item->language;
+			print_r('lang='.$lang);
 		} else {
-			$lang = JLanguageHelper::detectLanguage();
+			if (!($lang = JLanguageHelper::detectLanguage())) {
+				$lang = JArrayHelper::getValue(JLanguageHelper::getLanguages(), 0);
+				$lang = $lang->lang_code;
+			}			
 		}
-		
+
 		if ($includeRegion) {
 			return $lang;
 		} else {
@@ -144,17 +150,21 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 * 
 	 * @throws Exception
 	 */
-	public function onIndex()
+	public function onIndex($options = array())
 	{
+		$this->indexOptions = $options;
+
 		$chunk = 1000;
-		
+
 		$items = $this->getItems();
 
 		try {
 			$solr = JSolrIndexFactory::getService();
 			
-			$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
-
+			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
+				$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
+			}
+			
 			if (is_array($items)) {				
 				$documents = array();
 				$i = 0;
