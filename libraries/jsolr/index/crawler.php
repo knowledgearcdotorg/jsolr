@@ -40,6 +40,8 @@ jimport('jsolr.apache.solr.document');
 
 abstract class JSolrIndexCrawler extends JPlugin 
 {
+	protected static $chunk;
+	
     /**
      * The extension of the indexed item.
      * 
@@ -62,6 +64,8 @@ abstract class JSolrIndexCrawler extends JPlugin
 	{
 		parent::__construct($subject, $config);
 		$this->loadLanguage();
+		
+		$this->chunk = 1000;
 		
 		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, 'jsolr');
 	}
@@ -154,8 +158,6 @@ abstract class JSolrIndexCrawler extends JPlugin
 	{
 		$this->indexOptions = $options;
 
-		$chunk = 1000;
-
 		$items = $this->getItems();
 
 		try {
@@ -177,7 +179,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 					// index when either the number of items retrieved matches 
 					// the total number of items being indexed or when the 
 					// index chunk size has been reached. 
-					if ($i == count($items) || $i % $chunk == 0) {			
+					if ($i == count($items) || $i % self::$chunk == 0) {			
 						$solr->addDocuments($documents, false, true, true, 10000);
 						
 						$documents = array();

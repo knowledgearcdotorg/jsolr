@@ -1047,9 +1047,10 @@
 	<dynamicField name="*_zh" type="text_zh" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
 	<dynamicField name="*_ar" type="text_ar" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
 	
-   <dynamicField name="*_s_multi"	type="string"	indexed="true"	stored="true"	 multiValued="true"/>
-   <dynamicField name="*_i_multi"	type="int"		indexed="true"	stored="true"	 multiValued="true"/>
-   <dynamicField name="*_f_multi"	type="float"	indexed="true"	stored="true"	 multiValued="true"/>
+   <dynamicField name="*_sm"	type="string"	indexed="true"	stored="true"	 multiValued="true"/>
+   <dynamicField name="*_tim"	type="tint"		indexed="true"	stored="true"	 multiValued="true"/>
+   <dynamicField name="*_tlm"	type="tlong"	indexed="true"	stored="true"	 multiValued="true"/>
+   <dynamicField name="*_tfm"	type="tfloat"	indexed="true"	stored="true"	 multiValued="true"/>
  </fields>
 
    <!-- Field to use to determine and enforce document uniqueness.

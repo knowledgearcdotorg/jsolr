@@ -8,7 +8,7 @@
         <field 
             name="reluctant"
             facet="jrreluctantreader_fc"
-            filter="jrreluctantreader_s_multi"
+            filter="jrreluctantreader_sm"
             type="jsolr.toggle"
             label=""
             class="inputbox jsolrquery"
@@ -17,7 +17,7 @@
         <field 
             name="partofseries"
             facet="jrpartofseries_fc"
-            filter="jrpartofseries_s_multi"
+            filter="jrpartofseries_sm"
             type="jsolr.toggle"
             label=""
             class="inputbox jsolrquery"
@@ -35,7 +35,7 @@
         <field 
             name="readinglevel"
             facet="jrreadinglevel_fc"
-            filter="jrreadinglevel_s_multi"           
+            filter="jrreadinglevel_sm"           
             type="jsolr.listings"
             label="Reading level"
             class="inputbox jsolrquery"/>
@@ -43,7 +43,7 @@
         <field 
             name="fiction"
             facet="jrjrfiction_fc"
-            filter="jrjrfiction_s_multi"
+            filter="jrjrfiction_sm"
             type="jsolr.facets"
             label="Fiction/Non-Fiction"
             class="inputbox jsolrquery"/>
@@ -51,14 +51,14 @@
         <field 
             name="keywords"
             facet="jrkeywords_fc"
-            filter="jrkeywords_s_multi"
+            filter="jrkeywords_sm"
             type="jsolr.listings"
             label="Keywords"
             class="inputbox jsolrquery"/>
 
         <field 
             name="country"
-            filter="jrcountry_s_multi"
+            filter="jrcountry_sm"
             facet="jrcountry_fc"
             type="jsolr.facets"
             label="Country"

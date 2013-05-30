@@ -169,7 +169,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				case 'radiobuttons':
 					foreach (explode('*', $record->$index) as $value) {
 						if (!empty($value))
-							$doc->addField($key.'_s_multi', $value);
+							$doc->addField($key.'_sm', $value);
 					}
 									
 					break;

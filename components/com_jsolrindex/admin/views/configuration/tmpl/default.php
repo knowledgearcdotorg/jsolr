@@ -31,6 +31,8 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+JHtml::_('behavior.keepalive');
+
 $application = JFactory::getApplication("administrator");
 
 $document = JFactory::getDocument();
@@ -150,7 +152,7 @@ var jsolrindex = new Object({
 						type="text" 
 						readonly="readonly" 
 						class="readonly" 
-						size="22" 
+						size="40" 
 						value="<?php echo JSolrHelper::datetime($this->item->get('index')->lastModified); ?>" 
 						title="<?php echo JSolrHelper::datetime($this->item->get('index')->lastModified); ?>">
 				</li>

@@ -78,6 +78,7 @@ class JSolrIndexController extends JControllerLegacy
 		if ($success = $model->index()) {
 			$msg = JText::_("Index successful");
 		} else {
+			error_log('failed to index');
 			$msg = JText::_($model->getError());
 		}
 		

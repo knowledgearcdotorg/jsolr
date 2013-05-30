@@ -125,7 +125,7 @@ class JSolrCrawlerCli extends JApplicationCli
     }
     
     protected function index()
-    {
+    {    	
     	$options = array();
     	$options['quiet'] = ($this->input->get('q') || $this->input->get('quiet')) ? true : false;
     	$options['rebuild'] = ($this->input->get('r') || $this->input->get('rebuild')) ? true : false;
@@ -139,12 +139,30 @@ class JSolrCrawlerCli extends JApplicationCli
     			$options['lastModified'] = $response->index->lastModified;
     		}
     	}
+
+    	$this->out("start crawl...");
+    	
+    	$start = new JDate('now');
     	
     	$dispatcher = JDispatcher::getInstance();
 
     	JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
+    	
+		try {
+    		$array = $dispatcher->trigger('onIndex', array($options));
+		} catch (Exception $e) {
+    		if ($this->input->get('q', false) || $this->input->get('quiet', false)) {
+    			$this->out($e->getMessage());
+    		}    		
+    	}
 
-    	$array = $dispatcher->trigger('onIndex', array($options));
+    	$this->out("end crawl...");
+    	
+    	$end = new JDate('now');
+    	 
+    	$time = $start->diff($end);
+    	
+    	$this->out("execution time: ".$time->format("%H:%M:%S"));  	 
     }
     
     protected function purge()
@@ -183,6 +201,15 @@ class JSolrCrawlerCli extends JApplicationCli
         // Print out the help information.
         $this->out(implode("\n", $help));
  
+    }
+    
+    protected function out($text = '', $nl = true)
+    {
+    	if ($this->input->get('q', false) || $this->input->get('quiet', false)) {
+    		parent::out($text, $nl);
+    	}
+    	
+    	return $this;
     }
 }
  
