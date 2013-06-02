@@ -59,13 +59,15 @@ abstract class JSolrIndexCrawler extends JPlugin
      * @var string
      */
 	protected $view;
+	
+	protected $indexOptions = array();
 
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
 		$this->loadLanguage();
 		
-		$this->chunk = 1000;
+		self::$chunk = 1000;
 		
 		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, 'jsolr');
 	}
@@ -156,10 +158,12 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	public function onIndex($options = array())
 	{
-		$this->indexOptions = $options;
+		$total = 0;
+		
+		$this->set('indexOptions', $options);
 
 		$items = $this->getItems();
-
+		
 		try {
 			$solr = JSolrIndexFactory::getService();
 			
@@ -174,22 +178,32 @@ abstract class JSolrIndexCrawler extends JPlugin
 				foreach ($items as $item) {
 					$documents[$i] = $this->prepare($item);
 
+					$this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
+					
+					$total++;
 					$i++;
 
 					// index when either the number of items retrieved matches 
 					// the total number of items being indexed or when the 
 					// index chunk size has been reached. 
-					if ($i == count($items) || $i % self::$chunk == 0) {			
-						$solr->addDocuments($documents, false, true, true, 10000);
+					if ($i == count($items) || $i % self::$chunk == 0) {						
+						$response = $solr->addDocuments($documents, false, true, true, 10000);
+												
+						$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
 						
 						$documents = array();
 						$i = 0;
-					}
-				}
+					}					
+				}			
 			}
+						
+			$this->out($this->get('extension').' crawler completed.')
+				 ->out("items indexed: $total");
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			
+			$this->out('index failed. '.$e->getMessage());
 			
 			throw $e;
 		}
@@ -228,5 +242,16 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$document->addField('key', $key);
 
 		return $document;
+	}
+	
+	protected function out($text = '', $nl = true)
+	{		
+		if (JArrayHelper::getValue($this->get('indexOptions'), "application", null, 'string') == 'JSolrCrawlerCli') {
+			if (JArrayHelper::getValue($this->get('indexOptions'), "verbose", false, 'bool')) {
+				fwrite(STDOUT, $text . ($nl ? "\n" : null));
+			}
+		}
+	
+		return $this;
 	}
 }

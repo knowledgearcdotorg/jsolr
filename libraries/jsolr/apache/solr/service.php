@@ -767,8 +767,7 @@ class JSolrApacheSolrService
 		{
 			$key = htmlspecialchars($key, ENT_QUOTES, 'UTF-8');
 			$fieldBoost = $document->getFieldBoost($key);
-echo $key;
-print_r($value);
+
 			if (is_array($value))
 			{
 				foreach ($value as $multivalue)

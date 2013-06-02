@@ -31,8 +31,8 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.log.log');
-jimport('jrest.client.client');
 
+jimport('jspace.factory');
 jimport('jsolr.index.crawler');
 
 class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
@@ -40,6 +40,37 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	protected $extension = 'com_jspace';
 	
 	protected $view = 'item';
+
+	public function __construct(&$subject, $config = array())
+	{
+		parent::__construct($subject, $config);
+		
+		static::$chunk = 50;		
+		
+	}
+	
+	/**
+	 * @return JSpaceRepositoryConnector
+	 */
+	private function _getConnector()
+	{
+		$options = null;
+		
+		if ($this->get('params')->get('use_jspace_connection_params')) {
+			if (!JComponentHelper::isEnabled("com_jspace", true)) {
+				JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
+				return;
+			}
+		} else {
+			$options = array();
+			$options['driver'] = 'dspace';
+			$options['url'] = $this->params->get('rest_url');
+			$options['username'] = $this->params->get('username');
+			$options['password'] = $this->params->get('password');
+		}
+
+		return JSpaceFactory::getConnector($options);
+	}
 	
 	/**
 	 * Gets all DSpace items using the JSpace component and DSpace REST API.
@@ -49,39 +80,31 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	protected function getItems()
 	{
 		$items = array();
-
-		$params = null;
-		
-		if ($this->get('params')->get('use_jspace_connection_params')) {		
-			if (!JComponentHelper::isEnabled("com_jspace", true)) {
-				JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
-				return;	
-			}
-
-			$params = JComponentHelper::getParams('com_jspace');		
-		} else {
-			$params = $this->params;
-		}
 		
 		try {
 			$items = array();
 			
-			$url = JFactory::getURI($params->get("rest_url").'/items.json');
-			$url->setVar("user", $params->get("user"));
-			$url->setVar("pass", $params->get("pass"));
-				
-			$client = new JRestClient($url->toString(), 'get');
-			$client->execute();
-			
-			if (JArrayHelper::getValue($client->getResponseInfo(), "http_code") == 200) {
-	        	$response = json_decode($client->getResponseBody());
-	        	$items = $response->items;
-			} else {
-				JLog::add($client->getResponseInfo(). " " . $client->getResponseBody(), JLog::ERROR, 'jsolrcrawler');			
-			}
+			$connector = $this->_getConnector();
+						
+			$vars = array();
+			$vars['q'] = '*:*';
+			$vars['fl'] = 'search.resourceid';
+			$vars['fq'] = 'search.resourcetype:2';
+			$vars['rows'] = '2147483647';
 
+			if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
+				$lastModified = JFactory::getDate($lastModified)->format('Y-m-d\TH:i:s\Z', false);
+
+				$vars['fq'] = "SolrIndexer.lastIndexed:[$lastModified TO NOW]";
+			}
+			
+			$response = json_decode($connector->get(JSpaceFactory::getEndpoint('/discover.json', $vars)));
+
+			if (isset($response->response->docs)) {
+				$items = $response->response->docs;
+			}			
 		} catch (Exception $e) {
-        	JLog::add($client->getResponseInfo()." ".$e->toString(), JLog::ERROR);
+        	JLog::add($e->getMessage(), JLog::ERROR);
 		}
 		
 		return $items;			
@@ -196,36 +219,19 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$bundles = array();
 		$bitstreams = array();
 
-		$params = $this->params;
+		$connector = $this->_getConnector();
 		
-		if ($params->get('use_jspace_connection_params')) {		
-			if (!JComponentHelper::isEnabled("com_jspace")) {
-				JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
-				return;	
-			}
-
-			$params = JComponentHelper::getParams('com_jspace');		
-		}
+		$endpoint = JSpaceFactory::getEndpoint('/items/'.$parent->id.'/bundles.json', array('type'=>'ORIGINAL'));		
 		
-		$url = JFactory::getURI($params->get("rest_url").'/items/'.$parent->id.'/bundles.json?type=ORIGINAL');		
-		$url->setVar("user", $params->get("user"));
-		$url->setVar("pass", $params->get("pass"));
-
-		$client = new JRestClient($url->toString(), 'get');
-		$client->execute();
-
-		if (JArrayHelper::getValue($client->getResponseInfo(), "http_code") == 200) {
-        	$bundles = json_decode($client->getResponseBody());
-
-		} else {
-			JLog::add($client->getResponseInfo(). " " . $client->getResponseBody(), JLog::ERROR, 'jsolrcrawler');			
-		}
+		$bundles = json_decode($connector->get($endpoint)); 
 
 		$i = 0;
 		
+		$path = JArrayHelper::getValue($connector->getOptions(), 'url', null, 'string');
+
 		foreach ($bundles as $bundle) {
 			foreach ($bundle->bitstreams as $bitstream) {
-				$document = $this->_extract($params->get('rest_url').'/bitstreams/'.$bitstream->id.'/download');
+				$document = $this->_extract($path.'/bitstreams/'.$bitstream->id.'/download');
 				$bitstreams[$i] = $bitstream;
 				$bitstreams[$i]->body = $document->body;
 				$bitstreams[$i]->metadata = $document->metadata;
@@ -280,8 +286,19 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	 * (non-PHPdoc)
 	 * @see JSolrIndexCrawler::onIndex()
 	 */
-	public function onIndex()
-	{
+	public function onIndex($options = array())
+	{		
+		if (!jimport('joomla.factory')) {
+			JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
+			
+			return array();
+		}
+
+		$total = 0;
+		$totalBitstreams = 0;
+		
+		$this->set('indexOptions', $options);
+
 		$items = $this->getItems();
 		
 		try {
@@ -289,12 +306,19 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			
 			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
 				$solr->deleteByQuery('extension:'.$this->get('extension'));
-			}			
+			} elseif (JArrayHelper::getValue($this->get('indexOptions'), "clean", false, 'bool')) {
+				$this->clean();
+			}
 
 			$documents = array();
-	
+			
+			$connecter = $this->_getConnector();
+			
 			$i = 0;
-			foreach ($items as $item) {
+
+			foreach ($items as $temp) {
+				$item = json_decode($connecter->get(JSpaceFactory::getEndpoint('/items/'.$temp->{'search.resourceid'}.'.json')));
+				
 				// Initialize the item's parameters.
 				if (isset($item->params)) {
 					$registry = new JRegistry();
@@ -314,6 +338,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$documents[$i]->addField('key', $key);
 	
 				$ids[$i] = $key;
+				
+				$this->out('item '.$key.' ready for indexing');
 	
 				// index bitstream metadata and content against record to 
 				// enhance searching. These values are for enhanced search 
@@ -366,24 +392,37 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 							
 					$ids[$j] = $key;
 					
+					$this->out('bitstream '.$key.' ready for indexing');
+					
+					$totalBitstreams++;
 					$j++;
 				}
 				
+				$total++;
 				$i=$j;
 				
 				// index when either the number of items retrieved matches
 				// the total number of items being indexed or when the
 				// index chunk size has been reached.
-				if ($i == count($items) || $i > self::$chunk) {
-					$solr->addDocuments($documents, false, true, true, 10000);
-				
+				if ($i == count($items) || $i > static::$chunk) {
+					$response = $solr->addDocuments($documents, false, true, true, 10000);
+					
+					$this->out($i.' documents indexed [status:'.$response->getHttpStatus().']');
+					
 					$documents = array();
 					$i = 0;
 				}
-			}		
+			}
+
+			$this->out($this->get('extension')." crawler completed.")
+				 ->out("items indexed: $total")
+				 ->out("bitsteams indexed: $totalBitstreams");
+			
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+
+			$this->out('index failed. '.$e->getMessage());
 			
 			throw $e;
 		}
@@ -482,4 +521,45 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 		return $metakey;
 	}
+	
+	protected function clean()
+	{
+		$items = $this->getItems();
+		
+		$service = JSolrIndexFactory::getService();
+		
+		jimport('jsolr.search.factory');
+		
+		$query = JSolrSearchFactory::getQuery('*:*')
+			->useQueryParser("edismax")
+			->filters(array('extension:com_jspace', 'view:item'))
+			->retrieveFields('id')
+			->rows(10);
+
+		$response = $query->search();
+
+		if (isset($response->response->numFound)) {
+			$query->rows($response->response->numFound);
+		}
+
+		$response = $query->search();
+		
+		if (isset($response->response->docs)) {
+			$docs = $response->response->docs;
+		}
+
+		$delete = array();
+		
+		foreach ($docs as $doc) {
+			$needle = new stdClass();
+			$needle->{'search.resourceid'} = $doc->id;
+			if (array_search($needle, $items) !== false) {
+				$delete[] = 'com_jspace.item.'.$doc->id;
+			}
+		}
+		
+		if (count($delete)) {
+			$service->deleteByMultipleIds($delete);
+		}
+	}	
 }

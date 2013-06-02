@@ -81,7 +81,7 @@ class JSolrCrawlerCli extends JApplicationCli
 {
     public function doExecute()
     {
-    	if ($this->input->get('h') || $this->input->get('help')) {
+    	if ($this->input->get('h') || $this->input->get('help')) {    		
     		$this->help();
     		return;
     	}
@@ -125,12 +125,14 @@ class JSolrCrawlerCli extends JApplicationCli
     }
     
     protected function index()
-    {    	
+    {
     	$options = array();
-    	$options['quiet'] = ($this->input->get('q') || $this->input->get('quiet')) ? true : false;
+    	$options['application'] = get_class($this);
     	$options['rebuild'] = ($this->input->get('r') || $this->input->get('rebuild')) ? true : false;
-    	
-    	if ($this->input->get('c') || $this->input->get('changed')) {
+    	$options['verbose'] = ($this->input->get('v') || $this->input->get('verbose')) ? true : false;
+    	$options['clean'] = ($this->input->get('c') || $this->input->get('clean')) ? true : false;
+
+    	if ($this->input->get('m') || $this->input->get('modified')) {
     		$client = JSolrIndexFactory::getService();
     		
     		if ($client->ping()) {
@@ -139,30 +141,30 @@ class JSolrCrawlerCli extends JApplicationCli
     			$options['lastModified'] = $response->index->lastModified;
     		}
     	}
-
-    	$this->out("start crawl...");
     	
     	$start = new JDate('now');
     	
+    	$this->out("crawl start ".$start->format("c"));
+
     	$dispatcher = JDispatcher::getInstance();
 
     	JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
     	
-		try {
+		try {			
     		$array = $dispatcher->trigger('onIndex', array($options));
 		} catch (Exception $e) {
     		if ($this->input->get('q', false) || $this->input->get('quiet', false)) {
     			$this->out($e->getMessage());
     		}    		
     	}
-
-    	$this->out("end crawl...");
     	
     	$end = new JDate('now');
-    	 
+
+    	$this->out("crawl end ".$end->format("c"));    	 
+    	
     	$time = $start->diff($end);
     	
-    	$this->out("execution time: ".$time->format("%H:%M:%S"));  	 
+    	$this->out("execution time: ".$time->format("%H:%I:%S"));  	 
     }
     
     protected function purge()
@@ -192,8 +194,9 @@ class JSolrCrawlerCli extends JApplicationCli
         $help[] = "Usage:";
         $help[] = "/path/to/php /path/to/joomla/cli/jsolr_crawler.php -[c|h|r|p|q]";
         $help[] = "\r\n";
-        $help[] = "-c, --created\tIndex only those items which have been created or modified since the last index.";
+        $help[] = "-c, --clean\tClean out deleted items from the index.";
         $help[] = "-h, --help\tPrint this help";
+        $help[] = "-m, --modified\tIndex only those items which have been created or modified since the last index.";
         $help[] = "-p, --purge\tPurge the contents of the index.";
         $help[] = "-q, --quiet\tSuppress all output, including errors";
         $help[] = "-r, --rebuild\tRebuild the index, deleting then re-creating all documents.";
@@ -203,9 +206,9 @@ class JSolrCrawlerCli extends JApplicationCli
  
     }
     
-    protected function out($text = '', $nl = true)
+    public function out($text = '', $nl = true)
     {
-    	if ($this->input->get('q', false) || $this->input->get('quiet', false)) {
+    	if (!($this->input->get('q', false) || $this->input->get('quiet', false))) {
     		parent::out($text, $nl);
     	}
     	
