@@ -61,6 +61,12 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
 				return;
 			}
+			
+			$options = array();
+			$options['driver'] = $this->params->get('driver');
+			$options['url'] = $this->params->get($options['driver'].'_rest_url');
+			$options['username'] = $this->params->get($options['driver'].'_username');
+			$options['password'] = $this->params->get($options['driver'].'_password');
 		} else {
 			$options = array();
 			$options['driver'] = 'dspace';
