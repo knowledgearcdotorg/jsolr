@@ -101,14 +101,14 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
 				$lastModified = JFactory::getDate($lastModified)->format('Y-m-d\TH:i:s\Z', false);
 
-				$vars['fq'] = "SolrIndexer.lastIndexed:[$lastModified TO NOW]";
+				$vars['q'] = urlencode("SolrIndexer.lastIndexed:[$lastModified TO NOW]");
 			}
-			
+
 			$response = json_decode($connector->get(JSpaceFactory::getEndpoint('/discover.json', $vars)));
 
 			if (isset($response->response->docs)) {
 				$items = $response->response->docs;
-			}			
+			}
 		} catch (Exception $e) {
         	JLog::add($e->getMessage(), JLog::ERROR);
 		}
@@ -410,7 +410,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				// index when either the number of items retrieved matches
 				// the total number of items being indexed or when the
 				// index chunk size has been reached.
-				if ($i == count($items) || $i > static::$chunk) {
+				if ($total == count($items) || $i > static::$chunk) {
 					$response = $solr->addDocuments($documents, false, true, true, 10000);
 					
 					$this->out($i.' documents indexed [status:'.$response->getHttpStatus().']');
