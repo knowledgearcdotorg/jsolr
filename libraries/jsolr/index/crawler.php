@@ -158,55 +158,88 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	public function onIndex($options = array())
 	{
-		$total = 0;
-		
 		$this->set('indexOptions', $options);
 
-		$items = $this->getItems();
-		
 		try {
-			$solr = JSolrIndexFactory::getService();
-			
 			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
-				$solr->deleteByQuery('extension:'.$this->get('extension').' AND view:'.$this->get('view'));
+				$this->rebuild();	
+			} elseif (JArrayHelper::getValue($this->get('indexOptions'), "clean", false, 'bool')) {
+				$this->clean();
+			} else {
+				$this->index();
 			}
-			
-			if (is_array($items)) {				
-				$documents = array();
-				$i = 0;
-				
-				foreach ($items as $item) {
-					$documents[$i] = $this->prepare($item);
-
-					$this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
-					
-					$total++;
-					$i++;
-
-					// index when either the number of items retrieved matches 
-					// the total number of items being indexed or when the 
-					// index chunk size has been reached. 
-					if ($i == count($items) || $i % self::$chunk == 0) {						
-						$response = $solr->addDocuments($documents, false, true, true, 10000);
-												
-						$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
-						
-						$documents = array();
-						$i = 0;
-					}					
-				}			
-			}
-						
-			$this->out($this->get('extension').' crawler completed.')
-				 ->out("items indexed: $total");
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-			
+				
 			$this->out('index failed. '.$e->getMessage());
-			
-			throw $e;
 		}
+	}
+	
+	/**
+	 * Rebuilds the current extension's indexed items, deleting them first, 
+	 * then indexing them.
+	 */
+	protected function rebuild()
+	{
+		$solr = JSolrIndexFactory::getService();
+		
+		$this->out('deleting all '.$this->get('extension').' items');
+		
+		$solr->deleteByQuery('extension:'.$this->get('extension'));
+		
+		$solr->commit();
+		
+		$this->index();
+	}
+	
+	/**
+	 * Cleans deleted items from the index.
+	 */
+	protected function clean()
+	{
+		
+	}
+	
+	/**
+	 * Adds items to the index.
+	 */
+	protected function index()
+	{
+		$total = 0;
+
+		$items = $this->getItems();
+		
+		$solr = JSolrIndexFactory::getService();
+		
+		if (is_array($items)) {				
+			$documents = array();
+			$i = 0;
+			
+			foreach ($items as $item) {
+				$documents[$i] = $this->prepare($item);
+
+				$this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
+				
+				$total++;
+				$i++;
+
+				// index when either the number of items retrieved matches 
+				// the total number of items being indexed or when the 
+				// index chunk size has been reached. 
+				if ($i == count($items) || $i % self::$chunk == 0) {						
+					$response = $solr->addDocuments($documents, false, true, true, 10000);
+											
+					$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
+					
+					$documents = array();
+					$i = 0;
+				}					
+			}			
+		}
+					
+		$this->out($this->get('extension').' crawler completed.')
+			 ->out("items indexed: $total");
 	}
 	
 	/**

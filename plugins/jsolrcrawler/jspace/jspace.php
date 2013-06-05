@@ -287,12 +287,66 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 		return $doc;
 	}
+
+	protected function clean()
+	{
+		$items = $this->getItems();
+	
+		$service = JSolrIndexFactory::getService();
+	
+		jimport('jsolr.search.factory');
+	
+		$query = JSolrSearchFactory::getQuery('*:*')
+		->useQueryParser("edismax")
+		->filters(array('extension:com_jspace', 'view:item'))
+		->retrieveFields('id')
+		->rows(0);
+	
+		$response = $query->search();
+
+		if (isset($response->response->numFound)) {
+			$query->rows($response->response->numFound);
+		}
+	
+		$response = $query->search();
+	
+		if (isset($response->response->docs)) {
+			$docs = $response->response->docs;
+	
+			$delete = array();
+			$prefix = $this->get('extension').'.'.$this->get('view').'.';
+
+			foreach ($docs as $doc) {
+				$needle = new stdClass();
+				$needle->{'search.resourceid'} = $doc->id;
+
+				if (array_search($needle, $items) === false) {		
+					$delete[] = $prefix.$doc->id;
+				}
+			}
+
+			if (count($delete)) {
+				foreach ($delete as $key) {
+					$this->out('cleaning item '.$key.' and its bitstreams');
+					
+					$query = 'extension:'.$this->get('extension').
+						' AND view:bitstream'.
+						' AND parent_id:'.str_replace($prefix, '', $key);
+					$service->deleteByQuery($query);
+				}				
+				
+				$service->deleteByMultipleIds($delete);
+				
+				$response = $service->commit();
+			}
+		}
+	}
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see JSolrIndexCrawler::onIndex()
+	 * @see JSolrIndexCrawler::index()
 	 */
-	public function onIndex($options = array())
+	protected function index()
 	{		
 		if (!jimport('joomla.factory')) {
 			JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
@@ -303,135 +357,117 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$total = 0;
 		$totalBitstreams = 0;
 		
-		$this->set('indexOptions', $options);
-
 		$items = $this->getItems();
 		
-		try {
-			$solr = JSolrIndexFactory::getService();
+		$solr = JSolrIndexFactory::getService();
+
+		$documents = array();
+		
+		$connecter = $this->_getConnector();
+		
+		$i = 0;
+
+		foreach ($items as $temp) {
+			$item = json_decode($connecter->get(JSpaceFactory::getEndpoint('/items/'.$temp->{'search.resourceid'}.'.json')));
 			
-			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
-				$solr->deleteByQuery('extension:'.$this->get('extension'));
-			} elseif (JArrayHelper::getValue($this->get('indexOptions'), "clean", false, 'bool')) {
-				$this->clean();
+			// Initialize the item's parameters.
+			if (isset($item->params)) {
+				$registry = new JRegistry();
+				$registry->loadString($item->params);
+				$item->params = JComponentHelper::getParams($this->get('extension'), true);
+				$item->params->merge($registry);
 			}
 
-			$documents = array();
+			$documents[$i] = $this->getDocument($item);
+			$documents[$i]->addField('id', $item->id);
+			$documents[$i]->addField('extension', $this->get('extension'));
+			$documents[$i]->addField('view', $this->get('view'));
+			$documents[$i]->addField('lang', $this->getLanguage($item));
 			
-			$connecter = $this->_getConnector();
+			$key = $this->buildKey($documents[$i]);
 			
-			$i = 0;
+			$documents[$i]->addField('key', $key);
 
-			foreach ($items as $temp) {
-				$item = json_decode($connecter->get(JSpaceFactory::getEndpoint('/items/'.$temp->{'search.resourceid'}.'.json')));
-				
-				// Initialize the item's parameters.
-				if (isset($item->params)) {
-					$registry = new JRegistry();
-					$registry->loadString($item->params);
-					$item->params = JComponentHelper::getParams($this->get('extension'), true);
-					$item->params->merge($registry);
-				}
+			$ids[$i] = $key;
+			
+			$this->out('item '.$key.' ready for indexing');
+
+			// index bitstream metadata and content against record to 
+			// enhance searching. These values are for enhanced search 
+			// only and shouldn't be used when retrieving information about 
+			// an individual bitstream.
+			$bitstreams = $this->_getBitstreams($item);		
 	
-				$documents[$i] = $this->getDocument($item);
-				$documents[$i]->addField('id', $item->id);
-				$documents[$i]->addField('extension', $this->get('extension'));
-				$documents[$i]->addField('view', $this->get('view'));
-				$documents[$i]->addField('lang', $this->getLanguage($item));
-				
-				$key = $this->buildKey($documents[$i]);
-				
-				$documents[$i]->addField('key', $key);
+			$j=$i;
+			$j++;
+
+			foreach ($bitstreams as $bitstream) {
+				$documents[$i]->addField('bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
+				$documents[$i]->addField('bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
+
+				foreach ($bitstream->metadata->toArray() as $key=>$value) {
+					$metakey = $this->_cleanBitstreamMetadataKey($key);
 	
-				$ids[$i] = $key;
-				
-				$this->out('item '.$key.' ready for indexing');
-	
-				// index bitstream metadata and content against record to 
-				// enhance searching. These values are for enhanced search 
-				// only and shouldn't be used when retrieving information about 
-				// an individual bitstream.
-				$bitstreams = $this->_getBitstreams($item);		
-		
-				$j=$i;
-				$j++;
-	
-				foreach ($bitstreams as $bitstream) {
-					$documents[$i]->addField('bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
-					$documents[$i]->addField('bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
-	
-					foreach ($bitstream->metadata->toArray() as $key=>$value) {
-						$metakey = $this->_cleanBitstreamMetadataKey($key);
-		
-						if (is_float($value)) {
-							$documents[$i]->addField('bitstream_'.$metakey.'_tfm', $value);
-						} elseif (is_int($value)) {
-							// handle solr int/long differentiation.
-							if ((int)$value > 2147483647 || (int)$value < -2147483648) {
-								$documents[$i]->addField('bitstream_'.$metakey.'_tlm', $value);
-							} else {
-								$documents[$i]->addField('bitstream_'.$metakey.'_tim', $value);
-							}							
+					if (is_float($value)) {
+						$documents[$i]->addField('bitstream_'.$metakey.'_tfm', $value);
+					} elseif (is_int($value)) {
+						// handle solr int/long differentiation.
+						if ((int)$value > 2147483647 || (int)$value < -2147483648) {
+							$documents[$i]->addField('bitstream_'.$metakey.'_tlm', $value);
 						} else {
-							$documents[$i]->addField('bitstream_'.$metakey.'_sm', $value);	
-						}
+							$documents[$i]->addField('bitstream_'.$metakey.'_tim', $value);
+						}							
+					} else {
+						$documents[$i]->addField('bitstream_'.$metakey.'_sm', $value);	
 					}
-					
-					$documents[$j] = $this->_getBitstreamDocument($bitstream);
-	
-					if ($documents[$i]->getField('created')) {
-						$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
-					}
-					
-					if ($documents[$i]->getField('modified')) {
-						$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
-					}
-					
-					$documents[$j]->addField("parent_id", $item->id);
-					
-					$key = 
+				}
+				
+				$documents[$j] = $this->_getBitstreamDocument($bitstream);
+
+				if ($documents[$i]->getField('created')) {
+					$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
+				}
+				
+				if ($documents[$i]->getField('modified')) {
+					$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
+				}
+				
+				$documents[$j]->addField("parent_id", $item->id);
+				
+				$key = 
+					JArrayHelper::getValue(
 						JArrayHelper::getValue(
-							JArrayHelper::getValue(
-								$documents[$j]->getField('key'), 
-								'value'), 
-							0);
-							
-					$ids[$j] = $key;
-					
-					$this->out('bitstream '.$key.' ready for indexing');
-					
-					$totalBitstreams++;
-					$j++;
-				}
+							$documents[$j]->getField('key'), 
+							'value'), 
+						0);
+						
+				$ids[$j] = $key;
 				
-				$total++;
-				$i=$j;
+				$this->out('bitstream '.$key.' ready for indexing');
 				
-				// index when either the number of items retrieved matches
-				// the total number of items being indexed or when the
-				// index chunk size has been reached.
-				if ($total == count($items) || $i > static::$chunk) {
-					$response = $solr->addDocuments($documents, false, true, true, 10000);
-					
-					$this->out($i.' documents indexed [status:'.$response->getHttpStatus().']');
-					
-					$documents = array();
-					$i = 0;
-				}
+				$totalBitstreams++;
+				$j++;
 			}
-
-			$this->out($this->get('extension')." crawler completed.")
-				 ->out("items indexed: $total")
-				 ->out("bitsteams indexed: $totalBitstreams");
 			
-		} catch (Exception $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-
-			$this->out('index failed. '.$e->getMessage());
+			$total++;
+			$i=$j;
 			
-			throw $e;
+			// index when either the number of items retrieved matches
+			// the total number of items being indexed or when the
+			// index chunk size has been reached.
+			if ($total == count($items) || $i > static::$chunk) {
+				$response = $solr->addDocuments($documents, false, true, true, 10000);
+				
+				$this->out($i.' documents indexed [status:'.$response->getHttpStatus().']');
+				
+				$documents = array();
+				$i = 0;
+			}
 		}
+
+		$this->out($this->get('extension')." crawler completed.")
+			 ->out("items indexed: $total")
+			 ->out("bitsteams indexed: $totalBitstreams");
 	}
 	
 	protected function buildQuery()
@@ -527,45 +563,4 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 		return $metakey;
 	}
-	
-	protected function clean()
-	{
-		$items = $this->getItems();
-		
-		$service = JSolrIndexFactory::getService();
-		
-		jimport('jsolr.search.factory');
-		
-		$query = JSolrSearchFactory::getQuery('*:*')
-			->useQueryParser("edismax")
-			->filters(array('extension:com_jspace', 'view:item'))
-			->retrieveFields('id')
-			->rows(10);
-
-		$response = $query->search();
-
-		if (isset($response->response->numFound)) {
-			$query->rows($response->response->numFound);
-		}
-
-		$response = $query->search();
-		
-		if (isset($response->response->docs)) {
-			$docs = $response->response->docs;
-		}
-
-		$delete = array();
-		
-		foreach ($docs as $doc) {
-			$needle = new stdClass();
-			$needle->{'search.resourceid'} = $doc->id;
-			if (array_search($needle, $items) !== false) {
-				$delete[] = 'com_jspace.item.'.$doc->id;
-			}
-		}
-		
-		if (count($delete)) {
-			$service->deleteByMultipleIds($delete);
-		}
-	}	
 }
