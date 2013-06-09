@@ -78,6 +78,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		return JSpaceFactory::getConnector($options);
 	}
 	
+	private function _getCrosswalk()
+	{
+		return JSpaceFactory::getCrosswalk('dublincore');
+	}
+	
 	/**
 	 * Gets all DSpace items using the JSpace component and DSpace REST API.
 	 * 
@@ -162,23 +167,27 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					break;
 
 				case 'contributor':
-					if ($item->qualifier == 'author') {
-						$doc->addField('author', $item->value);
-						$doc->addField('author_'.$lang, $item->value);
-						$doc->addField("author_fc", $item->value); // for faceting
-						$doc->addField("author_ac", $item->value); // for auto complete
-						$doc->addField("author_sort", $item->value); // for auto complete
+					if ($item->qualifier == 'author' || $item->qualifier == 'other') {
+						if ($item->qualifier == 'author') {
+							$doc->addField('author', $item->value);
+						}
+						
+						$doc->addField($field.'_'.$lang, $item->value);
+						$doc->addField($field."_fc", $item->value); // for faceting
+						$doc->addField($field."_ac", $item->value); // for auto complete
+						$doc->addField($field."_sort", $item->value); // for auto complete
 					}
 					
 					$doc->addField($field.'_sm', $item->value);
+					$doc->addField($field.'_txt', $item->value); // for lower-case searching
 					
 					break;
 					
 				case 'subject':
 					if (!$item->qualifier) {
 						$doc->addField($field.'_'.$lang, $item->value);
-						$doc->addField("keywords_fc", $item->value); // for faceting
-						$doc->addField("keywords_ac", $item->value); // for auto complete
+						$doc->addField($field."_fc", $item->value); // for faceting
+						$doc->addField($field."_ac", $item->value); // for auto complete
 					}
 					
 					$doc->addField($field.'_sm', $item->value);
@@ -188,11 +197,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				case 'type':
 					if (!$item->qualifier) {
 						$doc->addField($field.'_'.$lang, $item->value);
-						$doc->addField("type_fc", $item->value); // for faceting
-						$doc->addField("type_ac", $item->value); // for auto complete
+						$doc->addField($field."_fc", $item->value); // for faceting
+						$doc->addField($field."_ac", $item->value); // for auto complete
 					} else {
 						$doc->addField($field.'_sm', $item->value); 
-					}					
+					}
 					break;
 					
 				case 'description':
@@ -204,6 +213,17 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					}
 					
 					break;
+					
+				case 'publisher':
+					if (!$item->qualifier) {
+						$doc->addField($field.'_'.$lang, $item->value);
+						$doc->addField($field."_fc", $item->value); // for faceting
+						$doc->addField($field."_ac", $item->value); // for auto complete
+					} else {
+						$doc->addField($field.'_sm', $item->value);
+					}
+					break;
+					
 					
 				default:
 					$doc->addField($field.'_sm', $item->value);
