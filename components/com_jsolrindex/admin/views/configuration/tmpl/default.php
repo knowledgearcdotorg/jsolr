@@ -31,6 +31,8 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+jimport('jsolr.helper');
+
 JHtml::_('behavior.keepalive');
 
 $application = JFactory::getApplication("administrator");

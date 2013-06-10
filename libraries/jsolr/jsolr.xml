@@ -21,6 +21,7 @@
         <folder>language</folder>
         <folder>search</folder>
         <filename>factory.php</filename>
+        <filename>helper.php</filename>
     </files>
     
 	<languages>

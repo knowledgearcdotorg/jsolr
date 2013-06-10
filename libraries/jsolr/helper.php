@@ -51,7 +51,7 @@ class JSolrHelper extends JObject
 	
 	public static function datetime($raw, $format = "DATE_FORMAT_LC2")
 	{
-		return JFactory::getDate()->format(JText::_($format));
+		return JFactory::getDate($raw)->format(JText::_($format));
 	}
 	
 	// @todo This method is adapted from the com_finder preparecontent method
