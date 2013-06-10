@@ -72,13 +72,19 @@ class JSolrIndexModelConfiguration extends JModelItem
 			$this->_item->set('path', $params->get('path', null));
 			$this->_item->set('index', null);
 			
-			$client = JSolrIndexFactory::getService();
-	
-			if ($this->test()) {
-				$response = $client->luke();
-				$this->_item->set('index', $params->set('index', $response->index));
-			} else {
-				$this->_item->set('index', $params->set('index', null));
+			if ($params->get('host', null)) {
+				try {
+					$client = JSolrIndexFactory::getService();
+			
+					if ($this->test()) {
+						$response = $client->luke();
+						$this->_item->set('index', $params->set('index', $response->index));
+					} else {
+						$this->_item->set('index', $params->set('index', null));
+					}
+				} catch (Exception $e) {
+					
+				}
 			}
 		}
 		
