@@ -91,7 +91,6 @@ abstract class JSolrIndexCrawler extends JPlugin
 	{
 		if (isset($item->language) && $item->language != '*') {			
 			$lang = $item->language;
-			print_r('lang='.$lang);
 		} else {
 			if (!($lang = JLanguageHelper::detectLanguage())) {
 				$lang = JArrayHelper::getValue(JLanguageHelper::getLanguages(), 0);
@@ -169,10 +168,10 @@ abstract class JSolrIndexCrawler extends JPlugin
 				$this->index();
 			}
 		} catch (Exception $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
 				
 			$this->out('index failed. '.$e->getMessage());
+			$this->out('index failed. '.$e->getTraceAsString());
 		}
 	}
 	
