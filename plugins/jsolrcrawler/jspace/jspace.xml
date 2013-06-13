@@ -21,9 +21,14 @@
 			<fieldset name="basic">
 				<field 
 					name="use_jspace_connection_params" 
-					type="checkbox"
+					type="radio"
 					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_DESC"
-					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_LABEL"/>
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_LABEL"
+					value="1"
+					default="1">
+					<option value="1">Component</option>
+  					<option value="0">Plugin</option>
+  				</field>
 				<field 
 					name="base_url" 
 					type="text" 

@@ -13,8 +13,15 @@
 			addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
 
 			<field 
-				name="fields" 
-				type="jsolrsearchfacetfieldlist"
+				name="name" 
+				type="text"
+				label="COM_JSOLRSEARCH_FIELD_SELECT_LABEL_LABEL"
+				description="COM_JSOLRSEARCH_FIELD_SELECT_LABEL_DESC"
+				required="true"/>
+				
+			<field 
+				name="facet" 
+				type="text"
 				label="COM_JSOLRSEARCH_FIELD_SELECT_FACET_LABEL"
 				description="COM_JSOLRSEARCH_FIELD_SELECT_FACET_DESC"
 				required="true"/>

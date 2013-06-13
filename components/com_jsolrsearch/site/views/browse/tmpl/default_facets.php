@@ -35,7 +35,7 @@ require_once(JPATH_BASE.'/components/com_jsolrsearch/helpers/route.php');
 $operators = $this->state->get('facet.operators');
 ?>
 <ul>
-<?php foreach (get_object_vars($this->items) as $keyi=>$valuei) : ?>
+<?php foreach ($this->items as $keyi=>$valuei) : ?>
 	<?php $field = JArrayHelper::getValue($operators, $keyi); ?>
 	<?php foreach ($valuei as $keyj=>$valuej) : ?>
 		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute($field.':"'.$keyj.'"')), JText::sprintf('%s (%s)', $keyj, $valuej)); ?></li>

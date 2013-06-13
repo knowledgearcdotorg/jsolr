@@ -45,52 +45,35 @@ class JSolrSearchViewBrowse extends JView
 
     	$document->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolrsearch.css");
 
-		$templates = JArrayHelper::getValue($this->get('_path'), 'template');
-    	
-    	JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();
-
-		foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
-			$extension = str_replace("com_", "", JArrayHelper::getValue(array_keys($result), 0));
-			$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
-	    	
-	    	if (array_search($pluginOverridePath, $templates) == false && 
-	    		is_dir($pluginOverridePath)) {
-		    	$this->addTemplatePath($pluginOverridePath);
-		    }    	
-		}
-    	
-    	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-    		'/html/com_jsolrsearch/plugins';
-
-		if (array_search($themeOverridePath, $templates) == false && 
-    		is_dir($themeOverridePath)) {
-	    	$this->addTemplatePath($themeOverridePath);
-	    }
-    	
         parent::display($tpl);
     }
 
-	public function loadResultsTemplate()
+	public function loadFacetsTemplate()
 	{
-    	// make item available to templates.
-    	$this->assignRef("item", $item);
-
     	$extension = str_replace("com_", "", JRequest::getCmd('o'));
+  	
+    	$template = null;
     	
-    	$templates = JArrayHelper::getValue($this->get('_path'), 'template');
+    	if ($extension) {
+    		$template = $extension."_facets.php";
+    	}
     	
     	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
     	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
     		'/html/com_jsolrsearch/plugins';
     	
-	    if (JPath::find($pluginOverridePath, $extension."_facets.php") ||
-	    	JPath::find($themeOverridePath, $extension."_facets.php")) {
-	    	$this->setLayout($extension);
-	    	return $this->loadTemplate('facets');
-	    } else {
-	    	$this->setLayout('default');
-	    	return $this->loadTemplate('facets');
-	    }
+    	if ($template) {
+		    if (JPath::find($pluginOverridePath, $extension."_facets.php") ||
+		    	JPath::find($themeOverridePath, $extension."_facets.php")) {		    	
+		    	$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_facets.php")));
+		    	$this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_facets.php")));
+		    	
+		    	$this->setLayout($extension);
+		    	return $this->loadTemplate('facets');
+		    }
+    	}
+	    
+	    $this->setLayout('default');
+	    return $this->loadTemplate('facets');
 	}
 }

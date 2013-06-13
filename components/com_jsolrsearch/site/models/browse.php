@@ -39,4 +39,157 @@ jimport('jsolr.search.factory');
 
 class JSolrSearchModelBrowse extends JModelList
 {
+	public function populateState($ordering = null, $direction = null)
+	{
+		// If the context is set, assume that stateful lists are used.
+		if ($this->context)
+		{
+			$application = JFactory::getApplication('site');
+
+			// Load the parameters.
+			$params = $application->getParams();
+			$this->setState('params', $params);
+			
+			$array = explode(',', $application->input->get('facet', null, 'string'));
+			
+			$this->setState('facet.fields', $array);
+			
+			$this->setState('facet.prefix', $application->input->get('prefix', null, 'string'));
+			
+			$this->setState('facet.operators', $this->_getOperators());
+
+			$this->setState('list.limit', $application->input->get('limit', $params->get('list_limit'), 'uint'));
+
+			$this->setState('list.start', $application->input->get('start', 0, 'uint'));
+		}
+	}
+	
+	public function getItems()
+	{
+		$params = JComponentHelper::getParams($this->get('option'), true);
+		
+		$list = array();
+		$facetParams = array();
+		$filters = array();
+		
+		if ($filter = $this->_getExtensionFilter()) {
+			$filters[] = $filter;
+		}
+		
+		if ($prefix = $this->getState('facet.prefix')) {
+			$facetParams['facet.prefix'] = $prefix;
+		}
+		
+		$facetFields = $this->getState('facet.fields');
+		
+		if (!count($facetFields)) {
+			return JError::raiseError('0', JText::_('COM_JSOLRSEARCH_BROWSE_NO_FACET_FIELDS'));
+		}
+		
+		JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();
+
+		try {
+			$query = JSolrSearchFactory::getQuery("*:*")
+				->useQueryParser('edismax')
+				->facetFields($facetFields)
+				->mergeParams($facetParams)
+				->filters($filters)
+				->facet(0, true)
+				->rows(0);
+
+			$response = $query->search();
+			
+			$list = json_decode($response->getRawResponse())->facet_counts->facet_fields;
+
+			$array = JArrayHelper::fromObject($list, true);
+			
+			foreach (array_keys($array) as $item) {
+				$operator = $this->getFieldByFacet($item);
+				$array[JArrayHelper::getValue($operator, 'key')] = $array[$item];
+				unset($array[$item]);
+			}
+        } catch (Exception $e) {
+			$log = JLog::getInstance();
+			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+		}
+
+		return $array;
+	}
+	
+	private function _getOperators()
+	{
+		$operators = array(); 
+		
+		JPluginHelper::importPlugin("jsolrsearch");
+		$dispatcher =& JDispatcher::getInstance();		
+		
+		foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
+			$operators = array_merge($operators, $result);
+		}
+		
+		return $operators;
+	}
+	
+	/**
+	 * Gets a list of extensions as a Solr query filter.
+	 * 
+	 * Only items which have the same extension parameter as the querystring 
+	 * "o" will be filtered if the parameter is specified, otherwise all items 
+	 * which match any of the enabled plugins will be filtered.
+	 * 
+	 * Plugins must be enabled and have the event onJSolrSearchExtensionGet implemented.
+	 */
+	private function _getExtensionFilter()
+	{	
+		$application = JFactory::getApplication('site');
+		
+		$extensions = array();		
+		
+		$query = "";		
+
+		if ($o = $application->input->get("o", null, 'cmd')) {
+			$extensions[] = $o;
+		} else {
+			JPluginHelper::importPlugin("jsolrsearch");
+			$dispatcher =& JDispatcher::getInstance();
+			
+			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
+				$extensions = array_merge($extensions, array_keys($result));
+			}
+		}
+	
+		$array = array();
+
+		foreach ($extensions as $extension) {
+			if ($extension) {
+				$array[] = "extension:".$extension;
+			}
+		}
+
+		if (count($array) > 1) {
+			$query = "(" . implode(" OR ", $array) . ")";
+		} else {
+			$query = implode("", $array);
+		}
+
+		return $query;
+	}
+	
+	public function getFieldByFacet($name)
+	{
+		$found = false;
+		$operators = $this->state->get('facet.operators');
+		$field = null;
+		
+		while (!$found && $operator = each($operators)) {
+			$facet = JArrayHelper::getValue(JArrayHelper::getValue($operator, 'value'), 'facet');
+			if ($facet == $name) {
+				$field = $operator;
+				$found = true;
+			}
+		}
+		
+		return $field;
+	}
 }

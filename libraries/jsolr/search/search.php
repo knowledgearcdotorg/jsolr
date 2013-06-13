@@ -78,7 +78,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	 * The [search_name] is used for stripping the correct operators off of 
 	 * the query.
 	 */
-	final public function onJSolrSearchOperatorsGet($language)
+	final public function onJSolrSearchOperatorsGet($language = null)
 	{
 		return $this->operators;
 	}
@@ -86,7 +86,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	/**
 	 * Lists fields that have highlighting applied on the found text. 
 	 */
-	final public function onJSolrSearchHLAdd($language)
+	final public function onJSolrSearchHLAdd($language = null)
 	{
 		$hl = array();
 		

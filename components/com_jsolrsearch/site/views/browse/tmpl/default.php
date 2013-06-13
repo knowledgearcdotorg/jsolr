@@ -30,4 +30,4 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-echo $this->loadResultsTemplate();
+echo $this->loadFacetsTemplate();

@@ -82,7 +82,7 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 	{
 		// Initialize variables.
 		$options = array();
-	
+		
 		$facets = $this->getFacets();
 
 		foreach ($facets as $key=>$value) {
@@ -97,8 +97,14 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 			if (JArrayHelper::getValue($this->element, 'count', 'false', 'string') === 'true') {
 				$count = '<span>('.$value.')</span>';
 			}
+
+			$html = array();
+			$html[] = '<li'.$class.'>';
+			$html[] = '<a href="'.$this->getFilterURI($key).'">'.$key.'</a>';
+			$html[] = $count;
+			$html[] = '</li>';
 			
-			$options[] = '<li'.$class.'><a href="'.$this->getFilterURI($key).'">'.$key.'</a>'.$count.'</li>';
+			$options[] = implode($html);
 		}
 	
 		reset($options);
@@ -119,17 +125,21 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 		
 		$filter = $url->getVar($this->name, null);
 
-		return ($filter == $facet) ? true : false;
+		return ($filter == '"'.$facet.'"') ? true : false;
 	}
 	
 	protected function getFilterURI($facet)
 	{
 		$url = clone JFactory::getURI();
 		
+		foreach ($url->getQuery(true) as $key=>$value) {
+			$url->setVar($key, urlencode($value));
+		}
+		
 		if ($this->isSelected($facet)) {
 			$url->delVar($this->name);
 		} else {
-			$url->setVar($this->name, $facet);
+			$url->setVar($this->name, urlencode('"'.$facet.'"'));
 		}
 		
 		return (string)$url;

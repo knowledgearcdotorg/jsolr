@@ -187,8 +187,14 @@ class JSolrSearchModelSearch extends JModelForm
    		foreach ($dispatcher->trigger('onJSolrSearchQFAdd', array($this->getState('query.lang'))) as $result) {   			
    			$qf = array_merge($qf, $result);
    		}
+   		
+   		$q = "*:*";
+   		
+   		if ($this->getState('query.q') != '*') {
+   			$q = $this->getState('query.q', "*:*");
+   		}
 
-   		$query = JSolrSearchFactory::getQuery($this->getState('query.q', '*:*'))
+   		$query = JSolrSearchFactory::getQuery($q)
 			->useQueryParser("edismax")
 			->retrieveFields("*,score")
 			->filters($filters)
@@ -232,7 +238,7 @@ class JSolrSearchModelSearch extends JModelForm
 			$response = null;
 			$rows = 0;
 
-			if ($this->getState('query.q') || $this->filtered) {
+			if ($this->getState('query.q') || ($this->getState('query.q') == "*" && $this->filtered)) {
 				$response = $query->search();
 
 				$headers = json_decode($response->getRawResponse())->responseHeader;

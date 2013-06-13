@@ -32,9 +32,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.error.log');
 
-require_once JPATH_ROOT."/administrator/components/com_jsolrsearch/helpers/plugin.php";
+jimport('jsolr.search.search');
 
-class plgJSolrSearchJSpace extends JSolrSearchPlugin 
+class plgJSolrSearchJSpace extends JSolrSearchSearch 
 {
 	protected $extension = 'com_jspace';
 
@@ -58,50 +58,24 @@ class plgJSolrSearchJSpace extends JSolrSearchPlugin
 		return $array;
 	}
 
-	/**
-	* Format a com_jspace document and return a generic result item.
-	* 
-	* @param mixed $document
-	* @param mixed $hl
-	* @param int $hlFragSize
-	* @param string $lang
-	*/
-	public function onJSolrSearchResultPrepare($document, $hl, $hlFragSize, $lang) 
+	public function onJSolrSearchURIGet($document)
 	{
-		$id = $document->key;
-		$title = "title_$lang";
-		$category = "category_$lang";
-		
-		if ($document->extension == $this->get('extension')) {
-			if (isset($hl->$id->$title)) {
-        		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
-			} else {
-				$hlTitle = $document->$title;
-			}
-
-			$document->title = $hlTitle;
-			$document->href = ""; //JSpaceHelperRoute::getItemRoute($document->id, $document->parent_id);
-			$document->snippet = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
-			
-			return $document;
+		if ($this->get('extension') == $document->extension) {
+			require_once(JPATH_ROOT."/components/com_jspace/helpers/route.php");
+				
+			return JSpaceHelperRoute::getItemFullRoute($document->id);
 		}
-		
+	
 		return null;
 	}
 	
-	private function _getHlContent($document, $highlighting, $fragSize, $lang)
+	public function onJSolrSearchRegisterComponents()
 	{
-		$id = $document->key;
-		$hlContent = array();
-
-		$content = "body_$lang";
-
-		if (isset($highlighting->$id->$content)) {
-			foreach ($highlighting->$id->$content as $item) {
-				$hlContent[] = $item;	
-			}
-		}
-		
-		return implode("...", $hlContent);
+		return array(
+			'name' => 'Articles',
+			'plugin' => $this->extension,
+			//'path' => __DIR__ . '/forms/tools.xml'
+			'path' => __DIR__ . '/forms/facets.xml'
+		);
 	}
 }
