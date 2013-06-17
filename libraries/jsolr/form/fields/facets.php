@@ -69,11 +69,11 @@ class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
 			$class = ' class="'.$class.'"';
 		}
 		
+		$html[] = '<ul'.$class.'>';
 		foreach ($this->getOptions() as $option) {
-			$html[] = '<ul'.$class.'>';
 			$html[] = $option;
-			$html[] = "</ul>";
 		}
+		$html[] = "</ul>";
 		
 		return implode($html);
 	}
