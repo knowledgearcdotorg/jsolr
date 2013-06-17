@@ -72,7 +72,7 @@ class plgJSolrSearchJSpace extends JSolrSearchSearch
 	public function onJSolrSearchRegisterComponents()
 	{
 		return array(
-			'name' => 'Articles',
+			'name' => 'Archive',
 			'plugin' => $this->extension,
 			//'path' => __DIR__ . '/forms/tools.xml'
 			'path' => __DIR__ . '/forms/facets.xml'
