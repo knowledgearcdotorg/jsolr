@@ -31,7 +31,7 @@ jimport( 'joomla.application.component.view');
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
  
-class JSolrSearchViewBrowse extends JView
+class JSolrSearchViewBrowse extends JViewLegacy
 {	
 	protected $state;
 	protected $items;

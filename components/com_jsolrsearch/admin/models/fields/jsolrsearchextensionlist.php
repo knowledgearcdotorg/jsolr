@@ -42,14 +42,12 @@ class JFormFieldJSolrSearchExtensionList extends JFormFieldList
 		$dispatcher =& JDispatcher::getInstance();
 
 		foreach ($dispatcher->trigger("onJSolrSearchExtensionGet", array()) as $result) {
-			foreach ($result as $key=>$value) {
-				$tmp = JHtml::_(
-					'select.option', (string)$key,
-					JText::alt(trim((string)$value), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
-				);
-				
-				$options[] = $tmp;
-			}
+			$tmp = JHtml::_(
+				'select.option', $result->name,
+				JText::alt(trim($result->title), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
+			);
+			
+			$options[] = $tmp;
 		}
 		
 		reset($options);

@@ -36,7 +36,7 @@ jimport('joomla.application.component.model');
 
 jimport('jsolr.search.factory');
 
-class JSolrSearchModelConfiguration extends JModel
+class JSolrSearchModelConfiguration extends JModelLegacy
 {	
 	public function test()
 	{

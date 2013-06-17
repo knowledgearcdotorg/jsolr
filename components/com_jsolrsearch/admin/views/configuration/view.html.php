@@ -33,7 +33,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  
 jimport( 'joomla.application.component.view');
  
-class JSolrSearchViewConfiguration extends JView
+class JSolrSearchViewConfiguration extends JViewLegacy
 {
     function display($tpl = null)
     {

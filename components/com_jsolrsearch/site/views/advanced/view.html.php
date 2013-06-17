@@ -30,7 +30,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  
 jimport( 'joomla.application.component.view');
  
-class JSolrSearchViewAdvanced extends JView
+class JSolrSearchViewAdvanced extends JViewLegacy
 {
 	protected $form;
 	

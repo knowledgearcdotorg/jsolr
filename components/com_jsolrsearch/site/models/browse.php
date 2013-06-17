@@ -110,8 +110,7 @@ class JSolrSearchModelBrowse extends JModelList
 				unset($array[$item]);
 			}
         } catch (Exception $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
 		}
 
 		return $array;
