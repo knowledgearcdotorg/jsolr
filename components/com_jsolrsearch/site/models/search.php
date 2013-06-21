@@ -126,13 +126,11 @@ class JSolrSearchModelSearch extends JModelForm
 			$this->setState('query.lang', $lang);
 		}
 
-		$value = $application->getUserStateFromRequest('global.list.limit', 'limit', $application->getCfg('list_limit'), 'uint');
-		$limit = $value;
-		$this->setState('list.limit', $limit);
-			
-		$value = $application->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0);
-		$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
-		$this->setState('list.start', $limitstart);
+		$value = $application->input->get('limit', $application->getCfg('list_limit', 0));
+		$this->setState('list.limit', $value);
+
+		$value = $application->input->get('limitstart', 0);
+		$this->setState('list.start', $value);
 
 		parent::populateState($ordering, $direction);
    }
