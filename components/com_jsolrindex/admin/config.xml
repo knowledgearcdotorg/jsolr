@@ -44,10 +44,16 @@
 			<option value="1">JYES</option>
 		</field>
 		<field 
-			name="file_types" 
+			name="content_types_allowed" 
 			type="text" 
-			label="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_LABEL" 
-			description="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_DESC"
+			label="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_ALLOWED_LABEL" 
+			description="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_ALLOWED_DESC"
+			size="45"/>
+		<field 
+			name="content_types_index_content" 
+			type="text" 
+			label="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_INDEX_CONTENT_LABEL" 
+			description="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_INDEX_CONTENT_DESC"
 			size="45"/>
 		<field
 			name="extractor"

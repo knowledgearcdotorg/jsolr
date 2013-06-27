@@ -286,4 +286,59 @@ abstract class JSolrIndexCrawler extends JPlugin
 	
 		return $this;
 	}
+	
+	private function _getContentTypes($param)
+	{
+		$params = JComponentHelper::getParams('com_jsolrindex', true);
+		
+		$types = $params->get($param);
+		
+		return array_map('trim', explode(',', trim($types)));		
+	}
+	
+	protected function getAllowedContentTypes()
+	{
+		return $this->_getContentTypes('content_types_allowed');
+	}
+	
+	protected function getIndexContentContentTypes()
+	{
+		return $this->_getContentTypes('content_types_index_content');
+	}
+	
+	protected function isAllowedContentType($contentType)
+	{
+		$allowed = false;
+		
+		$types = $this->getAllowedContentTypes();
+
+		while (($type = current($types)) !== false && !$allowed) {
+			if (preg_match("#".$type."#i", $contentType)) {
+				$allowed = true;
+			}
+			
+			next($types);
+		}
+		
+		return $allowed;
+			
+	}
+	
+	protected function isContentIndexable($contentType)
+	{
+		$allowed = false;
+	
+		$types = $this->getIndexContentContentTypes();
+	
+		while (($type = current($types)) !== false && !$allowed) {
+			if (preg_match("#".$type."#i", $contentType)) {
+				$allowed = true;
+			}
+				
+			next($types);
+		}
+	
+		return $allowed;
+			
+	}
 }

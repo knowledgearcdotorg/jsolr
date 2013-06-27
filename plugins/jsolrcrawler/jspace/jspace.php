@@ -290,12 +290,19 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		foreach ($bundles as $bundle) {
 			foreach ($bundle->bitstreams as $bitstream) {
 				$document = $this->_extract($path.'/bitstreams/'.$bitstream->id.'/download');
-				$bitstreams[$i] = $bitstream;
-				$bitstreams[$i]->body = $document->body;
-				$bitstreams[$i]->metadata = $document->metadata;
-				$bitstreams[$i]->type = $bundle->name;
 				
-				$i++;
+				if ($document) {
+					$bitstreams[$i] = $bitstream;
+					
+					if (isset($document->body)) {
+						$bitstreams[$i]->body = $document->body;
+					}
+					
+					$bitstreams[$i]->metadata = $document->metadata;
+					$bitstreams[$i]->type = $bundle->name;
+					
+					$i++;
+				}
 			}
 		}
 		
@@ -319,10 +326,12 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 		$doc->addField('type_s', $record->type);
 		
-		if (strip_tags($record->body)) {
-			$doc->addField("body_$lang", strip_tags($record->body));
+		if (isset($record->body)) {
+			if (strip_tags($record->body)) {
+				$doc->addField("body_$lang", strip_tags($record->body));
+			}
 		}
-		
+
 		foreach ($record->metadata->toArray() as $key=>$value) {
 			$metakey = $this->_cleanBitstreamMetadataKey($key);
 
@@ -408,6 +417,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			
 			return array();
 		}
+		
+		$params = JComponentHelper::getParams("com_jsolrindex", true);
 
 		$total = 0;
 		$totalBitstreams = 0;
@@ -446,73 +457,73 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 				$ids[$i] = $key;
 				
-				$this->out('item '.$key.' ready for indexing');
-	
-				// index bitstream metadata and content against record to 
-				// enhance searching. These values are for enhanced search 
-				// only and shouldn't be used when retrieving information about 
-				// an individual bitstream.
-				$bitstreams = $this->_getBitstreams($item);		
-		
-				$j=$i;
-				$j++;
-	
-				foreach ($bitstreams as $bitstream) {
-					$type = strtolower($bitstream->type);
-					
-					$documents[$i]->addField($type.'_bitstream_id_tim', $bitstream->id);
-					$documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
-					$documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
-	
-					foreach ($bitstream->metadata->toArray() as $key=>$value) {
-						$metakey = $this->_cleanBitstreamMetadataKey($key);
-		
-						if (is_float($value)) {
-							$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
-						} elseif (is_int($value)) {
-							// handle solr int/long differentiation.
-							if ((int)$value > 2147483647 || (int)$value < -2147483648) {
-								$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tlm', $value);
-							} else {
-								$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tim', $value);
-							}
-						} else {
-							$documents[$i]->addField($type.'_bitstream_'.$metakey.'_sm', $value);	
-						}
-					}
-					
-					$documents[$j] = $this->_getBitstreamDocument($bitstream);
-	
-					if ($documents[$i]->getField('created')) {
-						$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
-					}
-					
-					if ($documents[$i]->getField('modified')) {
-						$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
-					}
-					
-					$documents[$j]->addField("parent_id", $item->id);
-					
-					$key = 
-						JArrayHelper::getValue(
-							JArrayHelper::getValue(
-								$documents[$j]->getField('key'), 
-								'value'), 
-							0);
-							
-					$ids[$j] = $key;
-					
-					$this->out('bitstream '.$key.' ready for indexing');
-					
-					$totalBitstreams++;
-					$j++;
-				}
+				$this->out('item '.$key.' ready for indexing');						
 				
-				$total++;
-				$i=$j;
+				if ($params->get('index')) {
+					$bitstreams = $this->_getBitstreams($item);
+					
+					$j=$i;
+					$j++;
+		
+					foreach ($bitstreams as $bitstream) {
+						$type = strtolower($bitstream->type);
+						
+						$documents[$i]->addField($type.'_bitstream_id_tim', $bitstream->id);
+						$documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
+						
+						if (isset($bitstream->body)) {
+							$documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
+						}
+						
+						foreach ($bitstream->metadata->toArray() as $key=>$value) {
+							$metakey = $this->_cleanBitstreamMetadataKey($key);
 			
+							if (is_float($value)) {
+								$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
+							} elseif (is_int($value)) {
+								// handle solr int/long differentiation.
+								if ((int)$value > 2147483647 || (int)$value < -2147483648) {
+									$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tlm', $value);
+								} else {
+									$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tim', $value);
+								}
+							} else {
+								$documents[$i]->addField($type.'_bitstream_'.$metakey.'_sm', $value);	
+							}
+						}
+						
+						$documents[$j] = $this->_getBitstreamDocument($bitstream);
+		
+						if ($documents[$i]->getField('created')) {
+							$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
+						}
+						
+						if ($documents[$i]->getField('modified')) {
+							$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
+						}
+						
+						$documents[$j]->addField("parent_id", $item->id);
+						
+						$key = 
+							JArrayHelper::getValue(
+								JArrayHelper::getValue(
+									$documents[$j]->getField('key'), 
+									'value'), 
+								0);
+								
+						$ids[$j] = $key;
+						
+						$this->out('bitstream '.$key.' ready for indexing');
+						
+						$totalBitstreams++;
+						$j++;
+					}
+										
+					$i=$j;
+				}
+					
+				$total++;			
 			} catch (Exception $e) {
-				print_r($e->getCode());
 				if ($e->getCode() == 403) {
 					$this->out('Could not index item '.$temp->{'search.resourceid'}.'...skipping');
 				}
@@ -597,8 +608,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 			$documents[$i]->addField($type.'_bitstream_id_i_multi', $bitstream->id);
 			$documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
-			$documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
-		
+			
+			if (isset($bitstream->body)) {
+				$documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
+			}
+			
 			foreach ($bitstream->metadata->toArray() as $key=>$value) {
 				$metakey = $this->_cleanBitstreamMetadataKey($key);
 		
@@ -668,22 +682,37 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		switch ($params->get('extractor')) {
 			case "local":
 				ob_start();
-				passthru("java -jar ".$params->get('local_tika_app_path')." ".$path." 2> /dev/null");
-				$result = ob_get_contents();
-				ob_end_clean();				
-				$document->body = $result;
-
-				ob_start();
-				passthru("java -jar ".$params->get('local_tika_app_path')." -j ".$path." 2> /dev/null");
+				passthru("java -jar ".$params->get('local_tika_app_path')." -d ".$path." 2> /dev/null");
 				$result = ob_get_contents();
 				ob_end_clean();
 
-				$document->metadata = new JRegistry();
-				$document->metadata->loadString($result);
+				// sometimes the charset is appended to the file type.
+				$contentType = JArrayHelper::getValue(array_map('trim', explode(';', trim($result))), 0);
+				
+				if ($this->isAllowedContentType($contentType) == 1) {
+					if ($this->isContentIndexable($contentType) == 1) {		
+						ob_start();
+						passthru("java -jar ".$params->get('local_tika_app_path')." ".$path." 2> /dev/null");
+						$result = ob_get_contents();
+						ob_end_clean();				
+						$document->body = $result;
+					}
+
+					ob_start();
+					passthru("java -jar ".$params->get('local_tika_app_path')." -j ".$path." 2> /dev/null");
+					$result = ob_get_contents();
+					ob_end_clean();
+
+					$document->metadata = new JRegistry();
+					$document->metadata->loadString($result);
+				} else {
+					$document = null;
+				}				
 
 				break;
 
 			case "solr":
+				// @todo not fully implemented. Needs allowed types and index content conditions.
 				$url = $params->get('host');
 				
 				if ($params->get('username') && $params->get('password')) {
