@@ -30,7 +30,9 @@
 // no direct access
 defined('_JEXEC') or die();
 
-require_once JPATH_LIBRARIES."/joomla/database/table/category.php";
+if (!jimport('joomla.database.table.category')) {
+	jimport('legacy.table.category');
+}
 
 jimport('jsolr.index.crawler');
 jimport('jsolr.helper');
