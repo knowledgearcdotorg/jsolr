@@ -32,7 +32,7 @@ defined('JPATH_PLATFORM') or die;
 
 jimport('jsolr.form.fields.filterable');
 
-class JSolrFormFieldFacets extends JFormField implements JSolrFilterable
+class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
 {
 	protected $type = 'JSolr.Facets';	
 	
