@@ -193,13 +193,17 @@ class JSolrSearchModelSearch extends JModelForm
    		}
 
    		$query = JSolrSearchFactory::getQuery($q)
+   			->spellcheck(true)
 			->useQueryParser("edismax")
 			->retrieveFields("*,score")
 			->filters($filters)
 			->highlight(200, "<strong>", "</strong>", 3, implode(" ", $hl))
 			->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
 			->offset($this->getState("list.start", 0))
-			->mergeParams(array('mm'=>$this->get('params')->def('mm', self::MM_DEFAULT)));
+			->mergeParams(
+				array(
+					'mm'=>$this->get('params')->def('mm', self::MM_DEFAULT)
+			));
 
    		if (count($sort)) {
    			$query->sort(implode(', ', $sort));
@@ -263,6 +267,12 @@ class JSolrSearchModelSearch extends JModelForm
 				$app->setUserState('com_jsolrsearch.results', $items);
 				$app->setUserState('com_jsolrsearch.facets', $response->facet_counts->facet_fields);
 				$app->setUserState('com_jsolrsearch.highlighting', $response->highlighting);
+				
+				if (isset($response->spellcheck->suggestions->collation)) {
+					$app->setUserState('com_jsolrsearch.suggestions', $response->spellcheck->suggestions->collation);
+				} else { 
+					$app->setUserState('com_jsolrsearch.suggestions', null);
+				}
 
 			} else {
 				$items = array();
@@ -300,6 +310,21 @@ class JSolrSearchModelSearch extends JModelForm
 		}
       
 		return $uri;
+	}
+	
+	public function getSuggestionQueryURIs()
+	{
+		$uris = array();
+		$i = 0;
+		
+		$uri = clone $this->getQueryURI();
+
+		$uri->setVar('q', JFactory::getApplication()->getUserState('com_jsolrsearch.suggestions'));
+
+		$uris[$i]['uri'] = $uri;
+		$uris[$i]['title'] = JFactory::getApplication()->getUserState('com_jsolrsearch.suggestions');
+		
+		return $uris;
 	}
 
    /**
