@@ -93,8 +93,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 			$lang = $item->language;
 		} else {
 			if (!($lang = JLanguageHelper::detectLanguage())) {
-				$lang = JArrayHelper::getValue(JLanguageHelper::getLanguages(), 0);
-				$lang = $lang->lang_code;
+				$lang = JFactory::getLanguage()->getDefault();
 			}			
 		}
 
