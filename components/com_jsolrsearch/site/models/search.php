@@ -261,10 +261,9 @@ class JSolrSearchModelSearch extends JModelForm
 					}
 				}
 
-				// Share the results. Useful for modules, etc which may display these
-				// results in other ways. Provide facets also.
+				// Provide extra info via user state so that other extensions 
+				// can access the information.
 				$app = JFactory::getApplication('site');
-				$app->setUserState('com_jsolrsearch.results', $items);
 				$app->setUserState('com_jsolrsearch.facets', $response->facet_counts->facet_fields);
 				$app->setUserState('com_jsolrsearch.highlighting', $response->highlighting);
 				
