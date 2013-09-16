@@ -710,6 +710,7 @@
 
     -->
     
+    <!-- Generic query endpoint. -->
 	<requestHandler name="/select" class="solr.SearchHandler">
 		<lst name="defaults">
 			<str name="echoParams">explicit</str>
@@ -723,10 +724,28 @@
 			<str name="spellcheck.count">3</str>
 		</lst>
 		<arr name="last-components">
-			<str>spellcheck_en</str>
 			<str>spellcheck</str>
 		</arr>
 	</requestHandler>
+	
+	<!-- English-only queries. Allows for more English-specific searches, in 
+	particular more accurate spellcheck. -->
+	<!-- requestHandler name="/select_en" class="solr.SearchHandler">
+		<lst name="defaults">
+			<str name="echoParams">explicit</str>
+			<int name="rows">10</int>
+			<str name="df">text</str>
+	
+			<str name="spellcheck">true</str>
+			<str name="spellcheck.collate">true</str>
+			<str name="spellcheck.onlyMorePopular">false</str>
+			<str name="spellcheck.extendedResults">false</str>
+			<str name="spellcheck.count">3</str>
+		</lst>
+		<arr name="last-components">
+			<str>spellcheck_en</str>
+		</arr>
+	</requestHandler-->
 
   <!-- A Robust Example
 
