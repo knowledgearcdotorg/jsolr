@@ -867,6 +867,9 @@
         <filter class="solr.LowerCaseFilterFactory" />
         <!-- The TrimFilter removes any leading or trailing whitespace -->
         <filter class="solr.TrimFilterFactory" />
+        
+        <!-- Remove any chars at beginning or end that could affect ordering. -->
+		<charFilter class="solr.PatternReplaceCharFilterFactory" pattern="^['&quot;]|['&quot;]$" replacement=""/>
       </analyzer>
     </fieldType>
 
@@ -986,7 +989,7 @@
 	<dynamicField name="*_ac" type="joomlaAutoComplete" indexed="true" stored="true" omitNorms="true" multiValued="true"/>
 
 	<!--Dynamic field used for search sorting-->
-    <dynamicField name="*_sort" type="sort" indexed="true" stored="false" multiValued="true" omitNorms="true"/>
+    <dynamicField name="*_sort" type="sort" indexed="true" stored="false" omitNorms="true"/>
 
 	<!--Dynamic field used for faceting -->
 	<dynamicField name="*_fc" type="joomlaFacets" indexed="true" stored="false" multiValued="true" omitNorms="true" />

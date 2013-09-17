@@ -87,9 +87,9 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			}
 			
 			$this->out('driver: '.$options['driver']);
-			$this->out('url: '.$options['driver']);
-			$this->out('username: '.$options['driver']);
-			$this->out('password: '.$options['driver']);
+			$this->out('url: '.$options['url']);
+			$this->out('username: '.$options['username']);
+			$this->out('password: '.str_repeat("*", strlen($options['password'])));
 	
 			$this->connector = JSpaceFactory::getConnector($options);
 		}
@@ -154,6 +154,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		if ($record->name) {
 			$doc->addField('title', $record->name);
 			$doc->addField('title_'.$lang, $record->name);
+			$doc->addField("title_sort", $record->name); // for sorting by title					
 		}
 
 		$collection = $this->_getCollection($record->collection->id);
@@ -194,6 +195,15 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					
 					break;
 
+				case 'title':				
+					$doc->addField($field.'_'.$lang, $item->value);
+					$doc->addField($field."_fc", $item->value); // for faceting
+					$doc->addField($field."_ac", $item->value); // for auto complete
+					$doc->addField($field.'_sm', $item->value);
+					$doc->addField($field.'_txt', $item->value); // for lower-case searching
+						
+					break;
+					
 				case 'contributor':
 					if ($item->qualifier == 'author' || $item->qualifier == 'other') {
 						if ($item->qualifier == 'author') {
@@ -203,7 +213,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 						$doc->addField($field.'_'.$lang, $item->value);
 						$doc->addField($field."_fc", $item->value); // for faceting
 						$doc->addField($field."_ac", $item->value); // for auto complete
-						$doc->addField($field."_sort", $item->value); // for auto complete
 					}
 					
 					$doc->addField($field.'_sm', $item->value);
