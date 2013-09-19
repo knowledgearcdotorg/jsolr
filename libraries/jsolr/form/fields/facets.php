@@ -30,6 +30,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+jimport('joomla.form.helper');
+JFormHelper::loadFieldClass('list');
+
 jimport('jsolr.form.fields.filterable');
 
 class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
