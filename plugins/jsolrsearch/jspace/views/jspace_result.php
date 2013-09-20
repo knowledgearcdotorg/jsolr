@@ -29,7 +29,7 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <div class="jsolr-result">
-	<div class="jsolr-result-title"><a href="<?php echo $this->item->href; ?>"><?php echo $this->item->title; ?></a></div>
+	<div class="jsolr-result-title"><a href="<?php echo $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->hl, 'title', $this->item->title); ?></a></div>
 	
 	<div class="jsolr-result-author"><?php echo (is_array($this->item->author)) ? implode(', ', $this->item->author) : $this->item->author; ?></div>
 	
@@ -39,7 +39,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</div>
 	<?php endif; ?>
 	
-	<div class="jsolr-result-description"><?php echo $this->item->snippet; ?></div>
 	<?php if (isset($this->item->link)) : ?>
 	<div class="jsolr-result-link"><a href="<?php echo $this->item->link; ?>"><?php echo $this->item->link; ?></a></div>
 	<?php endif; ?>

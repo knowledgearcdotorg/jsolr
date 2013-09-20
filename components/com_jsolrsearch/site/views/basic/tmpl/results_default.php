@@ -5,11 +5,11 @@ if (!count($this->items)) {
 ?>
 
 <div id="jsolr_total">
-<?php echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS', $this->state->get('total'), $this->state->get('qTime')); ?>
+<?php echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS', $this->items->get('numFound'), $this->items->get('qTimeFormatted')); ?>
 </div>
 
 <?php 
-if (JFactory::getApplication()->getUserState('com_jsolrsearch.suggestions')) :
+if ($this->items->getSuggestions()) :
 foreach ($this->get("SuggestionQueryURIs") as $item) :
 ?>
 <div>Did you mean <a href="<?php echo JArrayHelper::getValue($item, 'uri'); ?>"><?php echo JArrayHelper::getValue($item, 'title'); ?></a></div>
@@ -20,6 +20,6 @@ endif;
 
 <?php
 foreach ($this->items as $item) :
-       echo $this->loadResultTemplate($item);
+       echo $this->loadResultTemplate($item, $this->items->getHighlighting()->{$item->key});
 endforeach;
 ?>

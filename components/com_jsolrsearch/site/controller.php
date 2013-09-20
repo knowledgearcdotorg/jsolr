@@ -41,7 +41,7 @@ class JSolrSearchController extends JControllerLegacy
 	function search()
 	{
 		$model = $this->getModel("search");
-		$this->setRedirect((string)JRoute::_($model->getQueryURI(), true));
+		$this->setRedirect((string)JRoute::_((string)$model->getURI(), false));
 	}
 
 	public function display($cachable = false, $urlparams = false)
@@ -60,11 +60,11 @@ class JSolrSearchController extends JControllerLegacy
 		
 		$view = $this->getView($viewName, JRequest::getWord("format", "html"));
 		$view->setModel($model, true);
-
-		if (($viewName == "" || $viewName == $default) && trim(JRequest::getString("q", null))) {
+		
+		if (($viewName == "" || $viewName == $default) && (trim(JFactory::getApplication()->input->get("q", null)) || $model->getForm()->isFiltered())) {
 			$view->setLayout("results");
 		}
-		
+
 		return parent::display($cachable, $urlparams);    	
 	}
 }

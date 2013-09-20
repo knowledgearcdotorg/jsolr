@@ -45,12 +45,6 @@ class JSolrForm extends JForm
 	protected $type;
 
 	/**
-	 * true if any filter is applied, otherwise false
-	 * @var boolean
-	 */
-	protected $filtered = false;
-	
-	/**
 	 * @return integer one of the consts JSolrForm::TYPE_FACETFILTERS or JSolrForm::TYPE_SEARCHTOOLS
 	 */
 	public function getType()
@@ -60,7 +54,11 @@ class JSolrForm extends JForm
 
 	public function isFiltered()
 	{
-		return $this->filtered;
+		if (count($this->getFilters())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -89,13 +87,13 @@ class JSolrForm extends JForm
 	public function getFilters()
 	{
 		$filters = array();
-
+		
 		foreach ($this->getFieldsets() as $fieldset) {
 			foreach ($this->getFieldset($fieldset->name) as $field) {
-				$filter = $field->getFilter();
-
-				if (!empty($filter)) {
-					$filters[] = $filter;
+				if (in_array('JSolrFilterable', class_implements($field)) == true) {
+					if ($field->getFilter()) {
+						$filters[] = $field->getFilter();
+					}
 				}
 			}
 		}
@@ -118,6 +116,23 @@ class JSolrForm extends JForm
 		return $facets;		
 	}
 	
+	public function getSorts()
+	{
+		$sort = array();
+		
+		// get sort fields.
+		foreach ($this->getFieldsets() as $fieldset) {
+			foreach ($this->getFieldset($fieldset->name) as $field) {
+				if (in_array('JSolrSortable', class_implements($field)) == true) {
+					if ($field->getSort()) {
+						$sort[] = $field->getSort();
+					}
+				}
+			}
+		}
+		
+		return $sort;
+	}
 	
 	/**
 	 * Method to get an instance of a form.

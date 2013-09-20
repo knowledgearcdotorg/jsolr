@@ -38,7 +38,12 @@ $operators = $this->state->get('facet.operators');
 <?php foreach ($this->items as $keyi=>$valuei) : ?>
 	<?php $field = JArrayHelper::getValue($operators, $keyi); ?>
 	<?php foreach ($valuei as $keyj=>$valuej) : ?>
-		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute($field.':"'.$keyj.'"')), JText::sprintf('%s (%s)', $keyj, $valuej)); ?></li>
+
+		<?php $vars = array(
+				JFactory::getApplication()->input->get('name')=>'"'.$keyj.'"',
+                'o'=>JFactory::getApplication()->input->get('o')); ?>
+            
+		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), JText::sprintf('%s [%s]', $keyj, $valuej)); ?></li>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 </ul>

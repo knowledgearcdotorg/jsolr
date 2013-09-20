@@ -43,13 +43,11 @@ class JSolrSearchViewBasic extends JViewLegacy
 	public function display($tpl = null)
     {
         $this->form = $this->get('Form');
-        $this->facetForms = JSolrSearchModelSearch::getFacetFilterForm();
-        $this->toolsForms = JSolrSearchModelSearch::getSearchToolsForm();
         $this->items = $this->get('Items');
         $this->state = $this->get('State');
         $this->plugins = $this->get('ComponentsList');
         $this->params = JComponentHelper::getParams('com_jsolrsearch',true);
-        
+
         $mod = JModuleHelper::getModule('mod_jsolrfilter');
         $this->moduleEnabled = ($mod->id != 0);
         
@@ -78,13 +76,15 @@ class JSolrSearchViewBasic extends JViewLegacy
      * (E.g. newsfeeds_result.php).
      * 
      * @param JSolrApacheSolrDocument $item A single solr document.
+     * @param stdClass $hl Highlighted values.
      * @return string The output of the template override or the default 
 	 * template if no override is found.
      */
-    public function loadResultTemplate($item)
+    public function loadResultTemplate($item, $hl)
     {
     	// make item available to templates.
     	$this->assignRef("item", $item);
+    	$this->assignRef("hl", $hl);
 
     	$extension = str_replace("com_", "", $item->extension);
 

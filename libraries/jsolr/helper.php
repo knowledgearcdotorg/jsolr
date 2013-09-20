@@ -32,14 +32,12 @@ defined('_JEXEC') or die();
 
 class JSolrHelper extends JObject
 {
-	public static function highlight($key, $field, $default = null)
+	public static function highlight($highlighting, $field, $default = null)
 	{
-		$highlighting = JFactory::getApplication()->getUserState('com_jsolrsearch.highlighting');
-
 		$array = array();
 
-		if (isset($highlighting->$key->$field)) {
-			foreach ($highlighting->$key->$field as $item) {
+		if (isset($highlighting->$field)) {
+			foreach ($highlighting->$field as $item) {
 				$array[] = $item;
 			}
 				

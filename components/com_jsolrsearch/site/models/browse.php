@@ -71,6 +71,7 @@ class JSolrSearchModelBrowse extends JModelList
 		$list = array();
 		$facetParams = array();
 		$filters = array();
+		$array = array();
 		
 		if ($filter = $this->_getExtensionFilter()) {
 			$filters[] = $filter;
@@ -98,16 +99,14 @@ class JSolrSearchModelBrowse extends JModelList
 				->facet(0, true)
 				->rows(0);
 
-			$response = $query->search();
-			
-			$list = json_decode($response->getRawResponse())->facet_counts->facet_fields;
+			$results = $query->search();		
 
-			$array = JArrayHelper::fromObject($list, true);
-			
-			foreach (array_keys($array) as $item) {
-				$operator = $this->getFieldByFacet($item);
-				$array[JArrayHelper::getValue($operator, 'key')] = $array[$item];
-				unset($array[$item]);
+			foreach ($facetFields as $field) {
+				$array[$field] = array();
+
+				foreach ($results->getFacets()->{$field} as $key=>$value) {
+					$array[$field][$key] = $value;
+				}
 			}
         } catch (Exception $e) {
 			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');

@@ -40,6 +40,7 @@
  */
 
 jimport('jsolr.apache.solr.service');
+jimport('jsolr.search.resultset');
 
 /**
  * The main Solr API class.
@@ -987,7 +988,7 @@ class JSolrSearchQuery
 	 * setting. It assumes you have done that already.
 	 * 
 	 * @return
-	 *  The search results as an JSolrApacheSolrResponse object.
+	 *  The search results as an JSolrSearchResultSet object.
 	 * @see JSolrApacheSolrService
 	 */
   	public function search() 
@@ -1002,7 +1003,7 @@ class JSolrSearchQuery
 
 		$response = $this->solr->search($query, $this->offset(), $this->limit(), $this->params);
 
-		return $response;
+		return new JSolrSearchResultSet($response);
 	}
 
 	/**
