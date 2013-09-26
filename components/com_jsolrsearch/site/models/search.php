@@ -202,6 +202,8 @@ class JSolrSearchModelSearch extends JModelForm
 		try {	
 			$results = $query->search();
 
+			JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
+
 			$this->pagination = new JPagination($results->get('numFound'), $this->getState('list.start'), $results->count());
 
 			return $results;
