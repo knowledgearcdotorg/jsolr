@@ -45,18 +45,22 @@ class JSolrFormFieldDropdown extends JFormFieldList
 	 * @since       1.6
 	 */
 	protected $type = 'JSolr.dropdown';
-	
-	protected static $_headLoaded = false;
 
 	protected function getInput()
 	{
-		$this->_head();
-		$ul  = '<div class="jsolr-dropdown">';
-		$ul .= '<input class="jsolr-dropdown-input" type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" />';
-		$ul .= '<div class="jsolr-dropdown-label">' . $this->getValueLabel() . '</div>';
-		$ul .= '<ul class="jsolr-dropdown-list">' . implode('', $this->getOptions()) . '</ul>';
-		$ul .= '</div>';
-		return $ul;
+		$html = array();
+		
+		if ($class = JArrayHelper::getValue($this->element, "class", null)) {
+			$class = " class=$class";
+		}
+
+		$html[] = '<div'.$class.'>';
+		$html[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" />';
+		$html[] = '<div class="label">' . JText::_($this->getValueLabel()) . '</div>';
+		$html[] = '<ul>' . implode($this->getOptions()) . '</ul>';
+		$html[] = '</div>';
+
+		return implode($html);
 	}
 	
 	protected function getValueLabel() {
@@ -122,108 +126,5 @@ class JSolrFormFieldDropdown extends JFormFieldList
 	 */
 	protected function getOption( $option ) {
 		return trim((string) $option);
-	}
-	
-	protected function _head() {
-		if( self::$_headLoaded ) {
-			return;
-		}
-		$doc = JFactory::getDocument();
-		$doc->addScript( "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ); //loaded from google
-		$doc->addCustomTag( '<script type="text/javascript">jQuery.noConflict();</script>' );
-		
-		$content = <<< CSS
-.jsolr-dropdown{
-	display:inline-block;
-	height: 2em;
-	width:200px;
-	position:relative;
-	background-color: #f9f9f9;
-}
-.jsolr-dropdown-label{
-	margin:0px;
-	border:0px;
-	background-color: transparent;
-	width:100%;
-	height:100%;
-	text-align: center;
-	display:block;
-	cursor: pointer;
-	line-height: 2em;
-	color: #777;
-	font-weight: 700;
-}
-.jsolr-dropdown-label:hover{
-	color: #222;
-}
-.jsolr-dropdown-list{
-	position: absolute;
-	z-index: 1000;
-	height:1.5em;
-	min-width: 100%;
-	top: 0px;
-	display:none;
-}
-.jsolr-dropdown li.jsolr-dropdown-option{
-	display:none;
-	height: 1.5em;
-	line-height:1.5em;
-	cursor: pointer;
-	padding: 0px 5px 0px 15px;
-}
-.jsolr-dropdown-active ul.jsolr-dropdown-list{
-    background: none repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #D6D6D6;
-    box-shadow: 0 2px 4px #D6D6D6;
-    color: #333333;
-    padding-bottom: 5px;
-    padding-top: 5px;
-	height:auto;
-	top: 90%;
-	display:block;
-}
-.jsolr-dropdown-active li.jsolr-dropdown-option{
-	padding: 6px 30px 6px 30px;
-}
-.jsolr-dropdown-active li.jsolr-dropdown-option-selected{
-	font-weight: 700;
-	color:#000;
-}
-.jsolr-dropdown-active li.jsolr-dropdown-option{
-	display:block;
-}
-.jsolr-dropdown-active li:hover.jsolr-dropdown-option{
-	background-color: #f4f4f4;		
-}
-CSS;
-		$doc->addStyleDeclaration($content);
-		
-		$js = <<< JS
-(function($){
-	$(document).ready( function() {
-		$('.jsolr-dropdown').on('click', function(e){
-			e.stopPropagation();
-			$(this).addClass('jsolr-dropdown-active');
-		});
-		$('.jsolr-dropdown').on('click', '.jsolr-dropdown-option', function(e){
-			var option = $(this);
-			if( option.parents('.jsolr-dropdown-active').length > 0 ) {
-				e.stopPropagation();
-				var dropdown = option.parents('.jsolr-dropdown');
-				dropdown.find('.jsolr-dropdown-option').removeClass('jsolr-dropdown-option-selected');
-				$('.jsolr-dropdown').removeClass('jsolr-dropdown-active');
-				dropdown.find('.jsolr-dropdown-input').val(option.data('value'));
-				dropdown.find('.jsolr-dropdown-label').html(option.html());
-				option.addClass('jsolr-dropdown-option-selected');
-			}
-		});
-		$('body').on('click', function(){
-			$('.jsolr-dropdown').removeClass('jsolr-dropdown-active');
-		});
-	});
-})(jQuery);
-JS;
-		$doc->addScriptDeclaration($js);
-		self::$_headLoaded = true;
 	}
 }

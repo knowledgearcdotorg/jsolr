@@ -40,9 +40,10 @@ class JSolrFormFieldTextSuggest extends JFormField
 
 		$document = JFactory::getDocument();
 		$document->addScript(JURI::base().'/media/com_finder/js/autocompleter.js');
-		$document->addStyleSheet(JURI::base().'/media/com_finder/css/finder.css');
-		
+		$document->addScript(JURI::base().'/media/com_jsolrsearch/js/typeahead.js');
 		$document->addScript(JURI::base().'/media/com_jsolrsearch/js/textsuggest.js');
+		
+		$document->addStyleSheet(JURI::base().'/media/com_finder/css/finder.css');
 		
 		// Initialize some field attributes.
 		$size = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';

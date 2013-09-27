@@ -22,7 +22,7 @@ $form = $this->get('Form');
         <input type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?>" class="btn btn-primary" />
   </fieldset>
 
-  <div class="jsolr-clear"></div>
+  <div class="clr"></div>
 
   <div class="btn-group jsolr-plugins-list <?php if (is_null($this->items) && !($this->getModel()->getState('query.o', null))) : ?> jsolr-hidden<?php endif; ?>">
     <?php $i = 0; $max = $this->getComponentsLimit(); $components = $this->get('Extensions'); ?>
@@ -50,7 +50,7 @@ $form = $this->get('Form');
     <?php endfor ?>
   </div>
 
-  <div class="jsolr-clear"></div>
+  <div class="clr"></div>
 
   <?php if ($form->getType() != JSolrForm::TYPE_SEARCHTOOLS): ?>
 

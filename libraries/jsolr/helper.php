@@ -47,11 +47,6 @@ class JSolrHelper extends JObject
 		return $default;
 	}
 	
-	public static function datetime($raw, $format = "DATE_FORMAT_LC2")
-	{
-		return JFactory::getDate($raw)->format(JText::_($format));
-	}
-	
 	// @todo This method is adapted from the com_finder preparecontent method
 	// but it doesn't really do anything (loadmodule and loadposition still
 	// appear in the content even though they should be parsed out).

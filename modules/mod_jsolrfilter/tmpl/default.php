@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 
 
 $document = JFactory::getDocument();
-$document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
+
 $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
 ?>
 

@@ -9,6 +9,8 @@
 			</fileset>
 		</delete>
 		
+		<delete dir="${dest.media}/jsolr"/>
+		
 		<delete dir="${dest.libs}/jsolr"/>
 	</target>
 	
@@ -26,6 +28,18 @@
 		
 		<copy todir="${dest.languages}">
 			<fileset dir="${src}/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${dest.media}/jsolr/js">
+			<fileset dir="${src}/js" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${dest.media}/jsolr/css">
+			<fileset dir="${src}/css" defaultexcludes="true">
 				<include name="**/**"/>
 			</fileset>
 		</copy>

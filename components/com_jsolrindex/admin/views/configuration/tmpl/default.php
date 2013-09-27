@@ -155,8 +155,8 @@ var jsolrindex = new Object({
 						readonly="readonly" 
 						class="readonly" 
 						size="40" 
-						value="<?php echo JSolrHelper::datetime($this->item->get('index')->lastModified); ?>" 
-						title="<?php echo JSolrHelper::datetime($this->item->get('index')->lastModified); ?>">
+						value="<?php echo JFactory::getDate($this->item->get('index')->lastModified)->format(JText::_('DATE_FORMAT_LC2')); ?>" 
+						title="<?php echo JFactory::getDate($this->item->get('index')->lastModified)->format(JText::_('DATE_FORMAT_LC2')); ?>">
 				</li>
 				<?php endif; ?>
 			</ul>

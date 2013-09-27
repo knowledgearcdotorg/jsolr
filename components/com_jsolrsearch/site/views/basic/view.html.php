@@ -53,6 +53,16 @@ class JSolrSearchViewBasic extends JViewLegacy
         
         $this->showFilters = !$this->moduleEnabled && JSolrSearchModelSearch::showFilter() && $this->params->get('facet_show',false);
 
+        // Load JSolrSearach jquery if not bundled.
+        // This is deprecated and will be removed in subsequent versions of JSolr.
+        JLoader::import('joomla.version');
+        $version = new JVersion();
+        if (version_compare($version->RELEASE, '3.0', 'lt')) {
+        	$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jquery.js');
+        } else {
+        	JHtml::_('bootstrap.framework');
+        }
+        
         parent::display($tpl);
     }
     

@@ -20,4 +20,4 @@ $form = JSolrSearchModelSearch::getFacetFilterForm();
 	<?php endforeach ?>
 </ul>
 <?php endif ?>
-<div class="jsolr-clear"></div>
+<div class="clr"></div>

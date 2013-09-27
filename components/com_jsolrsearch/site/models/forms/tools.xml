@@ -9,6 +9,6 @@
             type="jsolr.calendar"
             label="Date"
             size="40"
-            class="inputbox jsolrquery"/>
+            class="jsolr-dropdown"/>
     </fieldset>
 </form>

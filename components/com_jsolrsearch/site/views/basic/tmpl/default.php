@@ -29,12 +29,11 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 JHTML::_('behavior.formvalidation');
+
 $form = $this->get('Form');
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 $document = JFactory::getDocument();
-$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jquery/jquery.js');
-$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jsolrsearch.js');
 
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
 

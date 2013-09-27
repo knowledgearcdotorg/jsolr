@@ -28,18 +28,33 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
-<div class="jsolr-result">
-	<div class="jsolr-result-title"><a href="<?php echo $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->hl, 'title', $this->item->title); ?></a></div>
-	
-	<div class="jsolr-result-author"><?php echo (is_array($this->item->author)) ? implode(', ', $this->item->author) : $this->item->author; ?></div>
-	
-	<?php if ($this->item->{'dc.date.available_dt'}) : ?>
-	<div class="jsolr-result-date">
-		<span class="jsolr-date-label"><?php echo JText::_("COM_JSOLRSEARCH_RESULT_ARCHIVED_LABEL"); ?>:</span><?php echo $this->item->{'dc.date.available_dt'}; ?>
-	</div>
-	<?php endif; ?>
-	
-	<?php if (isset($this->item->link)) : ?>
-	<div class="jsolr-result-link"><a href="<?php echo $this->item->link; ?>"><?php echo $this->item->link; ?></a></div>
-	<?php endif; ?>
-</div>
+<article class="jsolrsearch-result">
+	<header>
+		<h4>
+			<a href="<?php echo $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->hl, 'title', $this->item->title); ?></a>
+		</h4>
+	</header>
+
+	<footer>
+		<dl>
+			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_AUTHORS_LABEL"); ?></dt>			
+			<dd>
+			<?php echo (is_array($this->item->author)) ? implode('</dd><dd>', $this->item->author) : $this->item->author; ?>
+			</dd>
+		
+			<?php if ($this->item->{'dc.date.available_dt'}) : ?>
+			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_ARCHIVED_LABEL"); ?></dt>
+			<dd>
+				<time datetime="<?php echo $this->item->{'dc.date.available_dt'}; ?>"><?php echo $this->item->{'dc.date.available_dt'}; ?></time>
+			</dd>
+			<?php endif; ?>
+			
+			<?php if (isset($this->item->link)) : ?>
+			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_LINK_LABEL"); ?></dt>
+			<dd>
+				<a href="<?php echo $this->item->link; ?>"><?php echo $this->item->link; ?></a>
+			</dd>
+			<?php endif; ?>
+		</dl>
+	</footer>
+</article>

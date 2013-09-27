@@ -174,7 +174,7 @@ class JSolrSearchModelSearch extends JModelForm
 			->useQueryParser("edismax")
 			->retrieveFields("*,score")
 			->filters($filters)
-			->highlight(200, "<strong>", "</strong>", 3, implode(" ", $hl))
+			->highlight(200, "<mark>", "</mark>", 3, implode(" ", $hl))
 			->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
 			->offset($this->getState("list.start", 0))
 			->mergeParams(

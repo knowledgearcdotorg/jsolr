@@ -29,10 +29,11 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 $document = JFactory::getDocument();
-$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jquery/jquery.js');
-$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jsolrsearch.js');
+
+$document->addScript(JURI::base().'/media/jsolr/js/dropdown.js');
 
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
+$document->addStyleSheet(JURI::base().'/media/jsolr/css/dropdown.css');
 
 $document->addScriptDeclaration('
 jQuery(document).ready(function() {

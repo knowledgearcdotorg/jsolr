@@ -18,11 +18,15 @@
         <folder>form</folder>
         <folder>helper</folder>
         <folder>index</folder>
-        <folder>language</folder>
         <folder>search</folder>
         <filename>factory.php</filename>
         <filename>helper.php</filename>
     </files>
+    
+    <media destination="jsolr">
+    	<folder>js</folder>
+    	<folder>css</folder>
+    </media>
     
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.lib_jsolr.ini</language>

@@ -45,19 +45,6 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 	 */
 	protected $type = 'JSolr.Calendar';
 	
-	protected static $_headLoaded = false;
-
-	protected function getInput()
-	{
-		$this->_head();
-		$ul  = '<div class="jsolr-dropdown">';
-		$ul .= '<input class="jsolr-dropdown-input" type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" />';
-		$ul .= '<div class="jsolr-dropdown-label">' . JText::_($this->getValueLabel()) . '</div>';
-		$ul .= '<ul class="jsolr-dropdown-list">' . implode('', $this->getOptions()) . '</ul>';
-		$ul .= '</div>';
-		return $ul;
-	}
-	
 	/**
 	 * Method to get the field options.
 	 *
@@ -84,8 +71,7 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 			
 			$link = '<a href="'.(string)$uri.'">' . JText::_($value) . '</a>';
 
-			// Create a new option object based on the <option /> element.
-			$tmp = '<li class="jsolr-dropdown-option' . ( $selected ? ' jsolr-dropdown-option-selected' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$tmp = '<li class="' . ( $selected ? 'jsolr-dropdown-option-selected' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.

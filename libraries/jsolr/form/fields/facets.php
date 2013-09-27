@@ -116,28 +116,24 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 		// Initialize variables.
 		$options = array();
 		
-		$facets = $this->getFacets();
+		$facets = $this->getFacets();		
 
 		foreach ($facets as $key=>$value) {
-			$class = '';
+			$html = array("<li>", "%s", "</li>");
 			
 			if ($this->isSelected($key)) {
-				$class = ' class="selected"';
+				$html = array("<li class=\"selected\">", "<strong>", "%s", "</strong>", "</li>");
 			}
-			
+
 			$count = '';
 			
 			if (JArrayHelper::getValue($this->element, 'count', 'false', 'string') === 'true') {
 				$count = '<span>('.$value.')</span>';
 			}
 
-			$html = array();
-			$html[] = '<li'.$class.'>';
-			$html[] = '<a href="'.$this->getFilterURI($key).'">'.$key.'</a>';
-			$html[] = $count;
-			$html[] = '</li>';
+			$facet = '<a href="'.$this->getFilterURI($key).'">'.$key.'</a>'.$count;
 			
-			$options[] = implode($html);
+			$options[] = JText::sprintf(implode($html), $facet);
 		}
 	
 		reset($options);
