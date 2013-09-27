@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
 		<input type="hidden" name="task" value="search"/>
 	  <fieldset class="word">
 	    <?php foreach($form->getFieldsets() as $fieldset ) : ?>
-	      <?php if ($fieldset->name == 'main'): ?>
+	      <?php if ($fieldset->name == 'search'): ?>
 	        <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
 	          <span><?php echo $form->getInput($field->fieldname); ?></span>
 	        <?php endforeach;?>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-    <fieldset name="default">
+    <fieldset name="tools">
         <!-- only JSolrFormFields should be used here -->
         <field 
             name="qdr"
             filter="modified"
+            filter_quoted="false"
             type="jsolr.calendar"
             label="Date"
             size="40"

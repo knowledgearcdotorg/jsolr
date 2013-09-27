@@ -40,7 +40,7 @@ $operators = $this->state->get('facet.operators');
 	<?php foreach ($valuei as $keyj=>$valuej) : ?>
 
 		<?php $vars = array(
-				JFactory::getApplication()->input->get('name')=>'"'.$keyj.'"',
+				JFactory::getApplication()->input->get('name')=>$keyj,
                 'o'=>JFactory::getApplication()->input->get('o')); ?>
             
 		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), JText::sprintf('%s [%s]', $keyj, $valuej)); ?></li>

@@ -112,37 +112,33 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 		return $ret;
 	}
 	
-	public function getFilter()
+	public function getFilters()
 	{
-		$filter = null;
+		$filters = array();
 	
 		switch ($this->value) {
 			case 'h':
-				$filter = '[NOW-1HOUR TO NOW]';
+				$filters[] = '[NOW-1HOUR TO NOW]';
 				break;
 				
 			case 'd':
-				$filter = '[NOW-1DAY TO NOW]';
+				$filters[] = '[NOW-1DAY TO NOW]';
 				break;
 
 			case 'w':
-				$filter = '[NOW-7DAY TO NOW]';
+				$filters[] = '[NOW-7DAY TO NOW]';
 				break;
 
 			case 'm':
-				$filter = '[NOW-1MONTH TO NOW]';
+				$filters[] = '[NOW-1MONTH TO NOW]';
 				break;
 
 			case 'y':
-				$filter = '[NOW-1YEAR TO NOW]';
+				$filters[] = '[NOW-1YEAR TO NOW]';
 				break;
 		}
 
-		if ($filter) {
-			$filter = JArrayHelper::getValue($this->element, 'filter') . ':' . $filter;
-		}
-
-		return $filter;
+		return $filters;
 	}
 	
 	private function _getDateRanges()
@@ -157,5 +153,18 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 		);
 		
 		return $array;
+	}
+	
+	public function __get($name)
+	{
+		switch ($name) {
+			case 'filter':
+			case 'query':		
+				return JArrayHelper::getValue($this->element, $name, null, 'string');
+				break;
+	
+			default:
+				return parent::__get($name);
+		}
 	}
 }

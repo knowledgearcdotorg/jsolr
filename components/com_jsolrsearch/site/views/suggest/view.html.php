@@ -34,9 +34,7 @@ class JSolrSearchViewSuggest extends JViewLegacy
 {
 	public function display($tpl = null)
     {
-    	$model 	= $this->getModel();
-
-    	echo json_encode($model->getItems());
+    	echo json_encode($this->get('Items'));
         jexit();
     }
 }

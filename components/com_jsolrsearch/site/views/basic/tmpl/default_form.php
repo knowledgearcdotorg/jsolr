@@ -1,6 +1,6 @@
 <?php 
 JHTML::_('behavior.formvalidation');
-$form = $this->get('Form'); 
+$form = $this->get('Form');
 ?>
 
 <form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">
@@ -13,9 +13,9 @@ $form = $this->get('Form');
 	
   <fieldset class="word">
     <?php foreach($form->getFieldsets() as $fieldset ) : ?>
-      <?php if ($fieldset->name == 'main'): ?>
+      <?php if (in_array($fieldset->name, array('search', 'facets')) === true) : ?>
         <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-          <span><?php echo $form->getInput($field->fieldname); ?></span>
+          <?php echo $form->getInput($field->fieldname); ?>
         <?php endforeach;?>
       <?php endif ?>
     <?php endforeach;?>
@@ -57,7 +57,7 @@ $form = $this->get('Form');
   <?php else: ?>
 
 		<?php foreach($form->getFieldsets() as $fieldset ) : ?>
-			<?php if ($fieldset->name != 'main'): ?>
+			<?php if ($fieldset->name == 'tools'): ?>
 				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
 					<?php echo $form->getInput($field->name); ?>
 				<?php endforeach;?>

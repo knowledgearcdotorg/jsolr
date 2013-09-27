@@ -34,11 +34,27 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 jimport('jsolr.form.fields.filterable');
+jimport('jsolr.form.fields.facetable');
 
-class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
+/**
+ * The JSolrFormFieldFacets form field builds a list of facets which a user 
+ * can then apply to the current search result set to narrow their search 
+ * further (I.e. filter).
+ */
+class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JSolrFacetable
 {
-	protected $type = 'JSolr.Facets';	
+	const FACET_DELIMITER = '|';
 	
+	protected $type = 'JSolr.Facets';
+	
+	protected $facetInput;
+	
+	/**
+	 * Gets an array of facets from the current search results (provided via the 
+	 * user's session).
+	 * 
+	 * @return array An array of facets from the current search results.
+	 */
 	protected function getFacets()
 	{
 		if ($facet = $this->facet) {
@@ -56,6 +72,16 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
 	}
 
 	/**
+	 * (non-PHPdoc)
+	 * @see JFormFieldList::getInput()
+	 */
+	protected function getInput()
+	{
+		return '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
+			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"/>';
+	}
+	
+	/**
 	 * Method to get the field input markup for a generic list.
 	 * Use the multiple attribute to enable multiselect.
 	 *
@@ -63,7 +89,7 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
 	 *
 	 * @since   11.1
 	 */
-	protected function getInput()
+	public function getFacetInput()
 	{
 		// Initialize variables.
 		$html = array();
@@ -81,6 +107,10 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
 		return implode($html);
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see JFormFieldList::getOptions()
+	 */
 	protected function getOptions()
 	{
 		// Initialize variables.
@@ -115,34 +145,79 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
 		return $options;
 	}
 
-	public function getFilter()
+	/**
+	 * (non-PHPdoc)
+	 * @see JSolrFilterable::getFilters()
+	 */
+	public function getFilters()
 	{
-		$value = JFactory::getApplication()->input->getString($this->name);
-
-		return ($value) ? JArrayHelper::getValue($this->element, 'filter').':'.$value : null;
+		$value = JFactory::getApplication()->input->getString($this->name, null);
+		
+		return (JString::strlen(trim($value)) > 0) ? explode(self::FACET_DELIMITER, $value) : array();
 	}
 	
+	/**
+	 * Evaluates whether the current facet is selected or not.
+	 * 
+	 * @param string $facet The facet value to evaluate.
+	 * @return bool True if the current facet is selected, false otherwise.
+	 */
 	protected function isSelected($facet)
 	{
 		$url = JFactory::getURI();
 		
-		$filter = $url->getVar($this->name, null);
+		$filters = $this->getFilters();
 
-		return ($filter == '"'.$facet.'"') ? true : false;
+		$selected = false;
+		
+		while (($filter = current($filters)) && !$selected) {	
+			if ($filter == $facet) {
+				$selected = true;
+			}
+			
+			next($filters);
+		}
+
+		return $selected;
 	}
 	
+	/**
+	 * Gets the filter uri for the current facet.
+	 * 
+	 * @param string $facet The facet value to build into the filter uri.
+	 * @return string The filter uri for the current facet.
+	 */
 	protected function getFilterURI($facet)
 	{
 		$url = clone JFactory::getURI();
 		
 		foreach ($url->getQuery(true) as $key=>$value) {
 			$url->setVar($key, urlencode($value));
-		}
+		}		
+		
+		$filters = $this->getFilters();
 		
 		if ($this->isSelected($facet)) {
-			$url->delVar($this->name);
+			if (count($filters) > 1) {
+				$found = false;
+				
+				for ($i = 0; ($filter = current($filters)) && !$found; $i++) {
+					if ($filter == $facet) {
+						unset($filters[$i]);
+						$found = true;
+					} else {
+						next($filters);
+					}
+				}
+				
+				$url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
+				
+			} else {
+				$url->delVar($this->name);
+			}
 		} else {
-			$url->setVar($this->name, urlencode('"'.$facet.'"'));
+			$filters[] = $facet;
+			$url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
 		}
 		
 		return (string)$url;
@@ -156,10 +231,22 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable
 			case 'facet':
 				return JArrayHelper::getValue($this->element, $name, null, 'string');
 				break;
-		
-			case 'filterQuery':
-				return 'q_'.$this->filter;
+				
+			case 'exactmatch':
+				if (JArrayHelper::getValue($this->element, $name, null, 'string') === 'true')
+					return true;
+				else 
+					return false;
 				break;
+				
+			case 'facetInput':
+				// If the input hasn't yet been generated, generate it.
+				if (empty($this->facetInput)) {
+					$this->facetInput = $this->getFacetInput();
+				}
+				
+				return $this->facetInput;
+				break;				
 				
 			default:
 				return parent::__get($name);

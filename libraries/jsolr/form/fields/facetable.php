@@ -1,9 +1,9 @@
 <?php
 /**
- * An interface to implement when a class should be filterable.
+ * An interface to implement when a class should be facetable.
  * 
  * @package		JSpace
- * @subpackage	form.fields
+ * @subpackage	Form.Fields
  * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
@@ -29,17 +29,17 @@
  */
 
 /**
- * A filter interface.
+ * A facet interface.
  * 
- * Implement this interface when the form field must provide filters for the 
+ * Implement this interface when the form field must provide facets for the 
  * query (E.g. Solr field fq).
  */
-interface JSolrFilterable
+interface JSolrFacetable
 {
 	/**
-	 * Gets a array of currently selected filters for the facet.
+	 * Gets the facet HTML input (a list of links).
 	 * 
-	 * @return array An array of currently selected filters for the facet.
+	 * @return string The facet HTML input (a list of links).
 	 */
-	function getFilters();
+	function getFacetInput();
 }

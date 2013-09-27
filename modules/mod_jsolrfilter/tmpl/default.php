@@ -44,7 +44,7 @@ $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.cs
 					<?php if ($field->label) : ?>
 						<h4><?php echo $form->getLabel($field->name); ?></h4>
 					<?php endif; ?>
-					<div><?php echo $form->getInput($field->name); ?></div>
+					<div><?php echo $form->getFacetInput($field->name); ?></div>
 				</div>
 			<?php endforeach;?>
 		<?php endif ?>

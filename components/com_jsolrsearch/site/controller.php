@@ -60,7 +60,7 @@ class JSolrSearchController extends JControllerLegacy
 		
 		$view = $this->getView($viewName, JRequest::getWord("format", "html"));
 		$view->setModel($model, true);
-		
+
 		if (($viewName == "" || $viewName == $default) && (trim(JFactory::getApplication()->input->get("q", null)) || $model->getForm()->isFiltered())) {
 			$view->setLayout("results");
 		}

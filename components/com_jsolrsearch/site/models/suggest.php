@@ -70,17 +70,23 @@ class JSolrSearchModelSuggest extends JModelList
 		$filters = implode(' OR ', $fields);
 
 		$query->filters($filters);
-
-		$response = $query->search();
-		$response = json_decode($response->getRawResponse());
-
-		foreach ($response->response->docs as $doc) {
-			if (is_array($doc->$suggest)) {
-				$v = (array)$doc->$suggest;
-				$items[] = $v[0];
-			} else {
-				$items[] = $doc->$suggest;
+		try {
+			$results = $query->search();
+			print_r($results);
+	
+			$response = json_decode($results->getSuggestions());
+			
+			foreach ($response->docs as $doc) {
+				if (is_array($doc->$suggest)) {
+					$v = (array)$doc->$suggest;
+					$items[] = $v[0];
+				} else {
+					$items[] = $doc->$suggest;
+				}
 			}
+			
+		} catch (Exception $e) {
+			print_r($e->getMessage());
 		}
 
 		return $items;

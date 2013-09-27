@@ -24,6 +24,7 @@
  * contributed any source code changes.
  * @author Michał Kocztorz <michalkocztorz@wijiti.com> 
  * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
+ * @author Hayden Young <haydenyoung@wijiti.com>
  * 
  */
  
@@ -32,7 +33,10 @@ defined('_JEXEC') or die();
 
 jimport('joomla.form.form');
 
-
+/**
+ * Provides a specialized JSolr form which exposes a number of additional 
+ * methods for handling filtering, faceting and sorting of search results. 
+ */
 class JSolrForm extends JForm
 {
 	const TYPE_FACETFILTERS 	= 0;
@@ -81,8 +85,22 @@ class JSolrForm extends JForm
 	}
 	
 	/**
-	 * Method to get filters for JSolr
-	 * @return array
+	 * Method to get filters for narrowing the search result set.
+	 * 
+	 * The filters are provided via the JSolrFilterable interface's getFilters 
+	 * method  and the form field must also provide a valid Solr filter field.
+	 * 
+	 * The returned array can be used to build the Solr querystring's filter 
+	 * query (fq) so it is important that the Solr filter field exists.  
+	 * 
+	 * @return array A named array of filters. Each filter will also be an array:
+	 * 
+	 * E.g.
+	 * 
+	 * $filters['title'][0] = 'title1';
+	 * $filters['title'][1] = 'title2';
+	 * $filters['author'][0] = 'author1';
+	 * $filters['author'][1] = 'author2';
 	 */
 	public function getFilters()
 	{
@@ -91,8 +109,16 @@ class JSolrForm extends JForm
 		foreach ($this->getFieldsets() as $fieldset) {
 			foreach ($this->getFieldset($fieldset->name) as $field) {
 				if (in_array('JSolrFilterable', class_implements($field)) == true) {
-					if ($field->getFilter()) {
-						$filters[] = $field->getFilter();
+					if (count($field->getFilters())) {
+						$filters[$field->filter] = $field->getFilters();
+						
+						if (property_exists($field, 'exactmatch')) {										
+							if ($field->filter_quoted) {
+								for ($i = 0; $filters[$field->filter]; $i++) {
+									$filters[$field->filter][$i] = '"'.$filters[$field->filter][$i].'"';
+								}	
+							}
+						}						
 					}
 				}
 			}
@@ -101,6 +127,15 @@ class JSolrForm extends JForm
 		return $filters;
 	}
 	
+	/**
+	 * Gets an array of facets from the currently configured list of JSolr 
+	 * Form Fields.
+	 * 
+	 * The JSolr Form Field must have a facet parameter to be included in the 
+	 * list.
+	 * 
+	 * @return array An array of facets.
+	 */
 	public function getFacets()
 	{
 		$facets = array();
@@ -116,6 +151,11 @@ class JSolrForm extends JForm
 		return $facets;		
 	}
 	
+	/**
+	 * Gets the fields to sort the result set by.
+	 * 
+	 * @return array The fields to sor the result set by.
+	 */
 	public function getSorts()
 	{
 		$sort = array();
@@ -191,6 +231,10 @@ class JSolrForm extends JForm
 		return $forms[$name];
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see JForm::loadFile()
+	 */
 	function loadFile($file, $reset = true, $xpath = false)
 	{
 		if (strpos($file, '.xml') !== FALSE) {
@@ -205,9 +249,8 @@ class JSolrForm extends JForm
 	}
 
 	/**
-	 * Method to get all applied facet filters in the form
+	 * Gets all applied facet filters in the form.
 	 * @return array
-	 * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
 	 */
 	function getAppliedFacetFilters()
 	{
@@ -216,7 +259,7 @@ class JSolrForm extends JForm
 		if ($this->getType() != self::TYPE_FACETFILTERS) return $result;
 
 		foreach ($this->getFieldsets() as $fieldset) {
-			if ($fieldset->name == 'main') continue;
+			if ($fieldset->name == 'search') continue;
 
 			foreach ($this->getFieldset($fieldset->name) as $field) {
 				$value = JFactory::getApplication()->input->getString($field->name);
@@ -245,9 +288,9 @@ class JSolrForm extends JForm
 	}
 
 	/**
-	 * Method to get all applied search tools in the form
-	 * @return array
-	 * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
+	 * Gets all applied search tools in the form.
+	 * 
+	 * @return array 
 	 */
 	function getAppliedSearchTools()
 	{
@@ -281,5 +324,27 @@ class JSolrForm extends JForm
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Gets the facet form field markup for the facet field input.
+	 * 
+	 * The facet field must implement the JSolrFacetable interface.
+	 *
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value  The optional value to use as the default for the field.
+	 *
+	 * @return  string  The facet form field markup for the facet field input.
+	 */
+	public function getFacetInput($name, $group = null, $value = null)
+	{
+		// Attempt to get the form field.
+		if ($field = $this->getField($name, $group, $value))
+		{
+			return $field->facetInput;
+		}
+	
+		return '';
 	}
 }

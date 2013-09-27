@@ -136,7 +136,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$qf = array();
 		$sort = array();
 
-		$filters = $this->getForm()->getFilters();
+		$filters = $this->getFilters();
 
 		// nothing passed. Get out of here.
 		if (!$this->getState('query.q')) {
@@ -465,4 +465,22 @@ class JSolrSearchModelSearch extends JModelForm
     
     return $array;
   }
+  
+	/**
+	 * Gets an array of filters formatted for the JSolrSearchQuery.
+	 * 
+	 * @return array An array of filters formatted for the JSolrSearchQuery.
+	 */
+	public function getFilters()
+	{
+		$filters = array();
+
+		foreach ($this->getForm()->getFilters() as $key=>$value) {
+			foreach ($value as $item) {
+				$filters[] = $key.':'.$item;
+			}
+		}
+		
+		return $filters;
+	}
 }
