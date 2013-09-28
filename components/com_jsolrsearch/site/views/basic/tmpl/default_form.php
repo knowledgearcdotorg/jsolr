@@ -11,16 +11,27 @@ $form = $this->get('Form');
 	<input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get('o'); ?>"/>
 	<?php endif; ?>
 	
-  <fieldset class="word">
-    <?php foreach($form->getFieldsets() as $fieldset ) : ?>
-      <?php if (in_array($fieldset->name, array('search', 'facets')) === true) : ?>
-        <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-          <?php echo $form->getInput($field->fieldname); ?>
-        <?php endforeach;?>
-      <?php endif ?>
-    <?php endforeach;?>
-        <input type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?>" class="btn btn-primary" />
-  </fieldset>
+	<fieldset class="word">
+		<?php foreach($form->getFieldsets() as $fieldset ) : ?>
+			<?php if ($fieldset->name == 'search') : ?>
+				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
+					<?php echo $form->getInput($field->fieldname); ?>
+				<?php endforeach;?>
+			<?php endif ?>
+		<?php endforeach;?>
+		
+		<?php foreach($form->getFieldsets() as $fieldset ) : ?>
+			<?php if ($fieldset->name == 'facets') : ?>
+				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
+					<?php if (trim($field->value)) : ?>
+						<?php echo $form->getInput($field->fieldname); ?>
+					<?php endif; ?>
+				<?php endforeach;?>
+			<?php endif ?>
+		<?php endforeach;?>
+		
+		<input type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?>" class="btn btn-primary" />
+	</fieldset>
 
   <div class="clr"></div>
 
