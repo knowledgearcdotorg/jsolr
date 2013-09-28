@@ -113,7 +113,7 @@ class JSolrForm extends JForm
 						$filters[$field->filter] = $field->getFilters();
 						
 						if (property_exists($field, 'exactmatch')) {										
-							if ($field->filter_quoted) {
+							if ($field->exactmatch) {
 								for ($i = 0; $filters[$field->filter]; $i++) {
 									$filters[$field->filter][$i] = '"'.$filters[$field->filter][$i].'"';
 								}	
