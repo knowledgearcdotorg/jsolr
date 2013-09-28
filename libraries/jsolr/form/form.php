@@ -111,12 +111,10 @@ class JSolrForm extends JForm
 				if (in_array('JSolrFilterable', class_implements($field)) == true) {
 					if (count($field->getFilters())) {
 						$filters[$field->filter] = $field->getFilters();
-						
-						if (property_exists($field, 'exactmatch')) {										
-							if ($field->exactmatch) {
-								for ($i = 0; $filters[$field->filter]; $i++) {
-									$filters[$field->filter][$i] = '"'.$filters[$field->filter][$i].'"';
-								}	
+																
+						if ($field->exactmatch) {
+							for ($i = 0; $i < count($filters[$field->filter]); $i++) {
+								$filters[$field->filter][$i] = '"'.$filters[$field->filter][$i].'"';
 							}
 						}						
 					}
