@@ -69,9 +69,9 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 				$uri->delVar($this->name);
 			}
 			
-			$link = '<a href="'.(string)$uri.'">' . JText::_($value) . '</a>';
+			$link = '<a role="menuitem" tabindex="-1" href="'.(string)$uri.'">' . JText::_($value) . '</a>';
 
-			$tmp = '<li class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.

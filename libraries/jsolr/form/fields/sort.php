@@ -46,19 +46,6 @@ class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 	 */
 	protected $type = 'JSolr.Sort';
 	
-	protected static $_headLoaded = false;
-
-	protected function getInput()
-	{
-		$this->_head();
-		$ul  = '<div class="jsolr-dropdown">';
-		$ul .= '<input class="jsolr-dropdown-input" type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" />';
-		$ul .= '<div class="jsolr-dropdown-label">' . JText::_($this->getValueLabel()) . '</div>';
-		$ul .= '<ul class="jsolr-dropdown-list">' . implode('', $this->getOptions()) . '</ul>';
-		$ul .= '</div>';
-		return $ul;
-	}
-	
 	protected function getOptions()
 	{
 		// Initialize variables.
@@ -81,12 +68,12 @@ class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 
 			$selected = ((string) $option['value']) == $this->value;
 
-			$link = '<a href="'.(string)$uri.'">'.
+			$link = '<a role="menuitem" tabindex="-1" href="'.(string)$uri.'">'.
 				JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)).
 				'</a>';
 
 			// Create a new option object based on the <option /> element.
-			$tmp = '<li class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.

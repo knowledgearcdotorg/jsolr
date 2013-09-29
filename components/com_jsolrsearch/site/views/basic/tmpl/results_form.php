@@ -97,7 +97,7 @@ JHTML::_('behavior.formvalidation');
 		<?php foreach($this->form->getFieldsets() as $fieldset ) : ?>
 			<?php if ($fieldset->name == 'tools'): ?>
 				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-					<?php echo $this->form->getInput($field->name); ?>
+					<div class="jsolr-dropdown"><?php echo $this->form->getInput($field->name); ?></div>
 				<?php endforeach;?>
 			<?php endif ?>
 		<?php endforeach;?>

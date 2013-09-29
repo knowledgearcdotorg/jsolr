@@ -50,15 +50,9 @@ class JSolrFormFieldDropdown extends JFormFieldList
 	{
 		$html = array();
 		
-		if ($class = JArrayHelper::getValue($this->element, "class", null)) {
-			$class = " class=$class";
-		}
-
-		$html[] = '<div'.$class.'>';
-		$html[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" />';
-		$html[] = '<div class="label">' . JText::_($this->getValueLabel()) . '</div>';
-		$html[] = '<ul>' . implode($this->getOptions()) . '</ul>';
-		$html[] = '</div>';
+		$html[] = '<input type="hidden" name="'.$this->name.'" id="'.$this->id.'"'.' value="'.htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8').'"/>';
+		$html[] = '<a class="dropdown-toggle" id="'.$this->name.'" role="button" data-toggle="dropdown" data-target="#">' . JText::_($this->getValueLabel()) . ' <b class="caret"></b>';
+		$html[] = '<ul class="dropdown-menu" role="menu" aria-labelledby="'.$this->name.'">' . implode($this->getOptions()) . '</ul>';
 
 		return implode($html);
 	}
@@ -107,7 +101,7 @@ class JSolrFormFieldDropdown extends JFormFieldList
 			$selected = ((string) $option['value']) == $this->value;
 	
 			// Create a new option object based on the <option /> element.
-			$tmp = '<li class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.
