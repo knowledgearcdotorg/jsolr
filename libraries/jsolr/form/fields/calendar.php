@@ -62,7 +62,7 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 			$selected = ((string) $key) == $this->value;
 
 			$uri = clone JFactory::getURI();
-			$url->delVar('start');
+			$uri->delVar('start');
 			
 			if (!empty($key)) {
 				$uri->setVar($this->name, $key);
