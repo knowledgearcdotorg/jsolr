@@ -1,6 +1,7 @@
 <?php
 /**
- * @author		$LastChangedBy$
+ * Provides a list of facet filters applied to the current search results.  
+ * 
  * @package		JSolr
  * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
@@ -29,28 +30,28 @@
  */
 
 defined('_JEXEC') or die('Restricted access');
-
 ?>
-<?php if( JSolrSearchModelSearch::showFilter() ): ?>
-	<?php 
-	
-	$document = JFactory::getDocument();
-	$document->addScript(JURI::base()."/media/mod_jsolrfilter/js/jsolrfilter.js");
-	$document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
-	
-	$form = $this->form;
-	?>
-	<div class="jsolr-module jsolr-module-filter">
-		<?php foreach($form->getFieldsets() as $fieldset ) : ?>
-			<?php if ($fieldset->name != 'main'): ?>
-				<?php foreach ($form->getFieldset($fieldset->name) as $field): ?>
-					<div>
-						<h4><?php echo $form->getLabel($field->name) ?></h4>
-						<div><?php echo $form->getInput($field->name) ?></div>
-					</div>
-				<?php endforeach;?>
-			<?php endif ?>
-		<?php endforeach;?>
-	</div>
-<?php endif; ?>
 
+<?php 
+$form = JSolrSearchModelSearch::getFacetFilterForm(); 
+?>
+
+<?php if (!is_null($form)): ?>
+<ul>
+	<?php foreach ($form->getAppliedFacetFilters() as $field): ?>
+	<?php if ($field['value'] == 'null' || empty($field['value'])) continue; ?>
+	
+	<?php
+	$uri = clone JFactory::getURI();
+	$uri->delVar($field['name']);
+	?>
+	<li>
+		<span class="jsolr-label"><?php echo $field['label'] ?></span>
+		<span class="jsolr-value"><?php echo $field['value'] ?></span>
+
+		<?php echo JHTML::link((string)$uri, '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />'); ?>
+	</li>
+	<?php endforeach ?>
+</ul>
+<?php endif ?>
+<div class="clr"></div>

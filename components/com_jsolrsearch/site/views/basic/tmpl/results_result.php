@@ -1,5 +1,14 @@
 <?php
 /**
+ * Provides a template for an individual search result.
+ * 
+ * To override this generic search result, create a results_result.php file in 
+ * the template jsolrsearch/html/basic directory.
+ * 
+ * To override an individual search result by component (E.g. com_content, 
+ * com_jspace), create a <component>_result in jsolrsearch/html/plugins 
+ * directory.
+ * 
  * @package		JSolr
  * @subpackage	Search
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.

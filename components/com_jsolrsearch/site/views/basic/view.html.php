@@ -51,7 +51,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         $mod = JModuleHelper::getModule('mod_jsolrfilter');
         $this->moduleEnabled = ($mod->id != 0);
         
-        $this->showFilters = !$this->moduleEnabled && JSolrSearchModelSearch::showFilter() && $this->params->get('facet_show',false);
+        $this->showFacets = !$this->moduleEnabled && JSolrSearchModelSearch::showFilter() && $this->params->get('facet_show',false);
 
         // Load JSolrSearach jquery if not bundled.
         // This is deprecated and will be removed in subsequent versions of JSolr.
@@ -164,41 +164,4 @@ class JSolrSearchViewBasic extends JViewLegacy
 	    	return $this->loadTemplate('default');
 	    }
 	}
-	
-	/**
-	 * Return template with facet filters.
-	 * @return string
-	 */
-	public function loadFacetFiltersTemplate() {
-        return $this->loadTemplate('filters');
-	}
-
-    public function loadFormTemplate()
-    {
-        return $this->loadTemplate('form');
-    }
-
-    public function loadFacetFiltersSelectedTemplate()
-    {
-        return $this->loadTemplate('facets_selected');
-    }
-
-    /**
-     * Method to get information if "Search Tools" button should be rendered
-     * @return true if the button should be visiable, otherwise return false
-     */
-    public function showSearchToolsButton()
-    {
-        return is_null(JSolrSearchModelSearch::getFacetFilterForm());
-    }
-
-    /**
-     * Method to get the number of components that will be dispalyed
-     * More components than this number will be displayed in dropdown menu with label "More"
-     * @return integer
-     */
-    public function getComponentsLimit()
-    {
-        return $this->params->get('filter_count',3);
-    }
 }

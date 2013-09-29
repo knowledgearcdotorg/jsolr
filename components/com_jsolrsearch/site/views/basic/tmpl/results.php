@@ -1,5 +1,9 @@
 <?php
 /**
+ * Provides the base for the search results display.
+ * 
+ * Loads the form, facet filters, facets, results and pagination templates.
+ * 
  * @package		JSolr
  * @subpackage	Search
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
@@ -43,36 +47,28 @@ jQuery(document).ready(function() {
 ');
 ?>
 
-<div class="jsolr-content jsolr-main">
-	<?php echo $this->loadFormTemplate()?>
-
-	<div id="jsolr-facet-filters-selected">
-	   <?php echo $this->loadFacetFiltersSelectedTemplate() ?>
-	</div>
-
-	<?php if( $this->showFilters ): ?>
-	   <div class="jsolr-filters">
-	      <?php echo $this->loadFacetFiltersTemplate(); ?>
-	   </div>
-	<?php endif; ?>
-
-
-	<?php if( $this->showFilters ): ?>
-	<div class="jsolr-filters-results">
-	<?php endif; ?>
-
-		
-		   <div class="jsolr-results">
-		   	<?php if (!is_null($this->items)): ?>
-		      <?php echo $this->loadResultsTemplate(); ?>
-		    <?php endif ?>
+<section id="jsolrSearchResults">
+	<header>
+		<?php echo $this->loadTemplate('form'); ?>
+	
+		<div id="jsolrFacetfilters">
+		   <?php echo $this->loadTemplate('facetfilters'); ?>
+		</div>
+	
+		<?php if ($this->showFacets) : ?>
+		   <div id="jsolrFacets">
+		      <?php echo $this->loadTemplate('facets'); ?>
 		   </div>
+		<?php endif; ?>
+	</header>
+
+	<?php if (!is_null($this->items)): ?>
+		<?php echo $this->loadResultsTemplate(); ?>
+	<?php endif ?>
 		      
-		   <div class="pagination jsolr-pagination">
-		      <?php echo $this->get('Pagination')->getPagesLinks(); ?>
-		   </div>
-
-	<?php if( $this->showFilters ): ?>
-	</div>
-	<?php endif; ?>
-</div>
+	<footer>
+		<div class="pagination">
+		<?php echo $this->get('Pagination')->getPagesLinks(); ?>
+		</div>
+	</footer>
+</section>

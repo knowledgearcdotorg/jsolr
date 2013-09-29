@@ -1,5 +1,9 @@
 <?php
 /**
+ * Default search page.
+ * 
+ * Override to edit the JSolrSearch home page.
+ * 
  * @package		JSolr
  * @subpackage	Search
  * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
@@ -44,21 +48,23 @@ jQuery(document).ready(function() {
 });
 ');
 ?>
-<div class="jsolr-content jsolr-main"> 
-	<form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">
-		<input type="hidden" name="option" value="com_jsolrsearch"/>
-		<input type="hidden" name="task" value="search"/>
-	  <fieldset class="word">
-	    <?php foreach($form->getFieldsets() as $fieldset ) : ?>
-	      <?php if ($fieldset->name == 'search'): ?>
-	        <?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-	          <span><?php echo $form->getInput($field->fieldname); ?></span>
-	        <?php endforeach;?>
-	      <?php endif ?>
-	    <?php endforeach;?>
-	        <input type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?>" class="btn btn-primary" />
-	  </fieldset>
+<section id="jsolrSearch">
+	<form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">				
+		<fieldset class="word">
+			<?php foreach($form->getFieldsets() as $fieldset ) : ?>
+				<?php if ($fieldset->name == 'search'): ?>
+					<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
+					<span><?php echo $form->getInput($field->fieldname); ?></span>
+					<?php endforeach;?>
+				<?php endif ?>
+			<?php endforeach;?>
+			
+			<input type="hidden" name="option" value="com_jsolrsearch"/>
+			<input type="hidden" name="task" value="search"/>
+			
+			<button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
+		</fieldset>
 	
-	  <div class="jsolr-clear"></div>
+		<div class="jsolr-clear"></div>
 	</form>
-</div>
+</section>
