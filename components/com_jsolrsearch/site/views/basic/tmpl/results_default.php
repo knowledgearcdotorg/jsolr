@@ -39,7 +39,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 
 <div id="jsolr-total">
-<?php echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS', $this->items->get('numFound'), $this->items->get('qTimeFormatted')); ?>
+<?php if ($this->get("Pagination")->get('pages.current') > 1) : ?>
+	<?php echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS_CURRENTPAGE', $this->get("Pagination")->get('pages.current'), $this->items->get('numFound'), $this->items->get('qTimeFormatted')); ?>
+<?php else : ?>
+	<?php echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS', $this->items->get('numFound'), $this->items->get('qTimeFormatted')); ?>
+<?php endif; ?>
 </div>
 
 <?php
