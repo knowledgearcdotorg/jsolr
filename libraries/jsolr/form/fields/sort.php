@@ -59,6 +59,7 @@ class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 			}
 
 			$uri = clone JFactory::getURI();
+			$url->delVar('start');
 
 			if (!empty($option['value'])) {
 				$uri->setVar($this->name, (string) $option['value']);
