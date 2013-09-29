@@ -107,7 +107,7 @@ class JSolrFormFieldDropdown extends JFormFieldList
 			$selected = ((string) $option['value']) == $this->value;
 	
 			// Create a new option object based on the <option /> element.
-			$tmp = '<li class="jsolr-dropdown-option' . ( $selected ? ' jsolr-dropdown-option-selected' : '' ) . '" data-value="' . ((string) $option['value']) . '">' . $this->getOption($option) . '</li>';
+			$tmp = '<li class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.

@@ -5,3 +5,7 @@
 #jsolrSearchResults > ol > li {
 	list-style: none;	
 }
+
+#jsolrSearchResults .active {
+	font-weight: bold;
+}

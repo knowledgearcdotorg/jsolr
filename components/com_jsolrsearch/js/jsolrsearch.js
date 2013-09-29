@@ -242,12 +242,12 @@ var jsolrsearch = {
     },
 
     clearElement: function(elem) {
-    	elem.attr('selected', false);
+    	elem.attr('active', false);
 		elem.attr('checked', false);
 
 		elem = elem.children();
 
-		elem.attr('selected', false);
+		elem.attr('active', false);
 		elem.attr('checked', false);
     },
 

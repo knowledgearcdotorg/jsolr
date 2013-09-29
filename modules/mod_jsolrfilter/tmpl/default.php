@@ -36,7 +36,7 @@ $document = JFactory::getDocument();
 $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.css");
 ?>
 
-<div class="jsolr-module jsolr-module-filter jsolr-content">
+<div class="jsolr-facet-filter">
 	<?php foreach($form->getFieldsets() as $fieldset ) : ?>
 		<?php if ($fieldset->name != 'main'): ?>
 			<?php foreach ($form->getFieldset($fieldset->name) as $field): ?>

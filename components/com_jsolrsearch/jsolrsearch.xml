@@ -31,7 +31,6 @@
     <media destination="com_jsolrsearch">
     	<folder>js</folder>
     	<folder>css</folder>
-    	<folder>images</folder>
     </media>
 
 	<administration>

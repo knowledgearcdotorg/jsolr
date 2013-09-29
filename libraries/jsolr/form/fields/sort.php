@@ -86,7 +86,7 @@ class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 				'</a>';
 
 			// Create a new option object based on the <option /> element.
-			$tmp = '<li class="jsolr-dropdown-option' . ( $selected ? ' jsolr-dropdown-option-selected' : '' ) . '" data-value="' . ((string) $option['value']) . '">'.$link.'</li>';
+			$tmp = '<li class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.

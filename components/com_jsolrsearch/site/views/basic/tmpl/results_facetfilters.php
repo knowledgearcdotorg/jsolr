@@ -46,10 +46,10 @@ $form = JSolrSearchModelSearch::getFacetFilterForm();
 	$uri->delVar($field['name']);
 	?>
 	<li>
-		<span class="jsolr-label"><?php echo $field['label'] ?></span>
-		<span class="jsolr-value"><?php echo $field['value'] ?></span>
+		<span class="jsolr-label"><?php echo $field['label']; ?></span>
+		<span class="jsolr-value"><?php echo str_replace('|', ' | ', $field['value']); ?></span>
 
-		<?php echo JHTML::link((string)$uri, '<img src="'. JURI::base().'/media/com_jsolrsearch/images/close.png" />'); ?>
+		<?php echo JHTML::link((string)$uri, '(clear)'); ?>
 	</li>
 	<?php endforeach ?>
 </ul>

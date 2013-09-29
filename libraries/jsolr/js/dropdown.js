@@ -21,11 +21,11 @@
 			if( option.parents('.jsolr-dropdown-active').length > 0 ) {
 				e.stopPropagation();
 				var dropdown = option.parents('.jsolr-dropdown');
-				dropdown.find('li').removeClass('selected');
+				dropdown.find('li').removeClass('active');
 				$('.jsolr-dropdown').removeClass('jsolr-dropdown-active');
 				dropdown.find('.jsolr-dropdown > input[type="hidden"]').val(option.data('value'));
 				dropdown.find('.jsolr-dropdown > .label').html(option.html());
-				option.addClass('selected');
+				option.addClass('active');
 			}
 		});
 		$('body').on('click', function(){

@@ -1,3 +1,7 @@
+.jsolr-facet-filter .active {
+	font-weight: bold;
+}
+
 .jsolr-show {
 	display: block;
 	margin: 10px 0;

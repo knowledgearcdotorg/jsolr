@@ -81,10 +81,10 @@ JHTML::_('behavior.formvalidation');
 					echo JHTML::_(
 						'link', 
 						$components[$i]['uri'], 
-						JText::sprintf($isSelected ? "<strong>%s</strong>" : "%s", $components[$i]['name']), 
+						$components[$i]['name'], 
 						array(
 							'data-category'=>$components[$i]['plugin'], 
-							'class'=> $isSelected ? ' selected' : '')); 
+							'class'=> $isSelected ? 'active' : '')); 
 				?>
 				</li>
         	<?php endfor ?>

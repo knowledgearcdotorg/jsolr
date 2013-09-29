@@ -47,7 +47,7 @@ class JSolrFormFieldToggle extends JSolrFormFieldFacets
 			$class = '';
 				
 			if ($this->isSelected($key)) {
-				$class = ' class="selected"';
+				$class = ' class="active"';
 			}
 				
 			$count = '';

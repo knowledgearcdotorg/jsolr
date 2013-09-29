@@ -122,7 +122,7 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 			$html = array("<li>", "%s", "</li>");
 			
 			if ($this->isSelected($key)) {
-				$html = array("<li class=\"selected\">", "<strong>", "%s", "</strong>", "</li>");
+				$html = array("<li class=\"active\">", "%s", "</li>");
 			}
 
 			$count = '';
