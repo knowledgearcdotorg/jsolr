@@ -88,7 +88,7 @@ class JSolrSearchModelBrowse extends JModelList
 		}
 		
 		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();
+		$dispatcher = JDispatcher::getInstance();
 
 		try {
 			$query = JSolrSearchFactory::getQuery("*:*")
@@ -120,7 +120,7 @@ class JSolrSearchModelBrowse extends JModelList
 		$operators = array(); 
 		
 		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher =& JDispatcher::getInstance();		
+		$dispatcher = JDispatcher::getInstance();		
 		
 		foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
 			$operators = array_merge($operators, $result);
