@@ -37,13 +37,13 @@
 			</fileset>
 		</copy>
 		<copy todir="${dest.media}/com_jsolrsearch/js">
-			<fileset dir="${src}/js" defaultexcludes="true">
+			<fileset dir="${src}/media/js" defaultexcludes="true">
 				<include name="**/**"/>
 			</fileset>
 		</copy>
 
 		<copy todir="${dest.media}/com_jsolrsearch/css">
-			<fileset dir="${src}/css" defaultexcludes="true">
+			<fileset dir="${src}/media/css" defaultexcludes="true">
 				<include name="**/**"/>
 			</fileset>
 		</copy>
