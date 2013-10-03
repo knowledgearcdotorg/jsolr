@@ -51,6 +51,9 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 		static::$chunk = 50;		
 		
+		// set some JSpace Crawler specific rules.
+		$this->set('bundleExclusions', explode(',', $this->get('params')->get('exclude_bundles_from_index', "")));
+		$this->set('contentExclusions', explode(',', $this->get('params')->get('exclude_bundle_content_from_index', "")));
 	}
 	
 	/**
@@ -134,7 +137,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$items = $response->response->docs;
 			}
 		} catch (Exception $e) {
-        	JLog::add($e->getMessage(), JLog::ERROR);
+        	JLog::add($client->getMessage(), JLog::ERROR, 'crawler');
 		}
 		
 		return $items;			
@@ -167,108 +170,59 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			$field = $item->schema.'.'.$item->element;
 
 			if ($item->qualifier) {
-				$field .= '.'.$item->qualifier;	
+				$field .= '.'.$item->qualifier;
+			}
+			
+			if (array_search($field, $this->get('params')->get('facets')) !== false) {
+				$doc->addField($field."_fc", $item->value); // for faceting
+			}
+						
+			if (array_search($field, $this->get('params')->get('sorts')) !== false) {
+				if (!is_array($item->value)) {
+					$doc->addField($field.'_sort', $item->value); // for sorting
+				} else {
+					JLog::add('Trying to index multivalue field '.$field.' value to a sort field is not supported.', JLog::WARNING, 'crawler');
+				}
+			}
+			
+			if ($item->qualifier == 'author') {
+				$doc->addField('author', $item->value);
 			}
 
-			switch ($item->element) {
-				case 'date':
-					// @todo Dates are confusing in DSpace as they are never
-					// guaranteed to be generated. There may need to be a 
-					// better method devised for handling them.
-					
-					$datePattern = "/[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}[Zz]/";
-					$suffix = 's';
-					$value = $item->value;
-					
-					if (preg_match($datePattern, $item->value) > 0) {
-						$suffix = 'dt';
-						$date = JFactory::getDate($item->value);
-						$value = $date->format('Y-m-d\TH:i:s\Z', false);
-						
-						if ($item->qualifier == 'available') {
-							$doc->addField('created', $value);
-							$doc->addField('modified', $value);
-						}
-					}
-					
-					$doc->addField($field.'_'.$suffix, $value);
-					
-					break;
-
-				case 'title':				
-					$doc->addField($field.'_'.$lang, $item->value);
-					$doc->addField($field."_fc", $item->value); // for faceting
-					$doc->addField($field."_ac", $item->value); // for auto complete
-					$doc->addField($field.'_sm', $item->value);
-					$doc->addField($field.'_txt', $item->value); // for lower-case searching
-						
-					break;
-					
-				case 'contributor':
-					if ($item->qualifier == 'author' || $item->qualifier == 'other') {
-						if ($item->qualifier == 'author') {
-							$doc->addField('author', $item->value);
-						}
-						
-						$doc->addField($field.'_'.$lang, $item->value);
-						$doc->addField($field."_fc", $item->value); // for faceting
-						$doc->addField($field."_ac", $item->value); // for auto complete
-					}
-					
-					$doc->addField($field.'_sm', $item->value);
-					$doc->addField($field.'_txt', $item->value); // for lower-case searching
-					
-					break;
-					
-				case 'subject':
-					if ($item->qualifier == 'other' || !$item->qualifier) {
-						$doc->addField($field.'_'.$lang, $item->value);
-						$doc->addField($field."_fc", $item->value); // for faceting
-						$doc->addField($field."_ac", $item->value); // for auto complete
-					}
-					
-					$doc->addField($field.'_sm', $item->value);
-					$doc->addField($field.'_txt', $item->value); // for lower-case searching
-					
-					break;
+			// Handle dates carefully then just save out all other field 
+			// values to generic multi-valued indexing fields.
+			if ($item->element == 'date') {
+				// @todo Dates are confusing in DSpace as they are never
+				// guaranteed to be generated. There may need to be a 
+				// better method devised for handling them.
 				
-				case 'type':
-					if (!$item->qualifier) {
-						$doc->addField($field.'_'.$lang, $item->value);
-						$doc->addField($field."_fc", $item->value); // for faceting
-						$doc->addField($field."_ac", $item->value); // for auto complete
+				$datePattern = "/[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}[Zz]/";
+				$suffix = 's';
+				$value = $item->value;
+				
+				// if the date is a valid iso date then index it as such.
+				if (preg_match($datePattern, $item->value) > 0) {
+					$suffix = 'dt';
+					$date = JFactory::getDate($item->value);
+					$value = $date->format('Y-m-d\TH:i:s\Z', false);
+
+					if ($item->qualifier == 'created' || $item->qualifier == 'modified') {
+						$doc->addField('created', $value);
+						$doc->addField('modified', $value);
 					}
 					
-					$doc->addField($field.'_sm', $item->value);
-					$doc->addField($field.'_txt', $item->value); // for lower-case searching
-					
-					break;
-					
-				case 'description':
-					if (!$item->qualifier) {
-						$doc->addField('body_'.$lang, $item->value);
-						$doc->addField($field.'_'.$lang, $item->value);
+					if (!is_array($value)) {
+						$doc->addField($field.'_sort', $value); // for sorting
 					} else {
-						$doc->addField($field.'_sm', $item->value); 
+						JLog::add('Date field '.$field.' contains multiple values and so cannot be indexed for sorting.', JLog::WARNING, 'crawler');
 					}
-					
-					break;
-					
-				case 'publisher':
-					if (!$item->qualifier) {
-						$doc->addField($field.'_'.$lang, $item->value);
-						$doc->addField($field."_fc", $item->value); // for faceting
-						$doc->addField($field."_ac", $item->value); // for auto complete
-					}
-
-					$doc->addField($field.'_sm', $item->value);
-					$doc->addField($field.'_txt', $item->value); // for lower-case searching
-
-					break;
-					
-				default:
-					$doc->addField($field.'_sm', $item->value);
-					break;
+				}
+				
+				$doc->addField($field.'_'.$suffix, $value);
+			} else {		
+				$doc->addField($field.'_'.$lang, $item->value); // language-specific indexing.
+				$doc->addField($field.'_sm', $item->value); // for (almost) exact matching.
+				$doc->addField($field.'_txt', $item->value); // for lower-case searching
 			}
 		}
 		
@@ -294,23 +248,29 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 		$i = 0;
 		
-		$path = JArrayHelper::getValue($connector->getOptions(), 'url', null, 'string');
-
+		$path = JArrayHelper::getValue($connector->getOptions(), 'url', null, 'string');		
+		
 		foreach ($bundles as $bundle) {
-			foreach ($bundle->bitstreams as $bitstream) {
-				$document = $this->_extract($path.'/bitstreams/'.$bitstream->id.'/download');
+			
+			if (in_array($bundle->name, $this->get('bundleExclusions')) === false) {
 				
-				if ($document) {
-					$bitstreams[$i] = $bitstream;
+				foreach ($bundle->bitstreams as $bitstream) {
+					$exclude = in_array($bundle->name, $this->get('contentExclusions'));
+
+					$document = $this->_extract($path.'/bitstreams/'.$bitstream->id.'/download', $exclude);
 					
-					if (isset($document->body)) {
-						$bitstreams[$i]->body = $document->body;
+					if ($document) {
+						$bitstreams[$i] = $bitstream;
+						
+						if (isset($document->body)) {
+							$bitstreams[$i]->body = $document->body;
+						}
+						
+						$bitstreams[$i]->metadata = $document->metadata;
+						$bitstreams[$i]->type = $bundle->name;
+						
+						$i++;
 					}
-					
-					$bitstreams[$i]->metadata = $document->metadata;
-					$bitstreams[$i]->type = $bundle->name;
-					
-					$i++;
 				}
 			}
 		}
@@ -318,6 +278,16 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		return $bitstreams;
 	}
 	
+	/**
+	 * Gets a populated instance of the JSolrApacheSolrDocument class containing 
+	 * indexable information about a single bitstream.
+	 * 
+	 * @param stdClass $record The bitstream information.
+	 * 
+	 * @return JSolrApacheSolrDocument A populated instance of the 
+	 * JSolrApacheSolrDocument class containing indexable information about 
+	 * the single bitstream. 
+	 */
 	private function _getBitstreamDocument($record)
 	{
 		$doc = new JSolrApacheSolrDocument();
@@ -466,7 +436,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 				$ids[$i] = $key;
 				
-				$this->out('item '.$key.' ready for indexing');						
+				$this->out('item '.$key.' ready for indexing');				
 				
 				if ($params->get('index')) {
 					$bitstreams = $this->_getBitstreams($item);
@@ -680,9 +650,10 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	 * $metadata = $result->metadata;
 	 * 
 	 * @param string $path
+	 * @param bool $excludeContent True if the content should also be excluded from extraction, false otherwise. Defaults to false.
 	 * @return stdClass An object containing the file's body and metadata.
 	 */
-	private function _extract($path)
+	private function _extract($path, $excludeContent = false)
 	{
 		$params = JComponentHelper::getParams("com_jsolrindex", true);
 		
@@ -697,13 +668,14 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 				// sometimes the charset is appended to the file type.
 				$contentType = JArrayHelper::getValue(array_map('trim', explode(';', trim($result))), 0);
-				
+
 				if ($this->isAllowedContentType($contentType) == 1) {
-					if ($this->isContentIndexable($contentType) == 1) {		
+					if (!$excludeContent && $this->isContentIndexable($contentType) == 1) {
+						$this->out('extracting/indexing content in '.$path);
 						ob_start();
 						passthru("java -jar ".$params->get('local_tika_app_path')." ".$path." 2> /dev/null");
 						$result = ob_get_contents();
-						ob_end_clean();				
+						ob_end_clean();
 						$document->body = $result;
 					}
 
@@ -788,5 +760,16 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		}
 	
 		return $collection;
+	}
+	
+	public function onListMetadataFields()
+	{
+		try {
+			$metadata = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/items/metadatafields.json')));
+		} catch (Exception $e) {
+			JLog::add($client->getResponseInfo()." ".$e->toString(), JLog::ERROR, 'crawler');
+		}
+		
+		return $metadata;
 	}
 }

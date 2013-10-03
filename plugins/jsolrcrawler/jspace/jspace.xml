@@ -21,7 +21,7 @@
 			<fieldset name="basic">
 				<field 
 					name="use_jspace_connection_params" 
-					type="radio"
+					type="list"
 					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_DESC"
 					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_USEJSPACECONNECTIONPARAMS_LABEL"
 					value="1"
@@ -53,6 +53,41 @@
 					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_PASSWORD_LABEL"
 					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_PASSWORD_DESC" 
 					size="45"/>
+			</fieldset>
+
+			<fieldset name="indexing" addfieldpath="/plugins/jsolrcrawler/jspace/form/fields">
+				<field 
+					name="facets" 
+					type="jsolr.metadatafieldlist" 
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_FACETS_LABEL"
+					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_FACETS_DESC" 
+					multiple="true"
+					size="5"
+					class="inputbox"
+					 />
+				<field 
+					name="sorts" 
+					type="jsolr.metadatafieldlist" 
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_SORTS_LABEL"
+					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_SORTS_DESC" 
+					multiple="true"
+					size="5"
+					class="inputbox"
+					/>
+				<field 
+					name="exclude_bundles_from_index"
+					type="text" 
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_LABEL"
+					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_DESC"
+					size="40" 
+					class="inputbox"/>
+				<field 
+					name="exclude_bundle_content_from_index"
+					type="text" 
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_EXCLUDE_BUNDLE_CONTENT_FROM_INDEX_LABEL"
+					description="PLG_JSOLRCRAWLER_JSPACE_FIELD_EXCLUDE_BUNDLE_CONTENT_FROM_INDEX_DESC" 
+					size="40"
+					class="inputbox"/>				
 			</fieldset>
 		</fields>
 	</config>

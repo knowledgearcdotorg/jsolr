@@ -311,7 +311,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 		
 		$types = $this->getAllowedContentTypes();
 
-		while (($type = current($types)) !== false && !$allowed) {
+		while ((($type = current($types)) !== false) && !$allowed) {
 			if (preg_match("#".$type."#i", $contentType)) {
 				$allowed = true;
 			}
@@ -329,7 +329,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 	
 		$types = $this->getIndexContentContentTypes();
 	
-		while (($type = current($types)) !== false && !$allowed) {
+		while ((($type = current($types)) !== false) && !$allowed) {
 			if (preg_match("#".$type."#i", $contentType)) {
 				$allowed = true;
 			}

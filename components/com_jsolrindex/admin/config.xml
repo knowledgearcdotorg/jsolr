@@ -39,7 +39,8 @@
 			type="radio"
 			default="0"
 			label="COM_JSOLRINDEX_ATTACHMENTS_INDEX_LABEL"
-			description="COM_JSOLRINDEX_ATTACHMENTS_INDEX_DESC">
+			description="COM_JSOLRINDEX_ATTACHMENTS_INDEX_DESC"
+			class="btn-group">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
@@ -122,9 +123,10 @@
 			type="radio" 
 			label="COM_JSOLRINDEX_ADVANCED_AUTOCOMMIT_LABEL"
 			description="COM_JSOLRINDEX_ADVANCED_AUTOCOMMIT_DESC"
-			default="0">
-			<option value="1">JYES</option>
+			default="0"
+			class="btn-group">			
 			<option value="0">JNO</option>
+			<option value="1">JYES</option>
 		</field>
 		<field 
 			name="commitsWithin" 
