@@ -33,10 +33,11 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.installer.helper');
 jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.file');
 
 class com_JSolrSearchInstallerScript
 {	
-	public function install($parent)
+	public function install(JAdapterInstance $adapter)
 	{
 /*
  * @todo Implement package installer to install complimentary plugins?
@@ -74,8 +75,44 @@ class com_JSolrSearchInstallerScript
  */
 	}
 	
-	public function uninstall($parent)
-	{
+	public function update(JAdapterInstance $adapter)
+	{		
+		$src = $adapter->getParent()->getPath('source');
+		$site = $adapter->getParent()->getPath('extension_site');
+		$admin = $adapter->getParent()->getPath('extension_administrator');
+		
+		$extension = JArrayHelper::getValue($adapter->getParent()->get('manifest')->media, 'destination');		
+		$extension = JArrayHelper::getValue($extension, 0);
 
+		$media = JPATH_ROOT.'/media/'.$extension;
+		
+		$this->_cleanFiles($site, $src.'/site');
+		
+		$exclude = array();
+		$exclude[] = $adapter->get('manifest_script');
+		$exclude[] = JFile::getName($adapter->getParent()->getPath('manifest'));
+				
+		$this->_cleanFiles($admin, $src.'/admin', $exclude);
+		
+		$this->_cleanFiles($media, $src.'/media', $exclude);
+	}
+	
+	private function _cleanFiles($path1, $path2, $exclude = array())
+	{		
+		foreach (JFolder::files($path1, '.', true, true, $exclude) as $file) {
+			if (JFile::exists($file)) {
+				if (!JFile::exists(str_replace($path1, $path2, $file))) {
+					Jfile::delete($file);
+				}
+			}
+		}
+		
+		foreach (JFolder::folders($path1, '.', true, true, $exclude) as $folder) {
+			if (JFolder::exists($folder)) {
+				if (!JFolder::exists(str_replace($path1, $path2, $folder))) {
+					JFolder::delete($folder);
+				}
+			}
+		}
 	}
 }

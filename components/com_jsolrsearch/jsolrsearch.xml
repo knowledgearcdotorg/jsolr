@@ -28,9 +28,9 @@
  		<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
  	</languages>
 
-    <media destination="com_jsolrsearch">
+    <media folder="media" destination="com_jsolrsearch">
     	<folder>js</folder>
-    	<folder>css</folder>
+    	<folder>css</folder>    	
     </media>
 
 	<administration>
