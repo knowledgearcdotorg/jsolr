@@ -55,7 +55,11 @@
 					size="45"/>
 			</fieldset>
 
-			<fieldset name="indexing" addfieldpath="/plugins/jsolrcrawler/jspace/form/fields">
+			<fieldset 
+				name="indexing" 
+				label="PLG_JSOLRCRAWLER_JSPACE_INDEXING_LABEL" 
+				description="PLG_JSOLRCRAWLER_JSPACE_INDEXING_DESC" 
+				addfieldpath="/plugins/jsolrcrawler/jspace/form/fields">
 				<field 
 					name="facets" 
 					type="jsolr.metadatafieldlist" 
