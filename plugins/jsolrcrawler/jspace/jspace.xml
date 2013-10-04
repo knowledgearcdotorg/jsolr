@@ -11,6 +11,7 @@
 	<description>PLG_JSOLRCRAWLER_JSPACE_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="jspace">jspace.php</filename>
+		<folder>fields</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jspace.ini</language>
