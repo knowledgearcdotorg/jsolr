@@ -53,8 +53,8 @@ class JSolrSearchModelSearch extends JModelForm
 	protected $lang;
 	protected $pagination;
    
-   protected static $form_facet_filter = NULL;
-   protected static $form_search_tools = NULL;
+   protected static $form_facet_filter = null;
+   protected static $form_search_tools = null;
 
 	/**
 	 * (non-PHPdoc)
@@ -68,35 +68,48 @@ class JSolrSearchModelSearch extends JModelForm
 		$this->set('context', $this->get('option').'.search');
 		
 		$this->set('params', JComponentHelper::getParams($this->get('option'), true));
+		
+		JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
 	}
    
-   static function getFacetFilterForm()
-   {
-     return self::$form_facet_filter;
-   }
+	static function getFacetFilterForm()
+	{
+  		return self::$form_facet_filter;
+	}
    
 	/**
-    * @return bool
-    */
-   public static function showFilter() {
-   	return !is_null(self::getFacetFilterForm());
-   }
+	* @return bool
+	*/
+	public static function showFilter() 
+	{
+		$form = self::getFacetFilterForm();
+		
+		if ($form != null) {
+			if (!$form->isFiltered() && !JFactory::getApplication()->input->get("q", null, "string")) {
+				 $form = null;
+			}
+		}
+		
+		return !is_null($form);
+	}
 
-   static function getSearchToolsForm()
-   {
-     return self::$form_search_tools;
-   }
+	static function getSearchToolsForm()
+	{
+		return self::$form_search_tools;
+	}
 
-   static function addForm(JSolrForm $form)
-   {
-     switch ($form->getType()) {
-        case JSolrForm::TYPE_FACETFILTERS:
-          self::$form_facet_filter = $form;
-          break;
+	static function addForm(JSolrForm $form)
+	{
+		switch ($form->getType()) {
+			case JSolrForm::TYPE_FACETFILTERS:				
+				self::$form_facet_filter = $form;
 
-        case JSolrForm::TYPE_SEARCHTOOLS:
-          self::$form_search_tools = $form;
-          break;
+				break;
+
+			case JSolrForm::TYPE_SEARCHTOOLS:
+				self::$form_search_tools = $form;
+
+				break;
      }
    }
    
@@ -443,6 +456,9 @@ class JSolrSearchModelSearch extends JModelForm
     return $result;
   }
 
+	/**
+	 * Get the list of enabled extensions for search results.
+	 */
   public function getExtensions()
   {
     JPluginHelper::importPlugin("jsolrsearch");
