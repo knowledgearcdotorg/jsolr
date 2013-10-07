@@ -164,7 +164,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 		$doc->addField("parent_id", $collection->id);
 		$doc->addField("collection_s", $collection->name);
-		$doc->addField("collection_fc", $collection->name);
+		$doc->addField("collection_fc", $this->getFacet($collection->name));
 
 		foreach ($record->metadata as $item) {
 			$field = $item->schema.'.'.$item->element;
@@ -174,7 +174,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			}
 			
 			if (array_search($field, $this->get('params')->get('facets')) !== false) {
-				$doc->addField($field."_fc", $item->value); // for faceting
+				$doc->addField($field."_fc", $this->getFacet($item->value)); // for faceting
 			}
 						
 			if (array_search($field, $this->get('params')->get('sorts')) !== false) {

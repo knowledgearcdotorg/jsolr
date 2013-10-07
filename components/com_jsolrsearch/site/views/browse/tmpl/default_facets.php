@@ -32,6 +32,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 require_once(JPATH_BASE.'/components/com_jsolrsearch/helpers/route.php');
 
+jimport('jsolr.helper');
+
 $operators = $this->state->get('facet.operators');
 ?>
 <ul>
@@ -40,10 +42,10 @@ $operators = $this->state->get('facet.operators');
 	<?php foreach ($valuei as $keyj=>$valuej) : ?>
 
 		<?php $vars = array(
-				JFactory::getApplication()->input->get('name')=>$keyj,
+				JFactory::getApplication()->input->get('name')=>JSolrHelper::getOriginalFacet($keyj),
                 'o'=>JFactory::getApplication()->input->get('o')); ?>
             
-		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), JText::sprintf('%s [%s]', $keyj, $valuej)); ?></li>
+		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), JText::sprintf('%s [%s]', JSolrHelper::getOriginalFacet($keyj), $valuej)); ?></li>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 </ul>

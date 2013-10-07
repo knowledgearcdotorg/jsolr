@@ -34,6 +34,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.plugin.plugin');
 
+jimport('jsolr.helper');
 jimport('jsolr.index.factory');
 jimport('jsolr.apache.solr.service');
 jimport('jsolr.apache.solr.document');
@@ -339,5 +340,29 @@ abstract class JSolrIndexCrawler extends JPlugin
 	
 		return $allowed;
 			
+	}
+	
+	/**
+	 * Gets a formatted facet based on the JSolrIndex configuration.
+	 * 
+	 * @param string $facet
+	 * 
+	 * @return string A formatted facet based on the JSolrIndex configuration.
+	 */
+	protected function getFacet($facet)
+	{
+		switch (intval(JComponentHelper::getParams('com_jsolrindex')->get('casesensitivity'))) {
+			case 1:
+				return JString::strtolower($facet);
+				break;
+	
+			case 2:
+				return JSolrHelper::toCaseInsensitiveFacet($facet);
+				break;
+					
+			default:
+				return $facet;
+				break;
+		}
 	}
 }

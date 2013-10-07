@@ -79,7 +79,7 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		$doc->addField("metadescription_$lang", $record->metadesc);
 		$doc->addField("author", $record->author);
 		
-		$doc->addField("author_fc", $record->author); // for faceting
+		$doc->addField("author_fc", $this->getFacet($record->author)); // for faceting
 		$doc->addField("author_ac", $record->author); // for auto complete
 		
 		foreach (JSolrHelper::getTags($record, array("<h1>")) as $item) {
@@ -99,7 +99,7 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		if ($record->catid) {
 			$doc->addField("parent_id", $record->catid);
 			$doc->addField("category_$lang", $record->category);
-			$doc->addField("category_fc", $record->category); // for faceting
+			$doc->addField("category_fc", $this->getFacet($record->category)); // for faceting
 		}
 
 		return $doc;

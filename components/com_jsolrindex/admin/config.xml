@@ -115,6 +115,22 @@
 			class="inputbox"/>
 	</fieldset>
 	<fieldset 
+		name="faceting"
+		label="COM_JSOLRINDEX_CONFIG_FACETING_LABEL"
+		description="COM_JSOLRINDEX_CONFIG_FACETING_DESC">
+		<field 
+			name="casesensitivity" 
+			type="radio" 
+			label="COM_JSOLRINDEX_FACETING_CASESENSITIVITY_LABEL"
+			description="COM_JSOLRINDEX_FACETING_CASESENSITIVITY_DESC"
+			default="0"
+			class="btn-group">			
+			<option value="0">COM_JSOLRINDEX_FACETING_CASESENSITIVITY_NONE</option>
+			<option value="1">COM_JSOLRINDEX_FACETING_CASESENSITIVITY_LOWERCASE</option>
+			<option value="2">COM_JSOLRINDEX_FACETING_CASESENSITIVITY_DUALCASE</option>
+		</field>
+	</fieldset>
+	<fieldset 
 		name="advanced"
 		label="COM_JSOLRINDEX_CONFIG_ADVANCED_LABEL"
 		description="COM_JSOLRINDEX_CONFIG_ADVANCED_DESC">

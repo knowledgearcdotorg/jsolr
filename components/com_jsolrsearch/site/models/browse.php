@@ -96,7 +96,7 @@ class JSolrSearchModelBrowse extends JModelList
 				->facetFields($facetFields)
 				->mergeParams($facetParams)
 				->filters($filters)
-				->facet(0, true)
+				->facet(0, 'index', -1)
 				->rows(0);
 
 			$results = $query->search();		

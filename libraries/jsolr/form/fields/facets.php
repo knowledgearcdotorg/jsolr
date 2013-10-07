@@ -121,6 +121,8 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 		foreach ($facets as $key=>$value) {
 			$html = array("<li>", "%s", "</li>");
 			
+			$key = JSolrHelper::getOriginalFacet($key);
+			
 			if ($this->isSelected($key)) {
 				$html = array("<li class=\"active\">", "%s", "</li>");
 			}

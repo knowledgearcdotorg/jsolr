@@ -32,6 +32,8 @@ defined('_JEXEC') or die();
 
 class JSolrHelper extends JObject
 {
+	const FACET_DELIMITER = '|||';
+	
 	public static function highlight($highlighting, $field, $default = null)
 	{
 		$array = array();
@@ -104,4 +106,67 @@ class JSolrHelper extends JObject
 	
 		return $text;
 	}
+
+	/**
+	 * Converts a facet into a value which can be used for case-insensitive lookup. 
+	 * 
+	 * @param string $facet The raw facet.
+	 * @param string $delimiter The delimiter which should be used to store 
+	 * the facet in two ways; case-insensitive + case-sensitive.
+	 * 
+	 * @return string A facet which can be used for case-insensitive lookup.
+	 */
+	public static function toCaseInsensitiveFacet($facet, $delimiter = self::FACET_DELIMITER)
+	{
+		return JString::strtolower($facet).$delimiter.$facet;
+	}
+	
+	/**
+	 * Parses a case-insensitive facet, converting it into its various parts.
+	 * 
+	 * This method will return in an array with index 0 representing the lower 
+	 * case version of the facet, and index 1 representing the raw facet value 
+	 * (with case if applicable).
+	 * 
+	 * E.g. if the facet is test|||Test, the parsed output will be:
+	 * 
+	 * $result[0] = 'test';
+	 * $result[1] = 'Test';
+	 * 
+	 * @param unknown_type $facet The facet to parse.
+	 * @param unknown_type $delimiter The delimiter to split the facet into 
+	 * its parts.
+	 * 
+	 * @return array An array with two values, the first being the 
+	 * case-insensitive or lower case value and the second being the original, 
+	 * raw value. 
+	 */
+	public static function parseCaseInsensitiveFacet($facet, $delimiter = self::FACET_DELIMITER)
+	{
+		return explode($delimiter, $facet);
+	}
+	
+	/**
+	 * Get the original facet value.
+	 * 
+	 * @param string $facet The facet value to get the original facet value 
+	 * from. 
+	 * @param string $delimiter The delimiter to split the facet on.
+	 * 
+	 * @return string The original facet value.
+	 */
+	public static function getOriginalFacet($facet, $delimiter = self::FACET_DELIMITER)
+	{
+		$facet = self::parseCaseInsensitiveFacet($facet, $delimiter);
+		
+		if (is_array($facet)) {
+			if (count($facet) == 2) {
+				return JArrayHelper::getValue($facet, 1);
+			} else { 
+				return JArrayHelper::getValue($facet, 0);
+			}
+		} else {
+			return $facet;
+		}
+	} 
 }
