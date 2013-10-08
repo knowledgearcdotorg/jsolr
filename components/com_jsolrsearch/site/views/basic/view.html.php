@@ -39,14 +39,15 @@ class JSolrSearchViewBasic extends JViewLegacy
 	protected $items;
 	protected $state;
     protected $form;
+    protected $params;
 	
 	public function display($tpl = null)
     {
         $this->form = $this->get('Form');
         $this->items = $this->get('Items');
         $this->state = $this->get('State');
-        $this->plugins = $this->get('ComponentsList');
-        $this->params = JComponentHelper::getParams('com_jsolrsearch',true);
+        $this->params = $this->state->get('params');
+        $this->plugins = $this->get('ComponentsList');        
 
         $mod = JModuleHelper::getModule('mod_jsolrfilter');
         $this->moduleEnabled = ($mod->id != 0);

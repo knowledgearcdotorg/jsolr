@@ -35,4 +35,25 @@
 			</field>
 		</fieldset>
 	</fields>
+	
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+
+	<!-- Basic options. -->
+		<fieldset 
+			name="basic"
+        	label="COM_JSOLRSEARCH_ATTRIBS_BROWSE_SETTINGS_LABEL">
+
+			<field
+				name="show_count"
+				type="radio"
+				class="btn-group"
+				label="COM_JSOLRSEARCH_FIELD_SHOW_COUNT_LABEL"
+				description="COM_JSOLRSEARCH_FIELD_SHOW_COUNT_DESC"
+				default="0">
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+		</fieldset>
+	</fields>
 </metadata>

@@ -35,11 +35,13 @@ class JSolrSearchViewBrowse extends JViewLegacy
 {	
 	protected $state;
 	protected $items;
+	protected $params;
 	
 	public function display($tpl = null)
     {
     	$this->state = $this->get("State");
     	$this->items = $this->get("Items");
+    	$this->params = $this->state->get('params');
     	
     	$document = JFactory::getDocument();
 

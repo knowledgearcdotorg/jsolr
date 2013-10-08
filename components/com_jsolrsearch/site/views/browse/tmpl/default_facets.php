@@ -33,19 +33,25 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 require_once(JPATH_BASE.'/components/com_jsolrsearch/helpers/route.php');
 
 jimport('jsolr.helper');
-
-$operators = $this->state->get('facet.operators');
 ?>
 <ul>
 <?php foreach ($this->items as $keyi=>$valuei) : ?>
-	<?php $field = JArrayHelper::getValue($operators, $keyi); ?>
+	<?php $field = JArrayHelper::getValue($this->state->get('facet.operators'), $keyi); ?>
 	<?php foreach ($valuei as $keyj=>$valuej) : ?>
 
-		<?php $vars = array(
+		<?php 
+		$vars = array(
 				JFactory::getApplication()->input->get('name')=>JSolrHelper::getOriginalFacet($keyj),
-                'o'=>JFactory::getApplication()->input->get('o')); ?>
+                'o'=>JFactory::getApplication()->input->get('o'));
+		
+		if ($this->params->get('show_count')) {
+			$facet = JText::sprintf('%s [%s]', JSolrHelper::getOriginalFacet($keyj), $valuej);
+		} else {
+			$facet = JText::sprintf('%s', JSolrHelper::getOriginalFacet($keyj));
+		}
+		?>
             
-		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), JText::sprintf('%s [%s]', JSolrHelper::getOriginalFacet($keyj), $valuej)); ?></li>
+		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), $facet); ?></li>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 </ul>

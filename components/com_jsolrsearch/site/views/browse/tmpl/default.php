@@ -29,5 +29,15 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+?>
+<div class="item-page<?php echo $this->params->get('pageclass_sfx'); ?>">
+	<?php if ($this->params->get('show_page_heading')) : ?>
+	<div class="page-header">
+		<h1> <?php echo $this->escape($this->params->get('page_heading')); ?> </h1>
+	</div>
+	<?php endif; ?>
 
-echo $this->loadFacetsTemplate();
+	<?php
+	echo $this->loadFacetsTemplate();
+	?>
+</div>
