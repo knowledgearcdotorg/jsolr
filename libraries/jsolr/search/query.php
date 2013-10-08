@@ -993,8 +993,8 @@ class JSolrSearchQuery
 	 */
   	public function search() 
 	{
-		// Do necessary quote encoding for XML payload.
-		$query = htmlentities($this->query(), ENT_NOQUOTES, 'UTF-8');
+		// Don't believe it is necessary to quote encoding for XML payload.
+		$query = $this->query(); // htmlentities($this->query(), ENT_NOQUOTES, 'UTF-8');
 
 		// Need to modify a few fields immediately before run.
 		if ($this->isSpellchecking() && !isset($this->params['spellcheck.q'])) {
