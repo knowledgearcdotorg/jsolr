@@ -185,25 +185,22 @@ class JSolrCrawlerCli extends JApplicationCli
      */
     protected function help()
     {
-        // Initialize variables.
-        $help = array();
- 
-        // Build the help screen information.
-        $help[] = "JSolr Index Crawler: The utility for indexing Joomla information.";
-        $help[] = "\r\n";
-        $help[] = "Usage:";
-        $help[] = "/path/to/php /path/to/joomla/cli/jsolr_crawler.php -[c|h|r|p|q]";
-        $help[] = "\r\n";
-        $help[] = "-c, --clean\tClean out deleted items from the index.";
-        $help[] = "-h, --help\tPrint this help";
-        $help[] = "-m, --modified\tIndex only those items which have been created or modified since the last index.";
-        $help[] = "-p, --purge\tPurge the contents of the index.";
-        $help[] = "-q, --quiet\tSuppress all output, including errors";
-        $help[] = "-r, --rebuild\tRebuild the index, deleting then re-creating all documents.";
- 
-        // Print out the help information.
-        $this->out(implode("\n", $help));
- 
+    	echo <<<EOT
+Usage: jsolr_crawler [options]
+    	
+Provides tools for managing a Joomla-centric Solr index.
+
+  -c, --clean         Clean out deleted items from the index.
+  -h, --help          Display this help and exit.
+  -m, --modified      Index only those items which have been created or 
+                      modified since the last index.
+  -o, --optimize      Run an optimization on the index.
+  -p, --purge         Purge the contents of the index.
+  -q, --quiet         Suppress all output.
+  -r, --rebuild       Rebuild the index, deleting then re-creating all documents.
+  -v, --verbose       Display verbose information about the current action.
+    	
+EOT;
     }
     
     public function out($text = '', $nl = true)
