@@ -92,16 +92,9 @@ JHTML::_('behavior.formvalidation');
     </nav>
 
 	<div class="clr"></div>
-
-	<?php if ($this->form->getType() == JSolrForm::TYPE_SEARCHTOOLS): ?>
-		<?php foreach($this->form->getFieldsets() as $fieldset ) : ?>
-			<?php if ($fieldset->name == 'tools'): ?>
-				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-					<div class="jsolr-dropdown"><?php echo $this->form->getInput($field->name); ?></div>
-				<?php endforeach;?>
-			<?php endif ?>
-		<?php endforeach;?>
-	<?php endif ?>
+	<?php foreach ($this->get('Form')->getFieldset('tools') as $field): ?>
+		<div class="jsolr-dropdown"><?php echo $this->form->getInput($field->name); ?></div>
+	<?php endforeach;?>
 
 	<?php echo JHTML::_('form.token'); ?>
 </form>

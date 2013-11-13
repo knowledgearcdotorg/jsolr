@@ -32,15 +32,15 @@
 	</fieldset>
         
 	<fieldset 
-		name="facet_filters"
-		label="MOD_JSOLRFILTERTOOLBAR_CONFIG_FIELDSET_LABEL"
+		name="filters"
+		label="COM_JSOLRSEARCH_FILTERS_LABEL"
 		description="">
 		<field 
-			name="facet_show" 
+			name="facets_embed" 
 			type="checkbox" 
-			label="COM_JSOLRSEARCH_FACETS_SHOW"
+			label="COM_JSOLRSEARCH_FACETS_EMBED_LABEL"
 			value="1"
-            description="COM_JSOLRSEARCH_FACETS_SHOW_DESCRIPTION" />
+            description="COM_JSOLRSEARCH_FACETS_EMBED_DESC" />
 	</fieldset>
 	
 	<fieldset

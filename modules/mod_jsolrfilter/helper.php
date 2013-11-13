@@ -1,8 +1,7 @@
 <?php
 /**
- * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2011-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can 
@@ -28,34 +27,31 @@
  * 
  */
 
-if (!class_exists( 'JSolrSearchModelSearch' )){
-	JLoader::import( 'search', JPATH_BASE.'/components/com_jsolrsearch/models' );
-}
+jimport('jsolr.form.form');
+
 class modJSolrFilterHelper
-{
-	protected static $searchModel = null;
-	
-	/**
-	 * Loads controller search model. Gets an instance.
-	 * Instance of module may not be necessary.
-	 * @return JSolrSearchModelSearch
-	 */
-	public static function getSearchModel() {
-		if( is_null(self::$searchModel) ) {
-			self::$searchModel = JModel::getInstance( 'Search', 'JSolrSearchModel' );
+{	
+	public static function showFilter() 
+	{
+		$form = JSolrForm::getInstance('com_jsolrsearch.search');
+		
+		$show = false;
+		
+		if (count($form->getFieldset('facets'))) {
+			if ($form->isFiltered() || JFactory::getApplication()->input->get("q", null, "string")) {
+				$show = true;
+			}
 		}
-		return self::$searchModel;
-	}
-	
-	public static function showFilter() {
-		return JSolrSearchModelSearch::showFilter();
+		
+		return $show;
 	}
 	
 	/**
 	 * 
 	 * @return JSolrForm
 	 */
-	public static function getForm() {
-		return JSolrSearchModelSearch::getFacetFilterForm();
+	public static function getForm() 
+	{
+		return JSolrForm::getInstance('com_jsolrsearch.search');
 	}
 }

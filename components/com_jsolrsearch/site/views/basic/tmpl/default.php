@@ -40,13 +40,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 $document = JFactory::getDocument();
 
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
-
-$document->addScriptDeclaration('
-jQuery(document).ready(function() {
-	var jsolrsearch_autocomplete_url = "'.JRoute::_('index.php?option=jsolrsearch&view=basic').'";
-	var jsolrsearch_search_url = "'.JRoute::_('index.php?option=jsolrsearch&view=basic').'";
-});
-');
 ?>
 <section id="jsolrSearch">
 	<form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">				

@@ -52,66 +52,16 @@ class JSolrSearchModelSearch extends JModelForm
 	protected $form;
 	protected $lang;
 	protected $pagination;
-   
-   protected static $form_facet_filter = null;
-   protected static $form_search_tools = null;
 
-	/**
-	 * (non-PHPdoc)
-	 * @see JModelList::populateState()
-	 */
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
 		
 		$this->set('option', 'com_jsolrsearch');
 		$this->set('context', $this->get('option').'.search');
-		
-		$this->set('params', JComponentHelper::getParams($this->get('option'), true));
-		
+
 		JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
 	}
-   
-	static function getFacetFilterForm()
-	{
-  		return self::$form_facet_filter;
-	}
-   
-	/**
-	* @return bool
-	*/
-	public static function showFilter() 
-	{
-		$form = self::getFacetFilterForm();
-		
-		if ($form != null) {
-			if (!$form->isFiltered() && !JFactory::getApplication()->input->get("q", null, "string")) {
-				 $form = null;
-			}
-		}
-		
-		return !is_null($form);
-	}
-
-	static function getSearchToolsForm()
-	{
-		return self::$form_search_tools;
-	}
-
-	static function addForm(JSolrForm $form)
-	{
-		switch ($form->getType()) {
-			case JSolrForm::TYPE_FACETFILTERS:				
-				self::$form_facet_filter = $form;
-
-				break;
-
-			case JSolrForm::TYPE_SEARCHTOOLS:
-				self::$form_search_tools = $form;
-
-				break;
-     }
-   }
    
    /**
     * (non-PHPdoc)
@@ -119,7 +69,7 @@ class JSolrSearchModelSearch extends JModelForm
     */
    public function populateState($ordering = null, $direction = null)
    {
-		$application = JFactory::getApplication();
+		$application = JFactory::getApplication('site');
    
 		$q = $this->setState('query.q', $application->input->get("q", null, "string"));
 		$extension = $this->setState('query.o', $application->input->getString("o", null, "string"));
@@ -137,6 +87,9 @@ class JSolrSearchModelSearch extends JModelForm
 
 		$value = $application->input->get('limitstart', 0);
 		$this->setState('list.start', $value);
+		
+		$params = $application->getParams();
+		$this->setState('params', $params);		
 
 		parent::populateState($ordering, $direction);
    }
@@ -192,7 +145,7 @@ class JSolrSearchModelSearch extends JModelForm
 			->offset($this->getState("list.start", 0))
 			->mergeParams(
 				array(
-					'mm'=>$this->get('params')->def('mm', self::MM_DEFAULT)
+					'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)
 			));
 
    		if (count($sort)) {
@@ -284,35 +237,35 @@ class JSolrSearchModelSearch extends JModelForm
 		return $uris;
 	}
 
-   /**
-    * Method to get the search form.
-    *
-    * @param   array $data    An optional array of data for the form to interrogate.
-    * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
-    * @return  JForm          A JForm object on success, false on failure.
-    */
-   public function getForm($data = array(), $loadData = true)
-   {
-      if (!is_null($this->form)) {
-         return $this->form;
-      }
+	/**
+	 * Method to get the search form.
+	 *
+	 * @param   array $data    An optional array of data for the form to interrogate.
+	 * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
+	 * @return  JForm          A JForm object on success, false on failure.
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		if (!is_null($this->form)) {
+			return $this->form;
+		}
 
-      $context = $this->get('option').'.'.$this->getName();
-      $this->form = $this->loadForm($context, $this->getName(), array('load_data'=>$loadData));
+		$context = $this->get('option').'.'.$this->getName();
+		$this->form = $this->loadForm($context, $this->getName(), array('load_data'=>$loadData));
 
-      if (empty($this->form)) {
-         return false;
-      }
+		if (empty($this->form)) {
+			return false;
+		}			
 
-      return $this->form;
-   }
+		return $this->form;
+	}
    
-   protected function preprocessForm(JForm $form, $data, $group = 'plugin')
-   {
-      $form->loadFile($this->_getCustomFormPath(), false);
+	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
+	{
+		$form->loadFile($this->_getCustomFormPath(), false);
       
-      parent::preprocessForm($form, $data, $group);
-   }
+		parent::preprocessForm($form, $data, $group);
+	}
 
    /**
     * (non-PHPdoc)
@@ -335,23 +288,22 @@ class JSolrSearchModelSearch extends JModelForm
       return array();
    }
 
-   private function _getCustomFormPath()
-   {
-      $path = null;      
+	private function _getCustomFormPath()
+	{
+		$path = __DIR__ . '/forms/filters.xml';
 
-      $path = __DIR__ . '/forms/tools.xml';
+		if ($this->getState('query.o')) {
+			foreach ($this->getExtensions() as $extension) {
+				if (JArrayHelper::getValue($extension, 'plugin') == $this->getState('query.o')) {
+					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.str_replace('com_', '', JArrayHelper::getValue($extension, 'plugin')).'/forms/filters.xml';					
 
-      if ($this->getState('query.o')) {
-        foreach ($this->getExtensions() as $item) {
-          if (JArrayHelper::getValue($item, 'plugin') == $this->getState('query.o')) {
-            $path = JArrayHelper::getValue($item, 'path');
-            break;
-          }
-        }
-      }
+					break;
+				}
+			}
+		}
       
-      return $path;
-   }
+		return $path;
+	}
    
    /**
     * Override to use JSorlForm.

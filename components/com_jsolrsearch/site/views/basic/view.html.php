@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
  * The JSolrSearch Component for Joomla! is free software: you can redistribute it 
  * and/or modify it under the terms of the GNU General Public License as 
@@ -49,12 +49,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         $this->params = $this->state->get('params');
         $this->plugins = $this->get('ComponentsList');        
 
-        $mod = JModuleHelper::getModule('mod_jsolrfilter');
-        $this->moduleEnabled = ($mod->id != 0);
-        
-        $this->showFacets = !$this->moduleEnabled && JSolrSearchModelSearch::showFilter() && $this->params->get('facet_show',false);
-
-        // Load JSolrSearach jquery if not bundled.
+        // Load JSolrSearch jquery if not bundled.
         // This is deprecated and will be removed in subsequent versions of JSolr.
         JLoader::import('joomla.version');
         $version = new JVersion();

@@ -3,7 +3,7 @@
  * Provides a list of facet filters applied to the current search results.  
  * 
  * @package		JSolr
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2011-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can 
@@ -30,10 +30,8 @@
  */
 
 defined('_JEXEC') or die('Restricted access');
-?>
 
-<?php 
-$form = JSolrSearchModelSearch::getFacetFilterForm(); 
+$form = $this->get('Form'); 
 ?>
 
 <?php if (!is_null($form)): ?>

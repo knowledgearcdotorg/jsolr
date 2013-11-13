@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset name="facets">
+        <!-- only JSolrFormFields should be used here -->
+		<field 
+            name="subject"
+            facet="dc.subject.other_fc"
+            filter="dc.subject.other_sm"
+            type="jsolr.facets"
+            label="By Subject"
+            class="inputbox"
+            count="true"
+            exactmatch="true"/>
+    </fieldset>
+    
+    <fieldset name="tools">
+        <!-- only JSolrFormFields should be used here -->
+        <field 
+            name="qdr"
+            filter="modified"
+            filter_quoted="false"
+            type="jsolr.calendar"
+            label="Date"
+            size="40"
+            class="jsolr-dropdown"/>
+    </fieldset>
+</form>

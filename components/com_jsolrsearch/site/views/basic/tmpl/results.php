@@ -38,14 +38,20 @@ $document->addScript(JURI::base().'/media/jsolr/js/dropdown.js');
 
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
 $document->addStyleSheet(JURI::base().'/media/jsolr/css/dropdown.css');
-
-$document->addScriptDeclaration('
-jQuery(document).ready(function() {
-	var jsolrsearch_autocomplete_url = "'.JRoute::_('index.php?option=jsolrsearch&view=basic').'";
-	var jsolrsearch_search_url = "'.JRoute::_('index.php?option=jsolrsearch&view=basic').'";
-});
-');
 ?>
+
+<!-- This is not well styled but rather provides the functionality for 
+integrating faceting within the component. Use template overrides to improve. -->
+<?php if ($this->params->get('facets_embed')) : ?>
+<section id="jsolrFacetFilters">
+	<?php
+	if ($module = JModuleHelper::getModule('jsolrfilter')) {
+		$renderer = $document->loadRenderer('module');
+		echo $renderer->render($module);
+	}
+	?>
+</section>
+<?php endif; ?>
 
 <section id="jsolrSearchResults">
 	<header>
@@ -54,12 +60,6 @@ jQuery(document).ready(function() {
 		<div id="jsolrFacetfilters">
 		   <?php echo $this->loadTemplate('facetfilters'); ?>
 		</div>
-	
-		<?php if ($this->showFacets) : ?>
-		   <div id="jsolrFacets">
-		      <?php echo $this->loadTemplate('facets'); ?>
-		   </div>
-		<?php endif; ?>
 	</header>
 
 	<?php if (!is_null($this->items)): ?>

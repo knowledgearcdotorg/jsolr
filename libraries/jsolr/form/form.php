@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Index
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
  *
  *   The JSolr library for Joomla! is free software: you can redistribute it 
@@ -38,23 +38,8 @@ jimport('joomla.form.form');
  * methods for handling filtering, faceting and sorting of search results. 
  */
 class JSolrForm extends JForm
-{
-	const TYPE_FACETFILTERS 	= 0;
-	const TYPE_SEARCHTOOLS 		= 1;
-	
-	/**
-	 * Keeps type of the form
-	 * @var integer
-	 */
-	protected $type;
-
-	/**
-	 * @return integer one of the consts JSolrForm::TYPE_FACETFILTERS or JSolrForm::TYPE_SEARCHTOOLS
-	 */
-	public function getType()
-	{
-		return (int)$this->type;
-	}
+{	
+	protected $facets = false; 
 
 	public function isFiltered()
 	{
@@ -62,25 +47,6 @@ class JSolrForm extends JForm
 			return true;
 		} else {
 			return false;
-		}
-	}
-	
-	/**
-	 * Set form type. Accepted values:
-	 * * JSolrForm::TYPE_FACETFILTERS
-	 * * JSolrForm::TYPE_SEARCHTOOLS
-	 * @param integer $type
-	 */
-	public function setType($type)
-	{
-		switch($type) {
-			case self::TYPE_FACETFILTERS:
-			case self::TYPE_SEARCHTOOLS:
-				$this->type = $type;
-				break;
-			default:
-				$this->type = self::TYPE_FACETFILTERS;
-				break;
 		}
 	}
 	
@@ -129,21 +95,14 @@ class JSolrForm extends JForm
 	 * Gets an array of facets from the currently configured list of JSolr 
 	 * Form Fields.
 	 * 
-	 * The JSolr Form Field must have a facet parameter to be included in the 
-	 * list.
-	 * 
 	 * @return array An array of facets.
 	 */
 	public function getFacets()
 	{
 		$facets = array();
 
-		foreach ($this->getFieldsets() as $fieldset) {
-			foreach ($this->getFieldset($fieldset->name) as $field) {
-				if (!property_exists($field, 'facet')) {
-					$facets[] = $field->facet;
-				}
-			}
+		foreach ($this->getFieldset('facets') as $field) {
+			$facets[] = $field->facet;
 		}
 		
 		return $facets;		
@@ -230,31 +189,12 @@ class JSolrForm extends JForm
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see JForm::loadFile()
-	 */
-	function loadFile($file, $reset = true, $xpath = false)
-	{
-		if (strpos($file, '.xml') !== FALSE) {
-			$substr = substr($file, strlen($file) - 9, 9);
-
-			$this->type = $substr == 'tools.xml' ? self::TYPE_SEARCHTOOLS : self::TYPE_FACETFILTERS;
-
-			JSolrSearchModelSearch::addForm($this);
-		}
-
-		return parent::loadFile($file, $reset, $xpath);
-	}
-
-	/**
 	 * Gets all applied facet filters in the form.
 	 * @return array
 	 */
 	function getAppliedFacetFilters()
 	{
 		$result = array();
-
-		if ($this->getType() != self::TYPE_FACETFILTERS) return $result;
 
 		foreach ($this->getFieldsets() as $fieldset) {
 			if ($fieldset->name == 'search') continue;
@@ -293,8 +233,6 @@ class JSolrForm extends JForm
 	function getAppliedSearchTools()
 	{
 		$result = array();
-
-		if ($this->getType() != self::TYPE_SEARCHTOOLS) return $result;
 
 		foreach ($this->getFieldsets() as $fieldset) {
 			if ($fieldset->name == 'main') continue;
