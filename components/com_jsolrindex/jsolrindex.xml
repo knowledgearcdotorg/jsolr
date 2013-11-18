@@ -22,8 +22,8 @@
  	<languages folder="site">
  		<language tag="en-GB">language/en-GB/en-GB.com_jsolrindex.ini</language>
  	</languages>	
-	    
-    <media destination="com_jsolrindex">
+
+    <media folder="media" destination="com_jsolrindex">
     	<folder>js</folder>
     	<folder>css</folder>
     </media>

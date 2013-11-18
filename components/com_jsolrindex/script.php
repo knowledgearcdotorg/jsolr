@@ -38,15 +38,6 @@ class com_JSolrIndexInstallerScript
 {	
 	public function install($parent)
 	{
-		$src = "administrator/components/com_jsolrindex/jsolr_crawler.php";
-		$dest = "cli/jsolr_crawler.php";
-		
-		if (JFile::move($src, $dest, JPATH_ROOT)) {
-			echo "<p>Crawler installed in ".JPATH_ROOT."/cli successfully. Use the crawler file to run an indexing cron job across your Joomla! site.</p>";
-		} else {
-			echo "<p>Crawler failed to install in ".JPATH_ROOT."/cli. You will need to copy it manually from ".JPATH_COMPONENT_ADMINISTRATOR.".</p>";
-		}
-
 		$installer = new JInstaller();
 		$installer->setOverwrite(true);
 		
@@ -85,10 +76,25 @@ class com_JSolrIndexInstallerScript
 	{
 		$src = JPATH_ROOT."/cli/jsolr_crawler.php";
 		
-		if (JFile::delete($src)) {
-			echo "<p>Crawler uninstalled from ".$src." successfully.</p>";
-		} else {
-			echo "<p>Could not uninstall crawler from ".$src.". You will need to manually remove it.</p>";
+		if (JFile::exists($src)){
+			if (JFile::delete($src)) {
+				echo "<p>Crawler uninstalled from ".$src." successfully.</p>";
+			} else {
+				echo "<p>Could not uninstall crawler from ".$src.". You will need to manually remove it.</p>";
+			}
+		}
+	}
+	
+	public function postflight($type, $adapter)
+	{
+		$src = $adapter->getParent()->getPath('extension_administrator').'/cli/jsolr_crawler.php';
+	
+		$cli = JPATH_ROOT.'/cli/jsolr_crawler.php';
+	
+		if (JFile::exists($src)) {
+			if (JFile::move($src, $cli)) {
+				JFolder::delete($adapter->getParent()->getPath('extension_administrator').'/cli');
+			}
 		}
 	}
 }
