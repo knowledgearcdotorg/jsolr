@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 
 class JSolrSearchHelper
 {
-	public static $extension = 'com_jsolrindex';
+	public static $extension = 'com_jsolrsearch';
 
 	/**
 	 * Configure the Linkbar.
@@ -58,7 +58,7 @@ class JSolrSearchHelper
 		$user	= JFactory::getUser();
 		$result	= new JObject();
 		
-		$assetName = 'COM_JSOLRINDEX';
+		$assetName = 'COM_JSOLRSEARCH';
 		
 		$actions = array(
 			'core.admin', 
