@@ -7,8 +7,8 @@ $params = $this->state->get('params');
 	<?php if ($params->get('show_page_heading', 1)) : ?>
 	<h1><?php echo $this->escape($params->get('page_heading')); ?></h1>
 	<?php endif; ?>
-<? JSolrSearchViewAdvanced::ParseQueryToFields() ; ?>
-	<form action="<?php echo JRoute::_(JURI::base().'index.php?option=com_jsolrsearch&task=search'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
+
+	<form action="<?php echo JRoute::_(JURI::base().'index.php?option=com_jsolrsearch&task=advanced'); ?>" method="post" id="josForm" name="josForm" class="form-validate jsolr-advanced-search">	
 		<fieldset>
 			
 			<?php 
@@ -16,10 +16,10 @@ $params = $this->state->get('params');
 				 * Display all defined form fields
 				 */
 			?>
-			<?php foreach($this->form->getFieldset() as $field ) : ?>
+			<?php foreach($this->get('Form')->getFieldset() as $field ) : ?>
 				<div class="formelm">
-					<?php echo $this->form->getLabel($field->fieldname); ?>
-					<?php echo $this->form->getInput($field->fieldname); ?>
+					<?php echo $this->get('Form')->getLabel($field->fieldname); ?>
+					<?php echo $this->get('Form')->getInput($field->fieldname); ?>
 				</div>
 			<?php endforeach;?>
 			
@@ -27,7 +27,7 @@ $params = $this->state->get('params');
 			<?php 
 			if (JRequest::getWord("o")) :
 
-				foreach ($this->form->getFieldsets(JRequest::getWord("o")) as $fieldset) :
+				foreach ($this->get('Form')->getFieldsets(JRequest::getWord("o")) as $fieldset) :
                 	if ($fieldset->label) :
                 	?>
                 	</fieldset>
@@ -37,7 +37,7 @@ $params = $this->state->get('params');
                 	<?php
                 	endif;
 
-					foreach ($this->form->getFieldset($fieldset->name) as $field) :
+					foreach ($this->get('Form')->getFieldset($fieldset->name) as $field) :
 					?>
 					<div class="formelm">
 						<?php echo $field->label; ?>

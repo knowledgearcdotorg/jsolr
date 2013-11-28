@@ -41,88 +41,17 @@ jimport('jsolr.form.form');
 
 require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 
-
 class JSolrSearchModelAdvanced extends JModelForm
 {
-    protected $view_item = 'advanced';
-    
-    protected $solrQuery = NULL;
-    
-	public function buildQueryURL($params)
+	protected $solrQuery = NULL;
+	
+	public function __construct($config = array())
 	{
-		$url = new JURI("index.php");
+		parent::__construct($config);
 		
-		$url->setVar("option", "com_jsolrsearch");
-		$url->setVar("view", "basic");
+		$this->set('context', $this->get('option').'.'.$this->getName());
+	}
 
-		$url->setVar("q", $this->buildQuery($params));
-		
-		foreach ($params as $key=>$value) {
-			switch ($key) {
-				case "task":
-				case "eq":
-				case "aq":
-				case "oq0":
-				case "oq1":
-				case "oq2":
-				case "nq":
-				case "option":
-					break;
-		
-				case "o":
-					if ($value) {
-						if ($value != "everything") {
-							$url->setVar($key, $value);
-						}
-					}
-					break;
-		
-				case "qdr":
-					if ($value) {
-						$url->setVar($key, $value);
-					}
-					break;
-		
-				default:
-					$url->setVar($key, $value);
-					break;
-			}
-		}
-		
-		return JRoute::_($url->toString(), false);
-	}
-	
-	public function buildQuery($params)
-	{
-		$q = "";
-	
-		if (JArrayHelper::getValue($params, "aq")) {
-			$q .= JArrayHelper::getValue($params, "aq");
-		}
-	
-		if (JArrayHelper::getValue($params, "eq")) {
-			$q .= "\"".JArrayHelper::getValue($params, "eq")."\"";
-		}
-	
-		$oq = array();
-	
-		for ($i=0; $i<3; $i++) {
-			if (trim(JArrayHelper::getValue($params, "oq".$i))) {
-				$oq[] = trim(JArrayHelper::getValue($params, "oq".$i));
-			}
-		}
-	
-		if (count($oq)) {
-			$q .= " " . implode(" OR ", $oq);
-		}
-	
-		if (JArrayHelper::getValue($params, "nq")) {
-			$q .= " -".preg_replace('!\s+!', ' -', JArrayHelper::getValue($params, "nq"));
-		}
-	
-		return trim($q);
-	}
-	
 	protected function populateState()
 	{
 		$app = JFactory::getApplication();
@@ -132,21 +61,147 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$this->setState('params', $params);
 	}
 	
+	public function buildQuery()
+	{
+		$application = JFactory::getApplication();
+
+		$q = array();
+
+		if ($application->input->get('eq')) {
+			$q[] = "\"".$application->input->getHtml('eq')."\"";
+		}
+	
+		if ($application->input->get('oq')) {
+			$parts = explode(' ', $application->input->getHtml('oq'));
+			
+			if ($parts) {
+				$q[] = implode(" OR ", $parts);
+			}
+		}		
+
+		if ($application->input->get('nq')) {
+			$matches = array();
+			preg_match_all('/"{1}.+"{1}|\S+/', $application->input->getHtml('nq'), $matches);
+			
+			foreach (JArrayHelper::getValue($matches, 0) as $match) {
+				$q[] = '-'.$match;				
+			}
+		}
+		
+		if ($application->input->get('aq')) {
+			$q[] = $application->input->getHtml('aq');
+		}
+
+		return trim(implode(" ", $q));
+	}
+	
+	public function parseQuery() 
+	{	
+		$query = JFactory::getApplication()->input->getHtml("q");
+		$data = array();
+
+		$nq = array();
+		$matches = array();
+		preg_match_all('/-"{1}.+"{1}|-\S+/', $query, $matches);
+		
+		foreach (JArrayHelper::getValue($matches, 0) as $match) {
+			$nq[] = implode("", explode("-", $match, 2));
+			$query = str_replace($match, '', $query);
+		}
+		
+		$data['nq'] = implode(' ', $nq);
+		
+		preg_match('/"{1}.+?"{1}/', $query, $eq);
+		
+		if ($eq) {
+			$data['eq'] = str_replace("\"", "", JArrayHelper::getValue($eq, 0));
+			$query = str_replace(JArrayHelper::getValue($eq, 0), '', $query);
+		}
+	
+		$oq = array();
+		
+		$array = explode(' OR ', $query);
+
+		if (count($array) > 1) {
+			$i = 0;
+			
+			foreach ($array as $item) {
+				$parts = explode(' ', trim($item));
+					
+				if ($i == 0) {
+					$oq[] = $parts[count($parts) - 1];
+				} else {
+					$oq[] = $parts[0];
+	
+					if (count($parts) > 1) {
+						continue;
+					}
+				}
+				
+				$i++;
+			}
+			
+			$data['oq'] = implode(' ', $oq);
+			
+			$query = str_replace(implode(' OR ', $oq), '', $query);
+		}
+		
+		$data['aq'] = $query;
+				
+		return $data;
+	}
+
+	public function getQueryURI()
+	{
+		$uri = new JURI("index.php");
+	
+		$uri->setVar("option", "com_jsolrsearch");
+		$uri->setVar("view", "basic");
+		$uri->setVar("Itemid", JRequest::getVar('Itemid'));
+	
+		if ($query = $this->buildQuery()) {
+			$uri->setVar('q', $query);
+		}
+	
+		if ($this->getState('query.o', null)) {
+			$uri->setVar('o', $this->getState('query.o'));
+		}
+	
+		return $uri;
+	}
+	
 	/**
-	 * Method to get the advanced search form.
+	 * Gets the search url.
 	 *
-	 * @param	array	$data		An optional array of data for the form to interrogate.
-	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
-	 * @return	JForm				A JForm object on success, false on failure.
+	 * @return JURI The search url.
+	 */
+	public function getURI()
+	{
+		$uri = clone $this->getQueryURI();
+	
+		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
+			if ($key != 'task' && trim($value) != "") {
+				$uri->setVar($key, $value);
+			}
+		}
+	
+		return $uri;
+	}
+	
+	/**
+	 * Method to get the search form.
+	 *
+	 * @param   array $data    An optional array of data for the form to interrogate.
+	 * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
+	 * @return  JForm          A JForm object on success, false on failure.
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
-		$context = $this->get('option').'.'.$this->getName();
-		$form = $this->loadForm($context, $this->getName(), array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm($this->get('context'), $this->getName(), array('load_data'=>$loadData));
 
 		if (empty($form)) {
 			return false;
-		}
+		}			
 
 		return $form;
 	}
@@ -154,6 +209,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
 	{
 		$form->loadFile($this->_getCustomFormPath(), false);
+      
 		parent::preprocessForm($form, $data, $group);
 	}
 
@@ -163,22 +219,36 @@ class JSolrSearchModelAdvanced extends JModelForm
 	 */
 	protected function loadFormData()
 	{
-		$context = $this->get('option').'.edit.'.$this->getName().'.data';
-		$data = (array)JFactory::getApplication()->getUserState($context.'.data', array());
-		
+		$query = JFactory::getURI()->getQuery(true);
+
+		if (count($query)) {
+			$query = array_merge($query, $this->parseQuery());
+			$data = $query;
+		}
+      
+		$context = $this->get('option').'.'.$this->getName();
+
+		if (version_compare(JVERSION, "3.0", "ge")) {
+			$this->preprocessData($this->get('context'), $data);
+		}
+      
 		return $data;
 	}
 
 	private function _getCustomFormPath()
 	{
-		$path = null;
+		$path = __DIR__ . '/forms/advanced.xml';
 
-		if (JRequest::getString("o")) {
-			$extension = JArrayHelper::getValue(explode("_", JRequest::getCmd("o"), 2), 1);
+		if ($this->getState('query.o')) {
+			foreach ($this->getExtensions() as $extension) {
+				if (JArrayHelper::getValue($extension, 'plugin') == $this->getState('query.o')) {
+					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.str_replace('com_', '', JArrayHelper::getValue($extension, 'plugin')).'/forms/advanced.xml';					
 
-			$path = JPath::find(JPATH_PLUGINS."/jsolrsearch/".$extension."/forms", "advanced.xml");
+					break;
+				}
+			}
 		}
-		
+      
 		return $path;
 	}
 	
@@ -197,55 +267,55 @@ class JSolrSearchModelAdvanced extends JModelForm
 	 * @see     JForm
 	 * @since   11.1
 	 */
-	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
-	{
-		// Handle the optional arguments.
-		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+   protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+   {
+      // Handle the optional arguments.
+      $options['control'] = JArrayHelper::getValue($options, 'control', false);
 
-		// Create a signature hash.
-		$hash = md5($source . serialize($options));
+      // Create a signature hash.
+      $hash = md5($source . serialize($options));
 
-		// Check if we can use a previously loaded form.
-		if (isset($this->_forms[$hash]) && !$clear)
-		{
-			return $this->_forms[$hash];
-		}
+      // Check if we can use a previously loaded form.
+      if (isset($this->_forms[$hash]) && !$clear)
+      {
+         return $this->_forms[$hash];
+      }
 
-		// Get the form.
-		JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
-		JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+      // Get the form.
+      JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+      JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
-		try
-		{
-			$form = JSolrForm::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
+      try
+      {
+         $form = JSolrForm::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
 
-			if (isset($options['load_data']) && $options['load_data'])
-			{
-				// Get the data for the form.
-				$data = $this->loadFormData();
-			}
-			else
-			{
-				$data = array();
-			}
+         if (isset($options['load_data']) && $options['load_data'])
+         {
+            // Get the data for the form.
+            $data = $this->loadFormData();
+         }
+         else
+         {
+            $data = array();
+         }
 
-			// Allow for additional modification of the form, and events to be triggered.
-			// We pass the data because plugins may require it.
-			$this->preprocessForm($form, $data);
+         // Allow for additional modification of the form, and events to be triggered.
+         // We pass the data because plugins may require it.
+         $this->preprocessForm($form, $data);
 
-			// Load the data into the form after the plugins have operated.
-			$form->bind($data);
+         // Load the data into the form after the plugins have operated.
+         $form->bind($data);
 
-		}
-		catch (Exception $e)
-		{
-			$this->setError($e->getMessage());
-			return false;
-		}
+      }
+      catch (Exception $e)
+      {
+         $this->setError($e->getMessage());
+         return false;
+      }
 
-		// Store the form for later.
-		$this->_forms[$hash] = $form;
+      // Store the form for later.
+      $this->_forms[$hash] = $form;
 
-		return $form;
-	}
+      return $form;
+   }
 }

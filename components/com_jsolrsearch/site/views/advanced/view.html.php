@@ -38,17 +38,13 @@ class JSolrSearchViewAdvanced extends JViewLegacy
     {
 		JHtml::_('behavior.framework', true);
     	
-		$document = JFactory::getDocument();
-
-    	$document->addStyleSheet(JURI::base()."media/com_jsolrsearch/css/jsolrsearch.css");
-    	$document->addScript(JURI::base()."media/com_jsolrsearch/js/jsolrsearch.js");
-		
+		$document = JFactory::getDocument();	
 		$this->form	= $this->get('Form');
 		$this->state = $this->get('State');
-		
+
 		parent::display($tpl);
     }
-    
+    /*
     public function ParseQueryToFields() {
 
         $eq = array();
@@ -100,5 +96,5 @@ class JSolrSearchViewAdvanced extends JViewLegacy
         if ( !empty($aq) ) {
             $this->form->setValue('aq', null, $aq);
         }
-    }
+    }*/
 }

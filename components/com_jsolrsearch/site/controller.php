@@ -31,14 +31,14 @@
 defined('_JEXEC') or die('Restricted access');
 
 class JSolrSearchController extends JControllerLegacy 
-{	
+{
 	function advanced()
 	{
 		$model = $this->getModel("advanced");
-		$this->setRedirect((string)$model->getQueryURI());
+		$this->setRedirect((string)JRoute::_((string)$model->getURI(), false));
 	}
 	
-	function search()
+	public function search()
 	{
 		$model = $this->getModel("search");
 		$this->setRedirect((string)JRoute::_((string)$model->getURI(), false));

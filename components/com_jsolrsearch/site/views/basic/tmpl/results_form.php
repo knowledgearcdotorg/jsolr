@@ -7,7 +7,7 @@
  * 
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -67,6 +67,8 @@ JHTML::_('behavior.formvalidation');
 		<button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
 	</fieldset>
 
+	<a href="<?php echo JRoute::_($this->get('AdvancedURI')); ?>">Advanced search</a>
+	
 	<div class="clr"></div>
 
 	<?php $components = $this->get('Extensions'); ?>

@@ -15,7 +15,7 @@
  *   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
  *   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.https://www.google.com.au/search?hl=en&safe=off&site=&source=hp&q=Nintendo&oq=Nintendo&gs_l=hp.3..0l10.1369.2958.0.3237.8.6.0.2.2.2.527.2233.0j1j1j1j1j2.6.0.les%3B..0.0...1c.1.5.hp.gLNc7juiz2c
+ *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
  *   along with the JSolrSearch component for Joomla!.  If not, see 
@@ -222,6 +222,20 @@ class JSolrSearchModelSearch extends JModelForm
 		return $uri;
 	}
 	
+	/**
+	 * Gets the advanced search url.
+	 *
+	 * @return JURI The advanced search url.
+	 */
+	public function getAdvancedURI()
+	{
+		$uri = clone $this->getURI();
+
+		$uri->setVar('view', 'advanced');
+
+		return $uri;
+	}
+	
 	public function getSuggestionQueryURIs()
 	{
 		$uris = array();
@@ -267,26 +281,26 @@ class JSolrSearchModelSearch extends JModelForm
 		parent::preprocessForm($form, $data, $group);
 	}
 
-   /**
-    * (non-PHPdoc)
-    * @see JModelForm::loadFormData()
-    */
-   protected function loadFormData()
-   {
-      $uri = JFactory::getURI();
+	/**
+	 * (non-PHPdoc)
+	 * @see JModelForm::loadFormData()
+	 */
+	protected function loadFormData()
+	{
+		$query = JFactory::getURI()->getQuery(true);
 
-      $query = $uri->getQuery(true);
-
-      if (count($query)) {
-        return $query;
-      }
-
-      $context = $this->get('option').'.edit.'.$this->getName().'.data';
-
-      $data = (array)JFactory::getApplication()->getUserState($context.'.data', array());
+		if (count($query)) {
+			$data = $query;
+		}
       
-      return array();
-   }
+		$context = $this->get('option').'.'.$this->getName();
+
+		if (version_compare(JVERSION, "3.0", "ge")) {
+			$this->preprocessData($this->get('context'), $data);
+		}
+      
+		return $data;
+	}
 
 	private function _getCustomFormPath()
 	{
