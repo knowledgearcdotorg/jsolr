@@ -96,7 +96,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 	}
 	
 	public function parseQuery() 
-	{	
+	{
 		$query = JFactory::getApplication()->input->getHtml("q");
 		$data = array();
 
@@ -124,30 +124,33 @@ class JSolrSearchModelAdvanced extends JModelForm
 
 		if (count($array) > 1) {
 			$i = 0;
-			
-			foreach ($array as $item) {
+			$parsed = false;
+
+			while (($item = current($array)) && !$parsed) {
 				$parts = explode(' ', trim($item));
-					
+
 				if ($i == 0) {
 					$oq[] = $parts[count($parts) - 1];
 				} else {
 					$oq[] = $parts[0];
-	
+
 					if (count($parts) > 1) {
-						continue;
+						$parsed = true;
 					}
 				}
-				
+
+				next($array);
+
 				$i++;
 			}
-			
+
 			$data['oq'] = implode(' ', $oq);
-			
+
 			$query = str_replace(implode(' OR ', $oq), '', $query);
 		}
-		
+
 		$data['aq'] = $query;
-				
+
 		return $data;
 	}
 
