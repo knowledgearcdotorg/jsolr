@@ -23,12 +23,12 @@
             label="Date"
             size="40"
             class="jsolr-dropdown">
-        	<option value="">LIB_JSOLR_CALENDAR_ANYTIME</option>
-        	<option value="h" filter="[NOW-1HOUR TO NOW]">LIB_JSOLR_CALENDAR_HOUR</option>
-        	<option value="d" filter="[NOW-1DAY TO NOW]">LIB_JSOLR_CALENDAR_DAY</option>
-        	<option value="w" filter="[NOW-1WEEK TO NOW]">LIB_JSOLR_CALENDAR_WEEK</option>
-        	<option value="m" filter="[NOW-1MONTH TO NOW]">LIB_JSOLR_CALENDAR_MONTH</option>
-        	<option value="y" filter="[NOW-1YEAR TO NOW]">LIB_JSOLR_CALENDAR_YEAR</option>
+        	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
+        	<option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
+        	<option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
+        	<option value="w" filter="[NOW-1WEEK TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
+        	<option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
+        	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
 		</field>
     </fieldset>
 </form>
