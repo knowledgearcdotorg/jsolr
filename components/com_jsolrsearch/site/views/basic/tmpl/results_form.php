@@ -45,23 +45,15 @@ JHTML::_('behavior.formvalidation');
 	
 	<fieldset class="query">
 		<!-- Output search fields (in almost all cases will be a single query field). -->
-		<?php foreach($this->form->getFieldsets() as $fieldset ) : ?>
-			<?php if ($fieldset->name == 'search') : ?>
-				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-					<?php echo $this->form->getInput($field->fieldname); ?>
-				<?php endforeach;?>
-			<?php endif ?>
+		<?php foreach ($this->get('Form')->getFieldset('query') as $field): ?>
+			<?php echo $this->form->getInput($field->fieldname); ?>
 		<?php endforeach;?>
 		
 		<!-- Output the hidden form fields for the various selected facet filters. -->
-		<?php foreach($this->form->getFieldsets() as $fieldset ) : ?>
-			<?php if ($fieldset->name == 'facets') : ?>
-				<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-					<?php if (trim($field->value)) : ?>
-						<?php echo $this->form->getInput($field->fieldname); ?>
-					<?php endif; ?>
-				<?php endforeach;?>
-			<?php endif ?>
+		<?php foreach ($this->get('Form')->getFieldset('facets') as $field): ?>
+			<?php if (trim($field->value)) : ?>
+				<?php echo $this->form->getInput($field->fieldname); ?>
+			<?php endif; ?>
 		<?php endforeach;?>
 		
 		<button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>

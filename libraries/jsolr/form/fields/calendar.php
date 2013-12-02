@@ -58,21 +58,28 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 		// Initialize variables.
 		$options = array();
 	
-		foreach ($this->_getDateRanges() as $key=>$value) {			
-			$selected = ((string) $key) == $this->value;
+		foreach ($this->element->children() as $option) {
+			// Only add <option /> elements.
+			if ($option->getName() != 'option') {
+				continue;
+			}
+			
+			$value = JArrayHelper::getValue($option, 'value', null, 'string');
+			
+			$selected = $value == $this->value;
 
 			$uri = clone JFactory::getURI();
 			$uri->delVar('start');
 			
-			if (!empty($key)) {
-				$uri->setVar($this->name, $key);
+			if (!empty($value)) {
+				$uri->setVar($this->name, $value);
 			} else {
 				$uri->delVar($this->name);
 			}
-			
-			$link = '<a role="menuitem" tabindex="-1" href="'.(string)$uri.'">' . JText::_($value) . '</a>';
 
-			$tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$link = '<a role="menuitem" tabindex="-1" href="'.htmlentities((string)$uri, ENT_QUOTES, 'UTF-8').'">'.JText::_(trim((string)$option)).'</a>';
+
+			$tmp = '<li role="presentation" class="'.( $selected ? 'active' : '').'" data-value="'.$value.'">'.$link.'</li>';
 	
 	
 			// Add the option object to the result set.
@@ -86,60 +93,49 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 	
 	protected function getValueLabel() 
 	{
-		$ret = "";
-		foreach ($this->_getDateRanges() as $key=>$value)
-		{	
-			$selected = $key == $this->value;
-			if( $selected ) {
-				return trim((string) $value);
+		foreach ($this->element->children() as $option) {
+			// Only add <option /> elements.
+			if ($option->getName() != 'option') {
+				continue;
 			}
-	
+			
+			$value = JArrayHelper::getValue($option, 'value', null, 'string');
+			
+			if ($value == $this->value) {
+				return (string)$option;
+			}
 		}
-	
-		return $ret;
+
+		return '';
 	}
 	
+	/**
+	 * Gets the date filter based on the currently selected value.
+	 * 
+	 * @return array An array containing a single date filter based on the 
+	 * currently selected value.
+	 * 
+	 * @see JSolrFilterable::getFilters()
+	 */
 	public function getFilters()
-	{
-		$filters = array();
-	
-		switch ($this->value) {
-			case 'h':
-				$filters[] = '[NOW-1HOUR TO NOW]';
-				break;
-				
-			case 'd':
-				$filters[] = '[NOW-1DAY TO NOW]';
-				break;
-
-			case 'w':
-				$filters[] = '[NOW-7DAY TO NOW]';
-				break;
-
-			case 'm':
-				$filters[] = '[NOW-1MONTH TO NOW]';
-				break;
-
-			case 'y':
-				$filters[] = '[NOW-1YEAR TO NOW]';
-				break;
-		}
-
-		return $filters;
-	}
-	
-	private function _getDateRanges()
-	{
-		$array = array(
-				''=>'LIB_JSOLR_CALENDAR_ANYTIME',
-				'h'=>'LIB_JSOLR_CALENDAR_HOUR',
-				'd'=>'LIB_JSOLR_CALENDAR_DAY',
-				'w'=>'LIB_JSOLR_CALENDAR_WEEK',
-				'm'=>'LIB_JSOLR_CALENDAR_MONTH',
-				'y'=>'LIB_JSOLR_CALENDAR_YEAR'
-		);
+	{	
+		$filter = null;
 		
-		return $array;
+		foreach ($this->element->children() as $option) {
+			// Only add <option /> elements.
+			if ($option->getName() != 'option') {
+				continue;
+			}
+			
+			$value = JArrayHelper::getValue($option, 'value', null, 'string');
+			
+			if ($value == $this->value) {
+				$filter = JArrayHelper::getValue($option, 'filter', null, 'string');
+				continue;
+			}
+		}
+		
+		return ($filter) ? array($filter) : array();
 	}
 	
 	public function __get($name)

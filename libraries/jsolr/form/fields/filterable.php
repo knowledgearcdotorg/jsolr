@@ -37,9 +37,9 @@
 interface JSolrFilterable
 {
 	/**
-	 * Gets a array of currently selected filters for the facet.
+	 * Gets a array of currently selected filters for the field.
 	 * 
-	 * @return array An array of currently selected filters for the facet.
+	 * @return array An array of currently selected filters for the field.
 	 */
 	function getFilters();
 }

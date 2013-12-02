@@ -36,7 +36,7 @@ $form = $this->get('Form');
 
 <?php if (!is_null($form)): ?>
 <ul>
-	<?php foreach ($form->getAppliedFacetFilters() as $field): ?>
+	<?php foreach ($this->get('DisplayableFilters') as $field): ?>
 	<?php if ($field['value'] == 'null' || empty($field['value'])) continue; ?>
 	
 	<?php

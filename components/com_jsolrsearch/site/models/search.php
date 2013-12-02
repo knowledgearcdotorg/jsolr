@@ -350,7 +350,7 @@ class JSolrSearchModelSearch extends JModelForm
 
       // Get the form.
       JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
-      JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+      JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
 
       try
       {
@@ -442,7 +442,7 @@ class JSolrSearchModelSearch extends JModelForm
     	else
     		$uri->delVar('o');
     	
-    	$array[$i]['uri'] = (string)$uri;
+    	$array[$i]['uri'] = htmlentities((string)$uri, ENT_QUOTES, 'UTF-8');
     }
     
     return $array;
@@ -464,5 +464,55 @@ class JSolrSearchModelSearch extends JModelForm
 		}
 		
 		return $filters;
+	}
+
+	/**
+	 * Gets a list of applied filters for displaying which are not managed by 
+	 * the configured search tools, This allows users to browse and clear 
+	 * filters which are not part of the search tools.
+	 * 
+	 * Filters applied as part of the search tools will be displayed within 
+	 * the applicable search tool field.
+	 * 
+	 * @return array Gets a list of applied filters for displaying which are not managed by 
+	 * the configured search tools.
+	 */
+	public function getDisplayableFilters()
+	{
+		$result = array();
+		$advancedFields = $this->getForm()->getGroup('as');
+		
+		foreach (array('tools', 'facets') as $fieldset) {	
+			foreach ($this->getForm()->getFieldset($fieldset) as $field) {
+				$value = JFactory::getApplication()->input->getString($field->name);
+				$found = false;
+	
+				reset($advancedFields);
+				
+				while (($advancedField = current($advancedFields)) && !$found) {
+					if ($advancedField->fieldname == $field->name) {
+						$found = true;
+					}
+					
+					next($advancedFields);
+				}
+				
+				if (!empty($value) && !$found) {
+					if (is_array($value)) {
+						if (count($value) && JArrayHelper::getValue($value, 0) == 'null') {
+							continue;
+						}
+					}
+
+					$result[] = array(
+							'fieldset'=>$fieldset,
+							'name'=>$field->name,
+							'value'=>$value,
+							'label'=>$field->label);
+				}
+			}
+		}
+	
+		return $result;
 	}
 }
