@@ -147,7 +147,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 			$query = str_replace(implode(' OR ', $oq), '', $query);
 		}
 
-		$data['aq'] = $query;
+		$data['aq'] = trim($query);
 
 		return $data;
 	}
