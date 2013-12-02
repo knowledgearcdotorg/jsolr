@@ -31,12 +31,12 @@
 	<administration>
 	    <files folder="admin">
 	    	<folder>models</folder>
-	    	<folder>views</folder>
+	    	<folder>cli</folder>
 	    	<folder>helpers</folder>
+	    	<folder>views</folder>
 	    	<filename>config.xml</filename>
 	    	<filename>controller.php</filename>
 	    	<filename>jsolrindex.php</filename>
-	    	<filename>jsolr_crawler.php</filename>
 	    	<filename>test.odt</filename>
 	    </files>
 	    

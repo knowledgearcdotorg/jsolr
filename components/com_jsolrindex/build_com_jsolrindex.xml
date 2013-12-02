@@ -30,6 +30,7 @@
 				<include name="**"/>
 				<exclude name="**/language/**"/>
 				<exclude name="jsolr_crawler.php"/>
+				<exclude name="cli"/>
 			</fileset>
 		</copy> 
 		
@@ -59,7 +60,7 @@
 		</copy>
 
 		<copy todir="${dest.cli}">
-			<fileset dir="${src}/admin" defaultexcludes="true">
+			<fileset dir="${src}/admin/cli" defaultexcludes="true">
 				<include name="jsolr_crawler.php"/>
 			</fileset>
 		</copy>

@@ -132,14 +132,47 @@ class JSolrCrawlerCli extends JApplicationCli
     	$options['verbose'] = ($this->input->get('v') || $this->input->get('verbose')) ? true : false;
     	$options['clean'] = ($this->input->get('c') || $this->input->get('clean')) ? true : false;
 
-    	if ($this->input->get('m') || $this->input->get('modified')) {
+    	// @deprecated the m and modified options are deprecated and will be 
+    	// removed from future versions. 
+    	if ($this->input->getString('u') || $this->input->getString('updated')) {
+    		$lastModified = $this->input->getString('u', $this->input->getString('update'));
+
+    		$d = JDate::createFromFormat("Y-m-d\TH:i:sP", $lastModified, new DateTimeZone(JFactory::getConfig()->get('offset')));
+    		
+    		$valid = false;
+    		
+    		if ($d) {    			
+    			if ($d->getTimezone()) {    				
+	    			$format = "Y-m-d\TH:i:s".(($d->getTimezone()->getName() == 'Z') ? '\Z' : 'P');
+
+	    			if ($d->format($format) == $lastModified) {	    				
+	    				$valid = true;
+	    			}
+    			}
+    		}
+    		
+    		if ($valid) {
+    			$options['lastModified'] = $lastModified;
+    		} else {
+	    		$client = JSolrIndexFactory::getService();
+	    		
+	    		if ($client->ping()) {
+	    			$response = $client->luke();
+	    	
+	    			$options['lastModified'] = $response->index->lastModified;
+	    		}
+    		}
+    		
+    	} elseif ($this->input->get('m') || $this->input->get('modified')) {
+    		$lastModified = $this->input->get('m', $this->input->get('modified'));
+    		
     		$client = JSolrIndexFactory::getService();
     		
     		if ($client->ping()) {
     			$response = $client->luke();
-    	
+    			 
     			$options['lastModified'] = $response->index->lastModified;
-    		}
+    		}    		
     	}
     	
     	$start = new JDate('now');
@@ -187,17 +220,22 @@ class JSolrCrawlerCli extends JApplicationCli
     {
     	echo <<<EOT
 Usage: jsolr_crawler [options]
+   jsolr_crawler [vq] [u|update] <last-index-date>
     	
 Provides tools for managing a Joomla-centric Solr index.
 
   -c, --clean         Clean out deleted items from the index.
   -h, --help          Display this help and exit.
-  -m, --modified      Index only those items which have been created or 
-                      modified since the last index.
+  -m, --modified      Deprecated. Use -u or --update instead.
   -o, --optimize      Run an optimization on the index.
   -p, --purge         Purge the contents of the index.
   -q, --quiet         Suppress all output.
-  -r, --rebuild       Rebuild the index, deleting then re-creating all documents.
+  -r, --rebuild       Rebuild the index, deleting then re-creating all 
+                      documents.                      
+  -u, --update        Index only those items which have been created or 
+                      modified since the last index.
+                      Specify an ISO8601-compatible date to override the last 
+                      index date.
   -v, --verbose       Display verbose information about the current action.
     	
 EOT;
