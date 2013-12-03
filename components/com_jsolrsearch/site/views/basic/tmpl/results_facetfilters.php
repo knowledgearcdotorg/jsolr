@@ -38,7 +38,7 @@ $form = $this->get('Form');
 <ul>
 	<?php foreach ($this->get('AppliedFacetFilters') as $field): ?>
 	<?php
-	$uri = clone JFactory::getURI();
+	$uri = clone JURI::getInstance();
 	$uri->delVar($field->name);
 	?>
 	<li>
