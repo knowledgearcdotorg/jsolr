@@ -19,6 +19,7 @@
         	<option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
         	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
 		</field>
+		<field type="jsolr.advancedfilter" name="in"/>
     </fieldset>
     
     <fields name="as">
@@ -34,6 +35,15 @@
 	        	<option value="w">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
 	        	<option value="m">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
 	        	<option value="y">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
+			</field>
+	        <field 
+	            name="in"
+	            type="list"
+	            label="Search"
+	            class="jsolr-dropdown">
+	        	<option value="">Anywhere</option>
+	        	<option value="title">Only in the title</option>
+	        	<option value="body">Only in the body</option>	        	
 			</field>
 		</fieldset>
     </fields>

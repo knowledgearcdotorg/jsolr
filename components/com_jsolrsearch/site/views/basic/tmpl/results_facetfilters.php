@@ -31,23 +31,33 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-$form = $this->get('Form'); 
+$form = $this->get('Form');
 ?>
 
 <?php if (!is_null($form)): ?>
 <ul>
-	<?php foreach ($this->get('DisplayableFilters') as $field): ?>
-	<?php if ($field['value'] == 'null' || empty($field['value'])) continue; ?>
-	
+	<?php foreach ($this->get('AppliedFacetFilters') as $field): ?>
 	<?php
 	$uri = clone JFactory::getURI();
-	$uri->delVar($field['name']);
+	$uri->delVar($field->name);
 	?>
 	<li>
-		<span class="jsolr-label"><?php echo $field['label']; ?></span>
-		<span class="jsolr-value"><?php echo str_replace('|', ' | ', $field['value']); ?></span>
+		<span class="jsolr-label"><?php echo $field->label; ?></span>
+		<span class="jsolr-value"><?php echo str_replace('|', ' | ', $field->value); ?></span>
 
-		<?php echo JHTML::link((string)$uri, '(clear)'); ?>
+		<?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
+	</li>
+	<?php endforeach ?>
+	
+	<?php foreach ($this->get('AppliedAdvancedFilters') as $field): ?>
+	<?php
+	$uri = clone JURI::getInstance();
+	$uri->delVar($field->name);
+	?>
+	<li>
+		<span class="jsolr-label"><?php echo JText::_(strtoupper("COM_JSOLRSEARCH_FILTERS_".$field->name."_".$field->value)); ?></span>
+
+		<?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
 	</li>
 	<?php endforeach ?>
 </ul>

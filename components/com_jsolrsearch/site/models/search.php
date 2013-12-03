@@ -467,52 +467,47 @@ class JSolrSearchModelSearch extends JModelForm
 	}
 
 	/**
-	 * Gets a list of applied filters for displaying which are not managed by 
-	 * the configured search tools, This allows users to browse and clear 
-	 * filters which are not part of the search tools.
+	 * Gets a list of applied filters based on any currently selected facets.
 	 * 
-	 * Filters applied as part of the search tools will be displayed within 
-	 * the applicable search tool field.
-	 * 
-	 * @return array Gets a list of applied filters for displaying which are not managed by 
-	 * the configured search tools.
+	 * @return array A list of applied filters based on any currently selected facets.
 	 */
-	public function getDisplayableFilters()
+	public function getAppliedFacetFilters()
 	{
-		$result = array();
-		$advancedFields = $this->getForm()->getGroup('as');
-		
-		foreach (array('tools', 'facets') as $fieldset) {	
-			foreach ($this->getForm()->getFieldset($fieldset) as $field) {
-				$value = JFactory::getApplication()->input->getString($field->name);
-				$found = false;
-	
-				reset($advancedFields);
-				
-				while (($advancedField = current($advancedFields)) && !$found) {
-					if ($advancedField->fieldname == $field->name) {
-						$found = true;
-					}
-					
-					next($advancedFields);
-				}
-				
-				if (!empty($value) && !$found) {
-					if (is_array($value)) {
-						if (count($value) && JArrayHelper::getValue($value, 0) == 'null') {
-							continue;
-						}
-					}
+		$fields = array();
+			
+		foreach ($this->getForm()->getFieldset("facets") as $field) {
+			$value = JFactory::getApplication()->input->getString($field->name);
 
-					$result[] = array(
-							'fieldset'=>$fieldset,
-							'name'=>$field->name,
-							'value'=>$value,
-							'label'=>$field->label);
-				}
+			if (!empty($value)) {
+				$field->setValue($value);
+				$fields[] = $field;
 			}
 		}
 	
-		return $result;
+		return $fields;
+	}
+	
+	/**
+	 * Gets a list of applied filters based on any specified advanced search 
+	 * parameters.
+	 *
+	 * @return array a list of applied filters based on any specified advanced 
+	 * search parameters.
+	 */
+	public function getAppliedAdvancedFilters()
+	{
+		$fields = array();
+		
+		foreach ($this->getForm()->getFieldset('tools') as $field) {			
+			if (strtolower($field->type) == 'jsolr.advancedfilter') {
+				$value = JFactory::getApplication()->input->getString($field->name);				
+				if (!empty($value)) {					
+					$field->setValue($value);
+					$fields[] = $field;
+				}
+			}
+		}
+
+		return $fields;
 	}
 }

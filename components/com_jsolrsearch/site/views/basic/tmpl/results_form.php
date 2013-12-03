@@ -87,7 +87,11 @@ JHTML::_('behavior.formvalidation');
 
 	<div class="clr"></div>
 	<?php foreach ($this->get('Form')->getFieldset('tools') as $field): ?>
+		<?php if (strtolower($field->type) != 'jsolr.advancedfilter') : ?>
 		<div class="jsolr-dropdown"><?php echo $this->form->getInput($field->name); ?></div>
+		<?php else : ?>
+		<?php echo $this->form->getInput($field->name); ?>
+		<?php endif; ?>
 	<?php endforeach;?>
 
 	<?php echo JHTML::_('form.token'); ?>
