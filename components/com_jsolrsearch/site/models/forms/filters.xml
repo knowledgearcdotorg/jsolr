@@ -10,7 +10,6 @@
             filter_quoted="false"
             type="jsolr.calendar"
             label="Date"
-            size="40"
             class="jsolr-dropdown">
         	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
         	<option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>

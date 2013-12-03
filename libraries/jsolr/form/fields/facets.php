@@ -226,7 +226,6 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	{
 		switch ($name) {
 			case 'filter':
-			case 'query':
 			case 'facet':
 				return JArrayHelper::getValue($this->element, $name, null, 'string');
 				break;

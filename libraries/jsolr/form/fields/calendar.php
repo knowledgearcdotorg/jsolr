@@ -142,8 +142,14 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 	{
 		switch ($name) {
 			case 'filter':
-			case 'query':		
 				return JArrayHelper::getValue($this->element, $name, null, 'string');
+				break;
+								
+			case 'filter_quoted':
+				if (JArrayHelper::getValue($this->element, $name, null, 'string') === 'true')
+					return true;
+				else
+					return false;
 				break;
 	
 			default:
