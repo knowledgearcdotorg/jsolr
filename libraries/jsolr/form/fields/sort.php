@@ -34,6 +34,7 @@ defined('JPATH_BASE') or die;
 
 jimport('joomla.form.helper');
 
+jimport('jsolr.form.fields.dropdown');
 jimport('jsolr.form.fields.sortable');
 
 class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
@@ -57,24 +58,26 @@ class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 			if ($option->getName() != 'option') {
 				continue;
 			}
+			
+			$value = JArrayHelper::getValue($option, 'value', null, 'string');
 
+			$selected = $value == $this->value;
+			
 			$uri = clone JFactory::getURI();
-			$url->delVar('start');
+			$uri->delVar('start');
 
-			if (!empty($option['value'])) {
-				$uri->setVar($this->name, (string) $option['value']);
+			if (!empty($value)) {
+				$uri->setVar($this->name, $value);
 			} else {
 				$uri->delVar($this->name);
 			}
 
-			$selected = ((string) $option['value']) == $this->value;
-
-			$link = '<a role="menuitem" tabindex="-1" href="'.(string)$uri.'">'.
+			$link = '<a role="menuitem" tabindex="-1" href="'.htmlentities((string)$uri, ENT_QUOTES, 'UTF-8').'">'.
 				JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)).
 				'</a>';
 
 			// Create a new option object based on the <option /> element.
-			$tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+			$tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="'.$value.'">' . $link . '</li>';
 	
 	
 			// Add the option object to the result set.
