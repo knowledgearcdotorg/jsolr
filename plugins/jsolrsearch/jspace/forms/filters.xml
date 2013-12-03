@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
     <fieldset name="facets">
-        <!-- only JSolrFormFields should be used here -->
 		<field 
             name="subject"
             facet="dc.subject.other_fc"
@@ -14,21 +13,25 @@
     </fieldset>
     
     <fieldset name="tools">
-        <!-- only JSolrFormFields should be used here -->
         <field 
-            name="qdr"
-            filter="modified"
-            filter_quoted="false"
-            type="jsolr.calendar"
-            label="Date"
-            size="40"
-            class="jsolr-dropdown">
-        	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
-        	<option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
-        	<option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
-        	<option value="w" filter="[NOW-1WEEK TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
-        	<option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
-        	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
+            name="sbd"
+            type="jsolr.sort"
+            class="inputbox jsolrquery">
+			<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
+			<option value="1" field="dc.date.issued_s" direction="desc">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
 		</field>
     </fieldset>
+    
+    <fields name="as">
+    	<fieldset name="advanced">
+	        <field 
+	            name="sbd"
+	            type="list"
+	            label="Date"
+	            class="jsolr-dropdown">
+				<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
+				<option value="1">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
+			</field>
+    	</fieldset>
+    </fields>
 </form>

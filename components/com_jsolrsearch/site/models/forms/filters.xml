@@ -25,17 +25,15 @@
     	<fieldset name="advanced">
 	        <field 
 	            name="qdr"
-	            filter="modified"
-	            filter_quoted="false"
 	            type="list"
 	            label="Date"
 	            class="jsolr-dropdown">
 	        	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
-	        	<option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
-	        	<option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
-	        	<option value="w" filter="[NOW-7DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
-	        	<option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
-	        	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
+	        	<option value="h">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
+	        	<option value="d">COM_JSOLRSEARCH_CALENDAR_DAY</option>
+	        	<option value="w">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
+	        	<option value="m">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
+	        	<option value="y">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
 			</field>
 		</fieldset>
     </fields>
