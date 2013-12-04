@@ -3,6 +3,7 @@
  * Provides a list of facet filters applied to the current search results.  
  * 
  * @package		JSolr
+ * @subpackage	Search
  * @copyright	Copyright (C) 2011-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 

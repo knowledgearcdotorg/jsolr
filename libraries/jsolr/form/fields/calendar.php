@@ -3,7 +3,8 @@
  * Renders a calendar search tool form field. Filters the results displayed by 
  * a period of time.
  * 
- * @package		JSpace
+ * @package		JSolr
+ * @subpackage	Form
  * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 

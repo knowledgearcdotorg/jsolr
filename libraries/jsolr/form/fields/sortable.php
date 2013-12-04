@@ -2,8 +2,8 @@
 /**
  * An interface to implement when a class should be filterable.
  * 
- * @package		JSpace
- * @subpackage	form.fields
+ * @package		JSolr
+ * @subpackage	Form
  * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
