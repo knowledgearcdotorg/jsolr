@@ -34,11 +34,11 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
-jimport('jsolr.search.factory');
 jimport('joomla.html.pagination');
 
 jimport('joomla.application.component.modelform');
 
+jimport('jsolr.search.factory');
 jimport('jsolr.form.form');
 jimport('jsolr.pagination.pagination');
 

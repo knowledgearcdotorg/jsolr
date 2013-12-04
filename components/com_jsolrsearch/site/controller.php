@@ -30,6 +30,8 @@
 
 defined('_JEXEC') or die('Restricted access');
 
+jimport('jsolr.search.factory');
+
 class JSolrSearchController extends JControllerLegacy 
 {
 	function advanced()
