@@ -7,7 +7,7 @@
 	<authorUrl>http://www.wijiti.com</authorUrl>
 	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>0.3.0</version>
+	<version>1.0.0</version>
 	<description>PLG_JSOLRSEARCH_CONTENT_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="content">content.php</filename>
