@@ -27,6 +27,8 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+JFormHelper::loadFieldClass('list');
+
 /**
  * Form field class for listing available extensions. 
  */
