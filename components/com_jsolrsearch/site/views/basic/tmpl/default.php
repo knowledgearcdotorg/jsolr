@@ -44,12 +44,8 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.cs
 <section id="jsolrSearch">
 	<form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">				
 		<fieldset class="word">
-			<?php foreach($form->getFieldsets() as $fieldset ) : ?>
-				<?php if ($fieldset->name == 'search'): ?>
-					<?php foreach ($this->get('Form')->getFieldset($fieldset->name) as $field): ?>
-					<span><?php echo $form->getInput($field->fieldname); ?></span>
-					<?php endforeach;?>
-				<?php endif ?>
+			<?php foreach ($this->get('Form')->getFieldset('query') as $field): ?>
+			<span><?php echo $form->getInput($field->fieldname); ?></span>
 			<?php endforeach;?>
 			
 			<input type="hidden" name="option" value="com_jsolrsearch"/>
