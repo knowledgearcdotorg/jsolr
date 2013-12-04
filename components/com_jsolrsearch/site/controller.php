@@ -35,12 +35,12 @@ class JSolrSearchController extends JControllerLegacy
 	function advanced()
 	{
 		$model = $this->getModel("advanced");
-		$this->setRedirect((string)JRoute::_((string)$model->getURI(), false));
+		$this->setRedirect(JRoute::_((string)$model->getURI(), false));
 	}
 	
 	public function search()
 	{
-		$this->setRedirect((string)JRoute::_((string)JSolrSearchFactory::getURI(), false));
+		$this->setRedirect(JRoute::_((string)JSolrSearchFactory::getURI(), false));
 	}
 
 	public function display($cachable = false, $urlparams = false)
