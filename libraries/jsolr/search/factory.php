@@ -49,4 +49,42 @@ class JSolrSearchFactory extends JSolrFactory
 		
 		return new JSolrSearchQuery($query, $solr);
 	}
+
+	/**
+	 * Gets the search url.
+	 *
+	 * @param bool $queryOnly True if the initial query should be returned,
+	 * false otherwise. Defaults to false.
+	 *
+	 * @return JURI The search url.
+	 */
+	public function getURI($queryOnly = false)
+	{
+		$uri = clone JURI::getInstance();
+	
+		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
+			if ($queryOnly) {
+				if ($key != 'q') {
+					$uri->delVar($key);
+				}
+			} else {
+				if (trim($value) == "") {
+					$uri->delVar($key);
+				}
+			}
+		}
+	
+		if ($uri->getVar('q') != "") {
+			$uri->setVar('q', urlencode($uri->getVar('q')));
+		}
+		
+		$uri->setVar("option", "com_jsolrsearch");
+		$uri->setVar("view", "basic");
+		$uri->setVar("Itemid", JFactory::getApplication()->input->get('Itemid', null, 'string'));
+	
+		$uri->delVar("limitstart");
+		$uri->delVar("task");
+	
+		return $uri;
+	}
 }

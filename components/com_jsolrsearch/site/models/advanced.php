@@ -166,7 +166,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$uri->setVar("Itemid", JRequest::getVar('Itemid'));
 	
 		if ($query = $this->buildQuery()) {
-			$uri->setVar('q', $query);
+			$uri->setVar('q', urlencode($query));
 		}
 	
 		if ($this->getState('query.o', null)) {
@@ -234,7 +234,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 	 */
 	protected function loadFormData()
 	{
-		$query = JFactory::getURI()->getQuery(true);
+		$query = JSolrSearchFactory::getURI()->getQuery(true);
 
 		if (count($query)) {
 			$query = array_merge($query, $this->parseQuery());

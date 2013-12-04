@@ -168,5 +168,5 @@ class JSolrHelper extends JObject
 		} else {
 			return $facet;
 		}
-	} 
+	}
 }

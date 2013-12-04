@@ -40,6 +40,7 @@ jimport('joomla.html.pagination');
 jimport('joomla.application.component.modelform');
 
 jimport('jsolr.form.form');
+jimport('jsolr.pagination.pagination');
 
  // error_reporting(E_ALL);
  // ini_set("display_errors", 1); 
@@ -70,8 +71,8 @@ class JSolrSearchModelSearch extends JModelForm
    public function populateState($ordering = null, $direction = null)
    {
 		$application = JFactory::getApplication('site');
-   
-		$q = $this->setState('query.q', $application->input->get("q", null, "string"));
+
+		$this->setState('query.q', $application->input->get("q", null, "html"));
 		$extension = $this->setState('query.o', $application->input->getString("o", null, "string"));
 
 		$lang = $application->input->getString("lr", null);
@@ -170,12 +171,12 @@ class JSolrSearchModelSearch extends JModelForm
 
 			JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
 
-			$this->pagination = new JPagination($results->get('numFound'), $this->getState('list.start'), $results->count());
+			$this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
 
 			return $results;
 		} catch (Exception $e) {
 			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
-			$this->pagination = new JPagination($this->get('total', 0), 0, 0);
+			$this->pagination = new JSolrPagination($this->get('total', 0), 0, 0);
 			return null;
 		}
 	}
@@ -183,43 +184,6 @@ class JSolrSearchModelSearch extends JModelForm
 	public function getPagination()
 	{
 		return $this->pagination;
-	}
-
-	public function getQueryURI()
-	{
-		$uri = new JURI("index.php");
-      
-		$uri->setVar("option", "com_jsolrsearch");
-		$uri->setVar("view", "basic");
-		$uri->setVar("Itemid", JRequest::getVar('Itemid'));
-
-		if ($this->getState('query.q', null)) {
-			$uri->setVar('q', $this->getState('query.q'));
-		}
-		
-		if ($this->getState('query.o', null)) {
-			$uri->setVar('o', $this->getState('query.o'));
-		}
-      
-		return $uri;
-	}
-	
-	/**
-	 * Gets the search url.
-	 * 
-	 * @return JURI The search url.
-	 */
-	public function getURI()
-	{
-		$uri = clone $this->getQueryURI();
-		
-		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
-			if ($key != 'task' && trim($value) != "") {
-				$uri->setVar($key, $value);
-			}
-		}
-		
-		return $uri;
 	}
 	
 	/**
@@ -229,7 +193,7 @@ class JSolrSearchModelSearch extends JModelForm
 	 */
 	public function getAdvancedURI()
 	{
-		$uri = clone $this->getURI();
+		$uri = clone JSolrSearchFactory::getURI();
 
 		$uri->setVar('view', 'advanced');
 
@@ -287,7 +251,7 @@ class JSolrSearchModelSearch extends JModelForm
 	 */
 	protected function loadFormData()
 	{
-		$query = JFactory::getURI()->getQuery(true);
+		$query = JURI::getInstance()->getQuery(true);
 
 		if (count($query)) {
 			$data = $query;
@@ -435,7 +399,7 @@ class JSolrSearchModelSearch extends JModelForm
     $array = array_merge(array(array('plugin' => '', 'name' => JText::_('Everything'))), $array);
     
     for ($i = 0; $i < count($array); $i++) {
-    	$uri = $this->getQueryURI();
+    	$uri = clone JSolrSearchFactory::getURI(true);
     	
     	if ($array[$i]['plugin'])
     		$uri->setVar('o', $array[$i]['plugin']);

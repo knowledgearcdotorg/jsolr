@@ -63,8 +63,7 @@ class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
 
 			$selected = $value == $this->value;
 			
-			$uri = clone JFactory::getURI();
-			$uri->delVar('start');
+			$uri = clone JSolrSearchFactory::getURI();
 
 			if (!empty($value)) {
 				$uri->setVar($this->name, $value);

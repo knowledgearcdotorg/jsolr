@@ -68,8 +68,7 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 			
 			$selected = $value == $this->value;
 
-			$uri = clone JFactory::getURI();
-			$uri->delVar('start');
+			$uri = clone JSolrSearchFactory::getURI();
 			
 			if (!empty($value)) {
 				$uri->setVar($this->name, $value);
@@ -77,7 +76,7 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 				$uri->delVar($this->name);
 			}
 
-			$link = '<a role="menuitem" tabindex="-1" href="'.htmlentities((string)$uri, ENT_QUOTES, 'UTF-8').'">'.JText::_(trim((string)$option)).'</a>';
+			$link = '<a role="menuitem" tabindex="-1" href="'.((string)$uri).'">'.JText::_(trim((string)$option)).'</a>';
 
 			$tmp = '<li role="presentation" class="'.( $selected ? 'active' : '').'" data-value="'.$value.'">'.$link.'</li>';
 	
