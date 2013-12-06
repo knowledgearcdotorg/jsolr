@@ -440,14 +440,11 @@ class JSolrSearchModelSearch extends JModelForm
 		$fields = array();
 			
 		foreach ($this->getForm()->getFieldset("facets") as $field) {
-			$value = JFactory::getApplication()->input->getString($field->name);
-
-			if (!empty($value)) {
-				$field->setValue($value);
+			if ($field->value) {
 				$fields[] = $field;
 			}
 		}
-	
+
 		return $fields;
 	}
 	
@@ -464,9 +461,8 @@ class JSolrSearchModelSearch extends JModelForm
 		
 		foreach ($this->getForm()->getFieldset('tools') as $field) {			
 			if (strtolower($field->type) == 'jsolr.advancedfilter') {
-				$value = JFactory::getApplication()->input->getString($field->name);				
-				if (!empty($value)) {					
-					$field->setValue($value);
+
+				if ($field->value) {
 					$fields[] = $field;
 				}
 			}
