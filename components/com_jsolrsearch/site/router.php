@@ -51,12 +51,13 @@ function JSolrSearchBuildRoute(&$query)
 
 	if (isset($query['view'])) {
 		$view = $query['view'];
-
-		if (empty($query['Itemid'])) {
+        
+		if (empty($query['Itemid']) || empty($menuItem) || $menuItem->component != 'com_jsolrsearch') {
 			$segments[] = $query['view'];
 		}
-        unset($query['view']);
-	}
+		
+		unset($query['view']);
+    }	
 
 	if (isset($view) && ($mView == $view)) {
 		unset($query['view']);

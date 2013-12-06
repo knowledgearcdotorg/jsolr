@@ -60,30 +60,23 @@ class JSolrSearchFactory extends JSolrFactory
 	 */
 	public static function getURI($queryOnly = false)
 	{
-		$uri = clone JURI::getInstance();
-	
-		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
-			if ($queryOnly) {
-				if ($key != 'q') {
-					$uri->delVar($key);
-				}
-			} else {
-				if (trim($value) == "") {
-					$uri->delVar($key);
-				}
-			}
-		}
-	
-		if ($uri->getVar('q') != "") {
-			$uri->setVar('q', urlencode($uri->getVar('q')));
+		$uri = new JURI('index.php');
+
+		if (JURI::getInstance()->getVar('q')) {
+			$uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
 		}
 		
 		$uri->setVar("option", "com_jsolrsearch");
 		$uri->setVar("view", "basic");
 		$uri->setVar("Itemid", JFactory::getApplication()->input->get('Itemid', null, 'int'));
-	
-		$uri->delVar("limitstart");
-		$uri->delVar("task");
+		
+		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
+			if (!$queryOnly) {				
+				if (trim($value) && $key != 'limitstart' && $key != 'task') {
+					$uri->setVar($key, $value);
+				}
+			}
+		}
 	
 		return $uri;
 	}
