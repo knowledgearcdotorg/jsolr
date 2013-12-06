@@ -58,7 +58,7 @@ class JSolrSearchFactory extends JSolrFactory
 	 *
 	 * @return JURI The search url.
 	 */
-	public function getURI($queryOnly = false)
+	public static function getURI($queryOnly = false)
 	{
 		$uri = clone JURI::getInstance();
 	
@@ -80,7 +80,7 @@ class JSolrSearchFactory extends JSolrFactory
 		
 		$uri->setVar("option", "com_jsolrsearch");
 		$uri->setVar("view", "basic");
-		$uri->setVar("Itemid", JFactory::getApplication()->input->get('Itemid', null, 'string'));
+		$uri->setVar("Itemid", JFactory::getApplication()->input->get('Itemid', null, 'int'));
 	
 		$uri->delVar("limitstart");
 		$uri->delVar("task");
