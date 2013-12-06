@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="jspace">jspace.php</filename>
 		<folder>views</folder>
+		<folder>forms</folder>
 	</files>
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jspace.ini</language>
