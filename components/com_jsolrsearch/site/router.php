@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2011-2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2011-2013 Wijiti Pty Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -54,14 +54,12 @@ function JSolrSearchBuildRoute(&$query)
         
 		if (empty($query['Itemid']) || empty($menuItem) || $menuItem->component != 'com_jsolrsearch') {
 			$segments[] = $query['view'];
-		}
-		
-		unset($query['view']);
-    }	
-
-	if (isset($view) && ($mView == $view)) {
-		unset($query['view']);
-		return $segments;
+			unset($query['view']);
+		}		
+    	
+    	if ($mView == $query['view']) {
+			unset($query['view']);
+    	}
 	}
 
 	return $segments;
