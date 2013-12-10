@@ -41,9 +41,15 @@ class JSolrPagination extends JPagination
 	 */
 	protected function _buildDataObject()
 	{
+		// if we're using Joomla! 2.5, use the old builddataObject method.
+		if (version_compare(JVERSION, "3.0", "l")) {
+			return $this->_buildDataObject25();
+		}
+		
 		$data = new stdClass;
 	
-		// Build the additional URL parameters string.
+		// Initialize the additional URL parameters string using the 
+		// pre-existing search url.
 		$params = JSolrSearchFactory::getURI();
 
 		if (!empty($this->additionalUrlParams))
@@ -115,5 +121,82 @@ class JSolrPagination extends JPagination
 		}
 	
 		return $data;
+	}
+	
+	/**
+	 * Joomla! 2.5 version of the _buildDataObject method.
+	 */
+	protected function _buildDataObject25()
+	{
+		// Initialise variables.
+		$data = new stdClass;
+	
+		// Initialize the additional URL parameters string using the 
+		// pre-existing search url.
+		$params = JSolrSearchFactory::getURI();
+		
+		if (!empty($this->_additionalUrlParams))
+		{
+			foreach ($this->_additionalUrlParams as $key => $value)
+			{
+				$params .= '&' . $key . '=' . $value;
+			}
+		}
+	
+		$data->all = new JPaginationObject(JText::_('JLIB_HTML_VIEW_ALL'), $this->prefix);
+		if (!$this->_viewall)
+		{
+			$data->all->base = '0';
+			$data->all->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=');
+		}
+	
+		// Set the start and previous data objects.
+		$data->start = new JPaginationObject(JText::_('JLIB_HTML_START'), $this->prefix);
+		$data->previous = new JPaginationObject(JText::_('JPREV'), $this->prefix);
+	
+		if ($this->get('pages.current') > 1)
+		{
+			$page = ($this->get('pages.current') - 2) * $this->limit;
+	
+			// Set the empty for removal from route
+			//$page = $page == 0 ? '' : $page;
+	
+			$data->start->base = '0';
+			$data->start->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=0');
+			$data->previous->base = $page;
+			$data->previous->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $page);
+		}
+	
+		// Set the next and end data objects.
+		$data->next = new JPaginationObject(JText::_('JNEXT'), $this->prefix);
+		$data->end = new JPaginationObject(JText::_('JLIB_HTML_END'), $this->prefix);
+	
+		if ($this->get('pages.current') < $this->get('pages.total'))
+		{
+			$next = $this->get('pages.current') * $this->limit;
+			$end = ($this->get('pages.total') - 1) * $this->limit;
+	
+			$data->next->base = $next;
+			$data->next->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $next);
+			$data->end->base = $end;
+			$data->end->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $end);
+		}
+	
+		$data->pages = array();
+		$stop = $this->get('pages.stop');
+		for ($i = $this->get('pages.start'); $i <= $stop; $i++)
+		{
+		$offset = ($i - 1) * $this->limit;
+		// Set the empty for removal from route
+		//$offset = $offset == 0 ? '' : $offset;
+	
+		$data->pages[$i] = new JPaginationObject($i, $this->prefix);
+		if ($i != $this->get('pages.current') || $this->_viewall)
+		{
+		$data->pages[$i]->base = $offset;
+		$data->pages[$i]->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $offset);
+		}
+		}
+				return $data;
 	}
 }
