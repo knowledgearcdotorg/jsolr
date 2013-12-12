@@ -47,7 +47,9 @@ class JSolrSearchViewBasic extends JViewLegacy
         $this->items = $this->get('Items');
         $this->state = $this->get('State');
         $this->params = $this->state->get('params');
-        $this->plugins = $this->get('ComponentsList');        
+        $this->plugins = $this->get('ComponentsList');
+        
+        $this->params->set('o', str_replace('com_', '', JFactory::getApplication()->input->get('o', null, 'cmd')));
 
         // Load JSolrSearch jquery if not bundled.
         // This is deprecated and will be removed in subsequent versions of JSolr.
@@ -68,7 +70,7 @@ class JSolrSearchViewBasic extends JViewLegacy
     
     private function _getDefaultTemplate()
     {
-    	$o = JFactory::getApplication()->input->get('o', null, 'cmd');
+    	$o = $this->params->get('o');
     	$extension = str_replace("com_", "", $o);
     	$override = 'default_'.$extension.'.php';
 
@@ -146,7 +148,7 @@ class JSolrSearchViewBasic extends JViewLegacy
      */
 	public function loadResultsTemplate()
 	{
-		return $this->_loadCustomTemplate(JRequest::getCmd('o'), 'results');
+		return $this->_loadCustomTemplate($this->params->get('o'), 'results');
 	}
 	
 	private function _loadCustomTemplate($o, $layout)
