@@ -33,35 +33,35 @@
  */
 function JSolrSearchBuildRoute(&$query)
 {
+	static $menu;
 	$segments = array();
 
-	// get a menu item based on Itemid or currently active
-	$app  = JFactory::getApplication();
-	$menu = $app->getMenu();
-	$params = JComponentHelper::getParams('com_jsolrsearch');
-	$advanced = $params->get('sef_advanced_link', 0);
-
-	if (empty($query['Itemid'])) {
-		$menuItem = $menu->getActive();
-	} else {
-		$menuItem = $menu->getItem($query['Itemid']);
+	// Load the menu if necessary.
+	if (!$menu) {
+		$menu = JFactory::getApplication('site')->getMenu();
 	}
 
-	$mView  = (empty($menuItem->query['view'])) ? null : $menuItem->query['view'];
+	if (count($query) === 2 && isset($query['Itemid']) && isset($query['option'])) {
+		return $segments;
+	}
 
+	if (!empty($query['Itemid'])) {
+		// Get the menu item.
+		$item = $menu->getItem($query['Itemid']);
+
+		// Check if the view matches.
+		if ($item && @$item->query['view'] === @$query['view']) {
+			unset($query['view']);
+		}
+
+		return $segments;
+	}
+	
 	if (isset($query['view'])) {
-		$view = $query['view'];
-        
-		if (empty($query['Itemid']) || empty($menuItem) || $menuItem->component != 'com_jsolrsearch') {
-			$segments[] = $query['view'];
-			unset($query['view']);
-		}		
-    	
-    	if ($mView == $query['view']) {
-			unset($query['view']);
-    	}
+		$segments[] = $query['view'];
+		unset($query['view']);
 	}
-
+	
 	return $segments;
 }
 
