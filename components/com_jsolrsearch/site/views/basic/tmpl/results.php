@@ -58,7 +58,7 @@ integrating faceting within the component. Use template overrides to improve. --
 		<?php echo $this->loadTemplate('form'); ?>
 	
 		<div id="jsolrFacetfilters">
-		   <?php echo $this->loadTemplate('facetfilters'); ?>
+		   <?php echo $this->loadTemplate('appliedfilters'); ?>
 		</div>
 	</header>
 
