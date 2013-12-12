@@ -59,7 +59,32 @@ class JSolrSearchViewBasic extends JViewLegacy
         	JHtml::_('bootstrap.framework');
         }
         
+        if ($this->getLayout() == 'default') {
+        	$tpl = $this->_getDefaultTemplate();
+        }
+
         parent::display($tpl);
+    }
+    
+    private function _getDefaultTemplate()
+    {
+    	$o = JFactory::getApplication()->input->get('o', null, 'cmd');
+    	$extension = str_replace("com_", "", $o);
+    	$override = 'default_'.$extension.'.php';
+
+    	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
+    	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
+    	'/html/com_jsolrsearch/basic';
+    	
+    	if (!JPath::find($themeOverridePath, $override)) {
+    		if (JPath::find($pluginOverridePath, $override)) {
+    			$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
+    		} else {
+    			$extension = null;
+    		}
+    	}
+    	
+    	return $extension;
     }
     
     /**
@@ -128,9 +153,6 @@ class JSolrSearchViewBasic extends JViewLegacy
 	{
 		$extension = str_replace("com_", "", $o);
 		$override = $layout."_".$extension.".php";
-		
-		$_path =$this->get('_path');
-		$templates = JArrayHelper::getValue($_path, 'template');
 		 
 		$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
 		$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
@@ -139,7 +161,6 @@ class JSolrSearchViewBasic extends JViewLegacy
 		$this->setLayout($layout);
 		 
 		if (JPath::find($themeOverridePath, $override)) {
-			$this->addTemplatePath(dirname(JPath::find($themeOverridePath, $override)));
 			return $this->loadTemplate($extension);
 		} elseif (JPath::find($pluginOverridePath, $override)) {
 			$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
