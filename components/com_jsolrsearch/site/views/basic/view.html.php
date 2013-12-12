@@ -93,6 +93,7 @@ class JSolrSearchViewBasic extends JViewLegacy
     	$this->assignRef("hl", $hl);
 
     	$extension = str_replace("com_", "", $item->extension);
+    	$override = "result_".$extension.".php";
 
     	@$templates = JArrayHelper::getValue($this->get('_path'), 'template');
 
@@ -100,18 +101,18 @@ class JSolrSearchViewBasic extends JViewLegacy
     	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
     		'/html/com_jsolrsearch/plugins';
     	
-	    $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
+	    $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
 
-	    if (JPath::find($pluginOverridePath, $extension."_result.php") ||
-	    	JPath::find($themeOverridePath, $extension."_result.php")) {
-            $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
-            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
-	    	$this->setLayout($extension);
-	    } else {
-	    	$this->setLayout('results');
-	    }
+	    $this->setLayout('result');
 	    
-	    return $this->loadTemplate('result');
+	    if (JPath::find($pluginOverridePath, $override) ||
+	    	JPath::find($themeOverridePath, $override)) {
+            $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
+            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $override)));
+	    	return $this->loadTemplate($extension);
+	    } else {	    	
+	    	return $this->loadTemplate('default');
+	    }
     }
 
     /**

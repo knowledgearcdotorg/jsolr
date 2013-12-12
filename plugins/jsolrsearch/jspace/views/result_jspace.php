@@ -31,7 +31,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 <article class="jsolrsearch-result">
 	<header>
 		<h4>
-			<a href="<?php echo $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->hl, 'title', $this->item->title); ?></a>
+			<a href="<?php echo JRoute::_($this->item->link); ?>"><?php echo JSolrHelper::highlight($this->hl, 'title', $this->item->title); ?></a>
 		</h4>
 	</header>
 
@@ -52,7 +52,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			<?php if (isset($this->item->link)) : ?>
 			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_LINK_LABEL"); ?></dt>
 			<dd>
-				<a href="<?php echo $this->item->link; ?>"><?php echo $this->item->link; ?></a>
+				<a href="<?php echo JRoute::_($this->item->link); ?>"><?php echo JRoute::_($this->item->link); ?></a>
 			</dd>
 			<?php endif; ?>
 		</dl>
