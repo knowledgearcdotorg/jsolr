@@ -69,7 +69,7 @@ class JSolrSearchViewBasic extends JViewLegacy
      * This method will look for the template override in the following directories
      * (and in the following order):
      * 
-     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/plugins
+     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/basic
      * JPATH_PLUGINS/jsolrsearch/<extension>/views
      * 
      * where <template_name> is the name of the current template, and 
@@ -99,18 +99,17 @@ class JSolrSearchViewBasic extends JViewLegacy
 
     	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
     	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-    		'/html/com_jsolrsearch/plugins';
-    	
-	    $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
+    		'/html/com_jsolrsearch/basic';
 
 	    $this->setLayout('result');
 	    
-	    if (JPath::find($pluginOverridePath, $override) ||
-	    	JPath::find($themeOverridePath, $override)) {
-            $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
+	    if (JPath::find($themeOverridePath, $override)) {
             $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $override)));
 	    	return $this->loadTemplate($extension);
-	    } else {	    	
+	    } elseif (JPath::find($pluginOverridePath, $override)) {
+	    	$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
+	    	return $this->loadTemplate($extension);	    	
+	    } else {
 	    	return $this->loadTemplate('default');
 	    }
     }
