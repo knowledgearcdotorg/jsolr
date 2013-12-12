@@ -91,27 +91,9 @@ class JSolrSearchViewBasic extends JViewLegacy
     	// make item available to templates.
     	$this->assignRef("item", $item);
     	$this->assignRef("hl", $hl);
-
+    	
     	$extension = str_replace("com_", "", $item->extension);
-    	$override = "result_".$extension.".php";
-
-    	@$templates = JArrayHelper::getValue($this->get('_path'), 'template');
-
-    	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
-    	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-    		'/html/com_jsolrsearch/basic';
-
-	    $this->setLayout('result');
-	    
-	    if (JPath::find($themeOverridePath, $override)) {
-            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $override)));
-	    	return $this->loadTemplate($extension);
-	    } elseif (JPath::find($pluginOverridePath, $override)) {
-	    	$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
-	    	return $this->loadTemplate($extension);	    	
-	    } else {
-	    	return $this->loadTemplate('default');
-	    }
+		return $this->_loadCustomTemplate($extension, 'result');
     }
 
     /**
@@ -139,25 +121,31 @@ class JSolrSearchViewBasic extends JViewLegacy
      */
 	public function loadResultsTemplate()
 	{
-    	$extension = str_replace("com_", "", JRequest::getCmd('o'));
-
-        $_path =$this->get('_path');
-    	$templates = JArrayHelper::getValue($_path, 'template');
-    	
-    	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
-    	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-    		'/html/com_jsolrsearch/plugins';
-    	
-	    if (JPath::find($pluginOverridePath, $extension."_results.php") ||
-	    	JPath::find($themeOverridePath, $extension."_results.php")) {
-
-	    	$this->setLayout($extension);
-            $this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_result.php")));
-            $this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_result.php")));
-	    	return $this->loadTemplate('results');
-	    } else {
-	    	$this->setLayout('results');
-	    	return $this->loadTemplate('default');
-	    }
+		return $this->_loadCustomTemplate(JRequest::getCmd('o'), 'results');
+	}
+	
+	private function _loadCustomTemplate($o, $layout)
+	{
+		$extension = str_replace("com_", "", $o);
+		$override = $layout."_".$extension.".php";
+		
+		$_path =$this->get('_path');
+		$templates = JArrayHelper::getValue($_path, 'template');
+		 
+		$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
+		$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
+		'/html/com_jsolrsearch/basic';
+		 
+		$this->setLayout($layout);
+		 
+		if (JPath::find($themeOverridePath, $override)) {
+			$this->addTemplatePath(dirname(JPath::find($themeOverridePath, $override)));
+			return $this->loadTemplate($extension);
+		} elseif (JPath::find($pluginOverridePath, $override)) {
+			$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
+			return $this->loadTemplate($extension);
+		} else {
+			return $this->loadTemplate('default');
+		}		
 	}
 }
