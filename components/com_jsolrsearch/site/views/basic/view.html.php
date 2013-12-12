@@ -56,7 +56,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         JLoader::import('joomla.version');
         $version = new JVersion();
         if (version_compare($version->RELEASE, '3.0', 'lt')) {
-        	JFactory::getDocument()->addScript(JURI::base().'/media/com_jsolrsearch/js/jquery.js');
+        	JFactory::getDocument()->addScript(JURI::base().'/media/com_jsolrsearch/js/jquery/jquery.js');
         } else {
         	JHtml::_('bootstrap.framework');
         }
