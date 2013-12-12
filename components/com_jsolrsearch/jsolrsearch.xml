@@ -18,7 +18,6 @@
 	<files folder="site">	
     	<folder>models</folder>
     	<folder>views</folder>
-    	<folder>helpers</folder>
     	<filename>controller.php</filename>
     	<filename>jsolrsearch.php</filename>
 		<filename>router.php</filename>

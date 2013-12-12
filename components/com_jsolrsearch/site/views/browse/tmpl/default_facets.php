@@ -30,8 +30,6 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_BASE.'/components/com_jsolrsearch/helpers/route.php');
-
 jimport('jsolr.helper');
 ?>
 <ul>
@@ -51,7 +49,7 @@ jimport('jsolr.helper');
 		}
 		?>
             
-		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchHelperRoute::getSearchRoute('', $vars)), $facet); ?></li>
+		<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchFactory::getSearchRoute($vars)), $facet); ?></li>
 	<?php endforeach; ?>
 <?php endforeach; ?>
 </ul>

@@ -52,7 +52,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         $this->params->set('o', str_replace('com_', '', JFactory::getApplication()->input->get('o', null, 'cmd')));
 
         // Load JSolrSearch jquery if not bundled.
-        // This is deprecated and will be removed in subsequent versions of JSolr.
+        // @deprecated This is deprecated and will be removed in subsequent versions of JSolr.
         JLoader::import('joomla.version');
         $version = new JVersion();
         if (version_compare($version->RELEASE, '3.0', 'lt')) {
@@ -64,7 +64,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         if ($this->getLayout() == 'default') {
         	$tpl = $this->_getDefaultTemplate();
         }
-
+        echo $this->get('AdvancedURI');
         parent::display($tpl);
     }
     

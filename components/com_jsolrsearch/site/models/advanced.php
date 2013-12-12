@@ -39,8 +39,6 @@ jimport('jsolr.search.factory');
 
 jimport('jsolr.form.form');
 
-require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
-
 class JSolrSearchModelAdvanced extends JModelForm
 {
 	public function __construct($config = array())
@@ -187,7 +185,10 @@ class JSolrSearchModelAdvanced extends JModelForm
 				$uri->setVar($key, $value);
 			}
 		}
-	
+		
+		// finally add the Itemid for basic search
+		$uri->setVar('Itemid', JSolrSearchFactory::getSearchRoute()->getVar('Itemid'));
+
 		return $uri;
 	}
 	
@@ -234,7 +235,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 	 */
 	protected function loadFormData()
 	{
-		$query = JSolrSearchFactory::getURI()->getQuery(true);
+		$query = JSolrSearchFactory::getSearchRoute()->getQuery(true);
 
 		if (count($query)) {
 			$query = array_merge($query, $this->parseQuery());

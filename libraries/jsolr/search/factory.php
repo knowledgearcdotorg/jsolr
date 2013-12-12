@@ -36,6 +36,8 @@ jimport('jsolr.search.query');
 class JSolrSearchFactory extends JSolrFactory 
 {
 	protected static $component = 'com_jsolrsearch';
+	
+	protected static $lookup;
 
 	/**
 	 * Gets an instance of the JSolrSearchQuery class.
@@ -49,35 +51,122 @@ class JSolrSearchFactory extends JSolrFactory
 		
 		return new JSolrSearchQuery($query, $solr);
 	}
-
+	
 	/**
-	 * Gets the search url.
+	 * Builds a route for basic search and results.
 	 *
-	 * @param bool $queryOnly True if the initial query should be returned,
-	 * false otherwise. Defaults to false.
+	 * Each filter should be defined within the array as $array[$key] = $value.
 	 *
-	 * @return JURI The search url.
+	 * @example
+	 * $query = 'author: Ann-Teresa Young';
+	 * $filters = array('q_custom'=>'my custom filter');
+	 *
+	 * JSolrSearchFactory::getSearchRoute($query, $filters);
+	 *
+	 * @param array $additionalFilters An array of additional query filters. Each filter
+	 * should be defined within the array as $array[$key] = $value.
 	 */
-	public static function getURI($queryOnly = false)
+	public static function getSearchRoute($additionalFilters = array())
 	{
-		$uri = new JURI('index.php');
-
-		if (JURI::getInstance()->getVar('q')) {
-			$uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
-		}
-		
-		$uri->setVar("option", "com_jsolrsearch");
-		$uri->setVar("view", "basic");
-		$uri->setVar("Itemid", JFactory::getApplication()->input->get('Itemid', null, 'int'));
-		
+		$uri = self::getRoute('basic');
+	
 		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
-			if (!$queryOnly) {				
-				if (trim($value) && $key != 'limitstart' && $key != 'task') {
-					$uri->setVar($key, $value);
-				}
+			if ($value && $key != 'limitstart' && $key != 'task') {
+				$uri->setVar($key, $value);
 			}
 		}
 	
+		foreach ($additionalFilters as $key=>$value) {
+			$uri->setVar($key, urlencode($value));
+		}
+	
+		if ($item = self::_findItem('basic')) {
+			$uri->setVar('Itemid', $item);
+		}
+	
 		return $uri;
+	}
+	
+	public static function getAdvancedSearchRoute($additionalFilters = array())
+	{
+		$uri = self::getRoute('advanced');
+	
+		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
+			if ($value && $key != 'limitstart' && $key != 'task') {
+				$uri->setVar($key, $value);
+			}
+		}
+	
+		foreach ($additionalFilters as $key=>$value) {
+			$uri->setVar($key, urlencode($value));
+		}
+	
+		return $uri;
+	}
+	
+	public static function getQueryRoute($additionalFilters = array())
+	{
+		$uri = self::getRoute('basic');
+	
+		foreach ($additionalFilters as $key=>$value) {
+			$uri->setVar($key, urlencode($value));
+		}
+	
+		return $uri;
+	}
+	
+	protected static function getRoute($view = 'basic')
+	{
+		$uri = new JURI('index.php');
+		$uri->setVar('option', 'com_jsolrsearch');
+		$uri->setVar('view', $view);
+	
+		if (JURI::getInstance()->getVar('q')) {
+			$uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
+		}
+	
+		if ($item = self::_findItem($view)) {
+			$uri->setVar('Itemid', $item);
+		}
+	
+		return $uri;
+	}
+	
+	protected static function _findItem($view = 'basic')
+	{
+		$app = JFactory::getApplication();
+		$menus = $app->getMenu('site');
+		$found = false;
+		$itemId = 0;
+	
+		// Prepare the reverse lookup array.
+		if (!isset(self::$lookup[$view])) {
+	
+			$component = JComponentHelper::getComponent('com_jsolrsearch');
+			$items = $menus->getItems('component_id', $component->id);
+
+			while (($item = current($items)) && !$found) {
+				if (isset($item->query) && isset($item->query['view'])) {					
+					if ($view == $item->query['view']) {
+						$found = true;
+						self::$lookup[$view] = $item->id;
+					}
+				}
+	
+				next($items);
+			}
+		}
+
+		if ($itemId = JArrayHelper::getValue(self::$lookup, $view, null)) {
+			return $itemId;
+		} else {
+			$active = $menus->getActive();
+				
+			if ($active) {
+				return $active->id;
+			}
+		}
+	
+		return null;
 	}
 }

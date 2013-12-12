@@ -160,7 +160,7 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	 */
 	protected function isSelected($facet)
 	{
-		$url = JSolrSearchFactory::getURI();
+		$url = JSolrSearchFactory::getSearchRoute();
 		
 		$filters = $this->getFilters();
 
@@ -185,7 +185,7 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	 */
 	protected function getFilterURI($facet)
 	{
-		$url = clone JSolrSearchFactory::getURI();
+		$url = clone JSolrSearchFactory::getSearchRoute();
 		
 		foreach ($url->getQuery(true) as $key=>$value) {
 			$url->setVar($key, urlencode($value));

@@ -42,10 +42,6 @@ jimport('jsolr.search.factory');
 jimport('jsolr.form.form');
 jimport('jsolr.pagination.pagination');
 
- // error_reporting(E_ALL);
- // ini_set("display_errors", 1); 
-
-
 class JSolrSearchModelSearch extends JModelForm
 {
 	const MM_DEFAULT = '1';
@@ -184,20 +180,6 @@ class JSolrSearchModelSearch extends JModelForm
 	public function getPagination()
 	{
 		return $this->pagination;
-	}
-	
-	/**
-	 * Gets the advanced search url.
-	 *
-	 * @return JURI The advanced search url.
-	 */
-	public function getAdvancedURI()
-	{
-		$uri = clone JSolrSearchFactory::getURI();
-
-		$uri->setVar('view', 'advanced');
-
-		return $uri;
 	}
 	
 	public function getSuggestionQueryURIs()
@@ -399,7 +381,7 @@ class JSolrSearchModelSearch extends JModelForm
     $array = array_merge(array(array('plugin' => '', 'name' => JText::_('Everything'))), $array);
     
     for ($i = 0; $i < count($array); $i++) {
-    	$uri = clone JSolrSearchFactory::getURI(true);
+    	$uri = clone JSolrSearchFactory::getQueryRoute();
     	
     	if ($array[$i]['plugin'])
     		$uri->setVar('o', $array[$i]['plugin']);

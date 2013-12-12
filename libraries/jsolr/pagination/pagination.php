@@ -50,7 +50,7 @@ class JSolrPagination extends JPagination
 	
 		// Initialize the additional URL parameters string using the 
 		// pre-existing search url.
-		$params = JSolrSearchFactory::getURI();
+		$params = JSolrSearchFactory::getSearchRoute();
 
 		if (!empty($this->additionalUrlParams))
 		{
@@ -133,7 +133,7 @@ class JSolrPagination extends JPagination
 	
 		// Initialize the additional URL parameters string using the 
 		// pre-existing search url.
-		$params = JSolrSearchFactory::getURI();
+		$params = (string)JSolrSearchFactory::getSearchRoute();
 		
 		if (!empty($this->_additionalUrlParams))
 		{

@@ -59,7 +59,7 @@ JHTML::_('behavior.formvalidation');
 		<button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
 	</fieldset>
 
-	<a href="<?php echo JRoute::_($this->get('AdvancedURI')); ?>">Advanced search</a>
+	<a href="<?php echo JRoute::_(JSolrSearchFactory::getAdvancedSearchRoute()); ?>">Advanced search</a>
 	
 	<div class="clr"></div>
 
