@@ -233,6 +233,8 @@ class JSolrSearchModelSearch extends JModelForm
 	 */
 	protected function loadFormData()
 	{
+		$data = array();
+		
 		$query = JURI::getInstance()->getQuery(true);
 
 		if (count($query)) {
