@@ -55,7 +55,7 @@ class JSolrFormFieldMetadataFieldList extends JFormFieldList
 		$options = parent::getOptions();
 
 		JPluginHelper::importPlugin("jsolrcrawler");
-		$dispatcher =& JDispatcher::getInstance();
+		$dispatcher = JDispatcher::getInstance();
 		
 		$array = JArrayHelper::getValue($dispatcher->trigger("onListMetadataFields"), 0);
 		
