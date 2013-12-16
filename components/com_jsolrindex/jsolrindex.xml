@@ -44,5 +44,9 @@
 			<language tag="en-GB">language/en-GB/en-GB.com_jsolrindex.ini</language>
 			<language tag="en-GB">language/en-GB/en-GB.com_jsolrindex.sys.ini</language>
 		</languages>
-	</administration>	
+	</administration>
+	
+	<updateservers>
+		<server type="collection">http://update.knowledgearc.org/components/jsolrindex/list.xml</server>
+	</updateservers>
 </extension>
