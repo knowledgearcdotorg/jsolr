@@ -87,8 +87,8 @@ class JSolrCrawlerCli extends JApplicationCli
     	}
     	
     	// fool the system into thinking we are running as JSite with JSolr as the active component
+    	$_SERVER['HTTP_HOST'] = 'domain.com';
 		JFactory::getApplication('site');
-		$_SERVER['HTTP_HOST'] = 'domain.com';
 
 		// Disable caching.
 		$config = JFactory::getConfig();
