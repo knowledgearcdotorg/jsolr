@@ -68,67 +68,51 @@ class JSolrSearchFactory extends JSolrFactory
 	 */
 	public static function getSearchRoute($additionalFilters = array())
 	{
-		$uri = self::getRoute('basic');
-	
-		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
-			if ($value && $key != 'limitstart' && $key != 'task') {
-				$uri->setVar($key, $value);
-			}
-		}
-	
-		foreach ($additionalFilters as $key=>$value) {
-			$uri->setVar($key, urlencode($value));
-		}
-	
-		if ($item = self::_findItem('basic')) {
-			$uri->setVar('Itemid', $item);
-		}
-	
+		$uri = self::getRoute('basic', $additionalFilters);
+		
 		return $uri;
 	}
 	
 	public static function getAdvancedSearchRoute($additionalFilters = array())
 	{
-		$uri = self::getRoute('advanced');
-	
-		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
-			if ($value && $key != 'limitstart' && $key != 'task') {
-				$uri->setVar($key, $value);
-			}
-		}
-	
-		foreach ($additionalFilters as $key=>$value) {
-			$uri->setVar($key, urlencode($value));
-		}
+		$uri = self::getRoute('advanced', $additionalFilters);
 	
 		return $uri;
 	}
 	
 	public static function getQueryRoute($additionalFilters = array())
 	{
-		$uri = self::getRoute('basic');
-	
-		foreach ($additionalFilters as $key=>$value) {
-			$uri->setVar($key, urlencode($value));
-		}
+		$uri = self::getRoute('basic', $additionalFilters, true);
 	
 		return $uri;
 	}
 	
-	protected static function getRoute($view = 'basic')
+	protected static function getRoute($view = 'basic', $additionalFilters = array(), $queryOnly = false)
 	{
 		$uri = new JURI('index.php');
 		$uri->setVar('option', 'com_jsolrsearch');
 		$uri->setVar('view', $view);
 	
-		if (JURI::getInstance()->getVar('q')) {
-			$uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
+		if (!$queryOnly) {
+			if (JURI::getInstance()->getVar('q')) {
+				$uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
+			}
+		} else {
+			foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
+				if ($value && $key != 'limitstart' && $key != 'task') {
+					$uri->setVar($key, urlencode($value));
+				}
+			}
+		}
+		
+		foreach ($additionalFilters as $key=>$value) {
+			$uri->setVar($key, urlencode($value));
 		}
 	
 		if ($item = self::_findItem($view)) {
 			$uri->setVar('Itemid', $item);
 		}
-	
+
 		return $uri;
 	}
 	
