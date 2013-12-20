@@ -93,7 +93,7 @@ class JSolrSearchFactory extends JSolrFactory
 		$uri->setVar('option', 'com_jsolrsearch');
 		$uri->setVar('view', $view);
 	
-		if (!$queryOnly) {
+		if ($queryOnly) {
 			if (JURI::getInstance()->getVar('q')) {
 				$uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
 			}
