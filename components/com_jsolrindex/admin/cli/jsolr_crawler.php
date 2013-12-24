@@ -134,7 +134,7 @@ class JSolrCrawlerCli extends JApplicationCli
 
     	// @deprecated the m and modified options are deprecated and will be 
     	// removed from future versions. 
-    	if ($this->input->getString('u') || $this->input->getString('updated')) {
+    	if ($this->input->getString('u') || $this->input->getString('update')) {
     		$lastModified = $this->input->getString('u', $this->input->getString('update'));
 
     		$d = JDate::createFromFormat("Y-m-d\TH:i:sP", $lastModified, new DateTimeZone(JFactory::getConfig()->get('offset')));
