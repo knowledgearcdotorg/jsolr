@@ -187,9 +187,11 @@ class JSolrSearchModelSearch extends JModelForm
 		$uris = array();
 		$i = 0;
 		
-		$uri = clone $this->getQueryURI();
+		$uri = JSolrSearchFactory::getQueryRouteWithExtension();
 
 		$uri->setVar('q', $this->getItems()->getSuggestions());
+		
+		$uri->setVar('q', $this->getItems()->getSuggestions());		
 
 		$uris[$i]['uri'] = $uri;
 		$uris[$i]['title'] = $this->getItems()->getSuggestions();
