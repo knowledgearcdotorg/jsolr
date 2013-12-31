@@ -70,7 +70,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 		
 		self::$chunk = 1000;
 		
-		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, 'jsolr');
+		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, array('jsolr', 'crawler', 'search'));
 	}
 	
 	/**

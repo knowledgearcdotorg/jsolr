@@ -137,7 +137,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$items = $response->response->docs;
 			}
 		} catch (Exception $e) {
-        	JLog::add($client->getMessage(), JLog::ERROR, 'crawler');
+        	JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
 		}
 		
 		return $items;			
@@ -505,7 +505,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			} catch (Exception $e) {
 				if ($e->getCode() == 403) {
 					$this->out('Could not index item '.$temp->{'search.resourceid'}.'...skipping');
-				}
+					
+					if (JArrayHelper::getValue($this->get('indexOptions'), "verbose", false, 'bool')) {
+						$this->out('Reason; '.$e->getMessage());
+					}
+				}				
 			}
 			
 			// index when either the number of items retrieved matches
@@ -755,7 +759,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$collection = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/collections/'.$id.'.json')));
 				$this->collections[$collection->id] = $collection;
 			} catch (Exception $e) {
-				JLog::add($client->getResponseInfo()." ".$e->toString(), JLog::ERROR, 'crawler');
+				JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
 			}
 		}
 	
@@ -764,10 +768,12 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 	public function onListMetadataFields()
 	{
+		$metadata = array();
+		
 		try {
 			$metadata = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/items/metadatafields.json')));
 		} catch (Exception $e) {
-			JLog::add($client->getResponseInfo()." ".$e->toString(), JLog::ERROR, 'crawler');
+			JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
 		}
 		
 		return $metadata;
