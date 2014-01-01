@@ -3,7 +3,7 @@
 /**
  * @package JSolr
  * @subpackage Index
- * @copyright Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  */
 
 // Make sure we're being called from the command line, not a web interface
@@ -106,6 +106,11 @@ class JSolrCrawlerCli extends JApplicationCli
 				return;
 			}
 
+			if ($this->input->get('c') || $this->input->get('clean')) {
+				$this->clean();
+				return;
+			}
+
 			$this->index();
 						
 		} catch (Exception $e) {
@@ -115,13 +120,20 @@ class JSolrCrawlerCli extends JApplicationCli
 		}
     }
     
-    protected function optimize()
+    protected function clean()
     {
-    	$client = JSolrIndexFactory::getService();
-    	
-    	if ($client->ping()) {
-    		$client->optimize();
+		$plugin = $this->input->getString('plugin', $this->input->getString('P', null));
+    	 
+    	$this->out("cleaning non-existent documents...");
+
+    	try {
+	    	$this->_fireEvent('onClean', array($this->_getOptions()), $plugin);
+    	} catch (Exception $e) {
+    		$this->out($e->getMessage());
+    		$this->out('clean prematurely ending with an error.');
     	}
+
+    	$this->out("index clean completed successfully.");
     }
     
     protected function index()
@@ -130,7 +142,6 @@ class JSolrCrawlerCli extends JApplicationCli
     	$options['application'] = get_class($this);
     	$options['rebuild'] = ($this->input->get('r') || $this->input->get('rebuild')) ? true : false;
     	$options['verbose'] = ($this->input->get('v') || $this->input->get('verbose')) ? true : false;
-    	$options['clean'] = ($this->input->get('c') || $this->input->get('clean')) ? true : false;
 
     	// @deprecated the m and modified options are deprecated and will be 
     	// removed from future versions. 
@@ -199,6 +210,15 @@ class JSolrCrawlerCli extends JApplicationCli
     	
     	$this->out("execution time: ".$time->format("%H:%I:%S"));  	 
     }
+
+    protected function optimize()
+    {
+    	$client = JSolrIndexFactory::getService();
+    	 
+    	if ($client->ping()) {
+    		$client->optimize();
+    	}
+    }
     
     protected function purge()
     {
@@ -219,25 +239,27 @@ class JSolrCrawlerCli extends JApplicationCli
     protected function help()
     {
     	echo <<<EOT
-Usage: jsolr_crawler [options]
-   jsolr_crawler [vq] [u|update] <last-index-date>
+Usage: jsolr_crawler [OPTIONS] [task]
+   jsolr_crawler [OPTIONS] [u|update] <last-index-date>
     	
 Provides tools for managing a Joomla-centric Solr index.
 
+[OPTIONS]
+  -q, --quiet         Suppress all output. Overrides --verbose if both 
+                      specified.
+  -v, --verbose       Display verbose information about the current action.
+  -P, --plugin=name   Specify an optional plugin name (E.g. content).
+[task]
   -c, --clean         Clean out deleted items from the index.
   -h, --help          Display this help and exit.
-  -m, --modified      Deprecated. Use -u or --update instead.
   -o, --optimize      Run an optimization on the index.
   -p, --purge         Purge the contents of the index.
-  -q, --quiet         Suppress all output.
   -r, --rebuild       Rebuild the index, deleting then re-creating all 
                       documents.                      
   -u, --update        Index only those items which have been created or 
                       modified since the last index.
                       Specify an ISO8601-compatible date to override the last 
                       index date.
-  -v, --verbose       Display verbose information about the current action.
-    	
 EOT;
     }
     
@@ -248,6 +270,37 @@ EOT;
     	}
     	
     	return $this;
+    }
+    
+    private function _fireEvent($name, $args = array(), $plugin = null)
+    {
+    	if ($plugin) {
+    		if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
+    			throw new Exception('The specified plugin does not exist.');
+    		}
+    	}
+    	
+    	$dispatcher = JEventDispatcher::getInstance();
+    
+    	JPluginHelper::importPlugin("jsolrcrawler", $plugin, true, $dispatcher);
+
+    	return $dispatcher->trigger($name, $args);
+    }
+    
+    private function _getOptions()
+    {
+    	$options = array();
+    	$options['application'] = get_class($this);    	
+    	$options['verbose'] = false;
+    	
+    	// Verbose can only be set if quiet is not set.
+    	if (!($this->input->get('q', false) || $this->input->get('quiet', false))) {
+    		if ($this->input->get('v') || $this->input->get('verbose')) {
+    			$options['verbose'] = true;
+    		}
+    	}    	
+    	
+    	return $options;
     }
 }
  

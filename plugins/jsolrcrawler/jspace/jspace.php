@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Index
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr JSpace Index plugin for Joomla!.
 
    The JSolr JSpace Index plugin for Joomla! is free software: you can redistribute it 
@@ -23,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<haydenyoung@knowledgearc.com> 
  * 
  */
  
@@ -345,26 +345,24 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		->retrieveFields('id')
 		->rows(0);
 	
-		$response = $query->search();
+		$results = $query->search();
 
-		if (isset($response->response->numFound)) {
-			$query->rows($response->response->numFound);
+		if ($results->get('numFound')) {
+			$query->rows($results->get('numFound'));
 		}
 	
-		$response = $query->search();
+		$results = $query->search();
 	
-		if (isset($response->response->docs)) {
-			$docs = $response->response->docs;
-	
+		if ($results->get('numFound')) {	
 			$delete = array();
 			$prefix = $this->get('extension').'.'.$this->get('view').'.';
 
-			foreach ($docs as $doc) {
+			foreach ($results as $result) {
 				$needle = new stdClass();
-				$needle->{'search.resourceid'} = $doc->id;
+				$needle->{'search.resourceid'} = $result->id;
 
 				if (array_search($needle, $items) === false) {		
-					$delete[] = $prefix.$doc->id;
+					$delete[] = $prefix.$result->id;
 				}
 			}
 

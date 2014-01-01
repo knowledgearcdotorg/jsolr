@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Index
- * @copyright	Copyright (C) 2012 - 2013 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 - 2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
 
    The JSolr library for Joomla! is free software: you can redistribute it 
@@ -23,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<haydenyoung@knowledgearc.com> 
  * 
  */
  
@@ -149,7 +149,24 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$id = JArrayHelper::getValue($id, 0);
 		return $extension.'.'.$view.'.'.$id;
 	}
-	
+
+	/**
+	 * Cleans deleted items from the index. 
+	 *
+	 * @throws Exception
+	 */
+	public function onClean($options = array())
+	{
+		$this->set('indexOptions', $options);
+
+		try {
+			$this->clean();
+		} catch (Exception $e) {
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+			throw $e;
+		}
+	}
+
 	/**
 	 * Builds Solr documents and indexes them to the Solr server.
 	 * 
@@ -162,8 +179,6 @@ abstract class JSolrIndexCrawler extends JPlugin
 		try {
 			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
 				$this->rebuild();	
-			} elseif (JArrayHelper::getValue($this->get('indexOptions'), "clean", false, 'bool')) {
-				$this->clean();
 			} else {
 				$this->index();
 			}
@@ -195,10 +210,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 	/**
 	 * Cleans deleted items from the index.
 	 */
-	protected function clean()
-	{
-		
-	}
+	abstract protected function clean();
 	
 	/**
 	 * Adds items to the index.
