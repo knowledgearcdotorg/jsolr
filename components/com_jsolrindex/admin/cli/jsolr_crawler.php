@@ -111,26 +111,27 @@ class JSolrCrawlerCli extends JApplicationCli
 				return;
 			}
 
+			if ($this->input->get('r') || $this->input->get('rebuild')) {
+				$this->rebuild();
+				return;
+			}
+			
 			$this->index();
 						
 		} catch (Exception $e) {
-			if ($this->input->get('q', null) || $this->input->get('quiet', null)) {
-				$this->out($e->getMessage());
-			}
+			$this->out($e->getMessage());
 		}
     }
     
     protected function clean()
     {
-		$plugin = $this->input->getString('plugin', $this->input->getString('P', null));
-    	 
     	$this->out("cleaning non-existent documents...");
 
     	try {
-	    	$this->_fireEvent('onClean', array($this->_getOptions()), $plugin);
+	    	$this->_fireEvent('onClean', array($this->_getOptions()), $this->_getPlugin());
     	} catch (Exception $e) {
-    		$this->out($e->getMessage());
     		$this->out('clean prematurely ending with an error.');
+    		throw $e;
     	}
 
     	$this->out("index clean completed successfully.");
@@ -210,7 +211,7 @@ class JSolrCrawlerCli extends JApplicationCli
     	
     	$this->out("execution time: ".$time->format("%H:%I:%S"));  	 
     }
-
+    
     protected function optimize()
     {
     	$client = JSolrIndexFactory::getService();
@@ -222,12 +223,35 @@ class JSolrCrawlerCli extends JApplicationCli
     
     protected function purge()
     {
-		$client = JSolrIndexFactory::getService();
+		$service = JSolrIndexFactory::getService();
 		
-		if ($client->ping()) {
-			$client->deleteByQuery("*:*");
-			$client->commit();
+		$plugin = $this->_getPlugin();
+		
+		if ($service->ping()) {
+			if ($plugin) {
+				// TODO: really need to get rid of com_ in the extension.
+				$this->out('purging all items for plugin '.$plugin.' from index...');
+				
+				if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
+					throw new Exception('The specified plugin does not exist or is not enabled.');
+				}
+				
+				$service->deleteByQuery("extension:com_".$plugin);
+			} else {
+				$this->out('purging all items from index...');
+				$service->deleteByQuery("*:*");
+			}
+			
+			$service->commit();
+			
+			$this->out('purging index completed.');
 		}	
+    }
+
+    protected function rebuild()
+    {
+    	$this->purge();
+    	$this->index();
     }
  
     /**
@@ -246,7 +270,7 @@ Provides tools for managing a Joomla-centric Solr index.
 
 [OPTIONS]
   -q, --quiet         Suppress all output. Overrides --verbose if both 
-                      specified.
+                      options are specified.
   -v, --verbose       Display verbose information about the current action.
   -P, --plugin=name   Specify an optional plugin name (E.g. content).
 [task]
@@ -276,7 +300,7 @@ EOT;
     {
     	if ($plugin) {
     		if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
-    			throw new Exception('The specified plugin does not exist.');
+    			throw new Exception('The specified plugin does not exist or is not enabled.');
     		}
     	}
     	
@@ -301,6 +325,11 @@ EOT;
     	}    	
     	
     	return $options;
+    }
+    
+    private function _getPlugin()
+    {
+    	return $this->input->getString('plugin', $this->input->getString('P', null));
     }
 }
  
