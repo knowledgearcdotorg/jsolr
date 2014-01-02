@@ -162,7 +162,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 		try {
 			$this->clean();
 		} catch (Exception $e) {
-			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 			throw $e;
 		}
 	}
@@ -178,16 +178,26 @@ abstract class JSolrIndexCrawler extends JPlugin
 
 		try {
 			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
-				$this->rebuild();	
+				$this->rebuild();
 			} else {
 				$this->index();
 			}
 		} catch (Exception $e) {
-			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 				
-			$this->out('index failed. '.$e->getMessage());
-			$this->out('index failed. '.$e->getTraceAsString());
+			throw $e;
 		}
+	}
+	
+	public function onPurge($options = array())
+	{
+		$this->set('indexOptions', $options);
+		
+		$this->out('purging '.$this->get('extension').' items from index...');
+		
+		$this->purge();
+		
+		$this->out('purging '.$this->get('extension').' items completed.');
 	}
 	
 	/**
@@ -251,6 +261,13 @@ abstract class JSolrIndexCrawler extends JPlugin
 					
 		$this->out($this->get('extension').' crawler completed.')
 			 ->out("items indexed: $total");
+	}
+	
+	protected function purge()
+	{	
+		$solr = JSolrIndexFactory::getService();
+		$solr->deleteByQuery("extension:".$this->get('extension'));
+		$solr->commit();
 	}
 	
 	/**

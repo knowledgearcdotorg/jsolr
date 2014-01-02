@@ -222,30 +222,24 @@ class JSolrCrawlerCli extends JApplicationCli
     }
     
     protected function purge()
-    {
-		$service = JSolrIndexFactory::getService();
-		
+    {		
 		$plugin = $this->_getPlugin();
-		
-		if ($service->ping()) {
-			if ($plugin) {
-				// TODO: really need to get rid of com_ in the extension.
-				$this->out('purging all items for plugin '.$plugin.' from index...');
 				
-				if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
-					throw new Exception('The specified plugin does not exist or is not enabled.');
-				}
-				
-				$service->deleteByQuery("extension:com_".$plugin);
-			} else {
+		if ($plugin) {
+			$this->_fireEvent('onPurge', $this->_getOptions(), $plugin);
+		} else {
+			$solr = JSolrIndexFactory::getService();
+			
+			if ($solr->ping()) {
 				$this->out('purging all items from index...');
-				$service->deleteByQuery("*:*");
+								
+				// more efficient than calling each plugin's onPurge.
+				$solr->deleteByQuery("*:*");
+				$solr->commit();
+				
+				$this->out('purging index completed.');
 			}
-			
-			$service->commit();
-			
-			$this->out('purging index completed.');
-		}	
+		}
     }
 
     protected function rebuild()
