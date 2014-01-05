@@ -125,7 +125,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			$vars['fq'] = 'search.resourcetype:2';
 			$vars['rows'] = '2147483647';
 
-			if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
+			if ($lastModified = JArrayHelper::getValue($this->get('indexingParams'), 'lastModified', null, 'string')) {
 				$lastModified = JFactory::getDate($lastModified)->format('Y-m-d\TH:i:s\Z', false);
 
 				$vars['q'] = urlencode("SolrIndexer.lastIndexed:[$lastModified TO NOW]");
@@ -411,6 +411,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$i = 0;
 
 		foreach ($items as $temp) {
+			$total++;
+			
 			try {
 				$item = json_decode($connecter->get(JSpaceFactory::getEndpoint('/items/'.$temp->{'search.resourceid'}.'.json', null)));
 				
@@ -434,7 +436,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 				$ids[$i] = $key;
 				
-				$this->out('item '.$key.' ready for indexing');				
+				$this->out(array('item '.$key, '[queued]'));				
 				
 				if ($params->get('index')) {
 					$bitstreams = $this->_getBitstreams($item);
@@ -443,6 +445,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					$j++;
 		
 					foreach ($bitstreams as $bitstream) {
+						$totalBitstreams++;
+						
 						$type = strtolower($bitstream->type);
 						
 						$documents[$i]->addField($type.'_bitstream_id_tim', $bitstream->id);
@@ -490,23 +494,18 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 								
 						$ids[$j] = $key;
 						
-						$this->out('bitstream '.$key.' ready for indexing');
+						$this->out(array('bitstream '.$key, '[queued]'));
 						
-						$totalBitstreams++;
 						$j++;
 					}
 										
 					$i=$j;
-				}
-					
-				$total++;			
+				}			
 			} catch (Exception $e) {
 				if ($e->getCode() == 403) {
-					$this->out('Could not index item '.$temp->{'search.resourceid'}.'...skipping');
-					
-					if (JArrayHelper::getValue($this->get('indexOptions'), "verbose", false, 'bool')) {
-						$this->out('Reason; '.$e->getMessage());
-					}
+					$this
+						->out(array('Could not index item '.$temp->{'search.resourceid'},'[skipping]'))
+						->out("\tReason:".$e->getMessage());
 				}				
 			}
 			
@@ -516,15 +515,14 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			if ($total == count($items) || $i > static::$chunk) {
 				$response = $solr->addDocuments($documents, false, true, true, 10000);
 				
-				$this->out($i.' documents indexed [status:'.$response->getHttpStatus().']');
+				$this->out(array($i.' documents indexed', '[status:'.$response->getHttpStatus().']'));
 				
 				$documents = array();
 				$i = 0;
 			}
 		}
 
-		$this->out($this->get('extension')." crawler completed.")
-			 ->out("items indexed: $total")
+		$this->out("items indexed: $total")
 			 ->out("bitsteams indexed: $totalBitstreams");
 	}
 	
@@ -673,7 +671,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 				if ($this->isAllowedContentType($contentType) == 1) {
 					if (!$excludeContent && $this->isContentIndexable($contentType) == 1) {
-						$this->out('extracting/indexing content in '.$path);
+						$this->out(array($path, "[extracting content]"));
 						ob_start();
 						passthru("java -jar ".$params->get('local_tika_app_path')." ".$path." 2> /dev/null");
 						$result = ob_get_contents();

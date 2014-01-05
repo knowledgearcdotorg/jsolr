@@ -123,29 +123,20 @@ class JSolrCrawlerCli extends JApplicationCli
 		}
     }
     
+    /**
+     * The "clean" task target.
+     * 
+     * Fires the onClean event.
+     */
     protected function clean()
     {
-    	$this->out("cleaning non-existent documents...");
-
-    	try {
-	    	$this->_fireEvent('onClean', array($this->_getOptions()), $this->_getPlugin());
-    	} catch (Exception $e) {
-    		$this->out('clean prematurely ending with an error.');
-    		throw $e;
-    	}
-
-    	$this->out("index clean completed successfully.");
+    	$this->_fireEvent('onClean', array(get_class($this), $this->_isVerbose()), $this->_getPlugin());
     }
     
     protected function index()
     {
-    	$options = array();
-    	$options['application'] = get_class($this);
-    	$options['rebuild'] = ($this->input->get('r') || $this->input->get('rebuild')) ? true : false;
-    	$options['verbose'] = ($this->input->get('v') || $this->input->get('verbose')) ? true : false;
+    	$indexingParams = array();
 
-    	// @deprecated the m and modified options are deprecated and will be 
-    	// removed from future versions. 
     	if ($this->input->getString('u') || $this->input->getString('update')) {
     		$lastModified = $this->input->getString('u', $this->input->getString('update'));
 
@@ -164,44 +155,23 @@ class JSolrCrawlerCli extends JApplicationCli
     		}
     		
     		if ($valid) {
-    			$options['lastModified'] = $lastModified;
+    			$indexingParams['lastModified'] = $lastModified;
     		} else {
 	    		$client = JSolrIndexFactory::getService();
 	    		
 	    		if ($client->ping()) {
 	    			$response = $client->luke();
 	    	
-	    			$options['lastModified'] = $response->index->lastModified;
+	    			$indexingParams['lastModified'] = $response->index->lastModified;
 	    		}
     		}
-    		
-    	} elseif ($this->input->get('m') || $this->input->get('modified')) {
-    		$lastModified = $this->input->get('m', $this->input->get('modified'));
-    		
-    		$client = JSolrIndexFactory::getService();
-    		
-    		if ($client->ping()) {
-    			$response = $client->luke();
-    			 
-    			$options['lastModified'] = $response->index->lastModified;
-    		}    		
     	}
     	
     	$start = new JDate('now');
     	
     	$this->out("crawl start ".$start->format("c"));
 
-    	$dispatcher = JDispatcher::getInstance();
-
-    	JPluginHelper::importPlugin("jsolrcrawler", null, true, $dispatcher);
-    	
-		try {			
-    		$array = $dispatcher->trigger('onIndex', array($options));
-		} catch (Exception $e) {
-    		if ($this->input->get('q', false) || $this->input->get('quiet', false)) {
-    			$this->out($e->getMessage());
-    		}    		
-    	}
+    	$this->_fireEvent('onIndex', array(get_class($this), $this->_isVerbose(), $indexingParams), $this->_getPlugin());
     	
     	$end = new JDate('now');
 
@@ -226,7 +196,7 @@ class JSolrCrawlerCli extends JApplicationCli
 		$plugin = $this->_getPlugin();
 				
 		if ($plugin) {
-			$this->_fireEvent('onPurge', $this->_getOptions(), $plugin);
+			$this->_fireEvent('onPurge', array(get_class($this), $this->_isVerbose()), $plugin);
 		} else {
 			$solr = JSolrIndexFactory::getService();
 			
@@ -256,6 +226,7 @@ class JSolrCrawlerCli extends JApplicationCli
      */
     protected function help()
     {
+    	print_r($this->input->getString('h', null));
     	echo <<<EOT
 Usage: jsolr_crawler [OPTIONS] [task]
    jsolr_crawler [OPTIONS] [u|update] <last-index-date>
@@ -263,10 +234,11 @@ Usage: jsolr_crawler [OPTIONS] [task]
 Provides tools for managing a Joomla-centric Solr index.
 
 [OPTIONS]
-  -q, --quiet         Suppress all output. Overrides --verbose if both 
-                      options are specified.
+  -q, --quiet         Suppress all output including errors. Overrides 
+                      --verbose if both options are specified.
   -v, --verbose       Display verbose information about the current action.
-  -P, --plugin=name   Specify an optional plugin name (E.g. content).
+  -P, --plugin=name   Specify an optional plugin name (E.g. content) to run 
+                      tasks against a particular plugin.
 [task]
   -c, --clean         Clean out deleted items from the index.
   -h, --help          Display this help and exit.
@@ -275,9 +247,9 @@ Provides tools for managing a Joomla-centric Solr index.
   -r, --rebuild       Rebuild the index, deleting then re-creating all 
                       documents.                      
   -u, --update        Index only those items which have been created or 
-                      modified since the last index.
-                      Specify an ISO8601-compatible date to override the last 
-                      index date.
+                      modified since the specified ISO8601-compatible date 
+                      or the last index date if no date is specified.
+
 EOT;
     }
     
@@ -304,21 +276,17 @@ EOT;
 
     	return $dispatcher->trigger($name, $args);
     }
-    
-    private function _getOptions()
+
+    private function _isVerbose()
     {
-    	$options = array();
-    	$options['application'] = get_class($this);    	
-    	$options['verbose'] = false;
-    	
     	// Verbose can only be set if quiet is not set.
     	if (!($this->input->get('q', false) || $this->input->get('quiet', false))) {
     		if ($this->input->get('v') || $this->input->get('verbose')) {
-    			$options['verbose'] = true;
+    			return true;
     		}
-    	}    	
+    	}
     	
-    	return $options;
+    	return false;
     }
     
     private function _getPlugin()

@@ -39,8 +39,13 @@ jimport('jsolr.index.factory');
 jimport('jsolr.apache.solr.service');
 jimport('jsolr.apache.solr.document');
 
+/**
+ * An abstract class which all other crawler classes should derive from.
+ */
 abstract class JSolrIndexCrawler extends JPlugin 
 {
+	const STDOUT_SEPARATOR_WIDTH = 90;
+	
 	protected static $chunk;
 	
     /**
@@ -61,7 +66,25 @@ abstract class JSolrIndexCrawler extends JPlugin
      */
 	protected $view;
 	
-	protected $indexOptions = array();
+	/**
+     * True if verbose messaging should be output, false otherwise.
+     * 
+     * @var bool
+	 */
+	protected $verbose = false;
+	
+	/**
+	 * The class name of the calling object.
+	 * @var string
+	 */
+	protected $caller;
+	
+	/**
+	 * An array of additional params that the crawler may require to 
+	 * complete its tasks.
+	 * @var array
+	 */
+	protected $indexingParams = array();
 
 	public function __construct(&$subject, $config = array())
 	{
@@ -149,81 +172,97 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$id = JArrayHelper::getValue($id, 0);
 		return $extension.'.'.$view.'.'.$id;
 	}
-
-	/**
-	 * Cleans deleted items from the index. 
-	 *
-	 * @throws Exception
-	 */
-	public function onClean($options = array())
-	{
-		$this->set('indexOptions', $options);
-
-		try {
-			$this->clean();
-		} catch (Exception $e) {
-			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
-			throw $e;
-		}
-	}
-
-	/**
-	 * Builds Solr documents and indexes them to the Solr server.
-	 * 
-	 * @throws Exception
-	 */
-	public function onIndex($options = array())
-	{
-		$this->set('indexOptions', $options);
-
-		try {
-			if (JArrayHelper::getValue($this->get('indexOptions'), "rebuild", false, 'bool')) {
-				$this->rebuild();
-			} else {
-				$this->index();
-			}
-		} catch (Exception $e) {
-			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
-				
-			throw $e;
-		}
-	}
 	
-	public function onPurge($options = array())
+	/**
+	 * Fires the cleaning event.
+	 * 
+	 * Derived classes should override the clean() method when implementing 
+	 * a custom clean task. 
+	 *
+	 * @params string caller The calling class.
+	 * @params bool verbose True if verbose messaging should be enabled, false 
+	 * otherwise. The default is false.
+	 * @params array indexingParams A list of options to control various aspects of 
+	 * the clean task.
+	 */
+	public function onClean($caller, $verbose = false, $indexingParams = array())
 	{
-		$this->set('indexOptions', $options);
+		$this->set('caller', $caller);
+		$this->set('verbose', $verbose);
+		$this->set('indexingParams', $indexingParams);
+
+		$this->out(array("task:clean extension:".$this->get('extension'),"[starting]"));
 		
-		$this->out('purging '.$this->get('extension').' items from index...');
+		$this->clean();
+		
+		$this->out(array("task:clean extension:".$this->get('extension'),"[completed]"));
+	}
+
+	/**
+	 * Fires the indexing event.
+	 * 
+	 * Derived classes should override the index() method when implementing 
+	 * a custom index task.
+	 * 
+	 * @params string caller The calling class.
+	 * @params bool verbose True if verbose messaging should be enabled, false 
+	 * otherwise. The default is false.
+	 * @params array indexingParams A list of options to control various aspects of 
+	 * the clean task.
+	 */
+	public function onIndex($caller, $verbose = false, $indexingParams = array())
+	{
+		$this->set('caller', $caller);
+		$this->set('verbose', $verbose);
+		$this->set('indexingParams', $indexingParams);
+
+		$this->out(array("task:index crawler:".$this->get('extension'),"[starting]"));
+		
+		$this->index();
+		
+		$this->out(array("task:index crawler:".$this->get('extension'),"[completed]"));
+	}
+
+	/**
+	 * Fires the purging event.
+	 *
+	 * Derived classes should override the purge() method when implementing
+	 * a custom purge task.
+	 * 
+	 * @params string caller The calling class.
+	 * @params bool verbose True if verbose messaging should be enabled, false 
+	 * otherwise. The default is false.
+	 * @params array indexingParams A list of options to control various aspects of 
+	 * the clean task. 
+	 */
+	public function onPurge($caller, $verbose = false, $indexingParams = array())
+	{
+		$this->set('caller', $caller);
+		$this->set('verbose', $verbose);
+		$this->set('indexingParams', $indexingParams);
+		
+		$this->out('task;purge extension;'.$this->get('extension').'...[starting]');
 		
 		$this->purge();
 		
-		$this->out('purging '.$this->get('extension').' items completed.');
+		$this->out('task;purge extension;'.$this->get('extension').'...[completed]');
 	}
 	
-	/**
-	 * Rebuilds the current extension's indexed items, deleting them first, 
-	 * then indexing them.
-	 */
-	protected function rebuild()
-	{
-		$solr = JSolrIndexFactory::getService();
-		
-		$this->out('deleting all '.$this->get('extension').' items');
-		
-		$solr->deleteByQuery('extension:'.$this->get('extension'));
-		
-		$solr->commit();
-		
-		$this->index();
-	}
+	
 	
 	/**
 	 * Cleans deleted items from the index.
+	 * 
+	 * Derived classes should override this method when implementing a custom 
+	 * clean operation.
 	 */
 	abstract protected function clean();
 	
 	/**
-	 * Adds items to the index.
+	 * Adds items to/edits existing items in the index.
+	 * 
+	 * Derived classes should override this method when implementing a custom 
+	 * index operation.
 	 */
 	protected function index()
 	{
@@ -238,17 +277,17 @@ abstract class JSolrIndexCrawler extends JPlugin
 			$i = 0;
 			
 			foreach ($items as $item) {
+				$total++;
 				$documents[$i] = $this->prepare($item);
 
 				$this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
 				
-				$total++;
 				$i++;
 
 				// index when either the number of items retrieved matches 
 				// the total number of items being indexed or when the 
 				// index chunk size has been reached. 
-				if ($i == count($items) || $i % self::$chunk == 0) {						
+				if ($total == count($items) || $i % self::$chunk == 0) {						
 					$response = $solr->addDocuments($documents, false, true, true, 10000);
 											
 					$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
@@ -262,7 +301,14 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$this->out($this->get('extension').' crawler completed.')
 			 ->out("items indexed: $total");
 	}
-	
+
+	/**
+	 * Permanently removes all items in the index which are managed by the 
+	 * associated plugin..
+	 * 
+	 * Derived classes should override this method when implementing a custom 
+	 * purge operation.
+	 */
 	protected function purge()
 	{	
 		$solr = JSolrIndexFactory::getService();
@@ -305,10 +351,37 @@ abstract class JSolrIndexCrawler extends JPlugin
 		return $document;
 	}
 	
+	/**
+	 * Command line formmatted output.
+	 * 
+	 * @param mixed $text String or array. 
+	 * To provide a description with a message, E.g.
+	 * 
+	 * indexing				[started]
+	 * 
+	 * pass a 2 dimensional array; array('indexing', '[started]');
+	 * 
+	 * @param bool $nl True if a new line character should be appended, false 
+	 * otherwise. The default is true.
+	 * @return JSolrIndexCrawler Returns $this for chaining output.
+	 */
 	protected function out($text = '', $nl = true)
 	{		
-		if (JArrayHelper::getValue($this->get('indexOptions'), "application", null, 'string') == 'JSolrCrawlerCli') {
-			if (JArrayHelper::getValue($this->get('indexOptions'), "verbose", false, 'bool')) {
+		if ($this->get('caller') == 'JSolrCrawlerCli') {
+			if ($this->get('verbose')) {
+				if (is_array($text)) {
+					if (count($text) == 2) {
+						$length = self::STDOUT_SEPARATOR_WIDTH - (strlen($text[0]) + strlen($text[1]));
+						$text = implode(str_repeat(' ', ($length > 0) ? $length : 1), $text);
+					} else if (count($text) > 2) {
+						$text = implode(' ', $text);
+					} else {
+						$text = implode('', $text);
+					}
+					
+					
+				}
+				
 				fwrite(STDOUT, $text . ($nl ? "\n" : null));
 			}
 		}
