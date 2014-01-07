@@ -257,7 +257,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				foreach ($bundle->bitstreams as $bitstream) {
 					$exclude = in_array($bundle->name, $this->get('contentExclusions'));
 
-					$document = $this->_extract($path.'/bitstreams/'.$bitstream->id.'/download', $exclude);
+					$document = $this->extract($path.'/bitstreams/'.$bitstream->id.'/download', $exclude);
 					
 					if ($document) {
 						$bitstreams[$i] = $bitstream;
@@ -638,98 +638,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$i=$j;
 		
 		return $documents;
-	}
-	
-	/**
-	 * Extracts a file's contents and metadata.
-	 * 
-	 * To access the returned result's contents and metadata, use the 
-	 * properties body and metadata.
-	 * 
-	 * @example
-	 * $result = $this->_extract($path);
-	 * $body = $result->body;
-	 * $metadata = $result->metadata;
-	 * 
-	 * @param string $path
-	 * @param bool $excludeContent True if the content should also be excluded from extraction, false otherwise. Defaults to false.
-	 * @return stdClass An object containing the file's body and metadata.
-	 */
-	private function _extract($path, $excludeContent = false)
-	{
-		$params = JComponentHelper::getParams("com_jsolrindex", true);
-		
-		$document = new stdClass();
-
-		switch ($params->get('extractor')) {
-			case "local":
-				ob_start();
-				passthru("java -jar ".$params->get('local_tika_app_path')." -d ".$path." 2> /dev/null");
-				$result = ob_get_contents();
-				ob_end_clean();
-
-				// sometimes the charset is appended to the file type.
-				$contentType = JArrayHelper::getValue(array_map('trim', explode(';', trim($result))), 0);
-
-				if ($this->isAllowedContentType($contentType) == 1) {
-					if (!$excludeContent && $this->isContentIndexable($contentType) == 1) {
-						$this->out(array($path, "[extracting content]"));
-						ob_start();
-						passthru("java -jar ".$params->get('local_tika_app_path')." ".$path." 2> /dev/null");
-						$result = ob_get_contents();
-						ob_end_clean();
-						$document->body = $result;
-					}
-
-					ob_start();
-					passthru("java -jar ".$params->get('local_tika_app_path')." -j ".$path." 2> /dev/null");
-					$result = ob_get_contents();
-					ob_end_clean();
-
-					$document->metadata = new JRegistry();
-					$document->metadata->loadString($result);
-				} else {
-					$document = null;
-				}				
-
-				break;
-
-			case "solr":
-				// @todo not fully implemented. Needs allowed types and index content conditions.
-				$url = $params->get('host');
-				
-				if ($params->get('username') && $params->get('password')) {
-					$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-				}
-		
-				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
-								
-				$extraction = $solr->extract($path, array("extractOnly"=>"true"));
-				
-				$response = json_decode($extraction->getRawResponse(), true);
-		
-				$document->content = $response[""];
-				
-				$metadata = array();
-				
-				foreach ($response->null_metadata as $key=>$value) {
-					$metadata[$key] = JArrayHelper::getValue($value, 0);
-				}
-				
-				$metadata = new JRegistry();
-				$metadata->loadArray($data);
-				
-				$document->metadata = new JRegistry();
-				$document->metadata->loadArray($metadata);
-
-				break;
-				
-			default:
-				
-				break;
-		}
-		
-		return $document;
 	}
 	
 	/**

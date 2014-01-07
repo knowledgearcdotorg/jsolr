@@ -469,4 +469,95 @@ abstract class JSolrIndexCrawler extends JPlugin
 				break;
 		}
 	}
+	
+	/**
+	 * Extracts a file's contents and metadata.
+	 *
+	 * To access the returned result's contents and metadata, use the
+	 * properties body and metadata.
+	 *
+	 * @example
+	 * $result = $this->_extract($path);
+	 * $body = $result->body;
+	 * $metadata = $result->metadata;
+	 *
+	 * @param string $path
+	 * @param bool $excludeContent True if the content should also be excluded from extraction, false otherwise. Defaults to false.
+	 * @return stdClass An object containing the file's body and metadata.
+	 */
+	protected function extract($path, $excludeContent = false)
+	{
+		$document = new stdClass();
+	
+		switch ($this->params->get('component.extractor')) {
+			case "local":
+				ob_start();
+				passthru("java -jar ".$this->params->get('component.local_tika_app_path')." -d ".$path." 2> /dev/null");
+				$result = ob_get_contents();
+				ob_end_clean();
+	
+				// sometimes the charset is appended to the file type.
+				$contentType = JArrayHelper::getValue(array_map('trim', explode(';', trim($result))), 0);
+	
+				if ($this->isAllowedContentType($contentType) == 1) {
+					if (!$excludeContent && $this->isContentIndexable($contentType) == 1) {
+						$this->out(array($path, "[extracting content]"));
+						ob_start();
+						passthru("java -jar ".$this->params->get('component.local_tika_app_path')." ".$path." 2> /dev/null");
+						$result = ob_get_contents();
+						ob_end_clean();
+						$document->body = $result;
+					}
+	
+					ob_start();
+					passthru("java -jar ".$this->params->get('component.local_tika_app_path')." -j ".$path." 2> /dev/null");
+					$result = ob_get_contents();
+					ob_end_clean();
+	
+					$document->metadata = new JRegistry();
+					$document->metadata->loadString($result);
+				} else {
+					$document = null;
+				}
+	
+				break;
+	
+			case "solr":
+				// @todo not fully implemented. Needs allowed types and index content conditions.
+				$url = $this->params->get('component.host');
+	
+				if ($username = $this->params->get('component.username') &&
+						$password = $this->params->get('component.password')) {
+					$url = $username . ":" . $password . "@" . $url;
+				}
+	
+				$solr = new JSolrApacheSolrService($url, $this->params->get('component.port'), $this->params->get('component.path'));
+	
+				$extraction = $solr->extract($path, array("extractOnly"=>"true"));
+	
+				$response = json_decode($extraction->getRawResponse(), true);
+	
+				$document->content = $response[""];
+	
+				$metadata = array();
+	
+				foreach ($response->null_metadata as $key=>$value) {
+					$metadata[$key] = JArrayHelper::getValue($value, 0);
+				}
+	
+				$metadata = new JRegistry();
+				$metadata->loadArray($data);
+	
+				$document->metadata = new JRegistry();
+				$document->metadata->loadArray($metadata);
+	
+				break;
+	
+			default:
+	
+				break;
+		}
+	
+		return $document;
+	}
 }
