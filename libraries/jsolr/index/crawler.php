@@ -93,6 +93,12 @@ abstract class JSolrIndexCrawler extends JPlugin
 		
 		self::$chunk = 1000;
 		
+		// load the jsolrindex component's params into plugin params for 
+		// easy access.
+		$params = JComponentHelper::getParams('com_jsolrindex', true);
+
+		$this->params->loadArray(array('component'=>$params->toArray()));
+		
 		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, array('jsolr', 'jsolrcrawler'));
 	}
 	
@@ -254,7 +260,10 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 * Derived classes should override this method when implementing a custom 
 	 * clean operation.
 	 */
-	abstract protected function clean();
+	protected function clean()
+	{
+		
+	}
 	
 	/**
 	 * Adds items to/edits existing items in the index.
@@ -286,7 +295,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 				// the total number of items being indexed or when the 
 				// index chunk size has been reached. 
 				if ($total == count($items) || $i >= self::$chunk) {						
-					$response = $solr->addDocuments($documents, false, true, true, 10000);
+					$response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
 											
 					$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
 					
@@ -387,23 +396,18 @@ abstract class JSolrIndexCrawler extends JPlugin
 		return $this;
 	}
 	
-	private function _getContentTypes($param)
-	{
-		$params = JComponentHelper::getParams('com_jsolrindex', true);
-		
-		$types = $params->get($param);
-		
-		return array_map('trim', explode(',', trim($types)));		
-	}
-	
 	protected function getAllowedContentTypes()
 	{
-		return $this->_getContentTypes('content_types_allowed');
+		$types = $this->params->get('component.content_types_allowed');
+		
+		return array_map('trim', explode(',', trim($types)));
 	}
 	
 	protected function getIndexContentContentTypes()
 	{
-		return $this->_getContentTypes('content_types_index_content');
+		$types = $this->params->get('component.content_types_index_content');
+		
+		return array_map('trim', explode(',', trim($types)));
 	}
 	
 	protected function isAllowedContentType($contentType)
@@ -451,7 +455,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	protected function getFacet($facet)
 	{
-		switch (intval(JComponentHelper::getParams('com_jsolrindex')->get('casesensitivity'))) {
+		switch (intval($this->params->get('component.casesensitivity'))) {
 			case 1:
 				return JString::strtolower($facet);
 				break;

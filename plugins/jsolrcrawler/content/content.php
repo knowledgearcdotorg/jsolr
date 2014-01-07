@@ -130,7 +130,7 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 	
 				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
 
-				$solr->addDocument($document, false, true, true);
+				$solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
 			} catch (Exception $e) {
 				$log = JLog::getInstance();
 				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));

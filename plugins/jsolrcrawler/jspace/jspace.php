@@ -509,7 +509,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			// the total number of items being indexed or when the
 			// index chunk size has been reached.
 			if ($total == count($items) || $i >= static::$chunk) {
-				$response = $solr->addDocuments($documents, false, true, true, 10000);
+				$response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
 				
 				$this->out(array($i.' documents successfully indexed', '[status:'.$response->getHttpStatus().']'));
 				
@@ -538,7 +538,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 				$solr = JSolrIndexFactory::getService();
 	
-				$solr->addDocuments($documents, false, true, true, 1000);
+				$solr->addDocuments($documents, false, true, true, $this->params->get('component.commitWithin', '1000'));
 			} catch (Exception $e) {
 				JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 			}

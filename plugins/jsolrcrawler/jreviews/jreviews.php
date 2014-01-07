@@ -390,10 +390,8 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				$document = $this->prepare($object);
 
 				$solr = JSolrIndexFactory::getService();
-
-				$commitWithin = JSolrIndexFactory::getConfig()->get('commitWithin', 0);
 				
-				$solr->addDocument($document, false, true, true, $commitWithin);	
+				$solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));	
 
 				// if no commitWithin time is set and autocommit is not 
 				// configured, need to commit manually. 
