@@ -528,7 +528,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		return "";
 	}
 	
-	public function onIndexItem($context, $item)
+	public function onJSolrIndexAfterSave($context, $item, $isNew)
 	{
 		if ($context == 'com_jspace.submission') {
 			try {	

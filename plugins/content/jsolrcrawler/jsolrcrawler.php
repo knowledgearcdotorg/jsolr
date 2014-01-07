@@ -55,6 +55,6 @@ class plgContentJSolrCrawler extends JPlugin
 		$dispatcher = JDispatcher::getInstance();
 		JPluginHelper::importPlugin('jsolrcrawler');
 
-		$results = $dispatcher->trigger('onJSolrIndexAfterSave', array($context, $article));
+		$results = $dispatcher->trigger('onJSolrIndexAfterSave', array($context, $article, $isNew));
 	}
 }
