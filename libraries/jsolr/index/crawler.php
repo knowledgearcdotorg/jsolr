@@ -254,6 +254,12 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$this->out(array('task;purge extension;'.$this->get('extension'),'[completed]'));
 	}
 
+	/**
+	 * 
+	 * @param string $context The context of the item being saved.
+	 * @param mixed $item The item being deleted (must have an id property).
+	 * @param bool $isNew True if the item is new, false otherwise.
+	 */
 	public function onJSolrIndexAfterSave($context, $item, $isNew)
 	{
 		if ($context == $this->get('extension').'.'.$this->get('view')) {
@@ -271,8 +277,6 @@ abstract class JSolrIndexCrawler extends JPlugin
 			} catch (Exception $e) {
 				$log = JLog::getInstance();
 				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-	
-				throw $e;
 			}
 		}
 	}
@@ -285,8 +289,13 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	public function onJSolrIndexAfterDelete($context, $item)
 	{
-		if ($context == $this->get('extension').'.'.$this->get('view')) {
-			$this->remove($this->get('extension').'.'.$this->get('view').'.'.$item->id);
+		try {
+			if ($context == $this->get('extension').'.'.$this->get('view')) {
+				$this->remove($this->get('extension').'.'.$this->get('view').'.'.$item->id);
+			}
+		} catch (Exception $e) {
+			$log = JLog::getInstance();
+			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 		}
 	}
 	
