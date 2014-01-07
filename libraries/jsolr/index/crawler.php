@@ -93,7 +93,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 		
 		self::$chunk = 1000;
 		
-		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, array('jsolr', 'crawler', 'search'));
+		Jlog::addLogger(array('text_file'=>'jsolr.php'), JLog::ALL, array('jsolr', 'jsolrcrawler'));
 	}
 	
 	/**
@@ -241,14 +241,12 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$this->set('verbose', $verbose);
 		$this->set('indexingParams', $indexingParams);
 		
-		$this->out('task;purge extension;'.$this->get('extension').'...[starting]');
+		$this->out(array('task;purge extension;'.$this->get('extension'),'[starting]'));
 		
 		$this->purge();
 		
-		$this->out('task;purge extension;'.$this->get('extension').'...[completed]');
+		$this->out(array('task;purge extension;'.$this->get('extension'),'[completed]'));
 	}
-	
-	
 	
 	/**
 	 * Cleans deleted items from the index.
@@ -287,7 +285,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 				// index when either the number of items retrieved matches 
 				// the total number of items being indexed or when the 
 				// index chunk size has been reached. 
-				if ($total == count($items) || $i % self::$chunk == 0) {						
+				if ($total == count($items) || $i >= self::$chunk) {						
 					$response = $solr->addDocuments($documents, false, true, true, 10000);
 											
 					$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
@@ -298,8 +296,8 @@ abstract class JSolrIndexCrawler extends JPlugin
 			}			
 		}
 					
-		$this->out($this->get('extension').' crawler completed.')
-			 ->out("items indexed: $total");
+		$this->out("items indexed: $total")
+			 ->out(($total - $i).' items skipped');
 	}
 
 	/**

@@ -137,7 +137,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$items = $response->response->docs;
 			}
 		} catch (Exception $e) {
-        	JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
+        	JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 		}
 		
 		return $items;			
@@ -181,7 +181,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				if (!is_array($item->value)) {
 					$doc->addField($field.'_sort', $item->value); // for sorting
 				} else {
-					JLog::add('Trying to index multivalue field '.$field.' value to a sort field is not supported.', JLog::WARNING, 'crawler');
+					JLog::add('Trying to index multivalue field '.$field.' value to a sort field is not supported.', JLog::WARNING, 'jsolrcrawler');
 				}
 			}
 			
@@ -214,7 +214,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					if (!is_array($value)) {
 						$doc->addField($field.'_sort', $value); // for sorting
 					} else {
-						JLog::add('Date field '.$field.' contains multiple values and so cannot be indexed for sorting.', JLog::WARNING, 'crawler');
+						JLog::add('Date field '.$field.' contains multiple values and so cannot be indexed for sorting.', JLog::WARNING, 'jsolrcrawler');
 					}
 				}
 				
@@ -391,8 +391,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	{
 		if (!jimport('joomla.factory')) {
 			JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
-			
-			return array();
+			throw new Exception(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'));
 		}
 		
 		$params = JComponentHelper::getParams("com_jsolrindex", true);
@@ -433,10 +432,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$key = $this->buildKey($documents[$i]);
 				
 				$documents[$i]->addField('key', $key);
-	
-				$ids[$i] = $key;
-				
-				$this->out(array('item '.$key, '[queued]'));				
+
+				$this->out(array('item '.$key, '[queued]'));
 				
 				if ($params->get('index')) {
 					$bitstreams = $this->_getBitstreams($item);
@@ -491,8 +488,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 									$documents[$j]->getField('key'), 
 									'value'), 
 								0);
-								
-						$ids[$j] = $key;
 						
 						$this->out(array('bitstream '.$key, '[queued]'));
 						
@@ -506,16 +501,17 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					$this
 						->out(array('Could not index item '.$temp->{'search.resourceid'},'[skipping]'))
 						->out("\tReason:".$e->getMessage());
+					// continue from this kind of error.
 				}				
 			}
 			
 			// index when either the number of items retrieved matches
 			// the total number of items being indexed or when the
 			// index chunk size has been reached.
-			if ($total == count($items) || $i > static::$chunk) {
+			if ($total == count($items) || $i >= static::$chunk) {
 				$response = $solr->addDocuments($documents, false, true, true, 10000);
 				
-				$this->out(array($i.' documents indexed', '[status:'.$response->getHttpStatus().']'));
+				$this->out(array($i.' documents successfully indexed', '[status:'.$response->getHttpStatus().']'));
 				
 				$documents = array();
 				$i = 0;
@@ -523,6 +519,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		}
 
 		$this->out("items indexed: $total")
+			 ->out(($total - $i).' items skipped')
 			 ->out("bitsteams indexed: $totalBitstreams");
 	}
 	
@@ -543,7 +540,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 				$solr->addDocuments($documents, false, true, true, 1000);
 			} catch (Exception $e) {
-				JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
+				JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 			}
 		}
 	}
@@ -552,11 +549,12 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	 * Prepare the item for indexing.
 	 *
 	 * @param stdClass $item
-	 * @return JSolrApacheSolrDocument
+	 * @return array An array of JSolrApacheSolrDocument objects to be indexed.
 	 */
 	protected function prepare($item)
 	{
 		$documents = array();
+		
 		$i = 0;
 		
 		// Initialize the item's parameters.
@@ -576,61 +574,65 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$key = $this->buildKey($documents[$i]);
 	
 		$documents[$i]->addField('key', $key);
-
-		$bitstreams = $this->_getBitstreams($item);
 		
-		$j=$i;
-		$j++;
+		$this->out(array('item '.$key, '[queued]'));
 		
-		foreach ($bitstreams as $bitstream) {
-			$type = strtolower($bitstream->type);
-		
-			$documents[$i]->addField($type.'_bitstream_id_i_multi', $bitstream->id);
-			$documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
+		if ($params->get('index')) {
+			$bitstreams = $this->_getBitstreams($item);
 			
-			if (isset($bitstream->body)) {
-				$documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
-			}
-			
-			foreach ($bitstream->metadata->toArray() as $key=>$value) {
-				$metakey = $this->_cleanBitstreamMetadataKey($key);
-		
-				if (is_float($value)) {
-					$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
-				} elseif (is_int($value)) {
-					// handle solr int/long differentiation.
-					if ((int)$value > 2147483647 || (int)$value < -2147483648) {
-						$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tlm', $value);
-					} else {
-						$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tim', $value);
-					}
-				} else {
-					$documents[$i]->addField($type.'_bitstream_'.$metakey.'_sm', $value);
-				}
-			}
-		
-			$documents[$j] = $this->_getBitstreamDocument($bitstream);
-		
-			if ($documents[$i]->getField('created')) {
-				$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
-			}
-		
-			if ($documents[$i]->getField('modified')) {
-				$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
-			}
-		
-			$documents[$j]->addField("parent_id", $item->id);
-		
-			$key =
-			JArrayHelper::getValue(
-					JArrayHelper::getValue(
-							$documents[$j]->getField('key'),
-							'value'),
-					0);
-		
-			$ids[$j] = $key;
-		
+			$j=$i;
 			$j++;
+			
+			foreach ($bitstreams as $bitstream) {
+				$type = strtolower($bitstream->type);
+			
+				$documents[$i]->addField($type.'_bitstream_id_i_multi', $bitstream->id);
+				$documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
+				
+				if (isset($bitstream->body)) {
+					$documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
+				}
+				
+				foreach ($bitstream->metadata->toArray() as $key=>$value) {
+					$metakey = $this->_cleanBitstreamMetadataKey($key);
+			
+					if (is_float($value)) {
+						$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
+					} elseif (is_int($value)) {
+						// handle solr int/long differentiation.
+						if ((int)$value > 2147483647 || (int)$value < -2147483648) {
+							$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tlm', $value);
+						} else {
+							$documents[$i]->addField($type.'_bitstream_'.$metakey.'_tim', $value);
+						}
+					} else {
+						$documents[$i]->addField($type.'_bitstream_'.$metakey.'_sm', $value);
+					}
+				}
+			
+				$documents[$j] = $this->_getBitstreamDocument($bitstream);
+			
+				if ($documents[$i]->getField('created')) {
+					$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
+				}
+			
+				if ($documents[$i]->getField('modified')) {
+					$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
+				}
+			
+				$documents[$j]->addField("parent_id", $item->id);
+			
+				$key =
+				JArrayHelper::getValue(
+						JArrayHelper::getValue(
+								$documents[$j]->getField('key'),
+								'value'),
+						0);
+	
+				$this->out(array('bitstream '.$key, '[queued]'));
+			
+				$j++;
+			}
 		}
 			
 		$i=$j;
@@ -755,7 +757,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$collection = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/collections/'.$id.'.json')));
 				$this->collections[$collection->id] = $collection;
 			} catch (Exception $e) {
-				JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
+				JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+				throw $e;
 			}
 		}
 	
@@ -769,7 +772,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		try {
 			$metadata = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/items/metadatafields.json')));
 		} catch (Exception $e) {
-			JLog::add($e->getMessage(), JLog::ERROR, 'crawler');
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');			
+			throw $e;
 		}
 		
 		return $metadata;
