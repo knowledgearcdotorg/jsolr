@@ -253,6 +253,42 @@ abstract class JSolrIndexCrawler extends JPlugin
 		
 		$this->out(array('task;purge extension;'.$this->get('extension'),'[completed]'));
 	}
+
+	public function onJSolrIndexAfterSave($context, $item, $isNew)
+	{
+		if ($context == $this->get('extension').'.'.$this->get('view')) {
+			$query = $this->buildQuery()->where('a.id='.$item->id);
+				
+			$database = JFactory::getDBO();
+			$database->setQuery($query);
+	
+			$document = $this->prepare($database->loadObject());
+				
+			try {
+				$solr = JSolrIndexFactory::getService();
+	
+				$solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
+			} catch (Exception $e) {
+				$log = JLog::getInstance();
+				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+	
+				throw $e;
+			}
+		}
+	}
+
+	/**
+	 * Triggers an event to delete an indexed item.
+	 * 
+	 * @param string $context The context of the item being deleted.
+	 * @param mixed $item The item being deleted (must have an id property).
+	 */
+	public function onJSolrIndexAfterDelete($context, $item)
+	{
+		if ($context == $this->get('extension').'.'.$this->get('view')) {
+			$this->remove($this->get('extension').'.'.$this->get('view').'.'.$item->id);
+		}
+	}
 	
 	/**
 	 * Cleans deleted items from the index.
@@ -320,6 +356,13 @@ abstract class JSolrIndexCrawler extends JPlugin
 	{	
 		$solr = JSolrIndexFactory::getService();
 		$solr->deleteByQuery("extension:".$this->get('extension'));
+		$solr->commit();
+	}
+	
+	protected function remove($key)
+	{
+		$solr = JSolrIndexFactory::getService();
+		$solr->deleteById($key);
 		$solr->commit();
 	}
 	

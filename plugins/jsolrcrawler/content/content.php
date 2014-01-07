@@ -104,41 +104,6 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 
 		return $doc;
 	}
-	
-	public function onJSolrIndexAfterSave($context, $item)
-	{	
-		if ($context == 'com_content.article') {
-			$query = $this->buildQuery()->where('a.id='.$item->id);
-			
-			$database = JFactory::getDBO();
-			$database->setQuery($query);
-
-			$document = $this->prepare($database->loadObject());
-			
-			try {
-				$params = JComponentHelper::getParams("com_jsolrindex", true);
-				
-				if (!$params) {
-					return;
-				}
-	
-				$url = $params->get('host');
-				
-				if ($params->get('username') && $params->get('password')) {
-					$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
-				}
-	
-				$solr = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
-
-				$solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
-			} catch (Exception $e) {
-				$log = JLog::getInstance();
-				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-				
-				throw $e;
-			}
-		}
-	}
 
 	protected function buildQuery()
 	{
