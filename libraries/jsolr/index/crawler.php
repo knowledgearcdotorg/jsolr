@@ -275,9 +275,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 	
 				$solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
 			} catch (Exception $e) {
-				$log = JLog::getInstance();
-				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
-				throw $e;
+				JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 			}
 		}
 	}
@@ -295,8 +293,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 				$this->deleteItem($this->get('extension').'.'.$this->get('view').'.'.$item->id);
 			}
 		} catch (Exception $e) {
-			$log = JLog::getInstance();
-			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
 		}
 	}
 	

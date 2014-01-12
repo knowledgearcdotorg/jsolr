@@ -67,7 +67,13 @@ abstract class JSolrFactory extends JObject
 			$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 		}
 
-		return new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
+		$service = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
+
+		if (!$service->ping()) {
+			throw new Exception('Could not contact the index server.', 503);
+		}
+		
+		return $service;
 	}
 	
 	/**
