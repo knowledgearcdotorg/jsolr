@@ -121,6 +121,11 @@ class JSolrCrawlerCli extends JApplicationCli
 				return;
 			}
 			
+			if ($this->input->get('a') || $this->input->get('add')) {
+				$this->add();
+				return;
+			}
+			
 			$this->index();
 						
 		} catch (Exception $e) {
@@ -128,6 +133,24 @@ class JSolrCrawlerCli extends JApplicationCli
 		}
     }
     
+    protected function add()
+    {
+    	// throw error right away if no id has been specified.
+    	if (!count($this->input->args)) {
+    		throw new Exception('No id specified.');
+    	}
+    	 
+    	$plugin = $this->input->getString('a', $this->input->getString('add', null));
+    	 
+    	if ($plugin == 1) {
+    		throw new Exception('No plugin specified.');
+    	}
+    	 
+    	$id = JArrayHelper::getValue($this->input->args, 0);
+    	 
+    	$this->_fireEvent('onItemAdd', array($id), $plugin);
+    }
+        
     /**
      * The "clean" task target.
      * 
@@ -265,8 +288,11 @@ Provides tools for managing a Joomla-centric Solr index.
   -P, --plugin=name   Specify an optional plugin name (E.g. content) to run 
                       tasks against a particular plugin.
 [task]
+  -a, --add           Add/edit a single item to/in the index, using the 
+                      plugin and id to determine which crawler should perform 
+                      the add action.
   -c, --clean         Clean out deleted items from the index.
-  -d, --delete		  Deletes a single item from the index, using the plugin 
+  -d, --delete        Delete a single item from the index, using the plugin 
                       and id to determine which crawler should perform the 
                       delete action.  
   -h, --help          Display this help and exit.

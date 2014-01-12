@@ -277,6 +277,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 			} catch (Exception $e) {
 				$log = JLog::getInstance();
 				$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
+				throw $e;
 			}
 		}
 	}
@@ -297,6 +298,21 @@ abstract class JSolrIndexCrawler extends JPlugin
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 		}
+	}
+	
+	/**
+	 * A convenience event for adding a record to the index.
+	 *
+	 * Use this event when the plugin is known but the context is not.
+	 *
+	 * @param int $id The id of the record being added.
+	 */
+	public function onItemAdd($id)
+	{
+		$item = new stdClass();
+		$item->id = $id;
+	
+		$this->onJSolrIndexAfterSave($this->get('extension').'.'.$this->get('view'), $item, true);
 	}
 	
 	/**
