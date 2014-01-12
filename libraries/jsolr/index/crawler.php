@@ -291,12 +291,27 @@ abstract class JSolrIndexCrawler extends JPlugin
 	{
 		try {
 			if ($context == $this->get('extension').'.'.$this->get('view')) {
-				$this->remove($this->get('extension').'.'.$this->get('view').'.'.$item->id);
+				$this->deleteItem($this->get('extension').'.'.$this->get('view').'.'.$item->id);
 			}
 		} catch (Exception $e) {
 			$log = JLog::getInstance();
 			$log->addEntry(array("c-ip"=>"", "comment"=>$e->getMessage()));
 		}
+	}
+	
+	/**
+	 * A convenience event for deleting an indexed item.
+	 * 
+	 * Use this event when the plugin is known but the context is not.
+	 * 
+	 * @param int $id The id of the item being deleted.
+	 */
+	public function onItemDelete($id)
+	{
+		$item = new stdClass();
+		$item->id = $id;
+		
+		$this->onJSolrIndexAfterDelete($this->get('extension').'.'.$this->get('view'), $item);
 	}
 	
 	/**
@@ -368,7 +383,12 @@ abstract class JSolrIndexCrawler extends JPlugin
 		$solr->commit();
 	}
 	
-	protected function remove($key)
+	/**
+	 * Deletes a single item from the index.
+	 * 
+	 * @param string $key The unique key of the item to delete.
+	 */
+	protected function deleteItem($key)
 	{
 		$solr = JSolrIndexFactory::getService();
 		$solr->deleteById($key);

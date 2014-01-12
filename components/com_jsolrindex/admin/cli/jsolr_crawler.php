@@ -116,6 +116,11 @@ class JSolrCrawlerCli extends JApplicationCli
 				return;
 			}
 			
+			if ($this->input->get('d') || $this->input->get('delete')) {
+				$this->delete();
+				return;
+			}
+			
 			$this->index();
 						
 		} catch (Exception $e) {
@@ -131,6 +136,24 @@ class JSolrCrawlerCli extends JApplicationCli
     protected function clean()
     {
     	$this->_fireEvent('onClean', array(get_class($this), $this->_isVerbose()), $this->_getPlugin());
+    }
+    
+    protected function delete()
+    {
+    	// throw error right away if no id has been specified.
+    	if (!count($this->input->args)) {
+    		throw new Exception('No id specified.');
+    	}
+    	
+    	$plugin = $this->input->getString('d', $this->input->getString('delete', null));
+    	
+    	if ($plugin == 1) {
+    		throw new Exception('No plugin specified.');
+    	}
+    	
+    	$id = JArrayHelper::getValue($this->input->args, 0);
+    	
+    	$this->_fireEvent('onItemDelete', array($id), $plugin);
     }
     
     protected function index()
@@ -230,6 +253,8 @@ class JSolrCrawlerCli extends JApplicationCli
     	echo <<<EOT
 Usage: jsolr_crawler [OPTIONS] [task]
    jsolr_crawler [OPTIONS] [u|update] <last-index-date>
+   jsolr_crawler [q|v] [a|add] <plugin> <id>
+   jsolr_crawler [q|v] [d|delete] <plugin> <id>
     	
 Provides tools for managing a Joomla-centric Solr index.
 
@@ -241,6 +266,9 @@ Provides tools for managing a Joomla-centric Solr index.
                       tasks against a particular plugin.
 [task]
   -c, --clean         Clean out deleted items from the index.
+  -d, --delete		  Deletes a single item from the index, using the plugin 
+                      and id to determine which crawler should perform the 
+                      delete action.  
   -h, --help          Display this help and exit.
   -o, --optimize      Run an optimization on the index.
   -p, --purge         Purge the contents of the index.
