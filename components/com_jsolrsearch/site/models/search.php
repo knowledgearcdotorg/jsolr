@@ -100,6 +100,13 @@ class JSolrSearchModelSearch extends JModelForm
 		$sort = array();
 
 		$filters = $this->getFilters();
+		
+		$access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
+		
+		if ($access) {
+			$access = 'access:'.'('.$access.') OR null';
+			$filters[] = $access;
+		}
 
 		// nothing passed. Get out of here.
 		if (!$this->getState('query.q')) {
@@ -128,10 +135,10 @@ class JSolrSearchModelSearch extends JModelForm
    		// get query filter params and boosts from plugin.
    		foreach ($dispatcher->trigger('onJSolrSearchQFAdd', array($this->getState('query.lang'))) as $result) {   			
    			$qf = array_merge($qf, $result);
-   		}
+   		}   	
    		
    		$q = $this->getState('query.q', "*:*");
-   		
+
    		$query = JSolrSearchFactory::getQuery($q)
    			->spellcheck(true)
 			->useQueryParser("edismax")
