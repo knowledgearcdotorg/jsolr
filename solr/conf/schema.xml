@@ -932,6 +932,7 @@
 	<field name="author" type="text_general" indexed="true" stored="true" multiValued="true"/>
 	<field name="created" type="date" indexed="true" stored="true"/>
 	<field name="modified" type="date" indexed="true" stored="true"/>
+	<field name="access" type="tint" indexed="true" stored="true"/>
 	
 	<!-- Can take the form en or en-AU. Can be used for localization 
 	     (E.g. Pages from Australia) -->

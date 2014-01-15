@@ -63,6 +63,7 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		$doc->addField('modified', $modified->format('Y-m-d\TH:i:s\Z', false));
 		$doc->addField("title", $record->title);	
 		$doc->addField("title_$lang", $record->title);
+		$doc->addField("access", $record->access);
 
 		$doc->addField("title_ac", $record->title); // for auto complete
 
@@ -138,13 +139,6 @@ class plgJSolrCrawlerContent extends JSolrIndexCrawler
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
 
 		$conditions = array();
-
-		// Implement View Level Access
-		if (!$user->authorise('core.admin'))
-		{
-		    $groups	= implode(',', $user->getAuthorisedViewLevels());
-			$conditions[] = 'a.access IN ('.$groups.')';
-		}
 
 		$categories = $this->params->get('categories');
 
