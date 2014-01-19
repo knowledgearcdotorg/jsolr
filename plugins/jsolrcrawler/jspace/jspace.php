@@ -118,12 +118,21 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			$items = array();
 			
 			$connector = $this->_getConnector();
-						
+			
 			$vars = array();
 			$vars['q'] = '*:*';
-			$vars['fl'] = 'search.resourceid';
+			$vars['fl'] = 'search.resourceid,read';
 			$vars['fq'] = 'search.resourcetype:2';
 			$vars['rows'] = '2147483647';
+
+			if ($this->get('params')->get('private_access', "") == "") {
+				$vars['fq'] .= ' AND read:g0';
+			} else {
+				// only get items with read set.
+				$vars['fq'] .= ' AND read:[* TO *]';
+			}
+			
+			$vars['fq'] = urlencode($vars['fq']);
 
 			if ($lastModified = JArrayHelper::getValue($this->get('indexingParams'), 'lastModified', null, 'string')) {
 				$lastModified = JFactory::getDate($lastModified)->format('Y-m-d\TH:i:s\Z', false);
@@ -147,7 +156,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	 * Prepares an article for indexing.
 	 */
 	protected function getDocument(&$record)
-	{	
+	{		
 		$doc = new JSolrApacheSolrDocument();
 		
 		$lang = $this->getLanguage($record, false);
@@ -159,7 +168,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			$doc->addField('title_'.$lang, $record->name);
 			$doc->addField("title_sort", $record->name); // for sorting by title					
 		}
-
+		
+		if ($record->access) {
+			$doc->addField('access', $record->access);
+		}
+		
 		$collection = $this->_getCollection($record->collection->id);
 		
 		$doc->addField("parent_id", $collection->id);
@@ -242,7 +255,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 		$connector = $this->_getConnector();
 		
-		$endpoint = JSpaceFactory::getEndpoint('/items/'.$parent->id.'/bundles.json');		
+		$endpoint = JSpaceFactory::getEndpoint('/items/'.$parent->id.'/bundles.json', null, false);		
 		
 		$bundles = json_decode($connector->get($endpoint)); 
 
@@ -393,8 +406,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
 			throw new Exception(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'));
 		}
-		
-		$params = JComponentHelper::getParams("com_jsolrindex", true);
 
 		$total = 0;
 		$totalBitstreams = 0;
@@ -413,7 +424,14 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			$total++;
 			
 			try {
-				$item = json_decode($connecter->get(JSpaceFactory::getEndpoint('/items/'.$temp->{'search.resourceid'}.'.json', null)));
+				$item = json_decode($connecter->get(JSpaceFactory::getEndpoint('/items/'.$temp->{'search.resourceid'}.'.json', null, false)));
+				
+				// g0 = public
+				if (array_search('g0', $temp->read) !== false) {
+					$item->access = $this->get('params')->get('anonymous_access', null);						
+				} else {
+					$item->access = $this->get('params')->get('private_access', null);
+				}
 				
 				// Initialize the item's parameters.
 				if (isset($item->params)) {
@@ -435,7 +453,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 
 				$this->out(array('item '.$key, '[queued]'));
 				
-				if ($params->get('index')) {
+				if ($this->params->get('component.index')) {
 					$bitstreams = $this->_getBitstreams($item);
 					
 					$j=$i;
@@ -523,6 +541,21 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			 ->out("bitsteams indexed: $totalBitstreams");
 	}
 	
+	/**
+	 * A convenience event for adding a record to the index.
+	 *
+	 * Use this event when the plugin is known but the context is not.
+	 *
+	 * @param int $id The id of the record being added.
+	 */
+	public function onItemAdd($id)
+	{
+		$item = new JObject();
+		$item->dspaceId = $id;
+	
+		$this->onJSolrIndexAfterSave('com_jspace.submission', $item, true);
+	}
+	
 	protected function buildQuery()
 	{
 		return "";
@@ -532,8 +565,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	{
 		if ($context == 'com_jspace.submission') {
 			try {	
-				$endpoint = JSpaceFactory::getEndpoint('/items/'.$item->get('dspaceId').'.json', null, true);
-	
+				$endpoint = JSpaceFactory::getEndpoint('/items/'.$item->get('dspaceId').'.json', null, false);
+
 				$documents = $this->prepare(json_decode($this->_getConnector()->get($endpoint)));
 	
 				$solr = JSolrIndexFactory::getService();
@@ -550,12 +583,17 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	 *
 	 * @param stdClass $item
 	 * @return array An array of JSolrApacheSolrDocument objects to be indexed.
+	 * 
+	 * @todo Need to merge this and the index logic as it is being replicated.
 	 */
 	protected function prepare($item)
 	{
 		$documents = array();
 		
 		$i = 0;
+		
+		// g0 = public
+		$item->access = $this->get('params')->get('anonymous_access', 1);
 		
 		// Initialize the item's parameters.
 		if (isset($item->params)) {
@@ -577,7 +615,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 		$this->out(array('item '.$key, '[queued]'));
 		
-		if ($params->get('index')) {
+		if ($this->get('params')->get('component.index', false)) {
 			$bitstreams = $this->_getBitstreams($item);
 			
 			$j=$i;

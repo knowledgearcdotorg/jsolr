@@ -94,6 +94,28 @@
 					size="40"
 					class="inputbox"/>				
 			</fieldset>
+			
+			<fieldset
+				name="access_mappings" 
+				label="PLG_JSOLRCRAWLER_JSPACE_ACCESS_MAPPINGS_LABEL" 
+				description="PLG_JSOLRCRAWLER_JSPACE_ACCESS_MAPPINGS_DESC">
+				<field 
+					name="anonymous_access" 
+					type="accesslevel"
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_ANONYMOUS_ACCESS_LABEL"
+        			description="PLG_JSOLRCRAWLER_JSPACE_FIELD_ANONYMOUS_ACCESS_DESC"
+        			default="1"
+        			class="inputbox"/>
+
+				<field 
+					name="private_access" 
+					type="accesslevel"
+					label="PLG_JSOLRCRAWLER_JSPACE_FIELD_PRIVATE_ACCESS_LABEL"
+        			description="PLG_JSOLRCRAWLER_JSPACE_FIELD_PRIVATE_ACCESS_DESC"
+        			class="inputbox">
+        			<option value="">Skip private items</option>
+        		</field>
+			</fieldset>
 		</fields>
 	</config>
 </extension>

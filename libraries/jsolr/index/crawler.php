@@ -586,7 +586,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 	
 				if ($this->isAllowedContentType($contentType) == 1) {
 					if (!$excludeContent && $this->isContentIndexable($contentType) == 1) {
-						$this->out(array($path, "[extracting content]"));
+						$this->out(array($path, "[extracting]"));
 						ob_start();
 						passthru("java -jar ".$this->params->get('component.local_tika_app_path')." ".$path." 2> /dev/null");
 						$result = ob_get_contents();

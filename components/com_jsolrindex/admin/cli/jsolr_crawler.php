@@ -130,6 +130,10 @@ class JSolrCrawlerCli extends JApplicationCli
 						
 		} catch (Exception $e) {
 			$this->out($e->getMessage());
+			
+			if ($this->_isVerbose()) {
+				$this->out($e->getTraceAsString());
+			}
 		}
     }
     
