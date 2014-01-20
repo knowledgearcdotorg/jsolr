@@ -537,7 +537,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		}
 
 		$this->out("items indexed: $total")
-			 ->out(($total - $i).' items skipped')
 			 ->out("bitsteams indexed: $totalBitstreams");
 	}
 	

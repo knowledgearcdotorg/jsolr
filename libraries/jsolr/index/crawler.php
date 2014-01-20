@@ -378,8 +378,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 			}			
 		}
 					
-		$this->out("items indexed: $total")
-			 ->out(($total - $i).' items skipped');
+		$this->out("items indexed: $total");
 	}
 
 	/**

@@ -55,6 +55,7 @@ class plgJSolrCrawlerNewsfeeds extends JSolrIndexCrawler
 		$doc->addField("title", $record->title);
 		$doc->addField("title_$lang", $record->title);
 		$doc->addField("link_$lang", $record->link);
+		$doc->addField("access", $record->access);
 		
 		foreach (explode(',', $record->metakey) as $metakey) {
 			$doc->addField("metakeywords_$lang", trim($metakey));
