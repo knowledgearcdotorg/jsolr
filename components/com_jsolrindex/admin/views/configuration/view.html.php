@@ -38,12 +38,6 @@ class JSolrIndexViewConfiguration extends JViewLegacy
 {
     function display($tpl = null)
     {
-    	JHtml::_('behavior.framework', true);
-    	
-    	$this->item = $this->get('Item');
-    	
-    	$document = JFactory::getDocument();
-
     	$this->modules = JModuleHelper::getModules('jsolrindex');
     	
     	$this->addToolbar();

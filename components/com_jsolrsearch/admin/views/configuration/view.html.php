@@ -37,15 +37,9 @@ class JSolrSearchViewConfiguration extends JViewLegacy
 {
     function display($tpl = null)
     {
-    	JHtml::_('behavior.framework', true);
-    	
-    	$document = JFactory::getDocument();
-
-    	$document->addScript(JURI::root() . "media/com_jsolrsearch/js/admin.jsolrsearch.js");        
+    	$this->modules = JModuleHelper::getModules('jsolrsearch');
     	
     	$this->addToolbar();
-
-		JSolrSearchHelper::addSubmenu(JRequest::getCmd('view', 'configuration'));
 		    	
         parent::display($tpl);
     }

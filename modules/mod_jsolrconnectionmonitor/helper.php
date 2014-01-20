@@ -10,12 +10,12 @@ abstract class ModConnectionMonitorHelper
 		$index = array();
 		
 		$client = self::_getService($params);
-		$params = self::_getConfig($params);
+		$config = self::_getConfig($params);
 		
 		$index['status'] = self::isConnected($params);
-		$index['host'] = $params->get('host', null);
-		$index['port'] = $params->get('port', null);
-		$index['path'] = $params->get('path', null);
+		$index['host'] = $config->get('host', null);
+		$index['port'] = $config->get('port', null);
+		$index['path'] = $config->get('path', null);
 		$index['libraries']['curl'] = self::isCurlInstalled();
 		$index['libraries']['jsolr'] = self::isJSolrLibraryInstalled();
 		
@@ -23,7 +23,6 @@ abstract class ModConnectionMonitorHelper
 			JArrayHelper::getValue(JArrayHelper::getValue($index, 'libraries'), 'curl') &&
 			JArrayHelper::getValue(JArrayHelper::getValue($index, 'libraries'), 'jsolr')) {	
 			try {
-				$client = JSolrIndexFactory::getService();
 				$response = $client->luke();
 
 				$index['details'] = $response->index;					
@@ -51,11 +50,11 @@ abstract class ModConnectionMonitorHelper
 	private static function _getService($params)
 	{
 		$class = 'JSolrIndexFactory';
-		
+
 		if ($params->get('service') == 1) {
 			$class = 'JSolrSearchFactory';
 		}
-		
+
 		return $class::getService();
 	}
 	

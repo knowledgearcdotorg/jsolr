@@ -34,7 +34,6 @@
 
 	<administration>
 	    <files folder="admin">
-	    	<folder>extensions</folder>
 	    	<folder>helpers</folder>
 	    	<folder>models</folder>
 	    	<folder>views</folder>
