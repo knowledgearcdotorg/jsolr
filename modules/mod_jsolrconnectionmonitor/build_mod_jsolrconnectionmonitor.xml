@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JSolrConnectionMonitor Module" default="" basedir=".">
+	<property name="dest.administrator.modules.connectionmonitor" value="${dest.administrator.modules}/mod_jsolrconnectionmonitor"/>
+	<property name="dest.media.connectionmonitor" value="${dest.media}/mod_jsolrconnectionmonitor"/>
+	
+	<target name="update" description="Copies JSolr Connection Monitor module to existing Joomla install.">
+		<echo message="Deploying JSolr Connection Monitor module to Joomla! environment."/>
+		<copy todir="${dest.administrator.modules.connectionmonitor}">
+			<fileset dir="${src}" defaultexcludes="true">
+				<include name="**"/>
+				<exclude name="**/language/**"/>
+				<exclude name="**/css/**"/>
+				<exclude name="**/js/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${dest.administrator.languages}">
+			<fileset dir="${src}/language" defaultexcludes="true">
+				<include name="**/**"/>
+			</fileset>
+		</copy>		
+		<copy todir="${dest.media.connectionmonitor}">
+			<fileset dir="${src}" defaultexcludes="true">
+				<include name="js/**"/>
+				<include name="css/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="package" description="Creates a JSolr Connection Monitor module package.">
+		<echo message="Packaging JSolr Connection Monitor module."/>
+		<zip destfile="${package.dest}/mod_jsolrconnectionmonitor.zip"
+		       basedir="${src}"
+		       update="true"
+		       excludes="build*.xml"/>
+	</target>
+</project>

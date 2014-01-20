@@ -44,12 +44,9 @@ class JSolrIndexViewConfiguration extends JViewLegacy
     	
     	$document = JFactory::getDocument();
 
-    	$document->addStyleSheet(JURI::root()."media/com_jsolrindex/css/jsolrindex.css");
-    	$document->addScript(JURI::root() . "media/com_jsolrindex/js/jsolrindex.js");        
+    	$this->modules = JModuleHelper::getModules('jsolrindex');
     	
     	$this->addToolbar();
-
-		JSolrIndexHelper::addSubmenu(JRequest::getCmd('view', 'configuration'));
 		    	
         parent::display($tpl);
     }

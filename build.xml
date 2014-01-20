@@ -4,6 +4,7 @@
 	<property	name="dest.administrator"				value="${dest}/administrator"/>
 	<property	name="dest.administrator.components"	value="${dest.administrator}/components"/>
 	<property	name="dest.administrator.languages"		value="${dest.administrator}/language"/>
+	<property	name="dest.administrator.modules"		value="${dest.administrator}/modules"/>
 	<property	name="dest.components"					value="${dest}/components"/>
 	<property	name="dest.languages"					value="${dest}/language"/>
 	<property 	name="dest.media" 						value="${dest}/media"/>
@@ -23,6 +24,7 @@
 			<property	name="dest"								value="${dest}"/>
 			<property	name="dest.administrator.components"	value="${dest.administrator.components}"/>
         	<property	name="dest.administrator.languages"		value="${dest.administrator.languages}"/>
+    		<property	name="dest.administrator.modules"		value="${dest.administrator.modules}"/>
 			<property	name="dest.components"					value="${dest.components}"/>
         	<property	name="dest.languages"					value="${dest.languages}"/>
 			<property 	name="dest.media" 						value="${dest.media}"/>
