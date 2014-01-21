@@ -35,9 +35,8 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
 jimport('joomla.html.pagination');
-
 jimport('joomla.application.component.modelform');
-
+jimport('joomla.filesystem.file');
 jimport('jsolr.search.factory');
 jimport('jsolr.form.form');
 jimport('jsolr.pagination.pagination');
@@ -231,7 +230,7 @@ class JSolrSearchModelSearch extends JModelForm
    
 	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
 	{
-		$form->loadFile($this->_getCustomFormPath(), false);
+		$form->loadFile($this->_getCustomFilterPath(), false);
       
 		parent::preprocessForm($form, $data, $group);
 	}
@@ -259,17 +258,66 @@ class JSolrSearchModelSearch extends JModelForm
 		return $data;
 	}
 
-	private function _getCustomFormPath()
+	/**
+	 * Gets the custom form path for filters.
+	 * 
+	 * If a plugin has been selected (using the "o" parameter) then the 
+	 * method will attempt to load the plugin's filter override. If no 
+	 * override is found, it will attempt to load the default filters path.
+	 * 
+	 * This method will attempt to load an plugin filter like so:
+	 * 1. Check in the current template's html/com_jsolrsearch/basic/forms/ 
+	 * directory for a plugin override. The plugin override takes the form 
+	 * filters.<plugin_name>.xml.
+	 * 
+	 * 2. If no plugin override is found in the template, the plugin's default 
+	 * filters.xml is searched for (plugins/jsolrsearch/<plugin>/forms/filters.xml).
+	 * 
+	 * 3. If no plugin filters.xml exists, the default filters.xml is searched for 
+	 * (html/com_jsolrsearch/basic/forms/filters.xml).
+	 * 
+	 * 4. If no default filters.xml is found in the current template, the 
+	 * JSolr Search component's filters.xml is loaded.
+	 */
+	private function _getCustomFilterPath()
 	{
-		$path = __DIR__ . '/forms/filters.xml';
-
+		$path = null;
+		
+		// load plugin filter override.
 		if ($this->getState('query.o')) {
 			foreach ($this->getExtensions() as $extension) {
 				if (JArrayHelper::getValue($extension, 'plugin') == $this->getState('query.o')) {
-					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.str_replace('com_', '', JArrayHelper::getValue($extension, 'plugin')).'/forms/filters.xml';					
+					$plugin = str_replace('com_', '', JArrayHelper::getValue($extension, 'plugin'));
+					$pluginOverride =
+						JPATH_ROOT.'/templates/'.
+						JFactory::getApplication()->getTemplate().
+						'/html/com_jsolrsearch/basic/forms/'.
+						'filters.'.$plugin.'.xml';
+					
+					if (JFile::exists($pluginOverride)) {
+						$path = $pluginOverride;	
+					} else {
+						$path = JPATH_ROOT.'/plugins/jsolrsearch/'.$plugin.'/forms/filters.xml';
+					}					
 
 					break;
 				}
+			}
+		}
+		
+		// load default filter if no plugin override has been loaded.
+		if (!$path) {
+			$filters = 'filters.xml';
+			
+			$defaultOverride =
+			JPATH_ROOT.'/templates/'.
+			JFactory::getApplication()->getTemplate().
+			'/html/com_jsolrsearch/basic/forms/'.$filters;
+			
+			if (JFile::exists($defaultOverride)) {
+				$path = $defaultOverride;
+			} else {
+				$path = __DIR__.'/forms/'.$filters;
 			}
 		}
       
