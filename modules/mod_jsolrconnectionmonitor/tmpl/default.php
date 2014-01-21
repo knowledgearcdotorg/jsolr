@@ -33,7 +33,7 @@ defined('_JEXEC') or die;
 			<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_STATUS');?></strong>
 		</div>
 		
-		<div class="span6">
+		<div id="jsolrStatus" class="span6">
 		<?php 
 		if (JArrayHelper::getValue($index, 'status')) :
 			echo JText::_("MOD_JSOLRCONNECTIONMONITOR_CONNECTED");
@@ -55,15 +55,20 @@ defined('_JEXEC') or die;
 		</div>
 	</div>
 	<?php endforeach; ?>
-
-	<?php if ($details = JArrayHelper::getValue($index, 'details')) : ?>
+	
 	<div class="row-fluid">
 		<div class="span6">
 			<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_NUMDOCS'); ?></strong>
 		</div>
 		
-		<div class="span6">
-			<?php echo $details->numDocs; ?>
+		<div id="jsolrNumDocs" class="span6">
+			<?php 
+			if ($statistics = JArrayHelper::getValue($index, 'statistics')) :
+				echo $statistics->numDocs;
+			else :
+				echo JText::_('MOD_JSOLRCONNECTIONMONITOR_NOVALUE');
+			endif;
+			?>			
 		</div>
 	</div>
 
@@ -72,11 +77,16 @@ defined('_JEXEC') or die;
 			<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_LASTINDEXED'); ?></strong>
 		</div>
 		
-		<div class="span6">
-			<i class="icon-calendar"></i> <?php echo JHtml::_('date', $details->lastModified, JText::_('DATE_FORMAT_LC2')); ?>
+		<div class="span6" id="jsolrLastModified">
+			<?php 
+			if ($statistics = JArrayHelper::getValue($index, 'statistics')) :
+				echo JHtml::_('date', $statistics->lastModified, JText::_('DATE_FORMAT_LC2'));
+			else :
+				echo JText::_('MOD_JSOLRCONNECTIONMONITOR_NOVALUE');
+			endif;
+			?>
 		</div>
-	</div>
-	<?php endif; ?>
+	</div>	
 	
 	<?php if ($libs = JArrayHelper::getValue($index, 'libraries')) : ?>
 		<?php if (!JArrayHelper::getValue($libs, 'curl')) : ?>
@@ -91,6 +101,32 @@ defined('_JEXEC') or die;
 		<div class="row-fluid">
 			<div class="span6">
 				<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_JSOLR_NOT_INSTALLED'); ?></strong>
+			</div>
+		</div>
+		<?php endif; ?>
+	<?php endif; ?>
+
+	<?php if ($extractor = JArrayHelper::getValue($index, 'extractor')) : ?>
+		<?php if (JArrayHelper::getValue($extractor, 'type')) : ?>
+		<div class="row-fluid">
+			<div class="span6">
+				<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_JSOLR_EXTRACTOR'); ?></strong>
+			</div>
+			
+			<div class="span6">
+				<?php echo JArrayHelper::getValue($extractor, 'type'); ?>
+			</div>
+		</div>
+		<?php endif; ?>
+	
+		<?php if (JArrayHelper::getValue($extractor, 'type') == 'local') : ?>
+		<div class="row-fluid">
+			<div class="span6">
+				<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_JSOLR_EXTRACTOR_LOCAL'); ?></strong>
+			</div>
+			
+			<div class="span6">
+				<?php echo JArrayHelper::getValue($extractor, 'path'); ?>
 			</div>
 		</div>
 		<?php endif; ?>

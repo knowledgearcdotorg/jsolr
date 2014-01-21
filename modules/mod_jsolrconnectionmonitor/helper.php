@@ -1,15 +1,44 @@
 <?php
 defined('_JEXEC') or die;
 
-jimport('jsolr.factory');
+jimport('jsolr.index.factory');
+jimport('jsolr.search.factory');
 
-abstract class ModConnectionMonitorHelper
+abstract class ModJSolrConnectionMonitorHelper
 {
+	public static function getIndexAjax()
+	{
+		jimport('joomla.application.module.helper');
+	
+		$module = JModuleHelper::getModule('jsolrconnectionmonitor');
+	
+		$params = new JRegistry();
+		$params->loadString($module->params);
+	
+		$index = self::getIndex($params);		
+		
+		$language = JFactory::getLanguage();
+		$loaded = $language->load('mod_jsolrconnectionmonitor', JPATH_ADMINISTRATOR, null, true);
+		
+		if (JArrayHelper::getValue($index, 'status')) {
+			$index['statusText'] = JText::_("MOD_JSOLRCONNECTIONMONITOR_CONNECTED");
+		} else {
+			$index['statusText'] = JText::_("MOD_JSOLRCONNECTIONMONITOR_NOT_CONNECTED");
+		}
+		
+		if ($statistics = JArrayHelper::getValue($index, 'statistics')) {
+			if (isset($statistics->lastModified)) {				
+				$index['statistics']->lastModifiedFormatted = JHtml::_('date', $statistics->lastModified, JText::_('DATE_FORMAT_LC2'));
+			}
+		}
+	
+		return ($index) ? $index : false;
+	}
+	
 	public static function getIndex($params)
 	{
 		$index = array();
-		
-		$client = self::_getService($params);
+
 		$config = self::_getConfig($params);
 		
 		$index['status'] = self::isConnected($params);
@@ -19,32 +48,34 @@ abstract class ModConnectionMonitorHelper
 		$index['libraries']['curl'] = self::isCurlInstalled();
 		$index['libraries']['jsolr'] = self::isJSolrLibraryInstalled();
 		
-		if (JArrayHelper::getValue($index, 'status') && 
-			JArrayHelper::getValue(JArrayHelper::getValue($index, 'libraries'), 'curl') &&
-			JArrayHelper::getValue(JArrayHelper::getValue($index, 'libraries'), 'jsolr')) {	
-			try {
-				$response = $client->luke();
-
-				$index['details'] = $response->index;					
-			} catch (Exception $e) {
-				// do nothing
-			}
+		if (count($statistics = self::getStatistics($params)) > 0) {
+			$index['statistics'] = $statistics;
 		}
+		
+		$index['extractor'] = self::getTikaSettings($params);
 		
 		return $index;
 	}
 
 	public static function isConnected($params)
 	{
-		$client = self::_getService($params);
-		
-		$response = $client->ping(10);
-		
-		if ($response === false) {
-			return false;
+		try {
+			$client = self::_getService($params);
+			
+			$response = $client->ping(10);
+			
+			if ($response === false) {
+				return false;
+			}
+			
+			return true;
+		} catch (Exception $e) {
+			if ($e->getCode() == 503) {
+				return false;
+			} else {
+				throw $e;
+			}
 		}
-		
-		return true;
 	}
 	
 	private static function _getService($params)
@@ -77,5 +108,45 @@ abstract class ModConnectionMonitorHelper
 	public static function isJSolrLibraryInstalled()
 	{
 		return class_exists('JSolrFactory');
+	}
+	
+	public static function getTikaSettings($params)
+	{
+		$settings = array();
+		
+		$config = self::_getConfig($params);
+		
+		if (!$params->get('service')) {
+			if ($config->get('index')) {
+					$settings['type'] = $config->get('extractor');
+					
+					if ($settings['type'] == 'local') {
+						$settings['path'] = $config->get('local_tika_app_path');
+					}
+			}
+		}
+		
+		return $settings;
+	}
+	
+	public static function getStatistics($params)
+	{
+		$statistics = array();
+		
+		if (self::isConnected($params) &&
+			self::isCurlInstalled() &&
+			self::isJSolrLibraryInstalled()) {
+			
+			try {
+				$client = self::_getService($params);
+				$response = $client->luke();
+		
+				$statistics = $response->index;
+			} catch (Exception $e) {
+				// do nothing
+			}
+		}
+
+		return $statistics;
 	}
 }
