@@ -31,12 +31,17 @@
  
 defined( '_JEXEC' ) or die( 'Restricted access' );
  
-jimport( 'joomla.application.component.view');
- 
+if (version_compare(JVERSION, "3.0", "l"))
+	jimport('joomla.application.component.view');
+
 class JSolrSearchViewConfiguration extends JViewLegacy
 {
+	protected $canDo;
+	
     function display($tpl = null)
     {
+    	$this->canDo = JSolrIndexHelper::getActions();
+    	
     	$this->modules = JModuleHelper::getModules('jsolrsearch');
     	
     	$this->addToolbar();
@@ -46,9 +51,11 @@ class JSolrSearchViewConfiguration extends JViewLegacy
     
     protected function addToolbar()
     {
-    	JToolBarHelper::title(JText::_('Configuration'), 'config.png');
+        	JToolBarHelper::title(JText::_('Configuration'), 'config.png');
     	
-		JToolBarHelper::preferences('com_jsolrsearch');
-		JToolBarHelper::divider();
+    	if ($this->canDo->get('core.admin')) {
+			JToolBarHelper::preferences('com_jsolrsearch');
+			JToolBarHelper::divider();
+    	}
     }
 }

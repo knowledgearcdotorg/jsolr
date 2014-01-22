@@ -33,11 +33,18 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('jsolr.helper');
+
+if (version_compare(JVERSION, "3.0", "l"))
+	jimport('joomla.application.component.view');
  
 class JSolrIndexViewConfiguration extends JViewLegacy
 {
+	protected $canDo;
+	
     function display($tpl = null)
     {
+    	$this->canDo = JSolrIndexHelper::getActions();
+    	
     	$this->modules = JModuleHelper::getModules('jsolrindex');
     	
     	$this->addToolbar();
@@ -49,7 +56,9 @@ class JSolrIndexViewConfiguration extends JViewLegacy
     {
     	JToolBarHelper::title(JText::_('Configuration'), 'config.png');
     	
-		JToolBarHelper::preferences('com_jsolrindex');
-		JToolBarHelper::divider();
+    	if ($this->canDo->get('core.admin')) {
+			JToolBarHelper::preferences('com_jsolrindex');
+			JToolBarHelper::divider();
+    	}
     }
 }
