@@ -17,4 +17,17 @@
             class="inputbox jsolrquery"
             maxlength="50"/>
     </fieldset>
+    
+    <fields name="as">
+    	<fieldset name="advanced">
+	        <field 
+	            name="sbd"
+	            type="list"
+	            label="Date"
+	            class="jsolr-dropdown">
+				<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
+				<option value="1">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
+			</field>
+    	</fieldset>
+    </fields>
 </form>
