@@ -39,20 +39,24 @@ abstract class ModJSolrConnectionMonitorHelper
 	{
 		$index = array();
 
-		$config = self::_getConfig($params);
-		
-		$index['status'] = self::isConnected($params);
-		$index['host'] = $config->get('host', null);
-		$index['port'] = $config->get('port', null);
-		$index['path'] = $config->get('path', null);
-		$index['libraries']['curl'] = self::isCurlInstalled();
-		$index['libraries']['jsolr'] = self::isJSolrLibraryInstalled();
-		
-		if (count($statistics = self::getStatistics($params)) > 0) {
-			$index['statistics'] = $statistics;
+		try {
+			$config = self::_getConfig($params);
+			
+			$index['status'] = self::isConnected($params);
+			$index['host'] = $config->get('host', null);
+			$index['port'] = $config->get('port', null);
+			$index['path'] = $config->get('path', null);
+			$index['libraries']['curl'] = self::isCurlInstalled();
+			$index['libraries']['jsolr'] = self::isJSolrLibraryInstalled();
+			
+			if (count($statistics = self::getStatistics($params)) > 0) {
+				$index['statistics'] = $statistics;
+			}
+			
+			$index['extractor'] = self::getTikaSettings($params);
+		} catch (Exception $e) {
+			// do nothing.	
 		}
-		
-		$index['extractor'] = self::getTikaSettings($params);
 		
 		return $index;
 	}
@@ -137,14 +141,10 @@ abstract class ModJSolrConnectionMonitorHelper
 			self::isCurlInstalled() &&
 			self::isJSolrLibraryInstalled()) {
 			
-			try {
-				$client = self::_getService($params);
-				$response = $client->luke();
+			$client = self::_getService($params);
+			$response = $client->luke();
 		
-				$statistics = $response->index;
-			} catch (Exception $e) {
-				// do nothing
-			}
+			$statistics = $response->index;			
 		}
 
 		return $statistics;
