@@ -35,6 +35,7 @@ $document = JFactory::getDocument();
 
 $noValue = JText::_('MOD_JSOLRCONNECTIONMONITOR_NOVALUE');
 
+if (version_compare(JVERSION, "3.0", "ge"))
 $js = <<<JS
 (function ($) {	
 	$(document).ready(function() {
