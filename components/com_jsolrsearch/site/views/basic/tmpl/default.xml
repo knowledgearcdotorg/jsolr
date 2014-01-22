@@ -5,4 +5,20 @@
                         <![CDATA[COM_JSOLRSEARCH_BASIC_LAYOUT_DESC]]>
                 </message>
         </layout>
+        
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+		<fieldset 
+			name="request"
+			addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
+
+			<field 
+				name="o" 
+				type="jsolrsearchextensionlist"
+				label="COM_JSOLRSEARCH_BASIC_FIELD_SELECT_O_LABEL"
+				description="COM_JSOLRSEARCH_BASIC_FIELD_SELECT_O_DESC">
+				<option value="">COM_JSOLRSEARCH_BASIC_FIELD_SELECT_O_SEARCHALL</option>	
+			</field>
+		</fieldset>
+	</fields>
 </metadata>
