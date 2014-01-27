@@ -62,6 +62,20 @@
         </subant>
 	</target>
 	
+	<target name="package_with_dependencies" description="Packages all JSolr extensions along with any required dependencies such as libraries, plugins and/or modules.">
+		<echo message="Packaging all extensions with dependencies."/>
+		
+		<antcall target="package"/>
+		
+		<subant target="package_with_dependencies">
+			<fileset dir=".">
+				<include name="**/**/build_com_jsolrindex.xml"/>
+			</fileset>
+			<property	name="src"			value="${src}"/>
+			<property	name="package.dest"	value="${package.dest}/jsolr"/>
+        </subant>
+	</target>
+	
 	<target name="help" description="Help documentation for this build file.">
 		<echo message="Help documentation."/>
 	</target>

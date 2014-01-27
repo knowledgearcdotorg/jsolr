@@ -79,4 +79,17 @@
 		       update="true"
 		       excludes="build*.xml"/>
 	</target>
+	
+	
+	<target name="package_with_dependencies" description="Creates a JSolr Index component package with dependencies.">
+		<echo message="Packaging JSolr Index component with dependencies."/>
+		<zip destfile="${package.dest}/com_jsolrindex.zip" update="true">
+			<zipfileset dir="${package.dest}" prefix="modules">
+				<include name="mod_jsolrconnectionmonitor.zip"/>				
+			</zipfileset>
+			<zipfileset dir="${package.dest}" prefix="libraries">
+				<include name="lib_jsolr.zip"/>
+			</zipfileset>
+		</zip>
+	</target>
 </project>
