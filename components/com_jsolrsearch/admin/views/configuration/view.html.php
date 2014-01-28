@@ -40,7 +40,7 @@ class JSolrSearchViewConfiguration extends JViewLegacy
 	
     function display($tpl = null)
     {
-    	$this->canDo = JSolrIndexHelper::getActions();
+    	$this->canDo = JSolrSearchHelper::getActions();
     	
     	$this->modules = JModuleHelper::getModules('jsolrsearch');
     	
