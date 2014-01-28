@@ -38,7 +38,7 @@ class Com_JSolrIndexInstallerScript
 {	
 	private $dependencies = array(
 		'libraries'=>array(
-			'lib_jsolr'=>array(
+			'jsolr'=>array(
 				'published'=>true
 			)	
 		),
@@ -60,13 +60,13 @@ class Com_JSolrIndexInstallerScript
 	);
 	
 	public function install($parent)
-	{		
-		$this->_installExtensions($parent);
+	{
+
 	}
 	
 	public function update($parent) 
 	{
-		$this->_installExtensions($parent);
+		
 	}
 	
 	public function uninstall($parent)
@@ -83,16 +83,65 @@ class Com_JSolrIndexInstallerScript
 	}
 	
 	public function postflight($type, $parent)
+	{		
+		$crawler = $this->_installCrawler($parent);
+		
+		$dependencies = $this->_installDependencies($parent);
+		
+		?>
+		<table class="adminlist table table-striped" style="width: 100%;">
+			<thead>
+				<tr>
+					<th class="title">Extension</th>
+					<th width="30%">Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>JSolr Crawler</td>				
+					<td>
+						<?php if ($crawler) : ?>
+						<strong style="color: green">Installed</strong>
+						<?php else : ?>
+						<strong style="color: red">Not Installed</strong>
+						<?php endif; ?>
+					</td>
+				</tr>
+				
+				<?php foreach ($dependencies as $key=>$value) : ?>
+				<tr>
+					<td><?php echo $key; ?></td>				
+					<td>
+						<?php if (JArrayHelper::getValue($value, 'status') == 1) : ?>
+						<strong style="color: green">Installed</strong>
+						<?php elseif (JArrayHelper::getValue($value, 'status') == 2) : ?>
+						<strong>Up-to-date</strong>
+						<?php else : ?>
+						<strong style="color: red">Not Installed</strong>
+						<?php endif; ?>
+					</td>				
+				</tr>			
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+	
+	private function _installCrawler($parent)
 	{
+		$success = false; 
+		
 		$src = $parent->getParent()->getPath('extension_administrator').'/cli/jsolr_crawler.php';
-	
+		
 		$cli = JPATH_ROOT.'/cli/jsolr_crawler.php';
-	
+		
 		if (JFile::exists($src)) {
-			if (JFile::move($src, $cli)) {
+			if ($success = JFile::move($src, $cli)) {
 				JFolder::delete($parent->getParent()->getPath('extension_administrator').'/cli');
 			}
 		}
+		
+		return $success;
 	}
 	
 	/**
@@ -100,8 +149,10 @@ class Com_JSolrIndexInstallerScript
 	 * 
 	 * @param JAdapterInstance $parent
 	 */
-	private function _installExtensions($parent)
+	private function _installDependencies($parent)
 	{
+		$installed = array();
+		
 		$installer = new JInstaller();
 		$installer->setOverwrite(true);
 
@@ -110,80 +161,81 @@ class Com_JSolrIndexInstallerScript
 		foreach ($this->dependencies as $type=>$extension) {
 			foreach ($extension as $name=>$params) {
 				$packageZip = $src.'/'.$type.'/'.$name.'.zip';
-
+				
 				if ($package = JInstallerHelper::unpack($packageZip)) {
 					$doInstall = true;
-					
-					$path = $this->_getInstalledManifest($type, $name);					
+				
+					$path = $this->_getInstalledManifest($type, $name, $params);
 					$oldManifest = null;
-					
+				
 					if (JFile::exists($path)) {
 						$oldManifest = $installer->parseXMLInstallFile($path);
 					}
-					
-					$dir = JArrayHelper::getValue($package, 'dir');
-					
+				
+					$dir = JArrayHelper::getValue($package, 'dir').'/';
+				
 					$path = $this->_getExtractedManifest($dir, $type, $name);
 					$newManifest = $installer->parseXMLInstallFile($path);
-					
+				
 					if ($oldManifest) {
 						$oldVersion = JArrayHelper::getValue($oldManifest, 'version');
 						$newVersion = JArrayHelper::getValue($newManifest, 'version');
-						
+				
 						if (version_compare($oldVersion, $newVersion, 'ge')) {
 							$doInstall = false;
 						}
 					}
-					
+				
+					$success = true;
+				
 					if ($doInstall) {
-						if ($installer->install($dir)) {
-							
-							// post installation configuration.
-							if ($type == 'modules') {
-								$this->_configureModule($name, $params);
-							}
-							
-							$msgtext  = "$name successfully installed.";
+						if ($success = $installer->install($dir)) {
+							$installed[$name] = array('status'=>1);
 						} else {
-							$msgtext  = "ERROR: Could not install $name. Please install manually.";
+							$installed[$name] = array('status'=>0);
 						}
 					} else {
-						$msgtext = $name." is up-to-date";
+						$installed[$name] = array('status'=>2);
 					}
-					?>
-					<table width="100%">
-						<tr style="height:30px">
-							<td width="50px"><img src="/administrator/images/tick.png" height="20px" width="20px"></td>
-							<td><font size="2"><b><?php echo $msgtext; ?></b></font></td>
-						</tr>
-					</table>
-					<?php
+				
+					if ($success) {
+						// post installation configuration.
+						if ($type == 'modules') {
+							$this->_configureModule($name, $params);
+						}
+					}
+
 					JInstallerHelper::cleanupInstall($packageZip, $dir);
 				}
 			}
 		}
+		
+		return $installed;
 	}
 	
-	private function _getInstalledManifest($type, $name)
+	private function _getInstalledManifest($type, $name, $params)
 	{
 		$path = JPATH_ROOT;
-
+	
 		switch ($type) {
 			case 'libraries':
-				$path.='/administrator/manifests/libraries/'.str_replace("lib_", "", $name);
+				$path.="/administrator/manifests/libraries/$name";
 				break;
-				
+	
 			case 'modules':
-				$path.='/modules/'.$name.'/'.$name;
+				if (JArrayHelper::getValue($params, 'client_id') == 1) {
+					$path.="/administrator";
+				}				
+				$path.="/modules/$name/$name";
 				break;
-				
+	
 			case 'plugins':
-				if (count($parts = explode('_', $name, 2)) == 3) { 
+				if (count($parts = explode('_', $name, 2)) == 3) {
 					$path.='/plugins/'.JArrayHelper::getValue($parts, 1).'/'.JArrayHelper::getValue($parts, 2);
 				}
-				
+	
 		}
-		
+	
 		return $path.'.xml';
 	}
 	
@@ -191,16 +243,16 @@ class Com_JSolrIndexInstallerScript
 	{
 		switch ($type) {
 			case 'libraries':
-				$path.='/'.str_replace("lib_", "", $name);
+				$path.="/$name";
 				break;
 	
 			case 'modules':
-				$path.='/'.$name;
+				$path.="/$name";
 				break;
 	
 			case 'plugins':
 				if (count($parts = explode('_', $name, 2)) == 3) {
-					$path.='/'.JArrayHelper::getValue($parts, 1).'/'.JArrayHelper::getValue($parts, 2);
+					$path.='/'.JArrayHelper::getValue($parts, 2);
 				}
 	
 		}
@@ -208,6 +260,13 @@ class Com_JSolrIndexInstallerScript
 		return $path.'.xml';
 	}
 	
+	/**
+	 * Configure the module using the module's params.
+	 * 
+	 * @param string $name The name of the extension; E.g. mod_mymodule.
+	 * @param string $params An array of parameters that should be used to 
+	 * configure the module. 
+	 */
 	private function _configureModule($name, $params)
 	{
 		$db = JFactory::getDbo();
@@ -232,25 +291,27 @@ class Com_JSolrIndexInstallerScript
 			$language->load($name, JPATH_ADMINISTRATOR, null, true);
 			
 			// Set up module per config preferences.
-			$position = JArrayHelper::getValue($params, 'position');
-			$published = JArrayHelper::getValue($params, 'published');	
-			
-			$query = $db->getQuery(true)
-				->update($db->qn('#__modules'))
-				->set($db->qn('position').' = '.$db->q($position))				
-				->where($db->qn('module').' = '.$db->q($name));
-			
-			if ($title = JArrayHelper::getValue($params, 'title')) {
-				$query->set($db->qn('title').' = '.$db->q(JText::_($title)));
+			if (count($params)) {
+				$query = $db->getQuery(true)
+					->update($db->qn('#__modules'))			
+					->where($db->qn('module').' = '.$db->q($name));
+	
+				if ($title = JArrayHelper::getValue($params, 'title')) {
+					$query->set($db->qn('title').' = '.$db->q(JText::_($title)));
+				}
+				
+				if ($position = JArrayHelper::getValue($params, 'position')) {
+					$query->set($db->qn('position').' = '.$db->q($position));
+				}
+				
+				if(JArrayHelper::getValue($params, 'published')) {
+					$query->set($db->qn('published').' = '.$db->q('1'));
+				}
+				
+				$db->setQuery($query);
+				$db->execute();
 			}
-			
-			if($published) {
-				$query->set($db->qn('published').' = '.$db->q('1'));
-			}
-			
-			$db->setQuery($query);
-			$db->execute();
-			
+
 			// Make accessible on every page.
 			$query = $db->getQuery(true)
 				->select('id')
@@ -269,8 +330,8 @@ class Com_JSolrIndexInstallerScript
 			$assignments = $db->loadObjectList();
 			
 			if(!$assignments) {
-				$o = (object)array('moduleid'=>$moduleId, 'menuid'=>0);
-				$db->insertObject('#__modules_menu', $o);
+				$object = (object)array('moduleid'=>$moduleId, 'menuid'=>0);
+				$db->insertObject('#__modules_menu', $object);
 			}
 		}
 	}

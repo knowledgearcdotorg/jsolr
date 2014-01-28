@@ -47,7 +47,7 @@
 	
 	<target name="package" description="Creates a JSolr library package.">
 		<echo message="Packaging JSolr library."/>
-		<zip destfile="${package.dest}/lib_jsolr.zip"
+		<zip destfile="${package.dest}/jsolr.zip"
 		       basedir="${src}"
 		       update="true"
 		       excludes="build*.xml"/>
