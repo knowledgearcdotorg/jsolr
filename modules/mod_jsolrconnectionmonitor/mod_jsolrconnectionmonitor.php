@@ -35,7 +35,7 @@ $document = JFactory::getDocument();
 
 $noValue = JText::_('MOD_JSOLRCONNECTIONMONITOR_NOVALUE');
 
-if (version_compare(JVERSION, "3.0", "ge"))
+if (version_compare(JVERSION, "3.0", "ge")) {
 $js = <<<JS
 (function ($) {	
 	$(document).ready(function() {
@@ -87,7 +87,8 @@ $js = <<<JS
 })(jQuery)
 JS;
 
-$document->addScriptDeclaration($js);
+	$document->addScriptDeclaration($js);
+}
 
 $index = ModJSolrConnectionMonitorHelper::getIndex($params);
 require JModuleHelper::getLayoutPath('mod_'.$module->name, $params->get('layout', 'default'));
