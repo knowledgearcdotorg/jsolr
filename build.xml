@@ -35,19 +35,6 @@
         </subant>
 	</target>
 	
-	<target name="updateModuleOnly" description="Updates module in an existing Joomla install.">
-		<echo message="Updating module in the Joomla! environment."/>
-		
-		<subant target="updateModuleOnly">
-			<fileset dir=".">
-				<include name="**/**/build_*.xml"/>
-			</fileset>
-			<property	name="src"								value="${src}"/>
-			<property	name="dest"								value="${dest}"/>
-			<property 	name="dest.modules" 					value="${dest.modules}"/>
-        </subant>
-	</target>
-	
 	<target name="package" description="Packages all JSolr extensions for easy installation into Joomla!.">
 		<echo message="Packaging all extensions."/>
 		
