@@ -328,7 +328,11 @@ EOT;
     		}
     	}
     	
-    	$dispatcher = JEventDispatcher::getInstance();
+    	if (version_compare(JVERSION, "3.0", "l")) {
+    		$dispatcher = JDispatcher::getInstance();
+    	} else {
+    		$dispatcher = JEventDispatcher::getInstance();
+    	}
     
     	JPluginHelper::importPlugin("jsolrcrawler", $plugin, true, $dispatcher);
 
