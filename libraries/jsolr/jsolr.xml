@@ -34,6 +34,6 @@
 	
 	
 	<updateservers>
-		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=12&dummy=extension.xml]]></server>
+		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=11&dummy=extension.xml]]></server>
 	</updateservers>
 </extension>
