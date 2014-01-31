@@ -4,7 +4,7 @@
 
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2010 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2010 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -25,7 +25,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<hayden@knowledgearc.com> 
  * 
  */
 

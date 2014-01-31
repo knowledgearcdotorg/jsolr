@@ -2,8 +2,6 @@
 /**
  * JSolrSearch configuration panel.
  * 
- * @package		JSolr
- * @subpackage	Search
  * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
@@ -25,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<hayden@knowledgearc.com> 
  * 
  */
 

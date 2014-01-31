@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JSolr.Plugins
+ * @package		JSolr.Plugin
  * @subpackage	Content
- * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license		This file is part of the JSolr Content Crawler plugin for Joomla!.
 
    The JSolr Content Crawler plugin for Joomla! is free software: you can redistribute it 
@@ -23,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<hayden@knowledgearc.com> 
  * 
  */
 

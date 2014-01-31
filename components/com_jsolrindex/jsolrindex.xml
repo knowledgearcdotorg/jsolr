@@ -2,10 +2,10 @@
 <extension type="component" version="2.5" method="upgrade">
 	<name>com_jsolrindex</name>
 	<creationDate>2012-06-21</creationDate>
-	<author>Wijiti</author>
-	<authorEmail>development@wijiti.com</authorEmail>
-	<authorUrl>http://www.wijiti.com</authorUrl>
-	<copyright>>Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<author>KnowledgeARC</author>
+	<authorEmail>development@knowledgearc.com</authorEmail>
+	<authorUrl>http://www.knowledgearc.org</authorUrl>
+	<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>1.1.0</version>
 	<description>COM_JSOLRINDEX_XML_DESCRIPTION</description>
@@ -47,6 +47,6 @@
 	</administration>
 	
 	<updateservers>
-		<server type="extension" priority="1"><![CDATA[http://localhost/joomla32/index.php?option=com_ars&view=update&task=stream&format=xml&id=1&dummy=/my.xml]]></server>
+		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=1&dummy=extension.xml]]></server>
 	</updateservers>
 </extension>

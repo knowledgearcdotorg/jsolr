@@ -1,5 +1,8 @@
 <?php
 /**
+ * @package		JSolr
+ * @subpackage	Search
+ * 
  * @file
  * A chaining API for Apache Solr searches.
  *

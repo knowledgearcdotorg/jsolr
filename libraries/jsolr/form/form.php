@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2012-2013 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
  *
  *   The JSolr library for Joomla! is free software: you can redistribute it 
@@ -24,7 +24,7 @@
  * contributed any source code changes.
  * @author Michał Kocztorz <michalkocztorz@wijiti.com> 
  * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
- * @author Hayden Young <haydenyoung@wijiti.com>
+ * @author Hayden Young <haydenyoung@knowledgearc.com>
  * 
  */
  

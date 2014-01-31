@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Search
- * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
 
    The JSolr library for Joomla! is free software: you can redistribute it 
@@ -23,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * @author Hayden Young <haydenyoung@knowledgearc.com>
  * 
  */
  

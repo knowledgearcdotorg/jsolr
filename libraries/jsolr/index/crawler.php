@@ -23,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@knowledgearc.com> 
+ * @author Hayden Young <haydenyoung@knowledgearc.com>
  * 
  */
  

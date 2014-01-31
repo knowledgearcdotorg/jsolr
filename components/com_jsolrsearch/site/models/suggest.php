@@ -2,9 +2,9 @@
 /**
  * A model that provides facet browsing.
  * 
- * @package		JSolr
- * @subpackage	Search
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr.Search
+ * @subpackage	Model
+ * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
  *
  *   The JSolrSearch component for Joomla! is free software: you can redistribute it 

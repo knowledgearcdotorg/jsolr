@@ -2,8 +2,7 @@
 /**
  * A script for intercepting calls to this component and handling them appropriately.
  * 
- * @author		$LastChangedBy$
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
    The JSolrIndex component for Joomla! is free software: you can redistribute it 
@@ -24,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<haydenyoung@knowledgearc.com> 
  * 
  */
 

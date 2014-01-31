@@ -2,7 +2,7 @@
 /**
  * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2011 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2011 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can 
@@ -23,7 +23,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<hayden@knowledgearc.com> 
  * Michał Kocztorz				<michalkocztorz@wijiti.com> 
  * 
  */

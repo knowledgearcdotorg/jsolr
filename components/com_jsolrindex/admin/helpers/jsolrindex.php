@@ -2,9 +2,8 @@
 /**
  * A helper that provides assistance with permissions adn submenus for JSolrIndex.
  * 
- * @package		JSolr
- * @subpackage	Index
- * @copyright	Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr.Index
+ * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrIndex component for Joomla!.
 
    The JSolrIndex component for Joomla! is free software: you can redistribute it 
@@ -25,7 +24,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com> 
+ * Hayden Young					<haydenyoung@knowledgearc.com> 
  * 
  */
 

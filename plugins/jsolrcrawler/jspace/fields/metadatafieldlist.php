@@ -3,7 +3,7 @@
  * Provides a list of metadata fields available in DSpace.
  * 
  * @package		JSpace
- * @copyright	Copyright (C) 2013 Wijiti Pty Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrCrawler JSpace plugin for Joomla!.
 
    The JSolrCrawler JSpace plugin for Joomla! is free software: you can redistribute it 
@@ -24,7 +24,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * Name							Email
- * Hayden Young					<haydenyoung@wijiti.com>
+ * Hayden Young					<hayden@knowledgearc.com>
  */
 
 defined('JPATH_BASE') or die;

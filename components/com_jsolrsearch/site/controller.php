@@ -2,9 +2,9 @@
 /**
  * A controller for managing content sharing.
  * 
- * @package		JSolr
- * @subpackage	Search
- * @copyright	Copyright (C) 2010-2013 Wijiti Pty Ltd. All rights reserved.
+ * @package		JSolr.Search
+ * @subpackage	Controller
+ * @copyright	Copyright (C) 2010-2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -24,7 +24,7 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * @author Hayden Young <haydenyoung@wijiti.com>
+ * @author Hayden Young <hayden@knowledgearc.com>
  * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com>
  */
 

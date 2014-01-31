@@ -5,7 +5,7 @@
 	<author>Wijiti</author>
 	<authorEmail>development@wijiti.com</authorEmail>
 	<authorUrl>http://www.wijiti.com</authorUrl>
-	<copyright>>Copyright (C) 2012 Wijiti Pty Ltd. All rights reserved.</copyright>
+	<copyright>>Copyright (C) 2012 KnowledgeARC Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>1.0.0</version>
 	<description>PLG_JSOLRSEARCH_CONTENT_XML_DESCRIPTION</description>
@@ -29,4 +29,8 @@
 			</fieldset>
 		</fields>
 	</config>
+	
+	<updateservers>
+		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=5&dummy=extension.xml]]></server>
+	</updateservers>
 </extension>

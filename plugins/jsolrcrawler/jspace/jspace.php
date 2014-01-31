@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		JSolr
+ * @package		JSolr.Plugin
  * @subpackage	Index
  * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr JSpace Index plugin for Joomla!.
