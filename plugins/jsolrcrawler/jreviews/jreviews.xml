@@ -2,9 +2,9 @@
 <extension version="2.5" type="plugin" group="jsolrcrawler">
 	<name>plg_jsolrcrawler_jreviews</name>
 	<creationDate>2013-01-08</creationDate>
-	<author>Wijiti</author>
-	<authorEmail>development@wijiti.com</authorEmail>
-	<authorUrl>http://www.wijiti.com</authorUrl>
+	<author>KnowledgeARC</author>
+	<authorEmail>development@knowledgearc.com</authorEmail>
+	<authorUrl>http://www.knowledgearc.org</authorUrl>
 	<copyright>>Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>1.0.0</version>
