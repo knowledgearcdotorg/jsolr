@@ -117,7 +117,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 * 
 	 *  @return string The language code.
 	 */
-	protected function getLanguage(&$item, $includeRegion = true)
+	protected function getLanguage($item, $includeRegion = true)
 	{
 		if (isset($item->language) && $item->language != '*') {			
 			$lang = $item->language;
@@ -428,12 +428,12 @@ abstract class JSolrIndexCrawler extends JPlugin
 			$registry->loadString($item->metadata);
 			$item->metadata = $registry;
 		}
-	
+
 		$document = $this->getDocument($item);
 		$document->addField('id', $item->id);
 		$document->addField('extension', $this->get('extension'));
 		$document->addField('view', $this->get('view'));
-		$document->addField('lang', $this->getLanguage($item));
+		$document->addField('lang', $item->language);
 		
 		$key = $this->buildKey($document);
 		
