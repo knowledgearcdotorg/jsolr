@@ -107,11 +107,19 @@ class JSolrSearchModelSearch extends JModelForm
 			$filters[] = $access;
 		}
 
-		// nothing passed. Get out of here.
 		if (!$this->getState('query.q')) {
 			if (!$this->getForm()->isFiltered()) {
-				return null;
+				return null; // nothing passed. Get out of here.
 			}
+		}
+
+		// Get language from current tag or use default joomla langugage.
+   		if (!($lang = JFactory::getLanguage()->getTag())) {
+			$lang = JFactory::getLanguage()->getDefault();
+		}
+		
+		if ($lang) {
+			$filters[] = "(lang:$lang OR lang:\*)";
 		}
 
 		$sort = $this->getForm()->getSorts();
