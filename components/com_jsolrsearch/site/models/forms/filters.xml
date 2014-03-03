@@ -28,7 +28,10 @@
 	    		name="lr"
 	    		type="language"
 	    		label="Language"
-	    		class="jsolr-dropdown"/>
+	    		class="jsolr-dropdown"
+	    		default="">
+	    		<option value="">COM_JSOLRSEARCH_LANGAUGE_ANY</option>
+	    	</field>
 	        <field 
 	            name="qdr"
 	            type="list"
