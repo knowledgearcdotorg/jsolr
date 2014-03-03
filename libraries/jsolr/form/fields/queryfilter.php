@@ -4,7 +4,7 @@
  * 
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
    The JSpace component for Joomla! is free software: you can redistribute it 
@@ -31,26 +31,17 @@
 defined('JPATH_BASE') or die;
 
 jimport('joomla.form.formfield');
-jimport('joomla.form.helper');
 jimport('jsolr.form.fields.filterable');
+jimport('jsolr.form.fields.hiddenfilter');
 
-JFormHelper::loadFieldClass('hidden');
-
-class JSolrFormFieldAdvancedFilter extends JFormFieldHidden implements JSolrFilterable
+class JSolrFormFieldQueryFilter extends JSolrFormFieldHiddenFilter implements JSolrFilterable
 {
 	/**
 	 * The form field type.
 	 *
 	 * @var         string
 	 */
-	protected $type = 'JSolr.AdvancedFilter';
-	
-	private $filter;
-	
-	public function __construct($form = null)
-	{
-		parent::__construct($form);
-	}
+	protected $type = 'JSolr.QueryFilter';
 	
 	/**
 	 * (non-PHPdoc)
@@ -58,27 +49,28 @@ class JSolrFormFieldAdvancedFilter extends JFormFieldHidden implements JSolrFilt
 	 */
 	public function getFilters()
 	{
-		$this->filter = JFactory::getApplication()->input->getString($this->name, null);
+		$application = JFactory::getApplication();
 		
-		$filter = null;
-		$query = JFactory::getApplication()->input->getString('q', null);
-
-		if ($query && $this->filter) {
-			$filter = $query; 
+		$filters = array();
+		
+		if ($this->filter && $application->input->getString('q', null)) {
+			$filters[] = $this->filter.":".$application->input->getString('q', null);
 		}
 		
-		return ($filter) ? array($filter) : array();
+		return (count($filters)) ? $filters : array();
 	}
-	
+
 	public function __get($name)
 	{
 		switch ($name) {
 			case 'filter':
-				return $this->$name;
+				$application = JFactory::getApplication();
+				return $application->input->getString($this->name, null);
 				break;
 	
 			default:
 				return parent::__get($name);
+				break;
 		}
 	}
 }

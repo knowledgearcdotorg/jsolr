@@ -5,7 +5,7 @@
  * 
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
    The JSpace component for Joomla! is free software: you can redistribute it 
@@ -35,10 +35,10 @@ defined('JPATH_BASE') or die;
 
 jimport('joomla.form.helper');
 
-jimport('jsolr.form.fields.dropdown');
+jimport('jsolr.form.fields.searchtool');
 jimport('jsolr.form.fields.sortable');
 
-class JSolrFormFieldSort extends JSolrFormFieldDropdown implements JSolrSortable
+class JSolrFormFieldSort extends JSolrFormFieldSearchTool implements JSolrSortable
 {
 	/**
 	 * The form field type.

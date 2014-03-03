@@ -52,13 +52,13 @@ class JSolrFormFieldSearchTool extends JFormFieldList
 		$html = array();
 		
 		$html[] = '<input type="hidden" name="'.$this->name.'" id="'.$this->id.'"'.' value="'.htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8').'"/>';
-		$html[] = '<a class="dropdown-toggle" id="'.$this->name.'" role="button" data-toggle="dropdown" data-target="#">' . JText::_($this->getValueLabel()) . ' <b class="caret"></b>';
+		$html[] = '<a class="dropdown-toggle" id="'.$this->name.'" role="button" data-toggle="dropdown" data-target="#">' . JText::_($this->getSelectedLabel()) . ' <b class="caret"></b>';
 		$html[] = '<ul class="dropdown-menu" role="menu" aria-labelledby="'.$this->name.'">' . implode($this->getOptions()) . '</ul>';
 
 		return implode($html);
 	}
 	
-	protected function getValueLabel() {
+	protected function getSelectedLabel() {
 		$ret = "";
 		foreach ($this->element->children() as $option)
 		{
@@ -67,7 +67,7 @@ class JSolrFormFieldSearchTool extends JFormFieldList
 			{
 				continue;
 			}
-				
+
 			$selected = ((string) $option['value']) == $this->value;
 			if( $selected ) {
 				return trim((string) $option);

@@ -70,14 +70,6 @@ class JSolrSearchModelSearch extends JModelForm
 		$this->setState('query.q', $application->input->get("q", null, "html"));
 		$extension = $this->setState('query.o', $application->input->getString("o", null, "string"));
 
-		$lang = $application->input->getString("lr", null);
-  			
-		if (!$lang) {
-			$lang = $application->input->getString("lang", null);
-		}
-
-		$this->setState('query.lang', $lang);
-
 		$value = $application->input->get('limit', $application->getCfg('list_limit', 0));
 		$this->setState('list.limit', $value);
 
@@ -98,8 +90,8 @@ class JSolrSearchModelSearch extends JModelForm
 		$qf = array();
 		$sort = array();
 
-		$filters = $this->getFilters();
-		
+		$filters = $this->getForm()->getFilters();
+
 		$access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
 		
 		if ($access) {
@@ -112,16 +104,7 @@ class JSolrSearchModelSearch extends JModelForm
 				return null; // nothing passed. Get out of here.
 			}
 		}
-
-		// Get language from current tag or use default joomla langugage.
-   		if (!($lang = JFactory::getLanguage()->getTag())) {
-			$lang = JFactory::getLanguage()->getDefault();
-		}
 		
-		if ($lang) {
-			$filters[] = "(lang:$lang OR lang:\*)";
-		}
-
 		$sort = $this->getForm()->getSorts();
 		
 		$facets = $this->getForm()->getFacets();
@@ -204,8 +187,6 @@ class JSolrSearchModelSearch extends JModelForm
 		$uri = JSolrSearchFactory::getQueryRouteWithExtension();
 
 		$uri->setVar('q', $this->getItems()->getSuggestions());
-		
-		$uri->setVar('q', $this->getItems()->getSuggestions());		
 
 		$uris[$i]['uri'] = $uri;
 		$uris[$i]['title'] = $this->getItems()->getSuggestions();
@@ -460,24 +441,6 @@ class JSolrSearchModelSearch extends JModelForm
     
     return $array;
   }
-  
-	/**
-	 * Gets an array of filters formatted for the JSolrSearchQuery.
-	 * 
-	 * @return array An array of filters formatted for the JSolrSearchQuery.
-	 */
-	public function getFilters()
-	{
-		$filters = array();
-
-		foreach ($this->getForm()->getFilters() as $key=>$value) {
-			foreach ($value as $item) {
-				$filters[] = $key.':'.$item;
-			}
-		}
-		
-		return $filters;
-	}
 
 	/**
 	 * Gets a list of applied filters based on any currently selected facets.

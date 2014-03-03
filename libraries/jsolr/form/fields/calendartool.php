@@ -119,23 +119,24 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 	 */
 	public function getFilters()
 	{	
-		$filter = null;
+		$filters = array();
 		
 		foreach ($this->element->children() as $option) {
-			// Only add <option /> elements.
+			// Only use <option /> elements.
 			if ($option->getName() != 'option') {
 				continue;
 			}
 			
 			$value = JArrayHelper::getValue($option, 'value', null, 'string');
 			
-			if ($value == $this->value) {
+			if ($this->value && $value == $this->value) {
 				$filter = JArrayHelper::getValue($option, 'filter', null, 'string');
+				$filters[] = $this->filter.":".$filter;
 				continue;
 			}
 		}
 		
-		return ($filter) ? array($filter) : array();
+		return (count($filters)) ? $filters : array();
 	}
 	
 	public function __get($name)

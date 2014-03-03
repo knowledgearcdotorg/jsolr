@@ -1,6 +1,6 @@
 <?php
 /**
- * An interface to implement when a class should be filterable.
+ * Provides a hidden field for storing advanced filters not included in Tools.
  * 
  * @package		JSolr
  * @subpackage	Form
@@ -24,29 +24,49 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * Name							Email
+ * Name							Email 
  * @author Hayden Young <haydenyoung@knowledgearc.com>
  */
 
-/**
- * A filter interface.
- * 
- * Implement this interface when the form field must provide filters for the 
- * query (E.g. Solr field fq).
- */
-interface JSolrFilterable
+defined('JPATH_BASE') or die;
+
+jimport('joomla.form.formfield');
+jimport('joomla.form.helper');
+jimport('jsolr.form.fields.filterable');
+
+JFormHelper::loadFieldClass('hidden');
+
+class JSolrFormFieldHiddenFilter extends JFormFieldHidden implements JSolrFilterable
 {
 	/**
-	 * Gets a array of currently selected filters for the field.
+	 * The form field type.
 	 *
-	 * Array must contain valid Solr fq values:
-	 * 
-	 * E.g.
-	 * 
-	 * $filter = array();
-	 * $filter[] = "title:welcome";
-	 * 
-	 * @return array An array of currently selected filters for the field.
+	 * @var         string
 	 */
-	function getFilters();
+	protected $type = 'JSolr.HiddenFilter';
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see JSolrFilterable::getFilters()
+	 */
+	public function getFilters()
+	{
+		$application = JFactory::getApplication();
+		
+		$value = $application->input->getString($this->name, null);
+		
+		return ($this->filter && $value) ? array($value) : array();
+	}
+
+	public function __get($name)
+	{
+		switch ($name) {
+			case 'filter':
+				return JArrayHelper::getValue($this->element, $name, null, 'string');
+				break;
+	
+			default:
+				return parent::__get($name);
+		}
+	}
 }

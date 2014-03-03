@@ -18,8 +18,8 @@
         	<option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
         	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
 		</field>
-		<field type="jsolr.advancedfilter" name="in"/>
-    	<field type="jsolr.languagefilter" name="lr"/>
+		<field type="jsolr.queryfilter" name="in"/>
+    	<field type="jsolr.languagefilter" name="lr" filter="lang"/>
     </fieldset>
     
     <fields name="as">

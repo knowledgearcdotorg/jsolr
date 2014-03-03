@@ -2,7 +2,7 @@
 /**
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr library for Joomla!.
  *
  *   The JSolr library for Joomla! is free software: you can redistribute it 
@@ -22,9 +22,10 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
- * @author Michał Kocztorz <michalkocztorz@wijiti.com> 
- * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
- * @author Hayden Young <haydenyoung@knowledgearc.com>
+ * Name							Email
+ * Michał Kocztorz				<michalkocztorz@wijiti.com> 
+ * Bartłomiej Kiełbasa			<bartlomiejkielbasa@wijiti.com> 
+ * Hayden Young 				<haydenyoung@knowledgearc.com>
  * 
  */
  
@@ -51,22 +52,9 @@ class JSolrForm extends JForm
 	}
 	
 	/**
-	 * Method to get filters for narrowing the search result set.
+	 * Gets a list of filters for narrowing the search result set.  
 	 * 
-	 * The filters are provided via the JSolrFilterable interface's getFilters 
-	 * method  and the form field must also provide a valid Solr filter field.
-	 * 
-	 * The returned array can be used to build the Solr querystring's filter 
-	 * query (fq) so it is important that the Solr filter field exists.  
-	 * 
-	 * @return array A named array of filters. Each filter will also be an array:
-	 * 
-	 * E.g.
-	 * 
-	 * $filters['title'][0] = 'title1';
-	 * $filters['title'][1] = 'title2';
-	 * $filters['author'][0] = 'author1';
-	 * $filters['author'][1] = 'author2';
+	 * @return array An array of solr-specific filters.
 	 */
 	public function getFilters()
 	{
@@ -76,13 +64,7 @@ class JSolrForm extends JForm
 			foreach ($this->getFieldset($fieldset->name) as $field) {
 				if (in_array('JSolrFilterable', class_implements($field)) == true) {
 					if (count($field->getFilters())) {
-						$filters[$field->filter] = $field->getFilters();
-																
-						if ($field->exactmatch) {
-							for ($i = 0; $i < count($filters[$field->filter]); $i++) {
-								$filters[$field->filter][$i] = '"'.$filters[$field->filter][$i].'"';
-							}
-						}						
+						$filters = array_merge($filters, $field->getFilters());
 					}
 				}
 			}

@@ -934,12 +934,22 @@
 	<field name="modified" type="date" indexed="true" stored="true"/>
 	<field name="access" type="tint" indexed="true" stored="true"/>
 	
+	<!-- The id of associated records. Used for records which have been translated into other languages. -->
+	<field name="association" type="tint" indexed="true" stored="true" multiValued="true"/>
+	
 	<!-- Can take the form en or en-AU. Can be used for localization 
 	     (E.g. Pages from Australia) -->
 	<field name="lang" type="string" indexed="true" stored="true"/>
 	
+	<!-- Additional, alternative language codes for a record which stores the 
+		 same information in multiple languages. 
+		 It is recommended that translated records be stored using the Joomla! 
+		 method of associations (where possible).
+	-->
+	<field name="lang_alt" type="string" indexed="true" stored="true" multiValued="true"/>
+	
 	<!-- Field indicating when each document was indexed.-->
-	<field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
+	<field name="timestamp" type="date" indexed="true" stored="true" default="NOW"/>
 
 	<!-- catchall field, containing all other searchable text fields (implemented
          via copyField further on in this schema  -->

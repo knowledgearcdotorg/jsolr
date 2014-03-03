@@ -5,7 +5,7 @@
  * 
  * Copy this file to override the layout and style of the search results form.
  * 
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
    The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -85,7 +85,7 @@ JHTML::_('behavior.formvalidation');
 
 	<div class="clr"></div>
 	<?php foreach ($this->get('Form')->getFieldset('tools') as $field): ?>
-		<?php if (strtolower($field->type) != 'jsolr.advancedfilter') : ?>
+		<?php if (!is_subclass_of($field, 'JFormFieldHidden')) : ?>
 		<div class="jsolr-dropdown"><?php echo $this->form->getInput($field->name); ?></div>
 		<?php else : ?>
 		<?php echo $this->form->getInput($field->name); ?>
