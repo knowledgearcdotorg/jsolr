@@ -1,10 +1,10 @@
 <?php
 /**
- * Provides a list of selectable values.
+ * Provides a selection search tool for filtering results.
  * 
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
    The JSpace component for Joomla! is free software: you can redistribute it 
@@ -26,7 +26,7 @@
  * contributed any source code changes.
  * Name							Email
  * Michał Kocztorz				<michalkocztorz@wijiti.com> 
- * @author Hayden Young <haydenyoung@knowledgearc.com>
+ * Hayden Young 				<haydenyoung@knowledgearc.com>
  */
 
 defined('JPATH_BASE') or die;
@@ -37,7 +37,7 @@ jimport('jsolr.form.fields.filterable');
 
 JFormHelper::loadFieldClass('list');
 
-class JSolrFormFieldDropdown extends JFormFieldList
+class JSolrFormFieldSearchTool extends JFormFieldList
 {
 	/**
 	 * The form field type.
@@ -45,7 +45,7 @@ class JSolrFormFieldDropdown extends JFormFieldList
 	 * @var         string
 	 * @since       1.6
 	 */
-	protected $type = 'JSolr.dropdown';
+	protected $type = 'JSolr.SearchTool';
 
 	protected function getInput()
 	{

@@ -5,7 +5,7 @@
  * 
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
    The JSpace component for Joomla! is free software: you can redistribute it 
@@ -27,16 +27,16 @@
  * contributed any source code changes.
  * Name							Email
  * Michał Kocztorz				<michalkocztorz@wijiti.com>
- * @author Hayden Young <haydenyoung@knowledgearc.com>
+ * Hayden Young					<haydenyoung@knowledgearc.com>
  * 
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('jsolr.form.fields.dropdown');
+jimport('jsolr.form.fields.searchtool');
 jimport('jsolr.form.fields.filterable');
 
-class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilterable
+class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSolrFilterable
 {
 	/**
 	 * The form field type.
@@ -44,7 +44,7 @@ class JSolrFormFieldCalendar extends JSolrFormFieldDropdown implements JSolrFilt
 	 * @var         string
 	 * @since       1.6
 	 */
-	protected $type = 'JSolr.Calendar';
+	protected $type = 'JSolr.CalendarTool';
 	
 	/**
 	 * Method to get the field options.

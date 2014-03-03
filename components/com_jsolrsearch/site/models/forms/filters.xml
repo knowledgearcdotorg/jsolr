@@ -8,7 +8,7 @@
             name="qdr"
             filter="modified"
             filter_quoted="false"
-            type="jsolr.calendar"
+            type="jsolr.calendartool"
             label="Date"
             class="jsolr-dropdown">
         	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
@@ -19,10 +19,16 @@
         	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
 		</field>
 		<field type="jsolr.advancedfilter" name="in"/>
+    	<field type="jsolr.languagefilter" name="lr"/>
     </fieldset>
     
     <fields name="as">
     	<fieldset name="advanced">
+	    	<field
+	    		name="lr"
+	    		type="language"
+	    		label="Language"
+	    		class="jsolr-dropdown"/>
 	        <field 
 	            name="qdr"
 	            type="list"
