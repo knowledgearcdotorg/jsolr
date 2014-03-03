@@ -1,6 +1,6 @@
 <?php
 /**
- * Provides a hidden field for storing advanced filters not included in Tools.
+ * Provides a hidden field for applying filters directly to the query.
  * 
  * @package		JSolr
  * @subpackage	Form
