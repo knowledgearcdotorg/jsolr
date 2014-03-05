@@ -68,4 +68,18 @@ class JSolrFormFieldLanguageFilter extends JSolrFormFieldHiddenFilter
 
 		return ($this->filter && count($filters)) ? $filters : array();
 	}
+	
+	public function __get($name)
+	{
+		switch ($name) {
+			case 'label':
+				$application = JFactory::getApplication();
+				$language = JLanguage::getInstance($application->input->getString('lr', null));
+				
+				return JText::sprintf('COM_JSOLRSEARCH_FILTER_'.JString::strtoupper($this->name), $language->getName());
+	
+			default:
+				return parent::__get($name);
+		}
+	}
 }

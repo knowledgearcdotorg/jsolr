@@ -84,13 +84,12 @@ JHTML::_('behavior.formvalidation');
     </nav>
 
 	<div class="clr"></div>
-	<?php foreach ($this->get('Form')->getFieldset('tools') as $field): ?>
-		<?php if (!is_subclass_of($field, 'JFormFieldHidden')) : ?>
-		<div class="jsolr-dropdown"><?php echo $this->form->getInput($field->name); ?></div>
-		<?php else : ?>
-		<?php echo $this->form->getInput($field->name); ?>
-		<?php endif; ?>
-	<?php endforeach;?>
-
+			
+	<div class="jsolr-searchtools">
+		<?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
+			<?php echo $this->form->getInput($field->name); ?>
+		<?php endforeach;?>
+	</div>
+	
 	<?php echo JHTML::_('form.token'); ?>
 </form>

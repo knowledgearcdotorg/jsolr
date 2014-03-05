@@ -64,7 +64,7 @@ class JSolrSearchViewBasic extends JViewLegacy
         if ($this->getLayout() == 'default') {
         	$tpl = $this->_getDefaultTemplate();
         }
-        echo $this->get('AdvancedURI');
+
         parent::display($tpl);
     }
     

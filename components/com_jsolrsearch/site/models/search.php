@@ -77,7 +77,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$this->setState('list.start', $value);
 		
 		$params = $application->getParams();
-		$this->setState('params', $params);		
+		$this->setState('params', $params);
 
 		parent::populateState($ordering, $direction);
    }
@@ -100,7 +100,7 @@ class JSolrSearchModelSearch extends JModelForm
 		}
 
 		if (!$this->getState('query.q')) {
-			if (!$this->getForm()->isFiltered()) {
+			if (!$this->getAppliedFacetFilters()) {
 				return null; // nothing passed. Get out of here.
 			}
 		}
@@ -472,7 +472,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$fields = array();
 		
 		foreach ($this->getForm()->getFieldset('tools') as $field) {			
-			if (strtolower($field->type) == 'jsolr.advancedfilter') {
+			if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolrFormFieldHiddenFilter')) {
 
 				if ($field->value) {
 					$fields[] = $field;

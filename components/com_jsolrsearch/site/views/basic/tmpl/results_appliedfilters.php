@@ -54,7 +54,7 @@ $form = $this->get('Form');
 	$uri->delVar($field->name);
 	?>
 	<li>
-		<span class="jsolr-label"><?php echo JText::_(strtoupper("COM_JSOLRSEARCH_FILTERS_".$field->name."_".$field->value)); ?></span>
+		<span class="jsolr-label"><?php echo $field->label; ?></span>
 
 		<?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
 	</li>

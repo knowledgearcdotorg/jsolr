@@ -57,6 +57,20 @@ class JSolrFormFieldHiddenFilter extends JFormFieldHidden implements JSolrFilter
 		
 		return ($this->filter && $value) ? array($value) : array();
 	}
+	
+	/**
+	 * Gets the remove url for the applied hidden filter.
+	 *
+	 * @return string The filter uri for the current facet.
+	 */
+	protected function getFilterURI()
+	{
+		$url = clone JSolrSearchFactory::getSearchRoute();
+		
+		$url->delVar($this->name);
+		
+		return (string)$url;
+	}
 
 	public function __get($name)
 	{
@@ -65,6 +79,9 @@ class JSolrFormFieldHiddenFilter extends JFormFieldHidden implements JSolrFilter
 				return JArrayHelper::getValue($this->element, $name, null, 'string');
 				break;
 	
+			case 'label':
+				return JText::_('COM_JSOLRSEARCH_FILTER_'.JString::strtoupper($this->name).'_'.JString::strtoupper($this->value));
+				
 			default:
 				return parent::__get($name);
 		}

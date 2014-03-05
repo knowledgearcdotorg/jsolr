@@ -62,11 +62,11 @@ integrating faceting within the component. Use template overrides to improve. --
 
 	<?php if (!is_null($this->items)): ?>
 		<?php echo $this->loadResultsTemplate(); ?>
-	<?php endif ?>
-		      
+		
 	<footer>
 		<div class="pagination">
 		<?php echo $this->get('Pagination')->getPagesLinks(); ?>
 		</div>
 	</footer>
+	<?php endif ?>
 </section>
