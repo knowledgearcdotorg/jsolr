@@ -68,7 +68,7 @@ class JSolrSearchFactory extends JSolrFactory
 	 */
 	public static function getSearchRoute($additionalFilters = array())
 	{
-		$uri = self::getRoute('basic', $additionalFilters);
+		$uri = self::getRoute('search', $additionalFilters);
 		
 		return $uri;
 	}
@@ -82,7 +82,7 @@ class JSolrSearchFactory extends JSolrFactory
 	
 	public static function getQueryRoute($additionalFilters = array())
 	{
-		$uri = self::getRoute('basic', $additionalFilters, true);
+		$uri = self::getRoute('search', $additionalFilters, true);
 	
 		return $uri;
 	}
@@ -98,7 +98,7 @@ class JSolrSearchFactory extends JSolrFactory
 		return $uri;
 	}	
 	
-	protected static function getRoute($view = 'basic', $additionalFilters = array(), $queryOnly = false)
+	protected static function getRoute($view = 'search', $additionalFilters = array(), $queryOnly = false)
 	{
 		$uri = new JURI('index.php');
 		$uri->setVar('option', 'com_jsolrsearch');
@@ -127,7 +127,7 @@ class JSolrSearchFactory extends JSolrFactory
 		return $uri;
 	}
 	
-	protected static function _findItem($view = 'basic')
+	protected static function _findItem($view = 'search')
 	{
 		$app = JFactory::getApplication();
 		$menus = $app->getMenu('site');

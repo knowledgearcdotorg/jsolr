@@ -34,7 +34,7 @@ jimport('joomla.application.component');
 
 jimport('jsolr.helper');
  
-class JSolrSearchViewBasic extends JViewLegacy
+class JSolrSearchViewSearch extends JViewLegacy
 {	
 	protected $items;
 	protected $state;
@@ -70,23 +70,19 @@ class JSolrSearchViewBasic extends JViewLegacy
     
     private function _getDefaultTemplate()
     {
-    	$o = $this->params->get('o');
+        	$o = JFactory::getApplication()->input->get('o');
     	$extension = str_replace("com_", "", $o);
-    	$override = 'default_'.$extension.'.php';
 
-    	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
+    	$override = $this->getLayout().'_'.$extension.'.php';
+
     	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-    	'/html/com_jsolrsearch/basic';
+    	'/html/com_jsolrsearch/search';
     	
-    	if (!JPath::find($themeOverridePath, $override)) {
-    		if (JPath::find($pluginOverridePath, $override)) {
-    			$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
-    		} else {
-    			$extension = null;
-    		}
+    	if (JPath::find($themeOverridePath, $override)) {
+    		return $extension;
+    	} else {
+    		return null;
     	}
-    	
-    	return $extension;
     }
     
     /**
@@ -96,7 +92,7 @@ class JSolrSearchViewBasic extends JViewLegacy
      * This method will look for the template override in the following directories
      * (and in the following order):
      * 
-     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/basic
+     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/search
      * JPATH_PLUGINS/jsolrsearch/<extension>/views
      * 
      * where <template_name> is the name of the current template, and 
@@ -131,8 +127,8 @@ class JSolrSearchViewBasic extends JViewLegacy
      * (and in the following order):
      *
      * JPATH_THEMES/<template_name>/html/com_jsolrsearch/plugins
-     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/basic
-     * JPATH_PLUGINS/jsolrsearch/<extension>/views/basic
+     * JPATH_THEMES/<template_name>/html/com_jsolrsearch/search
+     * JPATH_PLUGINS/jsolrsearch/<extension>/views/search
      *
      * where <template_name> is the name of the current template, and
      * <extension> is the indexed extension parameter in the solr document
@@ -156,9 +152,9 @@ class JSolrSearchViewBasic extends JViewLegacy
 		$extension = str_replace("com_", "", $o);
 		$override = $layout."_".$extension.".php";
 		 
-		$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
+		$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views/search/tmpl';
 		$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-		'/html/com_jsolrsearch/basic';
+		'/html/com_jsolrsearch/search';
 		 
 		$this->setLayout($layout);
 		 

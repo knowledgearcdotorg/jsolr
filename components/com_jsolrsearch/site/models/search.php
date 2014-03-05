@@ -255,7 +255,7 @@ class JSolrSearchModelSearch extends JModelForm
 	 * override is found, it will attempt to load the default filters path.
 	 * 
 	 * This method will attempt to load an plugin filter like so:
-	 * 1. Check in the current template's html/com_jsolrsearch/basic/forms/ 
+	 * 1. Check in the current template's html/com_jsolrsearch/search/forms/ 
 	 * directory for a plugin override. The plugin override takes the form 
 	 * filters.<plugin_name>.xml.
 	 * 
@@ -263,7 +263,7 @@ class JSolrSearchModelSearch extends JModelForm
 	 * filters.xml is searched for (plugins/jsolrsearch/<plugin>/forms/filters.xml).
 	 * 
 	 * 3. If no plugin filters.xml exists, the default filters.xml is searched for 
-	 * (html/com_jsolrsearch/basic/forms/filters.xml).
+	 * (html/com_jsolrsearch/search/forms/filters.xml).
 	 * 
 	 * 4. If no default filters.xml is found in the current template, the 
 	 * JSolr Search component's filters.xml is loaded.
@@ -280,7 +280,7 @@ class JSolrSearchModelSearch extends JModelForm
 					$pluginOverride =
 						JPATH_ROOT.'/templates/'.
 						JFactory::getApplication()->getTemplate().
-						'/html/com_jsolrsearch/basic/forms/'.
+						'/html/com_jsolrsearch/search/forms/'.
 						'filters.'.$plugin.'.xml';
 					
 					if (JFile::exists($pluginOverride)) {
@@ -301,7 +301,7 @@ class JSolrSearchModelSearch extends JModelForm
 			$defaultOverride =
 			JPATH_ROOT.'/templates/'.
 			JFactory::getApplication()->getTemplate().
-			'/html/com_jsolrsearch/basic/forms/'.$filters;
+			'/html/com_jsolrsearch/search/forms/'.$filters;
 			
 			if (JFile::exists($defaultOverride)) {
 				$path = $defaultOverride;

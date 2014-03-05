@@ -42,40 +42,39 @@ class JSolrSearchViewBrowse extends JViewLegacy
     	$this->state = $this->get("State");
     	$this->items = $this->get("Items");
     	$this->params = $this->state->get('params');
-    	
-    	$document = JFactory::getDocument();
 
-    	$document->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolrsearch.css");
-
-        parent::display($tpl);
+        parent::display($this->_getDefaultTemplate());
     }
 
-	public function loadFacetsTemplate()
-	{
-    	$extension = str_replace("com_", "", JRequest::getCmd('o'));
-  	
-    	$template = null;
-    	
-    	if ($extension) {
-    		$template = $extension."_facets.php";
-    	}
-    	
-    	$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views';
+    /**
+     * Gets the default template, searching for it in the 
+     * html/com_jsolrsearch/browse/ first, then loading the default.php 
+     * template from the extension's views/browse/tmpl folder.
+     * 
+     * To override the default browse page, place a file called 
+     * <override>_<extension>.php in the html/com_jsolrsearch/browse/ directory, 
+     * where <override> is the name of the base layout you are overriding (in 
+     * most cases this will be "default"), and <extension> is the name of the 
+     * component whose data you are trying to browse.
+     * 
+     * E.g.
+     * 
+     * default_content.php
+     */
+    private function _getDefaultTemplate()
+    {
+    	$o = JFactory::getApplication()->input->get('o');
+    	$extension = str_replace("com_", "", $o);
+
+    	$override = $this->getLayout().'_'.$extension.'.php';
+
     	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-    		'/html/com_jsolrsearch/plugins';
+    	'/html/com_jsolrsearch/browse';
     	
-    	if ($template) {
-		    if (JPath::find($pluginOverridePath, $extension."_facets.php") ||
-		    	JPath::find($themeOverridePath, $extension."_facets.php")) {		    	
-		    	$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $extension."_facets.php")));
-		    	$this->addTemplatePath(dirname(JPath::find($themeOverridePath, $extension."_facets.php")));
-		    	
-		    	$this->setLayout($extension);
-		    	return $this->loadTemplate('facets');
-		    }
+    	if (JPath::find($themeOverridePath, $override)) {
+    		return $extension;
+    	} else {
+    		return null;
     	}
-	    
-	    $this->setLayout('default');
-	    return $this->loadTemplate('facets');
-	}
+    }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-        <layout title="COM_JSOLRSEARCH_BASIC_LAYOUT_TITLE" option="com_jsolrsearch_basic_view_default_option">
+        <layout title="COM_JSOLRSEARCH_SEARCH_LAYOUT_TITLE" option="com_jsolrsearch_search_view_default_option">
                 <message>
-                        <![CDATA[COM_JSOLRSEARCH_BASIC_LAYOUT_DESC]]>
+                        <![CDATA[COM_JSOLRSEARCH_SEARCH_LAYOUT_DESC]]>
                 </message>
         </layout>
         
@@ -15,9 +15,9 @@
 			<field 
 				name="o" 
 				type="jsolrsearchextensionlist"
-				label="COM_JSOLRSEARCH_BASIC_FIELD_SELECT_O_LABEL"
-				description="COM_JSOLRSEARCH_BASIC_FIELD_SELECT_O_DESC">
-				<option value="">COM_JSOLRSEARCH_BASIC_FIELD_SELECT_O_SEARCHALL</option>	
+				label="COM_JSOLRSEARCH_SEARCH_FIELD_SELECT_O_LABEL"
+				description="COM_JSOLRSEARCH_SEARCH_FIELD_SELECT_O_DESC">
+				<option value="">COM_JSOLRSEARCH_SEARCH_FIELD_SELECT_O_SEARCHALL</option>	
 			</field>
 		</fieldset>
 	</fields>

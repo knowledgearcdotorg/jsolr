@@ -27,6 +27,10 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+jimport('jsolr.helper');
+
+JFactory::getDocument()->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolrsearch.css");
 ?>
 <div class="item-page<?php echo $this->params->get('pageclass_sfx'); ?>">
 	<?php if ($this->params->get('show_page_heading')) : ?>
@@ -35,7 +39,25 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</div>
 	<?php endif; ?>
 
-	<?php
-	echo $this->loadFacetsTemplate();
-	?>
+	<ul>
+	<?php foreach ($this->items as $keyi=>$valuei) : ?>
+		<?php $field = JArrayHelper::getValue($this->state->get('facet.operators'), $keyi); ?>
+		<?php foreach ($valuei as $keyj=>$valuej) : ?>
+	
+			<?php 
+			$vars = array(
+					JFactory::getApplication()->input->get('name')=>JSolrHelper::getOriginalFacet($keyj),
+	                'o'=>JFactory::getApplication()->input->get('o'));
+			
+			if ($this->params->get('show_count')) {
+				$facet = JText::sprintf('%s [%s]', JSolrHelper::getOriginalFacet($keyj), $valuej);
+			} else {
+				$facet = JText::sprintf('%s', JSolrHelper::getOriginalFacet($keyj));
+			}
+			?>
+	            
+			<li><?php echo JHTML::_('link', JRoute::_(JSolrSearchFactory::getSearchRoute($vars)), $facet); ?></li>
+		<?php endforeach; ?>
+	<?php endforeach; ?>
+	</ul>
 </div>

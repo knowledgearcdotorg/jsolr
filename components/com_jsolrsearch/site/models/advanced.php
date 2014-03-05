@@ -160,7 +160,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$uri = new JURI("index.php");
 	
 		$uri->setVar("option", "com_jsolrsearch");
-		$uri->setVar("view", "basic");
+		$uri->setVar("view", "search");
 		$uri->setVar("Itemid", JRequest::getVar('Itemid'));
 	
 		if ($query = $this->buildQuery()) {

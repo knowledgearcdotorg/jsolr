@@ -47,7 +47,7 @@ class JSolrSearchController extends JControllerLegacy
 
 	public function display($cachable = false, $urlparams = false)
 	{
-		$default = "basic";
+		$default = "search";
 		
 		$viewName = JFactory::getApplication()->input->get("view", $default, 'cmd');
 		
