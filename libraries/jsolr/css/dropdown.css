@@ -13,7 +13,7 @@
  * "dropdown". 
  */
 
-.jsolr-dropdown {
+.jsolr-searchtool {
 	display:inline-block;
 	height: 2em;
 	width:200px;
@@ -21,7 +21,7 @@
 	background-color: #f9f9f9;
 }
 
-.jsolr-dropdown > .dropdown-toggle {
+.jsolr-searchtool > a {
 	margin:0px;
 	border:0px;
 	background-color: transparent;
@@ -35,53 +35,35 @@
 	font-weight: 700;
 }
 
-.jsolr-dropdown > .label:hover {
-	color: #222;
-}
-
-.jsolr-dropdown > ul {
+.jsolr-searchtool > ul {
 	position: absolute;
 	z-index: 1000;
 	height:1.5em;
 	min-width: 100%;
-	top: 0px;
 	display:none;
-}
-
-.jsolr-dropdown > ul > li {
-	display:none;
-	height: 1.5em;
-	line-height:1.5em;
-	cursor: pointer;
-	padding: 0px 5px 0px 15px;
-}
-
-.jsolr-dropdown-active ul {
+	padding: 5px 0 !important;
+	margin: 0;
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #D6D6D6;
     box-shadow: 0 2px 4px #D6D6D6;
     color: #333333;
-    padding-bottom: 5px;
-    padding-top: 5px;
-	height:auto;
-	top: 90%;
-	display:block;
+	height: auto;
+	top: 90%;	
 }
 
-.jsolr-dropdown-active > ul > li {
-	padding: 6px 30px 6px 30px;
+.jsolr-searchtool > ul > li {	
+	list-style: none;
 }
 
-.jsolr-dropdown-active > ul > li.active {
-	font-weight: 700;
-	color:#000;
+.jsolr-searchtool > ul > li > a {
+	display: block;
+	padding: 0 5px;
 }
 
-.jsolr-dropdown-active > ul > li,
-.jsolr-dropdown-active > ul > li > a {
-	display:block;
+.jsolr-searchtool > ul.open {
+	display:block;	
 }
 
-.jsolr-dropdown-active > ul > li:hover {
-	background-color: #f4f4f4;		
+.jsolr-searchtool > ul.open > li.active {
+	color: #222;	
 }

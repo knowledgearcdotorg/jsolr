@@ -12,24 +12,13 @@
  */ 
 (function($) {	
 	$(document).ready( function() {
-		$('.jsolr-dropdown').on('click', function(e){
+		$('.jsolr-searchtool').on('click', function(e){
 			e.stopPropagation();
-			$(this).addClass('jsolr-dropdown-active');
+			$('.jsolr-searchtool > ul').addClass('open');
 		});
-		$('.jsolr-dropdown').on('click', 'li', function(e){
-			var option = $(this);
-			if( option.parents('.jsolr-dropdown-active').length > 0 ) {
-				e.stopPropagation();
-				var dropdown = option.parents('.jsolr-dropdown');
-				dropdown.find('li').removeClass('active');
-				$('.jsolr-dropdown').removeClass('jsolr-dropdown-active');
-				dropdown.find('.jsolr-dropdown > input[type="hidden"]').val(option.data('value'));
-				dropdown.find('.jsolr-dropdown > .label').html(option.html());
-				option.addClass('active');
-			}
-		});
+
 		$('body').on('click', function(){
-			$('.jsolr-dropdown').removeClass('jsolr-dropdown-active');
+			$('.jsolr-searchtool > ul').removeClass('open');
 		});
 	});
 })(jQuery);

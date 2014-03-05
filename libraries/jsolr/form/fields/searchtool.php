@@ -52,8 +52,10 @@ class JSolrFormFieldSearchTool extends JFormFieldList
 		$html = array();
 		
 		$html[] = '<input type="hidden" name="'.$this->name.'" id="'.$this->id.'"'.' value="'.htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8').'"/>';
+		$html[] = '<div class="jsolr-searchtool">';
 		$html[] = '<a class="dropdown-toggle" id="'.$this->name.'" role="button" data-toggle="dropdown" data-target="#">' . JText::_($this->getSelectedLabel()) . ' <b class="caret"></b>';
 		$html[] = '<ul class="dropdown-menu" role="menu" aria-labelledby="'.$this->name.'">' . implode($this->getOptions()) . '</ul>';
+		$html[] = '</div>';
 
 		return implode($html);
 	}

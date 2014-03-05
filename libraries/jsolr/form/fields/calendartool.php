@@ -91,24 +91,6 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 		return $options;
 	}
 	
-	protected function getValueLabel() 
-	{
-		foreach ($this->element->children() as $option) {
-			// Only add <option /> elements.
-			if ($option->getName() != 'option') {
-				continue;
-			}
-			
-			$value = JArrayHelper::getValue($option, 'value', null, 'string');
-			
-			if ($value == $this->value) {
-				return (string)$option;
-			}
-		}
-
-		return '';
-	}
-	
 	/**
 	 * Gets the date filter based on the currently selected value.
 	 * 
