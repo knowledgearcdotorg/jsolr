@@ -73,6 +73,15 @@ class JSolrSearchModelBrowse extends JModelList
 		$filters = array();
 		$array = array();
 		
+		$access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
+		
+		if ($access) {
+			$access = 'access:'.'('.$access.') OR null';
+			$filters[] = $access;
+		}
+		
+		$filters[] = $this->_getLanguageFilter();
+		
 		if ($filter = $this->_getExtensionFilter()) {
 			$filters[] = $filter;
 		}
@@ -127,6 +136,18 @@ class JSolrSearchModelBrowse extends JModelList
 		}
 		
 		return $operators;
+	}
+	
+	private function _getLanguageFilter()
+	{
+		$filter = null;
+		
+		// Get language from current tag or use default joomla langugage.
+		if (!($lang = JFactory::getLanguage()->getTag())) {
+			$lang = JFactory::getLanguage()->getDefault();
+		}
+		
+		return "(lang:$lang OR lang:\*)";
 	}
 	
 	/**

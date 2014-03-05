@@ -52,10 +52,6 @@ class JSolrSearchController extends JControllerLegacy
 		$viewName = JFactory::getApplication()->input->get("view", $default, 'cmd');
 		
 		$modelName = $viewName;
-		
-		if ($modelName == $default) {
-			$modelName = "search";
-		}
 
 		$model = $this->getModel($modelName);
 		

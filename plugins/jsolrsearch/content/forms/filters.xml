@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
+    <fieldset name="facets">
+        <field 
+            name="author"
+            facet="author_fc"
+            filter="author"
+            type="jsolr.facets"
+            label="By Author"
+            class="inputbox jsolrquery"
+            count="true"/>
+    </fieldset>
+    
     <fieldset 
         name="tools"
         label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
@@ -10,7 +21,7 @@
             name="qdr"
             filter="modified"
             filter_quoted="false"
-            type="jsolr.calendar"
+            type="jsolr.calendartool"
             label="Date"
             class="jsolr-dropdown">
         	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
@@ -28,5 +39,8 @@
 			<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
 			<option value="1" field="modified" direction="desc">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
 		</field>
+		
+		<field type="jsolr.queryfilter" name="in"/>
+    	<field type="jsolr.languagefilter" name="lr" filter="lang"/>
     </fieldset>
 </form>

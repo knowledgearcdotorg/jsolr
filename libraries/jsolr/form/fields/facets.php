@@ -149,7 +149,7 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	 */
 	public function getFilters()
 	{
-		$cleaned = JString::strlen(JString::trim($this->value));
+		$cleaned = JString::trim($this->value);
 		$filters = explode(self::FACET_DELIMITER, $cleaned);
 				
 		for ($i = 0; $i < count($filters); $i++) {
@@ -173,7 +173,7 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	{
 		$url = JSolrSearchFactory::getSearchRoute();
 		
-		$cleaned = JString::strlen(JString::trim($this->value));
+		$cleaned = JString::trim($this->value);
 		$filters = explode(self::FACET_DELIMITER, $cleaned);
 
 		$selected = false;
@@ -203,7 +203,8 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 			$url->setVar($key, urlencode($value));
 		}		
 		
-		$filters = $this->getFilters();
+		$cleaned = JString::trim($this->value);
+		$filters = explode(self::FACET_DELIMITER, $cleaned);
 		
 		if ($this->isSelected($facet)) {
 			if (count($filters) > 1) {

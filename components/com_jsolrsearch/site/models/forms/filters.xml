@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
     <fieldset name="facets">
+        <!-- field 
+            name="author"
+            facet="author_fc"
+            filter="author"
+            type="jsolr.facets"
+            label="By Author"
+            class="inputbox jsolrquery"
+            count="true"/ -->
     </fieldset>
     
     <fieldset name="tools">

@@ -14,11 +14,16 @@
 	$(document).ready( function() {
 		$('.jsolr-searchtool').on('click', function(e){
 			e.stopPropagation();
-			$('.jsolr-searchtool > ul').addClass('open');
+			$isOpen = $(this).children('ul').hasClass('open');			
+			$('.jsolr-searchtool ul').removeClass('open');
+			
+			if (!$isOpen) {
+				$(this).children('ul').addClass('open');
+			}
 		});
 
 		$('body').on('click', function(){
-			$('.jsolr-searchtool > ul').removeClass('open');
+			$(this).children('ul').removeClass('open');
 		});
 	});
 })(jQuery);
