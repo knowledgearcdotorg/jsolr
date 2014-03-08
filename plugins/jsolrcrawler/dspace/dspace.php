@@ -35,7 +35,7 @@ jimport('joomla.log.log');
 jimport('jspace.factory');
 jimport('jsolr.index.crawler');
 
-class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
+class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 {
 	protected $extension = 'com_jspace';
 	
@@ -66,7 +66,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	
 			if ($this->get('params')->get('use_jspace_connection_params', 1)) {
 				if (!JComponentHelper::isEnabled("com_jspace", true)) {
-					JLog::add(JText::_('PLG_JSOLRCRAWLER_JSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
+					JLog::add(JText::_('PLG_JSOLRCRAWLER_DSPACE_COM_JSPACE_NOT_FOUND'), JLog::ERROR, 'jsolrcrawler');
 					return null;
 				}
 				

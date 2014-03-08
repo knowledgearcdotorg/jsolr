@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSolrCrawler JSpace Plugin" default="" basedir=".">
+<project name="JSolrCrawler DSpace Plugin" default="" basedir=".">
 	<property name="dest.plugins.crawlers" value="${dest.plugins}/jsolrcrawler"/>
 	
-	<target name="update" description="Copies JSolr Index JSpace plugin to existing Joomla install.">
-		<echo message="Deploying JSolr Index JSpace plugin to Joomla! environment."/>
-		<copy todir="${dest.plugins.crawlers}/jspace">
+	<target name="update" description="Copies JSolr Index DSpace plugin to existing Joomla install.">
+		<echo message="Deploying JSolr Index DSpace plugin to Joomla! environment."/>
+		<copy todir="${dest.plugins.crawlers}/dspace">
 			<fileset dir="${src}" defaultexcludes="true">
 				<include name="**"/>
 				<exclude name="**/language/**"/>
@@ -18,9 +18,9 @@
 		</copy>
 	</target>
 	
-	<target name="package" description="Creates a JSolr Index JSpace plugin package.">
-		<echo message="Packaging JSolr Index JSpace plugin."/>
-		<zip destfile="${package.dest}/plg_jsolrcrawler_jspace.zip"
+	<target name="package" description="Creates a JSolr Index DSpace plugin package.">
+		<echo message="Packaging JSolr Index DSpace plugin."/>
+		<zip destfile="${package.dest}/plg_jsolrcrawler_dspace.zip"
 		       basedir="${src}"
 		       update="true"
 		       excludes="build*.xml"/>
