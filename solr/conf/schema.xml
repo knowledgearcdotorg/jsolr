@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="joomla-multilingual" version="1.5">
+<schema name="joomla-multilingual" version="2.5">
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		 Applications should change this to reflect the nature of the search collection.
 		 version="x.y" is Solr's version number for the schema syntax and semantics.  It should
@@ -938,7 +938,7 @@
 	<field name="association" type="tint" indexed="true" stored="true" multiValued="true"/>
 	
 	<!-- Can take the form en or en-AU. Can be used for localization 
-	     (E.g. Pages from Australia) -->
+	     (E.g. Pages in English for Australians) -->
 	<field name="lang" type="string" indexed="true" stored="true"/>
 	
 	<!-- Additional, alternative language codes for a record which stores the 

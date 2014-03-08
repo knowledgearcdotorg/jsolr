@@ -368,7 +368,7 @@ abstract class JSolrIndexCrawler extends JPlugin
 				if ($total == count($items) || $i >= self::$chunk) {						
 					$response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
 											
-					$this->out($i.'documents indexed [status:'.$response->getHttpStatus().']');
+					$this->out($i.' documents successfully indexed [status:'.$response->getHttpStatus().']');
 					
 					$documents = array();
 					$i = 0;

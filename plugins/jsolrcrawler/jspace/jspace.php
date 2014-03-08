@@ -121,7 +121,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			
 			$vars = array();
 			$vars['q'] = '*:*';
-			$vars['fl'] = 'search.resourceid,read';
+			$vars['fl'] = 'search.resourceid,search.uniqueid,read';
 			$vars['fq'] = 'search.resourcetype:2';
 			$vars['rows'] = '2147483647';
 
@@ -165,7 +165,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		
 		if ($record->name) {
 			$doc->addField('title', $record->name);
-			$doc->addField('title_'.$lang, $record->name);
 			$doc->addField("title_sort", $record->name); // for sorting by title					
 		}
 		
@@ -179,6 +178,8 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$doc->addField("collection_s", $collection->name);
 		$doc->addField("collection_fc", $this->getFacet($collection->name));
 
+		$record = $this->_getMultilingualDocument($record);
+		
 		foreach ($record->metadata as $item) {
 			$field = $item->schema.'.'.$item->element;
 
@@ -186,16 +187,27 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				$field .= '.'.$item->qualifier;
 			}
 			
-			if (array_search($field, $this->get('params')->get('facets')) !== false) {
+			if (array_search($field, $this->get('params')->get('facets', array())) !== false) {
 				$doc->addField($field."_fc", $this->getFacet($item->value)); // for faceting
 			}
-						
-			if (array_search($field, $this->get('params')->get('sorts')) !== false) {
+
+			if (array_search($field, $this->get('params')->get('sorts', array())) !== false) {
 				if (!is_array($item->value)) {
 					$doc->addField($field.'_sort', $item->value); // for sorting
 				} else {
 					JLog::add('Trying to index multivalue field '.$field.' value to a sort field is not supported.', JLog::WARNING, 'jsolrcrawler');
 				}
+			}
+			
+			// Store title based on metadata field language.
+			if ($item->element == 'title') {
+				$titleLang = $lang;
+				
+				if (isset($item->lang)) {
+					$titleLang = $item->lang;
+				}
+				
+				$doc->addField('title_'.$titleLang, $item->value);
 			}
 			
 			if ($item->qualifier == 'author') {
@@ -223,7 +235,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 						$doc->addField('created', $value);
 						$doc->addField('modified', $value);
 					}
-					
+
 					if (!is_array($value)) {
 						$doc->addField($field.'_sort', $value); // for sorting
 					} else {
@@ -232,8 +244,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				}
 				
 				$doc->addField($field.'_'.$suffix, $value);
-			} else {		
-				$doc->addField($field.'_'.$lang, $item->value); // language-specific indexing.
+			} else {
+				if (isset($item->lang)) {
+					$doc->addField($field.'_'.$item->lang, $item->value); // language-specific indexing.
+				}
+				
 				$doc->addField($field.'_sm', $item->value); // for (almost) exact matching.
 				$doc->addField($field.'_txt', $item->value); // for lower-case searching
 			}
@@ -242,6 +257,91 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		return $doc;
 	}
 	
+	/**
+	 * @todo A bruteforce/messy way to get multilingual information out of DSpace 
+	 * and into JSolr. To be superseded by native JSpace storage.
+	 */
+	private function _getMultilingualDocument($record)
+	{	
+		$languages = array();
+		
+		// DSpace handles languages and translations horribly.
+		foreach (JLanguageHelper::getLanguages() as $language) {
+			$code = $language->lang_code;
+
+			// we need to handle en_US differently in DSpace.
+			if (JString::strtolower($code) == 'en-us') {
+				$code = 'en_US';
+			}
+			
+			$languages[] = JString::strtolower(JArrayHelper::getValue(explode("-", $code), 0));
+		}
+		
+		$fields = array();
+		
+		foreach ($languages as $language) {
+			foreach ($record->metadata as $item) {
+				$field = $item->schema.'.'.$item->element;
+			
+				if ($item->qualifier) {
+					$field .= '.'.$item->qualifier;
+				}
+				
+				$field .= '.'.$language;
+				
+				$fields[] = $field;
+			}
+		}
+		
+		$vars = array();
+		$vars['q'] = '*:*';
+		$vars['fq'] = "(search.resourceid:".$record->id."%20AND%20search.resourcetype:2)";
+		$vars['fl'] = implode(',', $fields);
+		
+		$response = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/discover.json', $vars)));
+
+		if (isset($response->response->docs)) {
+			$document = JArrayHelper::getValue($response->response->docs, 0);				
+			$document = JArrayHelper::fromObject($document);
+			
+			foreach ($fields as $field) {				
+				if (array_key_exists($field, $document)) {
+					$parts = explode(".", $field);
+					$popped = $parts;
+					array_pop($popped);
+					$popped = implode(".", $popped);
+
+					foreach (JArrayHelper::getValue($document, $field) as $value) {
+						$found = false;
+						
+						while (($item = current($record->metadata)) && !$found) {
+							
+							$raw = $item->schema.'.'.$item->element;
+								
+							if ($item->qualifier) {
+								$raw .= '.'.$item->qualifier;
+							}
+
+							if ($popped == $raw) {
+								if ($item->value == $value) {
+									$key = key($record->metadata);
+									$record->metadata[$key]->lang = JArrayHelper::getValue($parts, count($parts)-1);
+									$found = true;
+								}
+							}
+							
+							next($record->metadata);
+						}
+						
+						reset($record->metadata);
+					}
+				}
+			}	
+		}		
+		
+		return $record;
+	}
+
 	/**
 	 * Gets a list of bitstreams for the parent item.
 	 * 
@@ -456,11 +556,11 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 				if ($this->params->get('component.index')) {
 					$bitstreams = $this->_getBitstreams($item);
 					
-					$j=$i;
-					$j++;
-		
+					$bitstreamDocuments = array();
+					$j = 0;
+					
 					foreach ($bitstreams as $bitstream) {
-						$totalBitstreams++;
+						$totalBitstreams++;						
 						
 						$type = strtolower($bitstream->type);
 						
@@ -488,22 +588,22 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 							}
 						}
 						
-						$documents[$j] = $this->_getBitstreamDocument($bitstream);
+						$bitstreamDocuments[$j] = $this->_getBitstreamDocument($bitstream);
 		
 						if ($documents[$i]->getField('created')) {
-							$documents[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
+							$bitstreamDocuments[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
 						}
 						
 						if ($documents[$i]->getField('modified')) {
-							$documents[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
+							$bitstreamDocuments[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
 						}
 						
-						$documents[$j]->addField("parent_id", $item->id);
+						$bitstreamDocuments[$j]->addField("parent_id", $item->id);
 						
 						$key = 
 							JArrayHelper::getValue(
 								JArrayHelper::getValue(
-									$documents[$j]->getField('key'), 
+									$bitstreamDocuments[$j]->getField('key'), 
 									'value'), 
 								0);
 						
@@ -511,8 +611,10 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 						
 						$j++;
 					}
-										
-					$i=$j;
+
+					$documents = array_merge($documents, $bitstreamDocuments);
+
+					$i = count($documents) + 1;
 				}			
 			} catch (Exception $e) {
 				if ($e->getCode() == 403) {
@@ -522,7 +624,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					// continue from this kind of error.
 				}				
 			}
-			
+
 			// index when either the number of items retrieved matches
 			// the total number of items being indexed or when the
 			// index chunk size has been reached.
@@ -715,6 +817,7 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$metadata = array();
 		
 		try {
+			echo 'getting metadata';
 			$metadata = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/items/metadatafields.json')));
 		} catch (Exception $e) {
 			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');			
