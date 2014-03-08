@@ -213,6 +213,13 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 			if ($item->qualifier == 'author') {
 				$doc->addField('author', $item->value);
 			}
+			
+			// Any iso language not matching the default will be pushed to lang_alt.
+			if ($item->element == 'language' && $item->qualifier == 'iso') {
+				if ($item->value != $lang) {
+					$doc->addField('lang_alt', str_replace('_', '-', $item->value));
+				}
+			}
 
 			// Handle dates carefully then just save out all other field 
 			// values to generic multi-valued indexing fields.
@@ -405,12 +412,12 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 	{
 		$doc = new JSolrApacheSolrDocument();
 		
-		$lang = $this->getLanguage($record, false);
+		$lang = parent::getLanguage($record, false);
 
 		$doc->addField('id', $record->id);
 		$doc->addField('extension', $this->get('extension'));
 		$doc->addField('view', 'bitstream');
-		$doc->addField('lang', $this->getLanguage($record));
+		$doc->addField('lang', $lang);
 		$doc->addField('key', $this->get('extension').'.bitstream.'.$record->id);
 		
 		$doc->addField('title', $record->name);
@@ -613,9 +620,10 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 					}
 
 					$documents = array_merge($documents, $bitstreamDocuments);
-
-					$i = count($documents) + 1;
-				}			
+				}
+				
+				$i = count($documents) + 1;
+				
 			} catch (Exception $e) {
 				if ($e->getCode() == 403) {
 					$this
@@ -817,7 +825,6 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		$metadata = array();
 		
 		try {
-			echo 'getting metadata';
 			$metadata = json_decode($this->_getConnector()->get(JSpaceFactory::getEndpoint('/items/metadatafields.json')));
 		} catch (Exception $e) {
 			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');			
@@ -825,5 +832,50 @@ class plgJSolrCrawlerJSpace extends JSolrIndexCrawler
 		}
 		
 		return $metadata;
+	}
+	
+	public function getLanguage($item, $includeRegion = true)
+	{
+		// Grab the first iso code. This will be the record's default 
+		// language.
+		$found = false;
+		$lang = parent::getLanguage($item, $includeRegion);
+		
+		$metadata = $item->metadata;
+		$languages = JLanguageHelper::getLanguages();
+		
+		while (($field = current($metadata)) && !$found) {
+			$metafield = $field->schema.'.'.$field->element;
+			
+			if (isset($field->qualifier)) {
+				$metafield .= '.'.$field->qualifier;
+			}
+			
+			if ($metafield == 'dc.language.iso') {
+				while (($language = current($languages)) && !$found) {
+					$code = $language->lang_code;
+		
+					// we need to handle en_US differently in DSpace.
+					if (JString::strtolower($code) == 'en-us') {
+						$code = 'en_US';
+					}
+					
+					if ($code == str_replace('_', '-', $field->value)) {
+						$lang = $code;
+						$found = true;
+					}
+					
+					next($languages);
+				}
+				
+				reset($languages);
+			}
+			
+			next($metadata);
+		}
+		
+		reset($metadata);
+		
+		return $lang;
 	}
 }
