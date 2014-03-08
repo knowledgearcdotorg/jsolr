@@ -17,8 +17,8 @@
             name="sbd"
             type="jsolr.sort"
             class="inputbox jsolrquery">
-			<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
-			<option value="1" field="dc.date.issued_s" direction="desc">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
+			<option value="">PLG_JSOLRSEARCH_DSPACE_SORT_BY_RELEVANCE</option>
+			<option value="1" field="dc.date.issued_s" direction="desc">PLG_JSOLRSEARCH_DSPACE_SORT_BY_DATE</option>
 		</field>
     </fieldset>
     
@@ -29,8 +29,8 @@
 	            type="list"
 	            label="Date"
 	            class="jsolr-dropdown">
-				<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
-				<option value="1">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
+				<option value="">PLG_JSOLRSEARCH_DSPACE_SORT_BY_RELEVANCE</option>
+				<option value="1">PLG_JSOLRSEARCH_DSPACE_SORT_BY_DATE</option>
 			</field>
     	</fieldset>
     </fields>

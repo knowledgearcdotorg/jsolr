@@ -1,12 +1,12 @@
 <?php
 defined( '_JEXEC' ) or die( 'Restricted access' );
 /**
-* A plugin for searching articles.
+* A plugin for searching DSpace items.
  *
  * @package		JSolr.Plugin
  * @subpackage	Search
- * @copyright	Copyright (C) 2012 KnowledgeARC Ltd. All rights reserved.
- * @license     This file is part of the JSolr Search JSpace plugin for Joomla!.
+ * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
+ * @license     This file is part of the JSolr Search DSpace plugin for Joomla!.
 
    The JSolr Search JSpace plugin for Joomla! is free software: you can 
    redistribute it and/or modify it under the terms of the GNU General Public 
@@ -34,7 +34,7 @@ jimport('joomla.error.log');
 
 jimport('jsolr.search.search');
 
-class plgJSolrSearchJSpace extends JSolrSearchSearch 
+class plgJSolrSearchDSpace extends JSolrSearchSearch 
 {
 	protected $extension = 'com_jspace';
 

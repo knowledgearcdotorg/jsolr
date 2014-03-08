@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="3.0" type="plugin" group="jsolrsearch" method="upgrade">
-	<name>plg_jsolrsearch_jspace</name>
+	<name>plg_jsolrsearch_dspace</name>
 	<creationDate>2012-08-21</creationDate>
 	<author>KnowledgeARC</author>
 	<authorEmail>development@knowledgearc.com</authorEmail>
@@ -8,15 +8,15 @@
 	<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>1.1.0</version>
-	<description>PLG_JSOLRSEARCH_JSPACE_XML_DESCRIPTION</description>
+	<description>PLG_JSOLRSEARCH_DSPACE_XML_DESCRIPTION</description>
 	<files>
-		<filename plugin="jspace">jspace.php</filename>
+		<filename plugin="dspace">dspace.php</filename>
 		<folder>views</folder>
 		<folder>forms</folder>
 	</files>
 	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jspace.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_jspace.sys.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_dspace.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_dspace.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
