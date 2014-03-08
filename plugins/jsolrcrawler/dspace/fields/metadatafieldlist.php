@@ -3,21 +3,21 @@
  * Provides a list of metadata fields available in DSpace.
  * 
  * @package		JSpace
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
- * @license     This file is part of the JSolrCrawler JSpace plugin for Joomla!.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
+ * @license     This file is part of the JSolrCrawler DSpace plugin for Joomla!.
 
-   The JSolrCrawler JSpace plugin for Joomla! is free software: you can redistribute it 
+   The JSolrCrawler DSpace plugin for Joomla! is free software: you can redistribute it 
    and/or modify it under the terms of the GNU General Public License as 
    published by the Free Software Foundation, either version 3 of the License, 
    or (at your option) any later version.
 
-   The JSolrCrawler JSpace plugin for Joomla! is distributed in the hope that it will be 
+   The JSolrCrawler DSpace plugin for Joomla! is distributed in the hope that it will be 
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolrCrawler JSpace plugin for Joomla!.  If not, see 
+   along with the JSolrCrawler DSpace plugin for Joomla!.  If not, see 
    <http://www.gnu.org/licenses/>.
 
  * Contributors
