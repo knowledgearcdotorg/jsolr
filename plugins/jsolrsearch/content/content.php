@@ -38,7 +38,7 @@ jimport('jsolr.search.search');
 
 class plgJSolrSearchContent extends JSolrSearchSearch
 {
-	protected $extension = 'com_content';
+	protected $context = 'com_content.article';
 
 	public function __construct(&$subject, $config = array()) 
 	{
@@ -49,22 +49,12 @@ class plgJSolrSearchContent extends JSolrSearchSearch
 	
 	public function onJSolrSearchURIGet($document)
 	{
-		if ($this->get('extension') == $document->extension) {
+		if ($this->get('context') == $document->context) {
 			require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 			
 			return ContentHelperRoute::getArticleRoute($document->id, $document->parent_id);
 		}
 		
 		return null;
-	}
-
-	public function onJSolrSearchRegisterComponents()
-	{
-		return array(
-			'name' => 'Articles',
-			'plugin' => $this->extension,
-			'path' => __DIR__ . '/forms/tools.xml'
-			// 'path' => __DIR__ . '/forms/facets.xml'
-		);
 	}
 }

@@ -34,9 +34,7 @@ jimport('jsolr.index.crawler');
 
 class plgJSolrCrawlerNewsfeeds extends JSolrIndexCrawler
 {
-	protected $extension = 'com_newsfeeds';
-	
-	protected $view = 'newsfeed';
+	protected $context = 'com_newsfeeds.newsfeed';
 
 	/**
 	* Prepares an article for indexing.

@@ -37,7 +37,7 @@ jimport('jsolr.search.search');
 
 class plgJSolrSearchJReviews extends JSolrSearchSearch
 {
-	protected $extension = 'com_jreviews';
+	protected $context = 'com_jreviews.listing';
 
 	public function __construct(&$subject, $config = array()) 
 	{
@@ -66,7 +66,7 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 
 	public function onJSolrSearchURIGet($document)
 	{
-		if ($this->get('extension') == $document->extension) {
+		if ($this->get('context') == $document->context) {
 			require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
 			
 			return ContentHelperRoute::getArticleRoute($document->id, $document->parent_id);
@@ -75,15 +75,6 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 		return null;
 	}
 
-	public function onJSolrSearchRegisterComponents()
-	{
-		return array(
-			'name' => 'Reviews',
-			'plugin' => $this->extension,
-			'path' => __DIR__ . '/forms/facets.xml'
-		);
-	}
-	
 	/**
 	 * A convenience event handler to obtain the text related to an option's 
 	 * value.

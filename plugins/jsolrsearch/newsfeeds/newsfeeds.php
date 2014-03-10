@@ -35,7 +35,7 @@ jimport('jsolr.search.search');
 
 class plgJSolrSearchNewsfeeds extends JSolrSearchSearch 
 {
-	protected $extension = 'com_newsfeeds';
+	protected $context = 'com_newsfeeds.newsfeed';
 	
 	public function __construct(&$subject, $config = array()) 
 	{
@@ -59,7 +59,7 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 		$link = "link_$lang";
 		$category = "category_$lang";
 
-		if ($document->extension == $this->get('extension')) {
+		if ($document->context == $this->get('context')) {
 			if (isset($hl->$id->$title)) {
         		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
 			} else {				
@@ -105,18 +105,10 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 
 		return implode("...", $hl);
 	}
-	
-	public function onJSolrSearchRegisterComponents()
-	{
-		return array(
-			'name' => 'Newsfeeds',
-			'plugin' => $this->extension,
-			'path' => __DIR__ . '/forms/facets.xml');
-	}
-	
+
 	public function onJSolrSearchURIGet($document)
 	{
-		if ($this->get('extension') == $document->extension) {
+		if ($this->get('context') == $document->context) {
 			require_once(JPATH_ROOT."/components/com_newsfeeds/helpers/route.php");
 				
 			return NewsfeedsHelperRoute::getNewsfeedRoute($document->id, $document->parent_id);

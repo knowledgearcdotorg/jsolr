@@ -39,9 +39,7 @@ jimport('jsolr.helper');
 
 class plgJSolrCrawlerContent extends JSolrIndexCrawler
 {	
-	protected $extension = 'com_content';
-	
-	protected $view = 'article';
+	protected $context = 'com_content.article';
 	
 	/**
 	* Prepares an article for indexing.

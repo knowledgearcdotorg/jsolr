@@ -36,7 +36,7 @@ jimport('jsolr.search.search');
 
 class plgJSolrSearchDSpace extends JSolrSearchSearch 
 {
-	protected $extension = 'com_jspace';
+	protected $context = 'dspace';
 
 	public function __construct(&$subject, $config = array()) 
 	{
@@ -67,15 +67,5 @@ class plgJSolrSearchDSpace extends JSolrSearchSearch
 		}
 	
 		return null;
-	}
-	
-	public function onJSolrSearchRegisterComponents()
-	{
-		return array(
-			'name' => 'Archive',
-			'plugin' => $this->extension,
-			//'path' => __DIR__ . '/forms/tools.xml'
-			'path' => __DIR__ . '/forms/facets.xml'
-		);
 	}
 }

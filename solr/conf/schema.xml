@@ -923,8 +923,7 @@
 	<!-- Fields corresponding to various Joomla components. -->
 
 	<field name="id"	type="string"	indexed="true"	stored="true"	required="true"/>	
-	<field name="extension"	type="string" indexed="true"	stored="true"	required="true"/>
-	<field name="view"	type="string" indexed="true"	stored="true"	required="true"/>
+	<field name="context"	type="string" indexed="true"	stored="true"	required="true"/>
 	<field name="key"	type="string"	indexed="true"	stored="true"	required="true"/>
 	
 	<!-- Fields for generic search results. -->

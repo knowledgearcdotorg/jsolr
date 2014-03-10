@@ -424,8 +424,6 @@ class JSolrSearchModelSearch extends JModelForm
     JPluginHelper::importPlugin("jsolrsearch");
     $dispatcher = JDispatcher::getInstance();
 
-    $array = $dispatcher->trigger('onJSolrSearchRegisterComponents');
-
     $array = array_merge(array(array('plugin' => '', 'name' => JText::_('Everything'))), $array);
     
     for ($i = 0; $i < count($array); $i++) {

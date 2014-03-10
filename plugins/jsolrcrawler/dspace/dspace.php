@@ -37,9 +37,7 @@ jimport('jsolr.index.crawler');
 
 class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 {
-	protected $extension = 'com_jspace';
-	
-	protected $view = 'item';
+	protected $context = 'dspace';
 	
 	protected $collections = array();
 	
@@ -415,10 +413,9 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 		$lang = parent::getLanguage($record, false);
 
 		$doc->addField('id', $record->id);
-		$doc->addField('extension', $this->get('extension'));
-		$doc->addField('view', 'bitstream');
+		$doc->addField('context', $this->get('context').".item");
 		$doc->addField('lang', $lang);
-		$doc->addField('key', $this->get('extension').'.bitstream.'.$record->id);
+		$doc->addField('key', $this->get('context').'.bitstream.'.$record->id);
 		
 		$doc->addField('title', $record->name);
 		$doc->addField('title_'.$lang, $record->name);
@@ -461,7 +458,7 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 	
 		$query = JSolrSearchFactory::getQuery('*:*')
 		->useQueryParser("edismax")
-		->filters(array('extension:com_jspace', 'view:item'))
+		->filters(array($this->get('context').'.item'))
 		->retrieveFields('id')
 		->rows(0);
 	
@@ -475,7 +472,7 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 	
 		if ($results->get('numFound')) {	
 			$delete = array();
-			$prefix = $this->get('extension').'.'.$this->get('view').'.';
+			$prefix = $this->get('context').'.item.';
 
 			foreach ($results as $result) {
 				$needle = new stdClass();
@@ -490,8 +487,7 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 				foreach ($delete as $key) {
 					$this->out('cleaning item '.$key.' and its bitstreams');
 					
-					$query = 'extension:'.$this->get('extension').
-						' AND view:bitstream'.
+					$query = 'type:'.$this->get('context').'.bitstream'.
 						' AND parent_id:'.str_replace($prefix, '', $key);
 					$service->deleteByQuery($query);
 				}				
@@ -539,19 +535,10 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 				} else {
 					$item->access = $this->get('params')->get('private_access', null);
 				}
-				
-				// Initialize the item's parameters.
-				if (isset($item->params)) {
-					$registry = new JRegistry();
-					$registry->loadString($item->params);
-					$item->params = JComponentHelper::getParams($this->get('extension'), true);
-					$item->params->merge($registry);
-				}
 	
 				$documents[$i] = $this->getDocument($item);
 				$documents[$i]->addField('id', $item->id);
-				$documents[$i]->addField('extension', $this->get('extension'));
-				$documents[$i]->addField('view', $this->get('view'));
+				$documents[$i]->addField('context', $this->get('context').'.item');
 				$documents[$i]->addField('lang', $this->getLanguage($item));
 				
 				$key = $this->buildKey($documents[$i]);
@@ -703,19 +690,10 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 		
 		// g0 = public
 		$item->access = $this->get('params')->get('anonymous_access', 1);
-		
-		// Initialize the item's parameters.
-		if (isset($item->params)) {
-			$registry = new JRegistry();
-			$registry->loadString($item->params);
-			$item->params = JComponentHelper::getParams($this->get('extension'), true);
-			$item->params->merge($registry);
-		}
 	
 		$documents[$i] = $this->getDocument($item);
 		$documents[$i]->addField('id', $item->id);
-		$documents[$i]->addField('extension', $this->get('extension'));
-		$documents[$i]->addField('view', $this->get('view'));
+		$documents[$i]->addField('context', $this->get('context').'.item');
 		$documents[$i]->addField('lang', $this->getLanguage($item));
 	
 		$key = $this->buildKey($documents[$i]);

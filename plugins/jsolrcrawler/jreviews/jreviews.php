@@ -38,9 +38,7 @@ jimport('jsolr.helper');
 
 class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 {	
-	protected $extension = 'com_jreviews';
-	
-	protected $view = 'listing';
+	protected $context = 'com_jreviews.listing';
 	
 	private $jrFields = array();
 	
@@ -423,7 +421,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 				}
 				
 				$solr = JSolrIndexFactory::getService();
-				$solr->deleteById($this->get('extension').'.'.$this->get('view').'.'.$id);
+				$solr->deleteById($this->get('context').'.'.$id);
 				$solr->commit();
 			} catch (Exception $e) {
 				JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
