@@ -5,7 +5,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  *
  * @package		JSolr.Plugin
  * @subpackage	Search
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr Search JReviews plugin for Joomla!.
 
    The JSolr Search JReviews plugin for Joomla! is free software: you can 

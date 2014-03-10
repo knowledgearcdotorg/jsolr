@@ -150,14 +150,17 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	public function getFilters()
 	{
 		$cleaned = JString::trim($this->value);
-		$filters = explode(self::FACET_DELIMITER, $cleaned);
+		$array = explode(self::FACET_DELIMITER, $cleaned);
+		$filters = array();
+		
+		if ($cleaned) {
+			for ($i = 0; $i < count($filters); $i++) {
+				if ($this->exactmatch) {
+					$filters[$i] = '"'.$filters[$i].'"';
+				}
 				
-		for ($i = 0; $i < count($filters); $i++) {
-			if ($this->exactmatch) {
-				$filters[$i] = '"'.$filters[$i].'"';
+				$filters[$i] = $this->filter.":".$filters[$i];
 			}
-			
-			$filters[$i] = $this->filter.":".$filters[$i];
 		}
 
 		return (count($filters)) ? $filters : array();

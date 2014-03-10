@@ -61,21 +61,21 @@ JHTML::_('behavior.formvalidation');
 	
 	<div class="clr"></div>
 
-	<?php $components = $this->get('Extensions'); ?>
+	<?php $plugins = $this->get('Plugins'); ?>
 
 	<nav>			
 		<ul>
-			<?php for ($i = 0; $i < count($components); ++$i): ?>
+			<?php for ($i = 0; $i < count($plugins); ++$i): ?>
 			<li>
 				<?php
-					$isSelected = ($components[$i]['plugin'] == JFactory::getApplication()->input->get('o')) ? true : false;
+					$isSelected = ($plugins[$i]['name'] == JFactory::getApplication()->input->get('o')) ? true : false;
 				
 					echo JHTML::_(
 						'link', 
-						$components[$i]['uri'], 
-						$components[$i]['name'], 
+						$plugins[$i]['uri'], 
+						JText::_($plugins[$i]['label']), 
 						array(
-							'data-category'=>$components[$i]['plugin'], 
+							'data-category'=>$plugins[$i]['name'], 
 							'class'=> $isSelected ? 'active' : '')); 
 				?>
 				</li>

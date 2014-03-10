@@ -49,7 +49,7 @@ class JSolrSearchViewSearch extends JViewLegacy
         $this->params = $this->state->get('params');
         $this->plugins = $this->get('ComponentsList');
         
-        $this->params->set('o', str_replace('com_', '', JFactory::getApplication()->input->get('o', null, 'cmd')));
+        $this->params->set('o', JFactory::getApplication()->input->get('o', null, 'cmd'));
 
         // Load JSolrSearch jquery if not bundled.
         // @deprecated This is deprecated and will be removed in subsequent versions of JSolr.
@@ -70,16 +70,15 @@ class JSolrSearchViewSearch extends JViewLegacy
     
     private function _getDefaultTemplate()
     {
-        	$o = JFactory::getApplication()->input->get('o');
-    	$extension = str_replace("com_", "", $o);
+    	$plugin = JFactory::getApplication()->input->get('o');
 
-    	$override = $this->getLayout().'_'.$extension.'.php';
+    	$override = $this->getLayout().'_'.$plugin.'.php';
 
     	$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
     	'/html/com_jsolrsearch/search';
     	
     	if (JPath::find($themeOverridePath, $override)) {
-    		return $extension;
+    		return $plugin;
     	} else {
     		return null;
     	}
@@ -114,9 +113,8 @@ class JSolrSearchViewSearch extends JViewLegacy
     	// make item available to templates.
     	$this->assignRef("item", $item);
     	$this->assignRef("hl", $hl);
-    	
-    	$extension = str_replace("com_", "", $item->extension);
-		return $this->_loadCustomTemplate($extension, 'result');
+
+		return $this->_loadCustomTemplate($item->context, 'result');
     }
 
     /**
@@ -147,22 +145,22 @@ class JSolrSearchViewSearch extends JViewLegacy
 		return $this->_loadCustomTemplate($this->params->get('o'), 'results');
 	}
 	
-	private function _loadCustomTemplate($o, $layout)
+	private function _loadCustomTemplate($plugin, $layout)
 	{
-		$extension = str_replace("com_", "", $o);
-		$override = $layout."_".$extension.".php";
-		 
-		$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$extension.'/views/search/tmpl';
+		$plugin = str_replace('.', '', $plugin);
+		$override = $layout."_".$plugin.".php";
+
+		$pluginOverridePath = JPATH_PLUGINS."/jsolrsearch/".$plugin.'/views/search/tmpl';
 		$themeOverridePath = JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
 		'/html/com_jsolrsearch/search';
 		 
 		$this->setLayout($layout);
 		 
 		if (JPath::find($themeOverridePath, $override)) {
-			return $this->loadTemplate($extension);
+			return $this->loadTemplate($plugin);
 		} elseif (JPath::find($pluginOverridePath, $override)) {
 			$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
-			return $this->loadTemplate($extension);
+			return $this->loadTemplate($plugin);
 		} else {
 			return $this->loadTemplate('default');
 		}		

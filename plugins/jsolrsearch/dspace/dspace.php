@@ -53,19 +53,28 @@ class plgJSolrSearchDSpace extends JSolrSearchSearch
 	 */
 	public function onJSolrSearchFQAdd($language)
 	{
-		$array = array('-view:bitstream');
+		$array = array('-context:'.$this->get('context').'.bitstream');
 		
 		return $array;
 	}
 
 	public function onJSolrSearchURIGet($document)
 	{
-		if ($this->get('extension') == $document->extension) {
+		if ($this->get('context').'.item' == $document->context) {
 			require_once(JPATH_ROOT."/components/com_jspace/helpers/route.php");
-				
+
 			return JSpaceHelperRoute::getItemFullRoute($document->id);
 		}
 	
 		return null;
+	}
+	
+	public function onJSolrSearchRegisterPlugin()
+	{
+		return array(
+			'name'=>$this->_name,
+			'label'=>'PLG_JSOLRSEARCH_'.JString::strtoupper($this->_name).'_LABEL',
+			'context'=>$this->get('context').'.*'
+		);
 	}
 }

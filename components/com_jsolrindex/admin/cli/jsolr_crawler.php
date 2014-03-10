@@ -333,7 +333,7 @@ EOT;
     	} else {
     		$dispatcher = JEventDispatcher::getInstance();
     	}
-    
+
     	JPluginHelper::importPlugin("jsolrcrawler", $plugin, true, $dispatcher);
 
     	return $dispatcher->trigger($name, $args);

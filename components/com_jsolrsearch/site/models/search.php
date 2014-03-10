@@ -108,10 +108,15 @@ class JSolrSearchModelSearch extends JModelForm
 		$sort = $this->getForm()->getSorts();
 		
 		$facets = $this->getForm()->getFacets();
+				
+		JPluginHelper::importPlugin("jsolrsearch");
+		
+       	if (version_compare(JVERSION, "3.0", "l")) {
+    		$dispatcher = JDispatcher::getInstance();
+    	} else {
+    		$dispatcher = JEventDispatcher::getInstance();
+    	}
 
-   		JPluginHelper::importPlugin("jsolrsearch");
-   		$dispatcher = JDispatcher::getInstance();
-      
    		// Get any additional filters which may be needed as part of the search query.
    		foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState('query.lang'))) as $result) {
    			$filters = array_merge($filters, $result);
@@ -125,7 +130,16 @@ class JSolrSearchModelSearch extends JModelForm
    		// get query filter params and boosts from plugin.
    		foreach ($dispatcher->trigger('onJSolrSearchQFAdd', array($this->getState('query.lang'))) as $result) {   			
    			$qf = array_merge($qf, $result);
-   		}   	
+   		}
+
+   		// get context.
+   		if ($this->getState('query.o', null)) {
+	   		foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin', array($this->getState('query.lang'))) as $result) {	   			
+	   			if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
+	   				$filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
+	   			}
+	   		}
+   		}
    		
    		$q = $this->getState('query.q', "*:*");
 
@@ -153,10 +167,6 @@ class JSolrSearchModelSearch extends JModelForm
    		if (count($facets)) {
    			$query->facetFields($facets);
    			$query->facet(1, true, 10);
-   		}
-
-   		if ($extension = $this->getState('query.o', null)) {
-   			$query->mergeFilters('extension:' . $extension);
    		}
 
 		try {	
@@ -274,9 +284,9 @@ class JSolrSearchModelSearch extends JModelForm
 		
 		// load plugin filter override.
 		if ($this->getState('query.o')) {
-			foreach ($this->getExtensions() as $extension) {
-				if (JArrayHelper::getValue($extension, 'plugin') == $this->getState('query.o')) {
-					$plugin = str_replace('com_', '', JArrayHelper::getValue($extension, 'plugin'));
+			foreach ($this->getPlugins() as $plugin) {
+				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
+					$plugin = JArrayHelper::getValue($plugin, 'name');
 					$pluginOverride =
 						JPATH_ROOT.'/templates/'.
 						JFactory::getApplication()->getTemplate().
@@ -419,18 +429,25 @@ class JSolrSearchModelSearch extends JModelForm
 	/**
 	 * Get the list of enabled extensions for search results.
 	 */
-  public function getExtensions()
+  public function getPlugins()
   {
     JPluginHelper::importPlugin("jsolrsearch");
-    $dispatcher = JDispatcher::getInstance();
 
-    $array = array_merge(array(array('plugin' => '', 'name' => JText::_('Everything'))), $array);
+    if (version_compare(JVERSION, "3.0", "l")) {
+    	$dispatcher = JDispatcher::getInstance();
+    } else {
+    	$dispatcher = JEventDispatcher::getInstance();
+    }
     
-    for ($i = 0; $i < count($array); $i++) {
+    $array = $dispatcher->trigger('onJSolrSearchRegisterPlugin');
+    
+    $array = array_merge(array(array('plugin'=>'', 'label'=>JText::_('Everything'))), $array);
+    
+    for ($i = 0; $i < count($array); $i++) {    	
     	$uri = clone JSolrSearchFactory::getQueryRoute();
     	
-    	if ($array[$i]['plugin'])
-    		$uri->setVar('o', $array[$i]['plugin']);
+    	if ($array[$i]['name'])
+    		$uri->setVar('o', $array[$i]['name']);
     	else
     		$uri->delVar('o');
     	

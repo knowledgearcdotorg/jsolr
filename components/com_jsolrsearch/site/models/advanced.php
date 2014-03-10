@@ -256,10 +256,9 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$path = __DIR__ . '/forms/filters.xml';
 
 		if ($this->getState('query.o')) {
-			foreach ($this->getExtensions() as $extension) {
-				if (JArrayHelper::getValue($extension, 'plugin') == $this->getState('query.o')) {
-					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.str_replace('com_', '', JArrayHelper::getValue($extension, 'plugin')).'/forms/filters.xml';					
-
+			foreach ($this->getPlugins() as $plugin) {
+				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
+					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.JArrayHelper::getValue($plugin, 'name').'/forms/filters.xml';
 					break;
 				}
 			}
@@ -326,5 +325,36 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$this->_forms[$hash] = $form;
 
 		return $form;
+	}
+	
+	/**
+	 * Get the list of enabled extensions for search results.
+	 */
+	public function getPlugins()
+	{
+		JPluginHelper::importPlugin("jsolrsearch");
+	
+		if (version_compare(JVERSION, "3.0", "l")) {
+			$dispatcher = JDispatcher::getInstance();
+		} else {
+			$dispatcher = JEventDispatcher::getInstance();
+		}
+	
+		$array = $dispatcher->trigger('onJSolrSearchRegisterPlugin');
+	
+		$array = array_merge(array(array('plugin'=>'', 'label'=>JText::_('Everything'))), $array);
+	
+		for ($i = 0; $i < count($array); $i++) {
+			$uri = clone JSolrSearchFactory::getQueryRoute();
+			 
+			if ($array[$i]['name'])
+				$uri->setVar('o', $array[$i]['name']);
+			else
+				$uri->delVar('o');
+			 
+			$array[$i]['uri'] = htmlentities((string)$uri, ENT_QUOTES, 'UTF-8');
+		}
+	
+		return $array;
 	}
 }

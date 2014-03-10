@@ -121,4 +121,13 @@ abstract class JSolrSearchSearch extends JPlugin
 
 		return str_replace("*", $code, $field);
 	}
+	
+	public function onJSolrSearchRegisterPlugin()
+	{
+		return array(
+			'name'=>$this->_name,
+			'label'=>'PLG_JSOLRSEARCH_'.JString::strtoupper($this->_name).'_LABEL',
+			'context'=>$this->get('context')
+		);
+	}
 }
