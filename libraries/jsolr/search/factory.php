@@ -87,7 +87,7 @@ class JSolrSearchFactory extends JSolrFactory
 		return $uri;
 	}
 	
-	public static function getQueryRouteWithExtension($additionalFilters = array())
+	public static function getQueryRouteWithPlugin($additionalFilters = array())
 	{
 		$uri = self::getQueryRoute($additionalFilters, true);
 		

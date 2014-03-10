@@ -68,7 +68,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$application = JFactory::getApplication('site');
 
 		$this->setState('query.q', $application->input->get("q", null, "html"));
-		$extension = $this->setState('query.o', $application->input->getString("o", null, "string"));
+		$this->setState('query.o', $application->input->getString("o", null, "string"));
 
 		$value = $application->input->get('limit', $application->getCfg('list_limit', 0));
 		$this->setState('list.limit', $value);
@@ -194,7 +194,7 @@ class JSolrSearchModelSearch extends JModelForm
 		$uris = array();
 		$i = 0;
 		
-		$uri = JSolrSearchFactory::getQueryRouteWithExtension();
+		$uri = JSolrSearchFactory::getQueryRouteWithPlugin();
 
 		$uri->setVar('q', $this->getItems()->getSuggestions());
 
@@ -427,7 +427,7 @@ class JSolrSearchModelSearch extends JModelForm
   }
 
 	/**
-	 * Get the list of enabled extensions for search results.
+	 * Get the list of enabled plugins for search results.
 	 */
   public function getPlugins()
   {

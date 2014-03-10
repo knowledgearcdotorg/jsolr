@@ -4,7 +4,7 @@
  * 
  * @package		JSolr.Search
  * @subpackage	Model
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
    The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -50,10 +50,13 @@ class JSolrSearchModelAdvanced extends JModelForm
 
 	protected function populateState()
 	{
-		$app = JFactory::getApplication();
+		$application = JFactory::getApplication();
+		
+		$this->setState('query.q', $application->input->get("q", null, "html"));
+		$this->setState('query.o', $application->input->getString("o", null, "string"));
 		
 		// Load the parameters.
-		$params = $app->getParams();
+		$params = $application->getParams();
 		$this->setState('params', $params);
 	}
 	
@@ -256,6 +259,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$path = __DIR__ . '/forms/filters.xml';
 
 		if ($this->getState('query.o')) {
+			echo 'query.o';
 			foreach ($this->getPlugins() as $plugin) {
 				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
 					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.JArrayHelper::getValue($plugin, 'name').'/forms/filters.xml';
@@ -328,7 +332,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 	}
 	
 	/**
-	 * Get the list of enabled extensions for search results.
+	 * Get the list of enabled plugins for search results.
 	 */
 	public function getPlugins()
 	{
