@@ -32,9 +32,9 @@ JFormHelper::loadFieldClass('list');
 /**
  * Form field class for listing available extensions. 
  */
-class JFormFieldJSolrSearchExtensionList extends JFormFieldList
+class JSolrFormFieldPluginList extends JFormFieldList
 {
-	protected $type = 'JSolrSearchExtensionList';
+	protected $type = 'JSolr.PluginList';
 
 	protected function getOptions()
 	{
@@ -43,10 +43,10 @@ class JFormFieldJSolrSearchExtensionList extends JFormFieldList
 		JPluginHelper::importPlugin("jsolrsearch");
 		$dispatcher =& JDispatcher::getInstance();
 
-		foreach ($dispatcher->trigger("onJSolrSearchExtensionGet", array()) as $result) {
+		foreach ($dispatcher->trigger("onJSolrSearchRegisterPlugin", array()) as $result) {
 			$tmp = JHtml::_(
-				'select.option', $result->name,
-				JText::alt(trim($result->title), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
+				'select.option', JArrayHelper::getValue($result, 'name'),
+				JText::alt(JArrayHelper::getValue($result, 'label'), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
 			);
 			
 			$options[] = $tmp;

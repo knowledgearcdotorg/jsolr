@@ -98,16 +98,6 @@ abstract class JSolrSearchSearch extends JPlugin
 		return $hl;
 	}
 	
-	final public function onJSolrSearchExtensionGet()
-	{	
-		$extension = new JObject();
-		
-		$extension->set('name', $this->get('extension'));
-		$extension->set('title', JText::_("PLG_JSOLRSEARCH_".strtoupper($this->get('extension'))));
-	
-		return $extension;
-	}
-	
 	protected function localize($field, $language)
 	{
 		$code = $language;

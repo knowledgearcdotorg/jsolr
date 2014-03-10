@@ -157,7 +157,7 @@ class JSolrSearchModelBrowse extends JModelList
 	 * "o" will be filtered if the parameter is specified, otherwise all items 
 	 * which match any of the enabled plugins will be filtered.
 	 * 
-	 * Plugins must be enabled and have the event onJSolrSearchExtensionGet implemented.
+	 * Plugins must be enabled and have the event onJSolrSearchRegisterPlugin implemented.
 	 */
 	private function _getExtensionFilter()
 	{	
@@ -173,7 +173,7 @@ class JSolrSearchModelBrowse extends JModelList
 			JPluginHelper::importPlugin("jsolrsearch");
 			$dispatcher =& JDispatcher::getInstance();
 			
-			foreach ($dispatcher->trigger("onJSolrSearchExtensionGet") as $result) {
+			foreach ($dispatcher->trigger("onJSolrSearchRegisterPlugin") as $result) {
 				$extensions = array_merge($extensions, array_keys($result));
 			}
 		}

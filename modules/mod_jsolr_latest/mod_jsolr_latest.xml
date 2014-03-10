@@ -40,7 +40,7 @@
 				</field>
 				<field 
 					name="o" 
-					type="jsolrsearchextensionlist"
+					type="jsolrsearchpluginlist"
 					label="MOD_JSOLR_LATEST_FIELD_O_LABEL"
 					description="MOD_JSOLR_LATEST_FIELD_O_DESC">
 					<option value="">MOD_JSOLR_LATEST_VALUE_NONE</option>	

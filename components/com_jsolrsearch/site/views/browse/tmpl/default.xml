@@ -10,7 +10,7 @@
 	<fields name="request">
 		<fieldset 
 			name="request"
-			addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
+			addfieldpath="/libraries/jsolr/form/fields">
 
 			<field 
 				name="name" 
@@ -28,7 +28,7 @@
 
 			<field 
 				name="o" 
-				type="jsolrsearchextensionlist"
+				type="jsolr.pluginlist"
 				label="COM_JSOLRSEARCH_FIELD_SELECT_O_LABEL"
 				description="COM_JSOLRSEARCH_FIELD_SELECT_O_DESC">
 				<option value="">COM_JSOLRSEARCH_FIELD_SELECT_EXTENSION_OPTION_NONE</option>	
