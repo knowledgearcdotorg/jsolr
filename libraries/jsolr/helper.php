@@ -168,4 +168,18 @@ class JSolrHelper extends JObject
 			return $facet;
 		}
 	}
+	
+	public static function localize($field)
+	{
+		$code = JFactory::getApplication()->input->getString('lr', null);
+	
+		if (!$code) {
+			$code = JFactory::getLanguage()->getTag();
+		}
+	
+		$parts = explode('-', $code);
+		$code = JArrayHelper::getValue($parts, 0);
+	
+		return str_replace("*", $code, $field);
+	}
 }

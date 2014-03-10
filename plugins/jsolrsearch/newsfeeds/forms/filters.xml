@@ -10,7 +10,7 @@
         <field 
             name="category"
             facet="category_fc"
-            filter="category_en"
+            filter="category_s"
             type="JSolr.Facets"
             label="Category"
             size="40"

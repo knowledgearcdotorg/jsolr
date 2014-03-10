@@ -54,15 +54,15 @@ abstract class JSolrSearchSearch extends JPlugin
 	 * 
 	 * Override this method to add more query field values.
 	 */
-	public function onJSolrSearchQFAdd($language)
+	public function onJSolrSearchQFAdd()
 	{	
 		$qf = array();
 
-		$boosts = explode(' ', $this->get('params')->get('boost', null));
+		$boosts = explode(',', $this->get('params')->get('boosts', null));
 
 		foreach ($boosts as $boost) {
 			if ($boost)			
-				$qf[] = $this->localize($boost, $language);
+				$qf[] = JSolrHelper::localize($boost);
 		}
 
 		return $qf;
@@ -78,7 +78,7 @@ abstract class JSolrSearchSearch extends JPlugin
 	 * The [search_name] is used for stripping the correct operators off of 
 	 * the query.
 	 */
-	final public function onJSolrSearchOperatorsGet($language = null)
+	final public function onJSolrSearchOperatorsGet()
 	{
 		return $this->operators;
 	}
@@ -86,30 +86,16 @@ abstract class JSolrSearchSearch extends JPlugin
 	/**
 	 * Lists fields that have highlighting applied on the found text. 
 	 */
-	final public function onJSolrSearchHLAdd($language = null)
+	final public function onJSolrSearchHLAdd()
 	{
 		$hl = array();
 		
 		foreach ($this->highlighting as $higlighting) {
 			if ($higlighting)
-				$hl[] = $this->localize($higlighting, $language);
+				$hl[] = JSolrHelper::localize($higlighting);
 		}
 		
 		return $hl;
-	}
-	
-	protected function localize($field, $language)
-	{
-		$code = $language;
-		
-		if (!$code) {
-			$code = JFactory::getLanguage()->getTag();
-		}
-
-		$parts = explode('-', $code);
-		$code = JArrayHelper::getValue($parts, 0);
-
-		return str_replace("*", $code, $field);
 	}
 	
 	public function onJSolrSearchRegisterPlugin()

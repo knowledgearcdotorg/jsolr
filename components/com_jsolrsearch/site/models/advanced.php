@@ -259,7 +259,6 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$path = __DIR__ . '/forms/filters.xml';
 
 		if ($this->getState('query.o')) {
-			echo 'query.o';
 			foreach ($this->getPlugins() as $plugin) {
 				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
 					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.JArrayHelper::getValue($plugin, 'name').'/forms/filters.xml';

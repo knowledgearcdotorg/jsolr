@@ -63,10 +63,12 @@ class JSolrFormFieldLanguageFilter extends JSolrFormFieldHiddenFilter
 				$filters[] = "(".$this->filter.":$lang OR ".$this->filter.":\*)";
 			}
 		} else {
-			$filters[] = $this->filter.":".$application->input->getString('lr', null);
+			$filters[] = '('.$this->filter.':'.$application->input->getString('lr', null).
+						 ' OR '.
+						 $this->filter_alt.':'.$application->input->getString('lr', null).')';
 		}
 
-		return ($this->filter && count($filters)) ? $filters : array();
+		return (count($filters)) ? $filters : array();
 	}
 	
 	public function __get($name)
@@ -78,6 +80,14 @@ class JSolrFormFieldLanguageFilter extends JSolrFormFieldHiddenFilter
 				
 				return JText::sprintf('COM_JSOLRSEARCH_FILTER_'.JString::strtoupper($this->name), $language->getName());
 	
+			case 'filter':
+				return 'lang';
+				break;
+				
+			case 'filter_alt':
+				return 'lang_alt';
+				break;
+				
 			default:
 				return parent::__get($name);
 		}

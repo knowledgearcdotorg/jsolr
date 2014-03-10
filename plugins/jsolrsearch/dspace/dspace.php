@@ -48,10 +48,8 @@ class plgJSolrSearchDSpace extends JSolrSearchSearch
 
 	/**
 	 * Add custom filters to the main query.
-	 * 
-	 * @param string $language The current language.
 	 */
-	public function onJSolrSearchFQAdd($language)
+	public function onJSolrSearchFQAdd()
 	{
 		$array = array('-context:'.$this->get('context').'.bitstream');
 		

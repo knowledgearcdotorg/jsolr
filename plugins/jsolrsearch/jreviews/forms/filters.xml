@@ -26,7 +26,7 @@
         <field 
             name="cat"
             facet="category_fc"
-            filter="category_en"
+            filter="category_s"
             type="jsolr.facets"
             label="Category"
             class="inputbox jsolrquery"

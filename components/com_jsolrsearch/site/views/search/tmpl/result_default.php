@@ -41,7 +41,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			<a href="<?php echo  $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->item->key, 'title', $this->item->title); ?></a>
 		</h4>
 	</header>
-	<p><?php echo JSolrHelper::highlight($this->item->key, 'body_en'); ?></p>
+	<p><?php echo JSolrHelper::highlight($this->item->key, JSolrHelper::localize('body_*')); ?></p>
 	<footer>
 		<dl>		
 			<?php if ($this->item->created) : ?>

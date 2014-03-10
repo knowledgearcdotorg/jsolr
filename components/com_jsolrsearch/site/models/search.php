@@ -116,25 +116,25 @@ class JSolrSearchModelSearch extends JModelForm
     	} else {
     		$dispatcher = JEventDispatcher::getInstance();
     	}
-
+    	
    		// Get any additional filters which may be needed as part of the search query.
-   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd", array($this->getState('query.lang'))) as $result) {
+   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) {
    			$filters = array_merge($filters, $result);
    		}
    
    		// Get Highlight fields for results.
-   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd', array($this->getState('query.lang'))) as $result) {
+   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) {
    			$hl = array_merge($hl, $result);
    		}
 
    		// get query filter params and boosts from plugin.
-   		foreach ($dispatcher->trigger('onJSolrSearchQFAdd', array($this->getState('query.lang'))) as $result) {   			
+   		foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) {   			
    			$qf = array_merge($qf, $result);
    		}
 
    		// get context.
    		if ($this->getState('query.o', null)) {
-	   		foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin', array($this->getState('query.lang'))) as $result) {	   			
+	   		foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {	   			
 	   			if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
 	   				$filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
 	   			}

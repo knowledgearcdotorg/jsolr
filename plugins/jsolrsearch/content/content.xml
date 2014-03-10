@@ -25,7 +25,15 @@
 					<option value="0">No</option> 
 					<option value="1">Yes</option> 
 				</field>
-				<field name="boost" type="text" default="title^50.0 body_*^10.0 author^5.0 metakeywords_*^5.0 metadescription_*^5.0 category_*^1.0 tags_h1_*^10.0 tags_h2_h3_*^5.0 tags_h4_h5_h6_*^2.0" label="Boosts" description="Boost certain fields over others when matching a query to the indexed items. E.g. Make title twice as important as category when matching results; title^100.0 category^50.0."/>
+				<field
+					name="boosts"
+					type="textarea"
+					description="PLG_JSOLRSEARCH_CONTENT_BASIC_BOOSTS_DESC"
+					label="PLG_JSOLRSEARCH_CONTENT_BASIC_BOOSTS_LABEL"
+					cols="30"
+					rows="5"
+					filter="string"
+					default="title_*^100.0,body_*^50.0,author^50.0,metakeywords_*^25.0,metadescription_*^25.0,category_*^10.0,tags_h1_*^10.0,tags_h2_h3_*^5.0,tags_h4_h5_h6_*^2.5"/>
 			</fieldset>
 		</fields>
 	</config>

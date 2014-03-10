@@ -19,9 +19,15 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="boost_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
-				<field name="boost_body" type="text" default="15.0" label="Content Boost" description="Boost the content field's relevancy."/>
-				<field name="boost_category" type="text" default="2.0" label="Category Boost" description="Boost the category's relevancy."/>
+				<field
+					name="boosts"
+					type="textarea"
+					description="PLG_JSOLRSEARCH_NEWSFEEDS_BASIC_BOOSTS_DESC"
+					label="PLG_JSOLRSEARCH_NEWSFEEDS_BASIC_BOOSTS_LABEL"
+					cols="30"
+					rows="5"
+					filter="string"
+					default="title_*^100.0,body_*^50.0,author^50.0,metakeywords_*^25.0,metadescription_*^25.0,category_*^10.0,tags_h1_*^10.0,tags_h2_h3_*^5.0,tags_h4_h5_h6_*^2.5"/>
 			</fieldset>
 		</fields>
 	</config>

@@ -20,12 +20,16 @@
 	</languages>
 	<config>
 		<fields name="params">
-			<fieldset name="basic">		
-				<field name="boost_title" type="text" default="25.0" label="Title Boost" description="Boost the title field's relevancy."/>
-				<field name="boost_body" type="text" default="15.0" label="Body Boost" description="Boost the body field's relevancy."/>
-				<field name="boost_author" type="text" default="2.0" label="Author Boost" description="Boost the author field's relevancy."/>
-				<field name="boost_bitstream_title" type="text" default="1.0" label="Bitstream Title Boost" description="Boost the bitstream title field's relevancy."/>
-				<field name="boost_bitstream_body" type="text" default="1.0" label="Bitstream Body Boost" description="Boost the bitstream body field's relevancy."/>
+			<fieldset name="basic">
+				<field
+					name="boosts"
+					type="textarea"
+					description="PLG_JSOLRSEARCH_DSPACE_BASIC_BOOSTS_DESC"
+					label="PLG_JSOLRSEARCH_DSPACE_BASIC_BOOSTS_LABEL"
+					cols="30"
+					rows="5"
+					filter="string"
+					default="dc.title_*^100,dc.contributor.author_*^75,title_*^25,author_*^25,text_*^15"/>
 			</fieldset>
 		</fields>
 	</config>

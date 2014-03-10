@@ -27,7 +27,7 @@
         	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
 		</field>
 		<field type="jsolr.queryfilter" name="in"/>
-    	<field type="jsolr.languagefilter" name="lr" filter="lang"/>
+    	<field type="jsolr.languagefilter" name="lr"/>
     </fieldset>
     
     <fields name="as">
