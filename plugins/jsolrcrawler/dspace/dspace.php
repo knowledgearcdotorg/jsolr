@@ -373,19 +373,26 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 			if (in_array($bundle->name, $this->get('bundleExclusions')) === false) {
 				
 				foreach ($bundle->bitstreams as $bitstream) {
-					$exclude = in_array($bundle->name, $this->get('contentExclusions'));
+					$extractor = JSolrIndexFactory::getExtractor($path.'/bitstreams/'.$bitstream->id.'/download');
 
-					$document = $this->extract($path.'/bitstreams/'.$bitstream->id.'/download', $exclude);
-					
-					if ($document) {
+					if ($extractor->isAllowedContentType()) {
+						$this->out(array($path, "[extracting]"));
+						
+						$indexContent = (
+								(in_array($bundle->name, $this->get('contentExclusions')) === false) && 
+								$extractor->isContentIndexable());
+											
 						$bitstreams[$i] = $bitstream;
-						
-						if (isset($document->body)) {
-							$bitstreams[$i]->body = $document->body;
+							
+						if ($indexContent) {
+							$bitstreams[$i]->body = $extractor->getContent();
 						}
+
+						$bitstreams[$i]->metadata = $extractor->getMetadata();
+						$bitstreams[$i]->lang = $extractor->getLanguage();
+						$bitstreams[$i]->type = $bundle->name;						
 						
-						$bitstreams[$i]->metadata = $document->metadata;
-						$bitstreams[$i]->type = $bundle->name;
+						$this->out(array($path, "[extracted]"));
 						
 						$i++;
 					}
@@ -410,11 +417,21 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 	{
 		$doc = new JSolrApacheSolrDocument();
 		
-		$lang = parent::getLanguage($record, false);
+		// Make the first language available the bitstream's language.
+		$lang = explode('-', JArrayHelper::getValue($record->lang, 0));
+		$lang = JArrayHelper::getvalue($lang, 0);
 
 		$doc->addField('id', $record->id);
-		$doc->addField('context', $this->get('context').".item");
-		$doc->addField('lang', $lang);
+		$doc->addField('context', $this->get('context').".bitstream");
+		
+		for ($i = 0; $i < count($record->lang); $i++) {
+			if ($i == 0) {
+				$doc->addField('lang', JArrayHelper::getValue($record->lang, $i));
+			} else {
+				$doc->addField('lang_alt', JArrayHelper::getValue($record->lang, $i));
+			}			
+		}
+		
 		$doc->addField('key', $this->get('context').'.bitstream.'.$record->id);
 		
 		$doc->addField('title', $record->name);
@@ -619,6 +636,9 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 					// continue from this kind of error.
 				}				
 			}
+			
+			// readjust counter.
+			$i--;
 
 			// index when either the number of items retrieved matches
 			// the total number of items being indexed or when the

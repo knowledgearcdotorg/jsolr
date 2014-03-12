@@ -35,4 +35,27 @@ jimport('jsolr.factory');
 class JSolrIndexFactory extends JSolrFactory 
 {
 	protected static $component = 'com_jsolrindex';
+	
+	/**
+	 * Gets a file extractor for the file or url provided.
+	 * 
+	 * @param string $fileOrUrl A file path or url.
+	 * 
+	 * @return JSolrIndexFilesystemExtractor A sub class of the 
+	 * JSolrIndexFilesystemExtractor, based on the JSolr Index component's 
+	 * configuration.
+	 */
+	public static function getExtractor($fileOrUrl)
+	{
+		$params = JComponentHelper::getParams('com_jsolrindex', true);
+		
+		$params->loadArray(array('component'=>$params->toArray()));			
+		
+		$type = JString::ucfirst($params->get('component.extractor'));
+		
+		jimport('jsolr.index.filesystem.'.$params->get('component.extractor'));
+		$class = "JSolrIndexFilesystemExtractor".$type;
+		
+		return new $class($fileOrUrl);
+	}
 }
