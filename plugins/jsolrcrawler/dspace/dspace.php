@@ -433,6 +433,11 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 		}
 		
 		$doc->addField('key', $this->get('context').'.bitstream.'.$record->id);
+
+		if (isset($record->author)) {
+			$doc->addField('author', $record->author);
+			$doc->addField('author_'.$lang, $record->author);
+		}
 		
 		$doc->addField('title', $record->name);
 		$doc->addField('title_'.$lang, $record->name);
