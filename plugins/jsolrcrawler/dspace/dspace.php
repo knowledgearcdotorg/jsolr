@@ -175,6 +175,7 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 		$doc->addField("parent_id", $collection->id);
 		$doc->addField("collection_s", $collection->name);
 		$doc->addField("collection_fc", $this->getFacet($collection->name));
+		$doc->addField("collection_sort", $collection->name);
 
 		$record = $this->_getMultilingualDocument($record);
 		
@@ -187,14 +188,6 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 			
 			if (array_search($field, $this->get('params')->get('facets', array())) !== false) {
 				$doc->addField($field."_fc", $this->getFacet($item->value)); // for faceting
-			}
-
-			if (array_search($field, $this->get('params')->get('sorts', array())) !== false) {
-				if (!is_array($item->value)) {
-					$doc->addField($field.'_sort', $item->value); // for sorting
-				} else {
-					JLog::add('Trying to index multivalue field '.$field.' value to a sort field is not supported.', JLog::WARNING, 'jsolrcrawler');
-				}
 			}
 			
 			// Store title based on metadata field language.
@@ -232,7 +225,7 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 				
 				// if the date is a valid iso date then index it as such.
 				if (preg_match($datePattern, $item->value) > 0) {
-					$suffix = 'dt';
+					$suffix = 'tdt';
 					$date = JFactory::getDate($item->value);
 					$value = $date->format('Y-m-d\TH:i:s\Z', false);
 

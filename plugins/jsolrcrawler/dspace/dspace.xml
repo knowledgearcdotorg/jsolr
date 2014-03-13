@@ -71,15 +71,6 @@
 					class="inputbox"
 					 />
 				<field 
-					name="sorts" 
-					type="jsolr.metadatafieldlist" 
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_SORTS_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_SORTS_DESC" 
-					multiple="true"
-					size="5"
-					class="inputbox"
-					/>
-				<field 
 					name="exclude_bundles_from_index"
 					type="text" 
 					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_LABEL"
