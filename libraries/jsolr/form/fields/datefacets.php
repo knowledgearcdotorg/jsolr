@@ -1,10 +1,10 @@
 <?php
 /**
- * Renders a list of facets.
+ * Renders a list of date facets.
  * 
  * @package		JSolr
  * @subpackage	Form
- * @copyright	Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
    The JSpace component for Joomla! is free software: you can redistribute it 
@@ -37,9 +37,11 @@ jimport('jsolr.form.fields.filterable');
 jimport('jsolr.form.fields.facetable');
 
 /**
- * The JSolrFormFieldFacets form field builds a list of facets which a user 
- * can then apply to the current search result set to narrow their search 
- * further (I.e. filter).
+ * The JSolrFormFieldDateFacets form field builds a specialized list of date 
+ * facets which a user can then apply to the current search result set to 
+ * narrow their search by a particular date.
+ * 
+ * By default, JSolrFormFieldDateFacets will build a list of facets by year.
  */
 class JSolrFormFieldDateFacets extends JSolrFormFieldFacets
 {
