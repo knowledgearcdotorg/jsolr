@@ -50,6 +50,23 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 	protected $facetInput;
 	
 	/**
+	 * Get the params for building this facet.
+	 * 
+	 * Maybe as simple as facet.field or may include complex ranges and 
+	 * queries.
+	 * 
+	 * @return array An array of params for building this facet.
+	 */
+	public function getFacetParams()
+	{
+		$params = array();
+		
+		$params[] = array('facet.field'=>$this->facet);
+		
+		return $params;
+	}
+	
+	/**
 	 * Gets an array of facets from the current search results (provided via the 
 	 * user's session).
 	 * 
@@ -206,8 +223,10 @@ class JSolrFormFieldFacets extends JFormFieldList implements JSolrFilterable, JS
 			$url->setVar($key, urlencode($value));
 		}		
 		
-		$cleaned = JString::trim($this->value);
-		$filters = explode(self::FACET_DELIMITER, $cleaned);
+		$filters = array();
+		if ($cleaned = JString::trim($this->value)) {
+			$filters = explode(self::FACET_DELIMITER, $cleaned);
+		}
 		
 		if ($this->isSelected($facet)) {
 			if (count($filters) > 1) {

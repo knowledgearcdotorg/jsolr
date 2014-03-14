@@ -47,7 +47,7 @@ class JSolrSearchResultSet extends JObject implements IteratorAggregate, Countab
 		$this->qTimeFormatted = round($this->qTime/1000, 5, PHP_ROUND_HALF_UP);
 		
 		$this->documents = $response->response->docs;
-		
+
 		JPluginHelper::importPlugin("jsolrsearch");
 		$dispatcher = JDispatcher::getInstance();
 		
@@ -63,6 +63,10 @@ class JSolrSearchResultSet extends JObject implements IteratorAggregate, Countab
 		if (isset($response->facet_counts->facet_fields)) {
 			$this->handlers['facets'] = $response->facet_counts->facet_fields;
 		}
+
+		if (isset($response->facet_counts->facet_ranges)) {
+			$this->handlers['facet_ranges'] = $response->facet_counts->facet_ranges;
+		}
 		
 		if (isset($response->highlighting)) {
 			$this->handlers['highlighting'] = $response->highlighting;
@@ -70,6 +74,10 @@ class JSolrSearchResultSet extends JObject implements IteratorAggregate, Countab
 		
 		if (isset($response->spellcheck->suggestions->collation)) {
 			$this->handlers['suggestions'] = $response->spellcheck->suggestions->collation;
+		}
+		
+		if (isset($response->stats->stats_fields)) {
+			$this->handlers['stats'] = $response->stats->stats_fields;
 		}
 	}	
 	
@@ -97,6 +105,11 @@ class JSolrSearchResultSet extends JObject implements IteratorAggregate, Countab
 	{
 		return JArrayHelper::getValue($this->handlers, 'facets');
 	}
+
+	public function getFacetRanges()
+	{
+		return JArrayHelper::getValue($this->handlers, 'facet_ranges');
+	}
 	
 	public function getSuggestions()
 	{
@@ -106,5 +119,10 @@ class JSolrSearchResultSet extends JObject implements IteratorAggregate, Countab
 	public function getMoreLikeThis()
 	{
 		return JArrayHelper::getValue($this->handlers, 'moreLikeThis');
+	}
+	
+	public function getStats()
+	{
+		return JArrayHelper::getValue($this->handlers, 'stats');
 	}
 }

@@ -84,9 +84,9 @@ class JSolrForm extends JForm
 		$facets = array();
 
 		foreach ($this->getFieldset('facets') as $field) {
-			$facets[] = $field->facet;
-		}
-		
+			$facets = array_merge($facets, $field->getFacetParams());
+		}		
+
 		return $facets;		
 	}
 	

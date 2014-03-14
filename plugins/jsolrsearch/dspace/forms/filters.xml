@@ -10,6 +10,17 @@
             class="inputbox"
             count="true"
             exactmatch="true"/>
+		<field 
+            name="accessioned"
+            facet="dc.date.accessioned_tdt"
+            filter="dc.date.accessioned_tdt"
+            type="jsolr.datefacets"
+            label="By Date"
+            class="inputbox"
+            count="true"
+            start=""
+            end=""
+            gap=""/>
     </fieldset>
     
     <fieldset name="tools">

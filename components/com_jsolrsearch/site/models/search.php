@@ -163,9 +163,12 @@ class JSolrSearchModelSearch extends JModelForm
    		if (count($qf)) {
    			$query->queryFields($qf);
    		}
-   			
+
    		if (count($facets)) {
-   			$query->facetFields($facets);
+   			foreach ($facets as $facet) {
+   				$query->mergeParams($facet);
+   			}
+   			
    			$query->facet(1, true, 10);
    		}
 
@@ -173,6 +176,7 @@ class JSolrSearchModelSearch extends JModelForm
 			$results = $query->search();
 
 			JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
+			JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
 
 			$this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
 
