@@ -9,3 +9,11 @@
 #jsolrSearchResults .active {
 	font-weight: bold;
 }
+
+#custom-dates {
+	display: none;
+}
+
+#custom-dates.show {
+	display: block;
+}

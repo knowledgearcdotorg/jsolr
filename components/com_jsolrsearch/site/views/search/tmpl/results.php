@@ -4,7 +4,7 @@
  * 
  * Loads the form, facet filters, facets, results and pagination templates.
  * 
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
  *
  *   The JSolrSearch Component for Joomla! is free software: you can redistribute it 
@@ -30,9 +30,17 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+JHtml::_('behavior.framework');
+JHtml::_('behavior.calendar');
+
+if (version_compare(JVERSION, "3.0", "ge")) {
+	JHtml::_('bootstrap.framework');
+}
+
 $document = JFactory::getDocument();
 
 $document->addScript(JURI::base().'/media/jsolr/js/dropdown.js');
+$document->addScript(JURI::base().'/media/com_jsolrsearch/js/jsolrsearch.js');
 
 $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
 $document->addStyleSheet(JURI::base().'/media/jsolr/css/dropdown.css');

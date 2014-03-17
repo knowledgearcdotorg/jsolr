@@ -39,9 +39,9 @@ class JSolrFormFieldTextSuggest extends JFormField
 		$this->element['class'] = $this->element['class'] ? (string) $this->element['class'].' jsolr-autocompleter' : 'jsolr-autocompleter';
 
 		$document = JFactory::getDocument();
-		$document->addScript(JURI::base().'/media/com_finder/js/autocompleter.js');
-		$document->addScript(JURI::base().'/media/com_jsolrsearch/js/typeahead.js');
-		$document->addScript(JURI::base().'/media/com_jsolrsearch/js/textsuggest.js');
+		//$document->addScript(JURI::base().'/media/com_finder/js/autocompleter.js');
+		//$document->addScript(JURI::base().'/media/com_jsolrsearch/js/typeahead.js');
+		//$document->addScript(JURI::base().'/media/com_jsolrsearch/js/textsuggest.js');
 		
 		$document->addStyleSheet(JURI::base().'/media/com_finder/css/finder.css');
 		

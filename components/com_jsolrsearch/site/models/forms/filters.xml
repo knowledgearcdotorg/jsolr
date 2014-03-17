@@ -16,6 +16,7 @@
             name="qdr"
             filter="modified"
             filter_quoted="false"
+            show_custom="true"
             type="jsolr.calendartool"
             label="Date"
             class="jsolr-dropdown">

@@ -10,20 +10,22 @@
  * "jsolr-dropdown". Alternatively, to use the Bootstrap dropdown, use 
  * "dropdown". 
  */ 
-(function($) {	
-	$(document).ready( function() {
-		$('.jsolr-searchtool').on('click', function(e){
-			e.stopPropagation();
-			$isOpen = $(this).children('ul').hasClass('open');			
-			$('.jsolr-searchtool ul').removeClass('open');
-			
-			if (!$isOpen) {
-				$(this).children('ul').addClass('open');
-			}
-		});
+window.addEvent('domready', function() {
+	$$('div.jsolr-searchtool').addEvent('click', function(e) {
+		event = new Event(e);
+		event.stopPropagation();
+		
+		var isOpen = this.getChildren('ul.dropdown-menu').hasClass("open");
 
-		$('body').on('click', function(){
-			$(this).children('ul').removeClass('open');
-		});
+		this.getChildren('ul.dropdown-menu').removeClass("open");
+		
+		if (isOpen == "false") {
+			this.getChildren('ul.dropdown-menu').addClass("open");
+		}		
 	});
-})(jQuery);
+
+	$(document.body).addEvent('click', function(e){
+		event = new Event(e);
+		$$('div.jsolr-searchtool ul').removeClass('open');
+	});
+});

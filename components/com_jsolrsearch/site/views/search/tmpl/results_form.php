@@ -93,3 +93,13 @@ JHTML::_('behavior.formvalidation');
 	
 	<?php echo JHTML::_('form.token'); ?>
 </form>
+
+<div id="custom-dates">
+	<form id="custom-dates-form" action="<?php echo JRoute::_(JSolrSearchFactory::getSearchRoute()); ?>" method="get">
+		<?php echo JHtml::_('calendar', '', "qdr_min", "qdr_min", "%Y-%m-%d"); ?>
+		<?php echo JHtml::_('calendar', '', "qdr_max", "qdr_max", "%Y-%m-%d"); ?>
+
+		<button id="custom-dates-submit"><?php echo JText::_('JSUBMIT'); ?></button>
+		<a id="custom-dates-cancel" href="#"><?php echo JText::_('JCANCEL'); ?></a>
+	</form>
+</div>

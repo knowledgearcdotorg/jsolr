@@ -55,7 +55,6 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 	 */
 	protected function getOptions()
 	{
-		
 		// Initialize variables.
 		$options = array();
 	
@@ -79,16 +78,65 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 
 			$link = '<a role="menuitem" tabindex="-1" href="'.((string)$uri).'">'.JText::_(trim((string)$option)).'</a>';
 
-			$tmp = '<li role="presentation" class="'.( $selected ? 'active' : '').'" data-value="'.$value.'">'.$link.'</li>';
+			$tmp = '<li role="presentation"'.( $selected ? ' class="active" ' : '').' data-value="'.$value.'">'.$link.'</li>';
 	
 	
 			// Add the option object to the result set.
 			$options[] = $tmp;
 		}
-	
+		
+		if ($this->show_custom) {		
+			$dataValue = '';
+			$cssClass = '';
+			
+			if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {
+				$selected = true;
+				$dataValue = "$min,$max";
+				$cssClass = 'class="active"';
+			}
+			
+			$link = <<<HTML
+<a 
+	role="menuitem" 
+	tabindex="-1" 
+	href="#custom-dates" 
+	id="calendar-picker">Custom...</a>
+HTML;
+				
+			$tmp = <<<HTML
+<li 
+	role="presentation" 
+	$cssClass
+	date-value="$dataValue">$link</li>
+HTML;
+			
+			$options[] = $tmp;
+		}
+		
 		reset($options);
 	
 		return $options;
+	}
+	
+	protected function getSelectedLabel() {
+		if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {
+			return $min." - ".$max;
+		} else {		
+			foreach ($this->element->children() as $option) {
+				// Only add <option /> elements.
+				if ($option->getName() != 'option') {
+					continue;
+				}
+		
+				$selected = ((string) $option['value']) == $this->value;
+				if( $selected ) {
+					return trim((string) $option);
+				}
+		
+			}
+		}
+		
+		return "";
 	}
 	
 	/**
@@ -103,21 +151,25 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 	{	
 		$filters = array();
 		
-		foreach ($this->element->children() as $option) {
-			// Only use <option /> elements.
-			if ($option->getName() != 'option') {
-				continue;
-			}
-			
-			$value = JArrayHelper::getValue($option, 'value', null, 'string');
-			
-			if ($this->value && $value == $this->value) {
-				$filter = JArrayHelper::getValue($option, 'filter', null, 'string');
-				$filters[] = $this->filter.":".$filter;
-				continue;
+		if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {	
+			$filters[] = $this->filter.":[".$min."T00:00:00Z TO ".$max."T11:59:59Z]";
+		} else {		
+			foreach ($this->element->children() as $option) {
+				// Only use <option /> elements.
+				if ($option->getName() != 'option') {
+					continue;
+				}
+				
+				$value = JArrayHelper::getValue($option, 'value', null, 'string');
+				
+				if ($this->value && $value == $this->value) {
+					$filter = JArrayHelper::getValue($option, 'filter', null, 'string');
+					$filters[] = $this->filter.":".$filter;
+					continue;
+				}
 			}
 		}
-		
+
 		return (count($filters)) ? $filters : array();
 	}
 	
@@ -129,6 +181,7 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 				break;
 								
 			case 'filter_quoted':
+			case 'show_custom':
 				if (JArrayHelper::getValue($this->element, $name, null, 'string') === 'true')
 					return true;
 				else
@@ -137,6 +190,48 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 	
 			default:
 				return parent::__get($name);
+		}
+	}
+	
+	/**
+	 * Gets the min range input by the user if specifying a custom date. 
+	 * If custom date is not used or min date is not specified, null is 
+	 * returned.
+	 * 
+	 * @return string The min range input or null if custom date is not used 
+	 * or min date is not specified.
+	 */
+	private function _getMinInput()
+	{
+		$dateParts = explode(",", JFactory::getApplication()->input->getString('qdr'));
+		$minParts = explode(":", JArrayHelper::getValue($dateParts, 0));
+		
+		if (JArrayHelper::getValue($minParts, 0) == 'min' && 
+			($min = JArrayHelper::getValue($minParts, 1))) {
+			return $min;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Gets the max range input by the user if specifying a custom date.
+	 * If custom date is not used or max date is not specified, null is
+	 * returned.
+	 *
+	 * @return string The max range input or null if custom date is not used
+	 * or max date is not specified.
+	 */
+	private function _getMaxInput()
+	{
+		$dateParts = explode(",", JFactory::getApplication()->input->getString('qdr'));
+		$maxParts = explode(":", JArrayHelper::getValue($dateParts, 1));
+		
+		if (JArrayHelper::getValue($maxParts, 0) == 'max' &&
+			($max = JArrayHelper::getValue($maxParts, 1))) {
+			return $max;
+		} else {
+			return null;
 		}
 	}
 }
