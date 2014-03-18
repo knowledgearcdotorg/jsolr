@@ -49,15 +49,35 @@ class JSolrFormFieldSearchTool extends JFormFieldList
 
 	protected function getInput()
 	{
-		$html = array();
+		$encoded = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+		$label = JText::_($this->getSelectedLabel());
+		$options = implode($this->getOptions());
 		
-		$html[] = '<input type="hidden" name="'.$this->name.'" id="'.$this->id.'"'.' value="'.htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8').'"/>';
-		$html[] = '<div class="jsolr-searchtool">';
-		$html[] = '<a class="dropdown-toggle" id="'.$this->name.'-selected" role="button" data-toggle="dropdown" data-target="#">' . JText::_($this->getSelectedLabel()) . ' <b class="caret"></b>';
-		$html[] = '<ul class="dropdown-menu" role="menu" aria-labelledby="'.$this->name.'">' . implode($this->getOptions()) . '</ul>';
-		$html[] = '</div>';
+		$html =
+<<<HTML
+<input 
+	type="hidden" 
+	name="$this->name" 
+	id="$this->id" 
+	value="$encoded"/>
+<div class="jsolr-searchtool">
+	<a 
+		class="dropdown-toggle" 
+		id="$this->name-selected" 
+		role="button" 
+		data-toggle="dropdown" 
+		data-target="#" 
+		data-original="$this->value">
+		$label<b class="caret"></b>
+		
+		<ul 
+			class="dropdown-menu" 
+			role="menu" 
+			aria-labelledby="$this->name">$options</ul>
+</div>
+HTML;
 
-		return implode($html);
+		return $html;
 	}
 	
 	protected function getSelectedLabel() {

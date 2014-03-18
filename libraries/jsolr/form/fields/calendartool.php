@@ -86,12 +86,12 @@ class JSolrFormFieldCalendarTool extends JSolrFormFieldSearchTool implements JSo
 		}
 		
 		if ($this->show_custom) {		
-			$dataValue = '';
+			$dataValue = 'custom';
 			$cssClass = '';
 			
 			if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {
 				$selected = true;
-				$dataValue = "$min,$max";
+				$dataValue = "min:$min,max:$max";
 				$cssClass = 'class="active"';
 			}
 			
@@ -107,7 +107,7 @@ HTML;
 <li 
 	role="presentation" 
 	$cssClass
-	date-value="$dataValue">$link</li>
+	data-value="$dataValue">$link</li>
 HTML;
 			
 			$options[] = $tmp;

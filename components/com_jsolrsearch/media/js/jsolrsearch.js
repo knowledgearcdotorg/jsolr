@@ -24,10 +24,17 @@ window.addEvent("domready", function() {
     
     $("calendar-picker").addEvent('click', function(e) {
     	e.stop();
-    	$("custom-dates").addClass("show");
-    	$("qdr-selected").set('html', this.get('html'));
-    	// force the closure of the menu using an existing event.
-    	$$('div.jsolr-searchtool').fireEvent('click');
+    	
+    	// if custom dates form is already open don't change anything.
+    	if ($("custom-dates").hasClass("show") == false) {
+	    	$("custom-dates").addClass("show");
+	    	// force the closure of the menu using an existing event.
+	    	$$('div.jsolr-searchtool').fireEvent('click');
+	    	
+	    	if (this.getParent("li").getAttribute("data-value") != $("qdr-selected").getAttribute('data-original')) {
+	    		$("qdr-selected").set('html', this.get('html'));
+	    	}
+    	}
     });
 	
 	$("custom-dates-form").addEvent('submit', function(e) {
@@ -51,7 +58,11 @@ window.addEvent("domready", function() {
 	
 	$("custom-dates-cancel").addEvent('click', function(e) {
 		e.stop();
-		$("qdr-selected").set('html', $$('div.jsolr-searchtool ul li.active a').get('html'));
+		
+		if (!$("qdr-selected").getAttribute('data-original').test("^min:[0-9]{4}-[0-9]{2}-[0-9]{2},max:[0-9]{4}-[0-9]{2}-[0-9]{2}$")) {
+			$("qdr-selected").set('html', $$('div.jsolr-searchtool ul li.active a').get('html'));
+		}
+		
 		this.getParent("#custom-dates").removeClass('show');
 	});
 });
