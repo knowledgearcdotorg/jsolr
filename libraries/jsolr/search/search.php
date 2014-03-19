@@ -47,6 +47,13 @@ abstract class JSolrSearchSearch extends JPlugin
 		$this->loadLanguage();
 	}
 	
+	/**
+	 * Gets the destination URI for the individual search result.
+	 * 
+	 * @param mixed $document An individual search result document.
+	 *
+	 * @return string The destination URI for the individual search result.
+	 */
 	public abstract function onJSolrSearchURIGet($document);
 	
 	/**
@@ -98,6 +105,13 @@ abstract class JSolrSearchSearch extends JPlugin
 		return $hl;
 	}
 	
+	/**
+	 * Registers the plugin details.
+	 * 
+	 * Includes the name, label and context of the plugin.
+	 * 
+	 * @return array An array of plugin details.
+	 */
 	public function onJSolrSearchRegisterPlugin()
 	{
 		return array(
