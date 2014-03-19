@@ -17,10 +17,7 @@
             type="jsolr.datefacets"
             label="By Date"
             class="inputbox"
-            count="true"
-            start=""
-            end=""
-            gap=""/>
+            count="true"/>
     </fieldset>
     
     <fieldset name="tools">
