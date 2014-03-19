@@ -44,52 +44,6 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 		parent::__construct($subject, $config);
 	}
 	
-	/**
-	* Format a com_content document and return a generic result item.
-	* 
-	* @param mixed $document
-	* @param mixed $hl
-	* @param int $hlFragSize
-	* @param string $lang
-	*/
-	public function onJSolrSearchResultPrepare($document, $hl, $hlFragSize, $lang) 
-	{
-		$id = $document->key;
-		$title = "title_$lang";
-		$link = "link_$lang";
-		$category = "category_$lang";
-
-		if ($document->context == $this->get('context')) {
-			if (isset($hl->$id->$title)) {
-        		$hlTitle = JArrayHelper::getValue($hl->$id->$title, 0);
-			} else {				
-				$hlTitle = $document->$title;
-			}
-
-			if (isset($hl->$id->$link)) {
-        		$hlLink = JArrayHelper::getValue($hl->$id->$link, 0);
-			} else {
-				$hlLink = $document->$link;
-			}
-			
-			if (isset($hl->$id->$category)) {
-        		$hlCategory = JArrayHelper::getValue($hl->$id->$category, 0);
-			} else {
-				$hlCategory = $document->$category;
-			}
-
-			$document->title = $hlTitle;
-			$document->href = NewsfeedsHelperRoute::getNewsfeedRoute($document->id, $document->parent_id);
-			$document->snippet = $this->_getHlContent($document, $hl, $hlFragSize, $lang);
-			$document->category = $hlCategory;
-			$document->link = $hlLink;
-			
-			return $document;
-		}
-		
-		return null;
-	}
-	
 	private function _getHlContent($document, $highlighting, $fragSize, $lang)
 	{
 		$id = $document->key;
