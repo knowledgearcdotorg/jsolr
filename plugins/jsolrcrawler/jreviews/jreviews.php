@@ -60,6 +60,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		$doc->addField('modified', $modified->format('Y-m-d\TH:i:s\Z', false));
 		$doc->addField("title", $record->title);	
 		$doc->addField("title_$lang", $record->title);
+		$doc->addField("access", $record->access);
 
 		$doc->addField("title_ac", $record->title); // for auto complete
 
