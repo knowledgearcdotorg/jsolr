@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension version="2.5" type="plugin" group="jsolrsearch">
+<extension version="2.5" type="plugin" group="jsolrsearch" method="upgrade">
 	<name>plg_jsolrsearch_content</name>
 	<creationDate>2012-07-26</creationDate>
 	<author>KnowledgeARC</author>
@@ -25,15 +25,12 @@
 					<option value="0">No</option> 
 					<option value="1">Yes</option> 
 				</field>
-				<field
-					name="boosts"
-					type="textarea"
-					description="PLG_JSOLRSEARCH_CONTENT_BASIC_BOOSTS_DESC"
-					label="PLG_JSOLRSEARCH_CONTENT_BASIC_BOOSTS_LABEL"
-					cols="30"
-					rows="5"
-					filter="string"
-					default="title_*^100.0,body_*^50.0,author^50.0,metakeywords_*^25.0,metadescription_*^25.0,category_*^10.0,tags_h1_*^10.0,tags_h2_h3_*^5.0,tags_h4_h5_h6_*^2.5"/>
+				<field 
+					name="content_types_allowed" 
+					type="text" 
+					label="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_ALLOWED_LABEL" 
+					description="COM_JSOLRINDEX_ATTACHMENTS_FILETYPES_ALLOWED_DESC"
+					size="45"/>
 			</fieldset>
 		</fields>
 	</config>
