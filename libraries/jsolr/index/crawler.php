@@ -131,12 +131,21 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	abstract protected function buildQuery();
 
-	protected function getItems()
+	protected function getItems($start, $limit)
+	{
+		$database = JFactory::getDBO();
+		$database->setQuery($this->buildQuery(), $start, $limit);
+
+		return $database->loadObjectList();
+	}
+
+	protected function getItemCount()
 	{
 		$database = JFactory::getDBO();
 		$database->setQuery($this->buildQuery());
+		$database->getQuery()->clear('select')->clear('group')->select('COUNT(*)');
 
-		return $database->loadObjectList();
+		return (int)$database->loadResult();
 	}
 
 	/**
@@ -330,38 +339,46 @@ abstract class JSolrIndexCrawler extends JPlugin
 	 */
 	protected function index()
 	{
+		$itemTotal = $this->getItemCount();
+		$start = 0;
+		$limit = 1000;
 		$total = 0;
 
-		$items = $this->getItems();
+		while ($start < $itemTotal)
+		{
+			$items = $this->getItems($start, $limit);
 
-		$solr = JSolrIndexFactory::getService();
+			$solr = JSolrIndexFactory::getService();
 
-		if (is_array($items)) {
-			$documents = array();
-			$i = 0;
+			if (is_array($items)) {
+				$documents = array();
+				$i = 0;
 				
-			foreach ($items as $item) {
-				$total++;
-				$documents[$i] = $this->prepare($item);
+				foreach ($items as $item) {
+					$total++;
+					$documents[$i] = $this->prepare($item);
 
-				$this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
+					$this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
 
-				$i++;
+					$i++;
 
-				// index when either the number of items retrieved matches
-				// the total number of items being indexed or when the
-				// index chunk size has been reached.
-				if ($total == count($items) || $i >= self::$chunk) {
-					$response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
+					// index when either the number of items retrieved matches
+					// the total number of items being indexed or when the
+					// index chunk size has been reached.
+					if ($total == count($items) || $i >= self::$chunk) {
+						$response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
 						
-					$this->out(array($i.' documents successfully indexed', '[status:'.$response->getHttpStatus().']'));
+						$this->out(array($i.' documents successfully indexed', '[status:'.$response->getHttpStatus().']'));
 						
-					$documents = array();
-					$i = 0;
+						$documents = array();
+						$i = 0;
+					}
 				}
 			}
+
+			$start+=$limit;
 		}
-			
+
 		$this->out("items indexed: $total");
 	}
 
