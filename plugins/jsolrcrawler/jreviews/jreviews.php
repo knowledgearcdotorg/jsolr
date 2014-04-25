@@ -2,7 +2,7 @@
 /**
  * @package		JSolr.Plugin
  * @subpackage	Index
- * @copyright	Copyright (C) 2012, 2013 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
  * @license		This file is part of the JSolr Content Index plugin for Joomla!.
 
    The JSolr Content Index plugin for Joomla! is free software: you can redistribute it 
@@ -56,13 +56,27 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		
 		$lang = $this->getLanguage($record, false);
 
+		$created = JFactory::getDate($record->created);
+		$modified = JFactory::getDate($record->modified);
+		$publishUp = JFactory::getDate($record->publish_up);
+		$publishDown = JFactory::getDate($record->publish_down);
+
+		if ($created > $modified) {
+			$modified = $created;
+		}
+		
+		$lang = $this->getLanguage($record, false);
+
 		$doc->addField('created', $created->format('Y-m-d\TH:i:s\Z', false));
 		$doc->addField('modified', $modified->format('Y-m-d\TH:i:s\Z', false));
+		$doc->addField('publish_up_dt', $publishUp->format('Y-m-d\TH:i:s\Z', false));
+		$doc->addField('publish_down_dt', $publishDown->format('Y-m-d\TH:i:s\Z', false));
 		$doc->addField("title", $record->title);	
 		$doc->addField("title_$lang", $record->title);
 		$doc->addField("access", $record->access);
 
 		$doc->addField("title_ac", $record->title); // for auto complete
+		$doc->addField("title_sort", $record->title);
 
 		$record->summary = JSolrHelper::prepareContent($record->summary, $record->params);
 		$record->body = JSolrHelper::prepareContent($record->body, $record->params);
@@ -99,21 +113,32 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 			$doc->addField("category_$lang", $record->category);
 			$doc->addField("category_fc", $record->category); // for faceting
 		}
-		
-		if (isset($record->images)) {
-			$parts = explode("|||", $record->images);
-			
-			if ($image = JArrayHelper::getValue($parts, 0)) {
-				$doc->addField("image_s", $image);
-			}
+
+		// index image data (if available)
+		if ($record->media_type == 'photo' && $record->main_media == 1)
+		{
+			$doc->addField("media_id_i", (int)$record->media_id);
+			$doc->addField("media_relative_path_s", $record->rel_path);
+			$doc->addField("media_filename_s", $record->filename);
+			$doc->addField("media_fileextension_s", $record->file_extension);
+			$doc->addField("media_filesize_i", (int)$record->filesize);
+			$doc->addField("media_info_s", $record->media_info);
+			$doc->addField("media_metadata_s", $record->media_metadata);
+			$doc->addField("media_published_i", (int)$record->media_published);
+			$doc->addField("media_extension_s", $record->media_extension);
 		}
+
+		$doc->addField("video_count_i", (int)$record->video_count);
+		$doc->addField("photo_count_i", (int)$record->photo_count);
+		$doc->addField("audio_count_i", (int)$record->audio_count);
+		$doc->addField("attachment_count_i", (int)$record->attachment_count);
 
 		if (isset($record->user_rating)) {
 			$doc->addField("user_rating_tf", $record->user_rating);
 		}
 
 		if (isset($record->user_rating_count)) {
-			$doc->addField("user_rating_count_i", $record->user_rating_count);
+			$doc->addField("user_rating_count_i", (int)$record->user_rating_count);
 		}
 
 		if (isset($record->user_criteria_rating)) {
@@ -121,11 +146,11 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		}
 		
 		if (isset($record->user_criteria_rating_count)) {
-			$doc->addField("user_criteria_rating_count_i", $record->user_criteria_rating_count);
+			$doc->addField("user_criteria_rating_count_i", (int)$record->user_criteria_rating_count);
 		}
 		
 		if (isset($record->review_count)) {
-			$doc->addField("review_count_i", $record->review_count);
+			$doc->addField("review_count_i", (int)$record->review_count);
 		}
 		
 		if (isset($record->editor_rating)) {
@@ -133,7 +158,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		}
 		
 		if (isset($record->editor_rating_count)) {
-			$doc->addField("editor_rating_count_i", $record->editor_rating_count);
+			$doc->addField("editor_rating_count_i", (int)$record->editor_rating_count);
 		}
 		
 		if (isset($record->editor_criteria_rating)) {
@@ -149,7 +174,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		}
 
 		if (isset($record->favorites)) {
-			$doc->addField("favorites_i", $record->favorites);
+			$doc->addField("favorites_i", (int)$record->favorites);
 		}
 		
 		// Obtain the configured fields to index.		
@@ -437,18 +462,24 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		$query	= $db->getQuery(true);
 		$user	= JFactory::getUser();
 
+		// Select media
+		$query
+			->select('jm.published AS media_published, jm.metadata AS media_metadata, jm.extension AS media_extension, jm.*')
+			->from('#__jreviews_media AS jm');
+
 		// Select extra fields from jreviews content.
 		$query->select('jc.contentid, jc.*');
-		$query->from('#__jreviews_content AS jc');
+		$query->join('INNER', '#__jreviews_content AS jc ON (jm.listing_id=jc.contentid)');
 
 		// Select the required fields from content.
-		$query->select('a.id, a.title, a.alias, a.introtext AS summary, a.fulltext AS body');
-		$query->select('a.state, a.catid, a.created, a.created_by, a.hits');
-		$query->select('a.created_by_alias, a.modified, a.modified_by, a.attribs AS params');
-		$query->select('a.metakey, a.metadesc, a.metadata, a.language, a.access, a.version, a.ordering');
-		$query->select('a.publish_up AS publish_start_date, a.publish_down AS publish_end_date, a.images');
+		$query
+			->select('a.id, a.title, a.alias, a.introtext AS summary, a.fulltext AS body')
+			->select('a.state, a.catid, a.created, a.created_by, a.hits')
+			->select('a.created_by_alias, a.modified, a.modified_by, a.attribs AS params')
+			->select('a.metakey, a.metadesc, a.metadata, a.language, a.access, a.version, a.ordering')
+			->select('a.publish_up, a.publish_down, a.images');
 		
-		$query->join('LEFT', '#__content AS a ON jc.contentid=a.id');
+		$query->join('INNER', '#__content AS a ON (jc.contentid=a.id)');
 
 		// Join over the users for the checked out user.
 		$query->select('uc.name AS editor');
@@ -466,12 +497,11 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		$query->select('ua.name AS author');
 		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
 		
-		$query->select('user_rating', 'user_rating_count', 'user_criteria_rating', 'user_criteria_rating_count', 'review_count', 'editor_rating', 'editor_rating_count', 'editor_criteria_rating', 'editor_criteria_rating_count', 'editor_review_count');
-		$query->join('LEFT', '#__jreviews_listing_totals AS lt ON lt.listing_id = jc.contentid');
+		$query->select('user_rating, user_rating_count, video_count, photo_count, audio_count, attachment_count');
+		$query->join('INNER', '#__jreviews_listing_totals AS lt ON lt.listing_id = jc.contentid');
 
 		$query->select('COUNT(f.favorite_id) AS favorites');
 		$query->join('LEFT', '#__jreviews_favorites AS f ON f.content_id = jc.contentid');
-		$query->group('jc.contentid');
 		
 		$conditions = array();
 

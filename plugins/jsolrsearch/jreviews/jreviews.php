@@ -99,7 +99,7 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 		$cache = new JCache($options);
 		$cache->setCaching(true);
 		
-		if (!$list = $cache->get('options', $options['defaultgroup'])) {	
+		if (!$list = json_decode($cache->get('options', $options['defaultgroup']))) {	
 			$database = JFactory::getDbo(); 
 			
 			$query = $database->getQuery(true);
@@ -112,7 +112,7 @@ class plgJSolrSearchJReviews extends JSolrSearchSearch
 			$list = $database->loadObjectList();
 			
 			// cache these options so we don't need to keep loading from db.
-			$cache->store($list, $options['defaultgroup']);
+			$cache->store(json_encode($list), $options['defaultgroup']);
 		}
 		
 		$found = false;
