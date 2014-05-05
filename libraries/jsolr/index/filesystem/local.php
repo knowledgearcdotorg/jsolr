@@ -99,7 +99,7 @@ class JSolrIndexFilesystemExtractorLocal extends JSolrIndexFilesystemExtractor
 			
 			// if no languages could be detected, use the system lang.
 			if (!count($array)) {
-				$array[] = JLanguage::getInstance()->getTag();
+				$array[] = JFactory::getLanguage()->getTag();
 			}
 
 			$this->set('language', $array);
