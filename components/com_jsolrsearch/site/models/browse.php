@@ -82,9 +82,14 @@ class JSolrSearchModelBrowse extends JModelList
 		
 		$filters[] = $this->_getLanguageFilter();
 		
-		if ($filter = $this->_getExtensionFilter()) {
-			$filters[] = $filter;
-		}
+   		// get context.
+   		if ($this->getState('query.o', null)) {
+	   		foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {	   			
+	   			if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
+	   				$filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
+	   			}
+	   		}
+   		}
 		
 		if ($prefix = $this->getState('facet.prefix')) {
 			$facetParams['facet.prefix'] = $prefix;
@@ -148,51 +153,6 @@ class JSolrSearchModelBrowse extends JModelList
 		}
 		
 		return "(lang:$lang OR lang:\*)";
-	}
-	
-	/**
-	 * Gets a list of extensions as a Solr query filter.
-	 * 
-	 * Only items which have the same extension parameter as the querystring 
-	 * "o" will be filtered if the parameter is specified, otherwise all items 
-	 * which match any of the enabled plugins will be filtered.
-	 * 
-	 * Plugins must be enabled and have the event onJSolrSearchRegisterPlugin implemented.
-	 */
-	private function _getExtensionFilter()
-	{	
-		$application = JFactory::getApplication('site');
-		
-		$extensions = array();		
-		
-		$query = "";		
-
-		if ($o = $application->input->get("o", null, 'cmd')) {
-			$extensions[] = $o;
-		} else {
-			JPluginHelper::importPlugin("jsolrsearch");
-			$dispatcher =& JDispatcher::getInstance();
-			
-			foreach ($dispatcher->trigger("onJSolrSearchRegisterPlugin") as $result) {
-				$extensions = array_merge($extensions, array_keys($result));
-			}
-		}
-	
-		$array = array();
-
-		foreach ($extensions as $extension) {
-			if ($extension) {
-				$array[] = "extension:".$extension;
-			}
-		}
-
-		if (count($array) > 1) {
-			$query = "(" . implode(" OR ", $array) . ")";
-		} else {
-			$query = implode("", $array);
-		}
-
-		return $query;
 	}
 	
 	public function getFieldByFacet($name)
