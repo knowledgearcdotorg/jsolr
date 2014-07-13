@@ -180,7 +180,7 @@ class JSolrSearchQuery
 			return $this->query;
 		}
 		if (is_string($query)) {
-			$this->query = $string;
+			$this->query = $query;
 			return $this;
 		}
     
@@ -998,7 +998,7 @@ class JSolrSearchQuery
 	{
 		// Don't believe it is necessary to quote encoding for XML payload.
 		$query = $this->query(); // htmlentities($this->query(), ENT_NOQUOTES, 'UTF-8');
-
+		
 		// Need to modify a few fields immediately before run.
 		if ($this->isSpellchecking() && !isset($this->params['spellcheck.q'])) {
 		$this->params['spellcheck.q'] = $query;
@@ -1007,6 +1007,19 @@ class JSolrSearchQuery
 		$response = $this->solr->search($query, $this->offset(), $this->limit(), $this->params);
 
 		return new JSolrSearchResultSet($response);
+	}
+	
+	/**
+	 * Returns the query and all parameters as a querystring.
+	 * 
+	 * @return  string  The query and all parameters as a querystring.
+	 */
+	public function __toString()
+	{
+		$params = $this->params;
+		$params['q'] = $this->query;
+		
+		return $this->solr->generateQueryString($params);
 	}
 
 	/**

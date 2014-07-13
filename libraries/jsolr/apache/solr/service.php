@@ -158,7 +158,7 @@ class JSolrApacheSolrService
 	 *
 	 * @var string
 	 */
-	protected $_queryDelimiter = '?', $_queryStringDelimiter = '&', $_queryBracketsEscaped = true;
+	protected $_queryDelimiter = '?', $_queryStringDelimiter = '&';
 
 	/**
 	 * Constructed servlet full path URLs
@@ -244,9 +244,6 @@ class JSolrApacheSolrService
 		{
 			$this->setHttpTransport($httpTransport);
 		}
-
-		// check that our php version is >= 5.1.3 so we can correct for http_build_query behavior later
-		$this->_queryBracketsEscaped = version_compare(phpversion(), '5.1.3', '>=');
 	}
 
 	/**
@@ -293,7 +290,7 @@ class JSolrApacheSolrService
 		$this->_urlsInited = true;
 	}
 
-	protected function _generateQueryString($params)
+	public function generateQueryString($params)
 	{
 		// use http_build_query to encode our arguments because its faster
 		// than urlencoding all the parts ourselves in a loop
@@ -302,20 +299,8 @@ class JSolrApacheSolrService
 		// string by changing foo[#]=bar (# being an actual number) parameter strings to just
 		// multiple foo=bar strings. This regex should always work since '=' will be urlencoded
 		// anywhere else the regex isn't expecting it
-		//
-		// NOTE: before php 5.1.3 brackets were not url encoded by http_build query - we've checked
-		// the php version in the constructor and put the results in the instance variable. Also, before
-		// 5.1.2 the arg_separator parameter was not available, so don't use it
-		if ($this->_queryBracketsEscaped)
-		{
-			$queryString = http_build_query($params, null, $this->_queryStringDelimiter);
-			return preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $queryString);
-		}
-		else
-		{
-			$queryString = http_build_query($params);
-			return preg_replace('/\\[(?:[0-9]|[1-9][0-9]+)\\]=/', '=', $queryString);
-		}
+		$queryString = http_build_query($params, null, $this->_queryStringDelimiter);
+		return preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', $queryString);
 	}
 
 	/**
@@ -1055,7 +1040,7 @@ class JSolrApacheSolrService
 		}
 
 		// params will be sent to SOLR in the QUERY STRING
-		$queryString = $this->_generateQueryString($params);
+		$queryString = $this->generateQueryString($params);
 
 		// the file contents will be sent to SOLR as the POST BODY - we use application/octect-stream as default mimetype
 		return $this->_sendRawPost($this->_extractUrl . $this->_queryDelimiter . $queryString, $data, false, $mimetype);
@@ -1177,7 +1162,7 @@ class JSolrApacheSolrService
 		$params['start'] = $offset;
 		$params['rows'] = $limit;
 
-		$queryString = $this->_generateQueryString($params);
+		$queryString = $this->generateQueryString($params);
 
 		if ($method == self::METHOD_GET)
 		{

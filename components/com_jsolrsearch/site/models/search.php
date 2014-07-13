@@ -94,13 +94,16 @@ class JSolrSearchModelSearch extends JModelForm
 
 		$access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
 		
-		if ($access) {
+		if ($access) 
+        {
 			$access = 'access:'.'('.$access.') OR null';
 			$filters[] = $access;
 		}
-
-		if (!$this->getState('query.q')) {
-			if (!$this->getAppliedFacetFilters()) {
+        
+		if (!$this->getState('query.q')) 
+		{
+			if (!$this->getAppliedFacetFilters()) 
+			{
 				return null; // nothing passed. Get out of here.
 			}
 		}
@@ -111,25 +114,33 @@ class JSolrSearchModelSearch extends JModelForm
 				
 		JPluginHelper::importPlugin("jsolrsearch");
 		
-       	if (version_compare(JVERSION, "3.0", "l")) {
-    		$dispatcher = JDispatcher::getInstance();
-    	} else {
-    		$dispatcher = JEventDispatcher::getInstance();
+        if (version_compare(JVERSION, "3.0", "l")) 
+        {
+    		$class = "JDispatcher";
+    	} 
+    	else 
+    	{
+    		$class = "JEventDispatcher";
     	}
     	
+    	$dispatcher = $class::getInstance();
+    	
    		// Get any additional filters which may be needed as part of the search query.
-   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) {
+   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) 
+   		{
    			$filters = array_merge($filters, $result);
    		}
    
    		// Get Highlight fields for results.
-   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) {
+   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) 
+   		{
    			$hl = array_merge($hl, $result);
    		}
 
    		// get query filter params and boosts from plugin.
-   		foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) {   			
-   			$qf = array_merge($qf, $result);
+   		foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) 
+        {
+            $qf = array_merge($qf, $result);
    		}
 
    		// get context.
@@ -156,37 +167,44 @@ class JSolrSearchModelSearch extends JModelForm
 					'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)
 			));
 
-   		if (count($sort)) {
-   			$query->sort(implode(', ', $sort));
-   		}
-   		
-   		if (count($qf)) {
-   			$query->queryFields($qf);
-   		}
+        if (count($sort))
+        {
+            $query->sort(implode(', ', $sort));
+        }
 
-   		if (count($facets)) {
-   			foreach ($facets as $facet) {
-   				$query->mergeParams($facet);
-   			}
-   			
-   			$query->facet(1, true, 10);
-   		}
+        if (count($qf))
+        {
+            $query->queryFields($qf);
+        }
 
-		try {	
-			$results = $query->search();
+        if (count($facets))
+        {
+            foreach ($facets as $facet)
+            {
+                $query->mergeParams($facet);
+            }
+            
+            $query->facet(1, true, 10);
+        }
+    
+        try 
+        {
+            $results = $query->search();
 
-			JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
-			JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
+            JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
+            JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
 
-			$this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
+            $this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
 
-			return $results;
-		} catch (Exception $e) {
-			JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
-			$this->pagination = new JSolrPagination($this->get('total', 0), 0, 0);
-			return null;
-		}
-	}
+            return $results;
+        }
+        catch (Exception $e)
+        {
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            $this->pagination = new JSolrPagination($this->get('total', 0), 0, 0);
+            return null;
+        }
+    }
 
 	public function getPagination()
 	{

@@ -258,10 +258,23 @@ class JSolrSearchModelAdvanced extends JModelForm
 	{
 		$path = __DIR__ . '/forms/filters.xml';
 
+		// load plugin filter override.
 		if ($this->getState('query.o')) {
 			foreach ($this->getPlugins() as $plugin) {
 				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
-					$path = JPATH_ROOT.'/plugins/jsolrsearch/'.JArrayHelper::getValue($plugin, 'name').'/forms/filters.xml';
+					$plugin = JArrayHelper::getValue($plugin, 'name');
+					$pluginOverride =
+						JPATH_ROOT.'/templates/'.
+						JFactory::getApplication()->getTemplate().
+						'/html/com_jsolrsearch/search/forms/'.
+						'filters.'.$plugin.'.xml';
+					
+					if (JFile::exists($pluginOverride)) {
+						$path = $pluginOverride;	
+					} else {
+						$path = JPATH_ROOT.'/plugins/jsolrsearch/'.$plugin.'/forms/filters.xml';
+					}					
+
 					break;
 				}
 			}
@@ -299,6 +312,7 @@ class JSolrSearchModelAdvanced extends JModelForm
       	}
 
 		// Get the form.
+		JForm::addFormPath(JPATH_ROOT . '/models/forms');
 		JForm::addFormPath(JPATH_COMPONENT.'/models/forms');
 		JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
 
