@@ -53,9 +53,13 @@ class JSolrFormFieldHiddenFilter extends JFormFieldHidden implements JSolrFilter
 	{
 		$application = JFactory::getApplication();
 		
-		$value = $application->input->getString($this->name, null);
-		
-		return ($this->filter && $value) ? array($value) : array();
+		$filters = array();
+
+        if ($value = $application->input->getString($this->name, null)) {
+            $filters[] = $this->filter.":".$value;
+        }
+        
+        return (count($filters)) ? $filters : array();
 	}
 	
 	/**
