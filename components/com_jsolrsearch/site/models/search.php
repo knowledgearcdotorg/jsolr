@@ -40,8 +40,9 @@ jimport('joomla.filesystem.file');
 jimport('jsolr.search.factory');
 jimport('jsolr.form.form');
 jimport('jsolr.pagination.pagination');
+jimport('jsolr.search.model.form');
 
-class JSolrSearchModelSearch extends JModelForm
+class JSolrSearchModelSearch extends JSolrSearchModelForm
 {
 	const MM_DEFAULT = '1';
 
@@ -233,28 +234,31 @@ class JSolrSearchModelSearch extends JModelForm
 	 * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
 	 * @return  JForm          A JForm object on success, false on failure.
 	 */
-	public function getForm($data = array(), $loadData = true)
-	{
-		if (!is_null($this->form)) {
-			return $this->form;
-		}
+    public function getForm($data = array(), $loadData = true)
+    {
+        if (!is_null($this->form))
+        {
+            return $this->form;
+        }
 
-		$context = $this->get('option').'.'.$this->getName();
-		$this->form = $this->loadForm($context, $this->getName(), array('load_data'=>$loadData));
+        $context = $this->get('option').'.'.$this->getName();
+        $this->form = $this->loadForm($context, $this->getCustomFormPath('search'), array('load_data'=>$loadData));
 
-		if (empty($this->form)) {
-			return false;
-		}			
+        if (empty($this->form))
+        {
+            return false;
+        }
 
-		return $this->form;
-	}
+        return $this->form;
+    }
    
-	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
-	{
-		$form->loadFile($this->_getCustomFilterPath(), false);
-      
-		parent::preprocessForm($form, $data, $group);
-	}
+    protected function preprocessForm(JForm $form, $data, $group = 'plugin')
+    {
+        // load additional filters.
+        $form->loadFile($this->getCustomFormPath('filters'), false);
+        
+        parent::preprocessForm($form, $data, $group);
+    }
 
 	/**
 	 * (non-PHPdoc)
@@ -277,72 +281,6 @@ class JSolrSearchModelSearch extends JModelForm
 		}
       
 		return $data;
-	}
-
-	/**
-	 * Gets the custom form path for filters.
-	 * 
-	 * If a plugin has been selected (using the "o" parameter) then the 
-	 * method will attempt to load the plugin's filter override. If no 
-	 * override is found, it will attempt to load the default filters path.
-	 * 
-	 * This method will attempt to load an plugin filter like so:
-	 * 1. Check in the current template's html/com_jsolrsearch/search/forms/ 
-	 * directory for a plugin override. The plugin override takes the form 
-	 * filters.<plugin_name>.xml.
-	 * 
-	 * 2. If no plugin override is found in the template, the plugin's default 
-	 * filters.xml is searched for (plugins/jsolrsearch/<plugin>/forms/filters.xml).
-	 * 
-	 * 3. If no plugin filters.xml exists, the default filters.xml is searched for 
-	 * (html/com_jsolrsearch/search/forms/filters.xml).
-	 * 
-	 * 4. If no default filters.xml is found in the current template, the 
-	 * JSolr Search component's filters.xml is loaded.
-	 */
-	private function _getCustomFilterPath()
-	{
-		$path = null;
-		
-		// load plugin filter override.
-		if ($this->getState('query.o')) {
-			foreach ($this->getPlugins() as $plugin) {
-				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
-					$plugin = JArrayHelper::getValue($plugin, 'name');
-					$pluginOverride =
-						JPATH_ROOT.'/templates/'.
-						JFactory::getApplication()->getTemplate().
-						'/html/com_jsolrsearch/search/forms/'.
-						'filters.'.$plugin.'.xml';
-					
-					if (JFile::exists($pluginOverride)) {
-						$path = $pluginOverride;	
-					} else {
-						$path = JPATH_ROOT.'/plugins/jsolrsearch/'.$plugin.'/forms/filters.xml';
-					}					
-
-					break;
-				}
-			}
-		}
-		
-		// load default filter if no plugin override has been loaded.
-		if (!$path) {
-			$filters = 'filters.xml';
-			
-			$defaultOverride =
-			JPATH_ROOT.'/templates/'.
-			JFactory::getApplication()->getTemplate().
-			'/html/com_jsolrsearch/search/forms/'.$filters;
-			
-			if (JFile::exists($defaultOverride)) {
-				$path = $defaultOverride;
-			} else {
-				$path = __DIR__.'/forms/'.$filters;
-			}
-		}
-      
-		return $path;
 	}
    
    /**
@@ -375,7 +313,6 @@ class JSolrSearchModelSearch extends JModelForm
       }
 
       // Get the form.
-      JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
       JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
 
       try
@@ -446,37 +383,6 @@ class JSolrSearchModelSearch extends JModelForm
     }
 
     return $result;
-  }
-
-	/**
-	 * Get the list of enabled plugins for search results.
-	 */
-  public function getPlugins()
-  {
-    JPluginHelper::importPlugin("jsolrsearch");
-
-    if (version_compare(JVERSION, "3.0", "l")) {
-    	$dispatcher = JDispatcher::getInstance();
-    } else {
-    	$dispatcher = JEventDispatcher::getInstance();
-    }
-    
-    $array = $dispatcher->trigger('onJSolrSearchRegisterPlugin');
-    
-    $array = array_merge(array(array('plugin'=>'', 'label'=>JText::_('Everything'))), $array);
-    
-    for ($i = 0; $i < count($array); $i++) {    	
-    	$uri = clone JSolrSearchFactory::getQueryRoute();
-    	
-    	if ($array[$i]['name'])
-    		$uri->setVar('o', $array[$i]['name']);
-    	else
-    		$uri->delVar('o');
-    	
-    	$array[$i]['uri'] = htmlentities((string)$uri, ENT_QUOTES, 'UTF-8');
-    }
-    
-    return $array;
   }
 
 	/**

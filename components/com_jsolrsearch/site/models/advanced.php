@@ -36,10 +36,10 @@ jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
 jimport('joomla.application.component.modelform');
 jimport('jsolr.search.factory');
-
+jimport('jsolr.search.model.form');
 jimport('jsolr.form.form');
 
-class JSolrSearchModelAdvanced extends JModelForm
+class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 {
 	public function __construct($config = array())
 	{
@@ -204,11 +204,12 @@ class JSolrSearchModelAdvanced extends JModelForm
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
-		$form = $this->loadForm($this->get('context'), $this->getName(), array('load_data'=>$loadData));
+        $form = $this->loadForm($this->get('context'), $this->getCustomFormPath('advanced'), array('load_data'=>$loadData));
 
-		if (empty($form)) {
-			return false;
-		}			
+        if (empty($form))
+        {
+            return false;
+        }
 
 		return $form;
 	}
@@ -219,7 +220,7 @@ class JSolrSearchModelAdvanced extends JModelForm
 	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
 	{
-		$form->loadFile($this->_getCustomFormPath(), false);
+		$form->loadFile($this->getCustomFormPath('filters'), false);
       
 		parent::preprocessForm($form, $data, $group);
 
@@ -254,35 +255,6 @@ class JSolrSearchModelAdvanced extends JModelForm
 		return $data;
 	}
 
-	private function _getCustomFormPath()
-	{
-		$path = __DIR__ . '/forms/filters.xml';
-
-		// load plugin filter override.
-		if ($this->getState('query.o')) {
-			foreach ($this->getPlugins() as $plugin) {
-				if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o')) {
-					$plugin = JArrayHelper::getValue($plugin, 'name');
-					$pluginOverride =
-						JPATH_ROOT.'/templates/'.
-						JFactory::getApplication()->getTemplate().
-						'/html/com_jsolrsearch/search/forms/'.
-						'filters.'.$plugin.'.xml';
-					
-					if (JFile::exists($pluginOverride)) {
-						$path = $pluginOverride;	
-					} else {
-						$path = JPATH_ROOT.'/plugins/jsolrsearch/'.$plugin.'/forms/filters.xml';
-					}					
-
-					break;
-				}
-			}
-		}
-      
-		return $path;
-	}
-	
 	/**
 	 * Override to use JSorlForm.
 	 * Method to get a form object.
@@ -312,11 +284,10 @@ class JSolrSearchModelAdvanced extends JModelForm
       	}
 
 		// Get the form.
-		JForm::addFormPath(JPATH_ROOT . '/models/forms');
-		JForm::addFormPath(JPATH_COMPONENT.'/models/forms');
 		JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
 
-		try {
+		try 
+        {
 			$form = JSolrForm::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
 
 			if (isset($options['load_data']) && $options['load_data']) {
@@ -333,7 +304,9 @@ class JSolrSearchModelAdvanced extends JModelForm
 			// Load the data into the form after the plugins have operated.
 			$form->bind($data);
 
-		} catch (Exception $e) {
+		}
+		catch (Exception $e)
+		{
 			$this->setError($e->getMessage());
 			return false;
 		}
@@ -342,36 +315,5 @@ class JSolrSearchModelAdvanced extends JModelForm
 		$this->_forms[$hash] = $form;
 
 		return $form;
-	}
-	
-	/**
-	 * Get the list of enabled plugins for search results.
-	 */
-	public function getPlugins()
-	{
-		JPluginHelper::importPlugin("jsolrsearch");
-	
-		if (version_compare(JVERSION, "3.0", "l")) {
-			$dispatcher = JDispatcher::getInstance();
-		} else {
-			$dispatcher = JEventDispatcher::getInstance();
-		}
-	
-		$array = $dispatcher->trigger('onJSolrSearchRegisterPlugin');
-	
-		$array = array_merge(array(array('plugin'=>'', 'label'=>JText::_('Everything'))), $array);
-	
-		for ($i = 0; $i < count($array); $i++) {
-			$uri = clone JSolrSearchFactory::getQueryRoute();
-			 
-			if ($array[$i]['name'])
-				$uri->setVar('o', $array[$i]['name']);
-			else
-				$uri->delVar('o');
-			 
-			$array[$i]['uri'] = htmlentities((string)$uri, ENT_QUOTES, 'UTF-8');
-		}
-	
-		return $array;
 	}
 }
