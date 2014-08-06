@@ -48,7 +48,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 	* Prepares a listing for indexing.
 	*/
 	protected function getDocument(&$record)
-	{	
+	{
 		$doc = new JSolrApacheSolrDocument();
 		
 		$created = JFactory::getDate($record->created);
@@ -186,6 +186,7 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		
 		foreach ($indexes as $index) {
 			$key = JString::strtolower(JStringNormalise::toVariable($index));
+			$doc->addField($key.'_txt', $record->$index); // for searching.
 			
 			switch ($this->_getJRField($index)->type) {
 				case 'checkboxes':
@@ -455,83 +456,87 @@ class plgJSolrCrawlerJReviews extends JSolrIndexCrawler
 		}
 	}
 
-	protected function buildQuery()
-	{
-		// Create a new query object.
-		$db		= JFactory::getDbo();
-		$query	= $db->getQuery(true);
-		$user	= JFactory::getUser();
+    protected function buildQuery()
+    {
+        // Create a new query object.
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $user = JFactory::getUser();
 
-		// Select media
-		$query
-			->select('jm.published AS media_published, jm.metadata AS media_metadata, jm.extension AS media_extension, jm.*')
-			->from('#__jreviews_media AS jm');
+        // Select media
+        $query
+            ->select('jm.published AS media_published, jm.metadata AS media_metadata, jm.extension AS media_extension, jm.*')
+            ->from('#__jreviews_media AS jm');
 
-		// Select extra fields from jreviews content.
-		$query->select('jc.contentid, jc.*');
-		$query->join('INNER', '#__jreviews_content AS jc ON (jm.listing_id=jc.contentid)');
+        // Select extra fields from jreviews content.
+        $query->select('jc.contentid, jc.*');
+        $query->join('RIGHT', '#__jreviews_content AS jc ON jm.listing_id=jc.contentid');
 
-		// Select the required fields from content.
-		$query
-			->select('a.id, a.title, a.alias, a.introtext AS summary, a.fulltext AS body')
-			->select('a.state, a.catid, a.created, a.created_by, a.hits')
-			->select('a.created_by_alias, a.modified, a.modified_by, a.attribs AS params')
-			->select('a.metakey, a.metadesc, a.metadata, a.language, a.access, a.version, a.ordering')
-			->select('a.publish_up, a.publish_down, a.images');
-		
-		$query->join('INNER', '#__content AS a ON (jc.contentid=a.id)');
+        // Select the required fields from content.
+        $query
+            ->select('a.id, a.title, a.alias, a.introtext AS summary, a.fulltext AS body')
+            ->select('a.state, a.catid, a.created, a.created_by, a.hits')
+            ->select('a.created_by_alias, a.modified, a.modified_by, a.attribs AS params')
+            ->select('a.metakey, a.metadesc, a.metadata, a.language, a.access, a.version, a.ordering')
+            ->select('a.publish_up, a.publish_down, a.images');
 
-		// Join over the users for the checked out user.
-		$query->select('uc.name AS editor');
-		$query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
+        $query->join('INNER', '#__content AS a ON jc.contentid=a.id');
 
-		// Join over the asset groups.
-		$query->select('ag.title AS access_level');
-		$query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
+        // Join over the users for the checked out user.
+        $query->select('uc.name AS editor');
+        $query->join('LEFT', '#__users AS uc ON a.checked_out=uc.id');
 
-		// Join over the categories.
-		$query->select('c.title AS category, c.published AS cat_state, c.access AS cat_access');
-		$query->join('LEFT', '#__categories AS c ON c.id = a.catid');
+        // Join over the asset groups.
+        $query->select('ag.title AS access_level');
+        $query->join('LEFT', '#__viewlevels AS ag ON a.access=ag.id');
 
-		// Join over the users for the author.
-		$query->select('ua.name AS author');
-		$query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
-		
-		$query->select('user_rating, user_rating_count, video_count, photo_count, audio_count, attachment_count');
-		$query->join('INNER', '#__jreviews_listing_totals AS lt ON lt.listing_id = jc.contentid');
+        // Join over the categories.
+        $query->select('c.title AS category, c.published AS cat_state, c.access AS cat_access');
+        $query->join('LEFT', '#__categories AS c ON a.catid=c.id');
 
-		$query->select('COUNT(f.favorite_id) AS favorites');
-		$query->join('LEFT', '#__jreviews_favorites AS f ON f.content_id = jc.contentid');
-		
-		$conditions = array();
+        // Join over the users for the author.
+        $query->select('ua.name AS author');
+        $query->join('LEFT', '#__users AS ua ON a.created_by=ua.id');
 
-		// Implement View Level Access
-		if (!$user->authorise('core.admin'))
-		{
-		    $groups	= implode(',', $user->getAuthorisedViewLevels());
-			$conditions[] = 'a.access IN ('.$groups.')';
-		}
+        $query->select('lt.user_rating, lt.user_rating_count, lt.video_count, lt.photo_count, lt.audio_count, lt.attachment_count');
+        $query->join('INNER', '#__jreviews_listing_totals AS lt ON jc.contentid=lt.listing_id');
 
-		$categories = $this->params->get('categories');
+        $query->select('COUNT(f.favorite_id) AS favorites');
+        $query->join('LEFT', '#__jreviews_favorites AS f ON jc.contentid=f.content_id');
 
-		if (is_array($categories)) {
-			if (JArrayHelper::getValue($categories, 0) != 0) {
-				JArrayHelper::toInteger($categories);
-				$categories = implode(',', $categories);
-				$conditions[] = 'a.catid IN ('.$categories.')';
-			}
-		}
+        $conditions = array();
 
-		if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
-			$lastModified = JFactory::getDate($lastModified);
-		
-			$conditions[] = "(a.created > '".$lastModified."' OR a.modified > '".$lastModified."')";
-		}
-		
-		if (count($conditions)) {
-			$query->where($conditions);
-		}
+        // Implement View Level Access
+        if (!$user->authorise('core.admin'))
+        {
+            $groups = implode(',', $user->getAuthorisedViewLevels());
+            $conditions[] = 'a.access IN ('.$groups.')';
+        }
 
-		return $query;
-	}
+        $categories = $this->params->get('categories');
+
+        if (is_array($categories))
+        {
+            if (JArrayHelper::getValue($categories, 0) != 0)
+            {
+                JArrayHelper::toInteger($categories);
+                $categories = implode(',', $categories);
+                $conditions[] = 'a.catid IN ('.$categories.')';
+            }
+        }
+
+        if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
+            $lastModified = JFactory::getDate($lastModified);
+            $conditions[] = "(a.created > '".$lastModified."' OR a.modified > '".$lastModified."')";
+        }
+
+        if (count($conditions))
+        {
+            $query->where($conditions);
+        }
+
+        $query->group('a.id');
+
+        return $query;
+    }
 }
