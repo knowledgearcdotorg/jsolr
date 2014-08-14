@@ -82,9 +82,23 @@ class JSolrFormFieldHiddenFilter extends JFormFieldHidden implements JSolrFilter
 			case 'filter':
 				return JArrayHelper::getValue($this->element, $name, null, 'string');
 				break;
-	
+
 			case 'label':
-				return JText::_('COM_JSOLRSEARCH_FILTER_'.JString::strtoupper($this->name).'_'.JString::strtoupper($this->value));
+                // Give users two options for labels:
+                // 1. define a label with the selected value available,
+                // 2. no label will result in a name+value lang constant.
+                $label = JArrayHelper::getValue($this->element, $name, null, 'string');
+                
+                if ($label)
+                {
+                    return JText::sprintf($label, $this->value);
+                }
+                else
+                {
+                    return JText::_('COM_JSOLRSEARCH_FILTER_'.JString::strtoupper($this->name)."_".str_replace(' ', '', JString::strtoupper($this->value)));
+                }
+                
+				break;
 				
 			default:
 				return parent::__get($name);
