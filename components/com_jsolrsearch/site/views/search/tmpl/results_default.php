@@ -34,6 +34,8 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
+$featuredItems = $this->get('FeaturedItems');
 ?>
 
 <div id="jsolr-total">
@@ -56,6 +58,10 @@ endif;
 
 <?php if (!count($this->items)) : ?>
 <span><?php JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></span>
+<?php endif; ?>
+
+<?php if ($this->get("Pagination")->get('pages.current') == 1 && $featuredItems) : ?>
+    <?php echo $this->loadResultTemplate($featuredItems->getIterator()->current(), $featuredItems->getHighlighting()->{$featuredItems->getIterator()->current()->key}); ?>
 <?php endif; ?>
 
 <ol>

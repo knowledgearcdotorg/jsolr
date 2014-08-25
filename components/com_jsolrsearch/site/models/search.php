@@ -25,7 +25,7 @@
  * Please feel free to add your name and email (optional) here if you have 
  * contributed any source code changes.
  * @author Hayden Young <hayden@knowledgearc.com>
- * @author Bartłomiej Kiełbasa <bartlomiej.kielbasa@wijiti.com> 
+ * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
  * 
  */
 
@@ -84,89 +84,152 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
    }
    
    public function getItems()
-   {
-		$hl = array();
-		$filters = array();
-		$facets = array();
-		$qf = array();
-		$sort = array();
-
-		$filters = $this->getForm()->getFilters();
-
-		$access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
-		
-		if ($access) 
+   {    
+        try 
         {
-			$access = 'access:'.'('.$access.') OR null';
-			$filters[] = $access;
-		}
+            $query = $this->_getListQuery();
+            
+            if (is_null($query))
+            {
+                return $query;
+            }
+            
+            $results = $query->search();
+
+            JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
+            JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
+
+            $this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
+
+            return $results;
+        }
+        catch (Exception $e)
+        {
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            $this->pagination = new JSolrPagination($this->get('total', 0), 0, 0);
+            return null;
+        }
+    }
+    
+    /**
+     * Gets a list of featured items.
+     * @TODO This is a proof of concept. Needs much more work.
+     */
+    public function getFeaturedItems()
+    {
+        try 
+        {
+            $filters = array('context:com_content.article');
         
-		if (!$this->getState('query.q')) 
-		{
-			if (!$this->getAppliedFacetFilters()) 
-			{
-				return null; // nothing passed. Get out of here.
-			}
-		}
-		
-		$sort = $this->getForm()->getSorts();
-		
-		$facets = $this->getForm()->getFacets();
-				
-		JPluginHelper::importPlugin("jsolrsearch");
-		
+            $query = $this->_getListQuery();
+            $query
+                ->filters($filters)
+                ->limit(5)
+                ->mergeParams(array('mm'=>'100%'));
+        
+            if (is_null($query))
+            {
+                return $query;
+            }
+            
+            return $query->search();
+        }
+        catch (Exception $e)
+        {
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            return null;
+        }
+    }
+    
+    /**
+     * Gets the Solr query for the list.
+     *
+     * @return  JSolrSearchQuery  An instance of the JSolrSearchQuery class.
+     */
+    protected function _getListQuery()
+    {
+        $hl = array();
+        $filters = array();
+        $facets = array();
+        $qf = array();
+        $sort = array();
+
+        $filters = $this->getForm()->getFilters();
+
+        $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
+        
+        if ($access) 
+        {
+            $access = 'access:'.'('.$access.') OR null';
+            $filters[] = $access;
+        }
+        
+        if (!$this->getState('query.q')) 
+        {
+            if (!$this->getAppliedFacetFilters()) 
+            {
+                return null; // nothing passed. Get out of here.
+            }
+        }
+        
+        $sort = $this->getForm()->getSorts();
+        
+        $facets = $this->getForm()->getFacets();
+                
+        JPluginHelper::importPlugin("jsolrsearch");
+        
         if (version_compare(JVERSION, "3.0", "l")) 
         {
-    		$class = "JDispatcher";
-    	} 
-    	else 
-    	{
-    		$class = "JEventDispatcher";
-    	}
-    	
-    	$dispatcher = $class::getInstance();
-    	
-   		// Get any additional filters which may be needed as part of the search query.
-   		foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) 
-   		{
-   			$filters = array_merge($filters, $result);
-   		}
+            $class = "JDispatcher";
+        } 
+        else 
+        {
+            $class = "JEventDispatcher";
+        }
+        
+        $dispatcher = $class::getInstance();
+        
+        // Get any additional filters which may be needed as part of the search query.
+        foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) 
+        {
+            $filters = array_merge($filters, $result);
+        }
    
-   		// Get Highlight fields for results.
-   		foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) 
-   		{
-   			$hl = array_merge($hl, $result);
-   		}
+        // Get Highlight fields for results.
+        foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) 
+        {
+            $hl = array_merge($hl, $result);
+        }
 
-   		// get query filter params and boosts from plugin.
-   		foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) 
+        // get query filter params and boosts from plugin.
+        foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) 
         {
             $qf = array_merge($qf, $result);
-   		}
+        }
 
-   		// get context.
-   		if ($this->getState('query.o', null)) {
-	   		foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {	   			
-	   			if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
-	   				$filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
-	   			}
-	   		}
-   		}
-   		
-   		$q = $this->getState('query.q', "*:*");
+        // get context.
+        if ($this->getState('query.o', null)) {
+            foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {              
+                if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
+                    $filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
+                }
+            }
+        }
+        
+        $q = $this->getState('query.q', "*:*");
 
-   		$query = JSolrSearchFactory::getQuery($q)
-   			->spellcheck(true)
-			->useQueryParser("edismax")
-			->retrieveFields("*,score")
-			->filters($filters)
-			->highlight(200, "<mark>", "</mark>", 3, implode(" ", $hl))
-			->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
-			->offset($this->getState("list.start", 0))
-			->mergeParams(
-				array(
-					'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)
-			));
+        $query = JSolrSearchFactory::getQuery($q)
+            ->spellcheck(true)
+            ->useQueryParser("edismax")
+            ->retrieveFields("*,score")
+            ->filters($filters)
+            ->highlight(200, "<mark>", "</mark>", 3, implode(" ", $hl))
+            ->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
+            ->offset($this->getState("list.start", 0))
+            ->mergeParams(
+                array(
+                    'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)
+            ));
 
         if (count($sort))
         {
@@ -187,24 +250,8 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
             
             $query->facet(1, true, 10);
         }
-    
-        try 
-        {
-            $results = $query->search();
 
-            JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
-            JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
-
-            $this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
-
-            return $results;
-        }
-        catch (Exception $e)
-        {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
-            $this->pagination = new JSolrPagination($this->get('total', 0), 0, 0);
-            return null;
-        }
+        return $query;
     }
 
 	public function getPagination()
