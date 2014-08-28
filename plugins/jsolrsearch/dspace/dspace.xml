@@ -29,7 +29,16 @@
 					cols="30"
 					rows="5"
 					filter="string"
-					default="dc.title_*^100,dc.contributor.author_*^75,title_*^25,author_*^25,text_*^15"/>
+                    default="dc.title_*^100,dc.contributor.author_*^75,title_*^25,author_*^25,text_*^15"/>
+                <field
+                    name="query_boosts"
+                    type="textarea"
+                    description="PLG_JSOLRSEARCH_DSPACE_BASIC_QUERYBOOSTS_DESC"
+                    label="PLG_JSOLRSEARCH_DSPACE_BASIC_QUERYBOOSTS_LABEL"
+                    cols="30"
+                    rows="5"
+                    filter="string"
+                    default=""/>
 			</fieldset>
 		</fields>
 	</config>

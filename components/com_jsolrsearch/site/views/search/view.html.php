@@ -145,13 +145,18 @@ class JSolrSearchViewSearch extends JViewLegacy
 		'/html/com_jsolrsearch/search';
 		 
 		$this->setLayout($layout);
-		 
-		if (JPath::find($themeOverridePath, $override)) {
+
+		if (JPath::find($themeOverridePath, $override)) 
+		{
 			return $this->loadTemplate($plugin);
-		} elseif (JPath::find($pluginOverridePath, $override)) {
+		}
+		elseif (JPath::find($pluginOverridePath, $override))
+		{
 			$this->addTemplatePath(dirname(JPath::find($pluginOverridePath, $override)));
 			return $this->loadTemplate($plugin);
-		} else {
+		} 
+		else 
+		{
 			return $this->loadTemplate('default');
 		}		
 	}

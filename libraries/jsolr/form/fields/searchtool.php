@@ -68,7 +68,8 @@ class JSolrFormFieldSearchTool extends JFormFieldList
 		data-toggle="dropdown" 
 		data-target="#" 
 		data-original="$this->value">
-		$label<b class="caret"></b>
+		$label
+		<b class="caret"></b>
 		
 		<ul 
 			class="dropdown-menu" 

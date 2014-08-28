@@ -247,7 +247,11 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 					$doc->addField($field.'_'.$item->lang, $item->value); // language-specific indexing.
 				}
 				
-				$doc->addField($field.'_sm', $item->value); // for (almost) exact matching.
+				if (JString::strlen($item->value) < 32776)
+				{
+                    $doc->addField($field.'_sm', $item->value); // for (almost) exact matching.
+				}
+				
 				$doc->addField($field.'_txt', $item->value); // for lower-case searching
 			}
 		}

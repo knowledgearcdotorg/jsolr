@@ -28,38 +28,16 @@
  */
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
-
-jimport('jsolr.helper');
-
-$application = JFactory::getApplication("administrator");
-
-$document = JFactory::getDocument();
 ?>
 <div class="row-fluid">
-	<div class="span<?php echo ($iconmodules) ? 9 : 12; ?>">
-		<div class="row-fluid">
-			<?php
-			$spans = 0;
+<?php
+foreach ($this->modules as $module)
+{
+    // Get module parameters
+    $params = new JRegistry;
+    $params->loadString($module->params);
 
-			foreach ($this->modules as $module) {
-				// Get module parameters
-				$params = new JRegistry;
-				$params->loadString($module->params);
-				$bootstrapSize = $params->get('bootstrap_size');
-				if (!$bootstrapSize) {
-					$bootstrapSize = 12;
-				}
-                
-				$spans += $bootstrapSize;
-				
-				if ($spans > 12) {
-					echo '</div><div class="row-fluid">';
-					$spans = $bootstrapSize;
-				}
-
-				echo JModuleHelper::renderModule($module, array('style' => 'well'));
-			}
-			?>
-		</div>
-	</div>
+    echo JModuleHelper::renderModule($module, array('style' => 'well'));
+}
+?>
 </div>

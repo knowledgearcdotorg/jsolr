@@ -74,6 +74,25 @@ abstract class JSolrSearchSearch extends JPlugin
 
 		return $qf;
 	}
+	
+    /**
+     * Define additional boost queries and add to the search query.
+     * 
+     * Override this method to add more boost queries.
+     */
+    public function onJSolrSearchPrepareBoostQueries()
+    {   
+        $bq = array();
+
+        $boosts = explode(',', $this->get('params')->get('query_boosts', null));
+
+        foreach ($boosts as $boost) {
+            if ($boost)         
+                $bq[] = JSolrHelper::localize($boost);
+        }
+
+        return $bq;
+    }
 
 	/**
 	 * Gets a list of operator mappings for this search plugin.

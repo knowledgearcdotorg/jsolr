@@ -94,6 +94,28 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
                 return $query;
             }
             
+            $bq = array();
+            
+            JPluginHelper::importPlugin("jsolrsearch");
+            
+            if (version_compare(JVERSION, "3.0", "l")) 
+            {
+                $class = "JDispatcher";
+            } 
+            else 
+            {
+                $class = "JEventDispatcher";
+            }
+            
+            $dispatcher = $class::getInstance();
+            
+            // get query filter params and boosts from plugin.
+            foreach ($dispatcher->trigger('onJSolrSearchPrepareBoostQueries') as $result) 
+            {
+                $bq = array_merge($bq, $result);
+            }
+            $query->boostQueries($bq);
+            
             $results = $query->search();
 
             JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
