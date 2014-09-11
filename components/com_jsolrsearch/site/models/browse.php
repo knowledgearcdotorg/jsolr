@@ -2,9 +2,9 @@
 /**
  * A model that provides facet browsing.
  * 
- * @package		JSolr.Search
- * @subpackage	
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
+ * @package     JSolr
+ * @subpackage  Search
+ * @copyrigh	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
  *
  *   The JSolrSearch component for Joomla! is free software: you can redistribute it 
@@ -134,7 +134,7 @@ class JSolrSearchModelBrowse extends JModelList
 		$operators = array(); 
 		
 		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher = JDispatcher::getInstance();		
+		$dispatcher = JDispatcher::getInstance();
 		
 		foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
 			$operators = array_merge($operators, $result);

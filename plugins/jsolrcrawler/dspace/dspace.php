@@ -154,7 +154,7 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 	 * Prepares an article for indexing.
 	 */
 	protected function getDocument(&$record)
-	{		
+	{
 		$doc = new JSolrApacheSolrDocument();
 		
 		$lang = $this->getLanguage($record, false);
@@ -423,7 +423,14 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 		
 		for ($i = 0; $i < count($record->lang); $i++) {
 			if ($i == 0) {
-				$doc->addField('lang', JArrayHelper::getValue($record->lang, $i));
+                if ($this->get('params')->get('ignore_language', 1))
+                {
+                    $doc->addField('lang', '*');
+                }
+                else
+                {
+                    $doc->addField('lang', JArrayHelper::getValue($record->lang, $i));
+                }
 			} else {
 				$doc->addField('lang_alt', JArrayHelper::getValue($record->lang, $i));
 			}			
@@ -558,7 +565,15 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 				$documents[$i] = $this->getDocument($item);
 				$documents[$i]->addField('id', $item->id);
 				$documents[$i]->addField('context', $this->get('context').'.item');
-				$documents[$i]->addField('lang', $this->getLanguage($item));
+				
+                if ($this->get('params')->get('ignore_language', 1))
+                {
+                    $documents[$i]->addField('lang', '*');
+                }
+                else
+                {
+                    $documents[$i]->addField('lang', $this->getLanguage($item));
+                }
 				
 				$key = $this->buildKey($documents[$i]);
 				
@@ -716,8 +731,16 @@ class plgJSolrCrawlerDSpace extends JSolrIndexCrawler
 		$documents[$i] = $this->getDocument($item);
 		$documents[$i]->addField('id', $item->id);
 		$documents[$i]->addField('context', $this->get('context').'.item');
-		$documents[$i]->addField('lang', $this->getLanguage($item));
-	
+		
+		if ($this->get('params')->get('ignore_language', 1))
+		{
+            $documents[$i]->addField('lang', '*');
+        }
+        else
+        {
+            $documents[$i]->addField('lang', $this->getLanguage($item));
+        }
+        
 		$key = $this->buildKey($documents[$i]);
 	
 		$documents[$i]->addField('key', $key);

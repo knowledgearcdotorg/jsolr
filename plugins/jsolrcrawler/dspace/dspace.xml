@@ -106,6 +106,17 @@
         			class="inputbox">
         			<option value="">Skip private items</option>
         		</field>
+                
+                <field 
+                    name="ignore_language" 
+                    type="list"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_IGNORE_LANGUAGE_DESC"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_IGNORE_LANGUAGE_LABEL"
+                    value="1"
+                    default="1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
 			</fieldset>
 		</fields>
 	</config>
