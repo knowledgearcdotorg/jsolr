@@ -1,33 +1,33 @@
 <?php
 /**
  * Provides a default results template.
- * 
- * Includes total number of records, spelling suggestions and the list of 
+ *
+ * Includes total number of records, spelling suggestions and the list of
  * search results.
- * 
- *  Override this template to customize the results display (does not affect 
- *  the display of an individual result (use results_result or 
+ *
+ *  Override this template to customize the results display (does not affect
+ *  the display of an individual result (use results_result or
  *  results_<plugin>).
- * 
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
+ *
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
-   The JSolrSearch Component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
+   The JSolrSearch Component for Joomla! is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the License,
    or (at your option) any later version.
 
-   The JSolrSearch Component for Joomla! is distributed in the hope that it will be 
+   The JSolrSearch Component for Joomla! is distributed in the hope that it will be
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolrSearch Component for Joomla!.  If not, see 
+   along with the JSolrSearch Component for Joomla!.  If not, see
    <http://www.gnu.org/licenses/>.
 
  * Contributors
- * Please feel free to add your name and email (optional) here if you have 
+ * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<hayden@knowledgearc.com>
@@ -52,7 +52,7 @@ if ($this->items->getSuggestions()) :
 	?>
 	<div>Did you mean <a href="<?php echo JArrayHelper::getValue($item, 'uri'); ?>"><?php echo JArrayHelper::getValue($item, 'title'); ?></a></div>
 	<?php
-	endforeach; 
+	endforeach;
 endif;
 ?>
 

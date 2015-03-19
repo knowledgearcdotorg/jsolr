@@ -1,33 +1,33 @@
 <?php
 /**
  * Provides a template for an individual search result.
- * 
- * To override this generic search result, create a results_result.php file in 
+ *
+ * To override this generic search result, create a results_result.php file in
  * the template jsolrsearch/html/search directory.
- * 
- * To override an individual search result by component (E.g. com_content, 
- * com_jspace), create a <component>_result in jsolrsearch/html/plugins 
+ *
+ * To override an individual search result by component (E.g. com_content,
+ * com_jspace), create a <component>_result in jsolrsearch/html/plugins
  * directory.
- * 
- * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
+ *
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
-   The JSolrSearch Component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
+   The JSolrSearch Component for Joomla! is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the License,
    or (at your option) any later version.
 
-   The JSolrSearch Component for Joomla! is distributed in the hope that it will be 
+   The JSolrSearch Component for Joomla! is distributed in the hope that it will be
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolrSearch Component for Joomla!.  If not, see 
+   along with the JSolrSearch Component for Joomla!.  If not, see
    <http://www.gnu.org/licenses/>.
 
  * Contributors
- * Please feel free to add your name and email (optional) here if you have 
+ * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<hayden@knowledgearc.com>
@@ -43,21 +43,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</header>
 	<p><?php echo JSolrHelper::highlight($this->item->key, JSolrHelper::localize('body_*')); ?></p>
 	<footer>
-		<dl>		
+		<dl>
 			<?php if ($this->item->created) : ?>
 			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CREATED_LABEL"); ?></dt>
 			<dd>
 				<time datetime="<?php echo JFactory::getDate($this->item->created)->toISO8601(); ?>"><?php echo JFactory::getDate($this->item->created)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
 			</dd>
 			<?php endif; ?>
-			
+
 			<?php if ($this->item->modified) : ?>
 			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_MODIFIED_LABEL"); ?></dt>
 			<dd>
 				<time datetime="<?php echo JFactory::getDate($this->item->modified)->toISO8601(); ?>"><?php echo JFactory::getDate($this->item->modified)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
 			</dd>
 			<?php endif; ?>
-			
+
 			<?php if (isset($this->item->link)) : ?>
 			<dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_LINK_LABEL"); ?></dt>
 			<dd>

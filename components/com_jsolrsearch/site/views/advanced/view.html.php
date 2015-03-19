@@ -1,44 +1,44 @@
 <?php
 /**
  * @package		JSolr.Search
- * @subpackage	View	
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
+ * @subpackage	View
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch Component for Joomla!.
 
-   The JSolrSearch Component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
+   The JSolrSearch Component for Joomla! is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the License,
    or (at your option) any later version.
 
-   The JSolrSearch Component for Joomla! is distributed in the hope that it will be 
+   The JSolrSearch Component for Joomla! is distributed in the hope that it will be
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolrSearch Component for Joomla!.  If not, see 
+   along with the JSolrSearch Component for Joomla!.  If not, see
    <http://www.gnu.org/licenses/>.
 
  * Contributors
- * Please feel free to add your name and email (optional) here if you have 
+ * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<hayden@knowledgearc.com>
  */
- 
+
 defined( '_JEXEC' ) or die( 'Restricted access' );
- 
+
 jimport( 'joomla.application.component.view');
- 
+
 class JSolrSearchViewAdvanced extends JViewLegacy
 {
 	protected $form;
-	
+
     public function display($tpl = null)
     {
 		JHtml::_('behavior.framework', true);
-    	
-		$document = JFactory::getDocument();	
+
+		$document = JFactory::getDocument();
 		$this->form	= $this->get('Form');
 		$this->state = $this->get('State');
 
@@ -49,7 +49,7 @@ class JSolrSearchViewAdvanced extends JViewLegacy
 
         $eq = array();
 	preg_match("/(?<=\").*?(?=\")/", JRequest::getString("q", "", "default", 2), $eq);
-        
+
 
         $nq = "";
         $matches = array();
@@ -58,7 +58,7 @@ class JSolrSearchViewAdvanced extends JViewLegacy
         foreach (JArrayHelper::getValue($matches, 0) as $item) {
                 $nq .= " $item";
         }
-        
+
         if ( strpos(JRequest::getString("q"), ' OR ') !== false ) {
             $oq = explode(' OR ', JRequest::getString("q")) ;
 
@@ -77,13 +77,13 @@ class JSolrSearchViewAdvanced extends JViewLegacy
         } else {
             $oq = '' ;
         }
-        
+
         $aq = preg_replace('/(".*?")/', '', JRequest::getString("q"), 1);
         $aq = preg_replace('/(-.*?)(?=\s|$)/', '', $aq);
         $aq = trim(preg_replace('/"/', "", $aq));
         $aq = str_replace(array(' OR','"'),'',$aq) ;
-        
-                
+
+
         if ( !empty($eq) ) {
             $this->form->setValue('eq', null, $eq[0]);
         }

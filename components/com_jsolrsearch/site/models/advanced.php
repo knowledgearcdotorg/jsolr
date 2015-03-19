@@ -1,32 +1,32 @@
-<?php 
+<?php
 /**
  * A model that provides advanced search capabilities.
- * 
+ *
  * @package		JSolr.Search
  * @subpackage	Model
- * @copyright	Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
 
-   The JSolrSearch component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
+   The JSolrSearch component for Joomla! is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the License,
    or (at your option) any later version.
 
-   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
+   The JSolrSearch component for Joomla! is distributed in the hope that it will be
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSolrSearch component for Joomla!.  If not, see 
+   along with the JSolrSearch component for Joomla!.  If not, see
    <http://www.gnu.org/licenses/>.
 
  * Contributors
- * Please feel free to add your name and email (optional) here if you have 
+ * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<haydenyoung@knowledgearc.com>
- * 
+ *
  */
 
 defined('_JEXEC') or die('Restricted access');
@@ -44,22 +44,22 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		
+
 		$this->set('context', $this->get('option').'.'.$this->getName());
 	}
 
 	protected function populateState()
 	{
 		$application = JFactory::getApplication();
-		
+
 		$this->setState('query.q', $application->input->get("q", null, "html"));
 		$this->setState('query.o', $application->input->getString("o", null, "string"));
-		
+
 		// Load the parameters.
 		$params = $application->getParams();
 		$this->setState('params', $params);
 	}
-	
+
 	public function buildQuery()
 	{
 		$application = JFactory::getApplication();
@@ -69,32 +69,32 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 		if ($application->input->get('eq')) {
 			$q[] = "\"".$application->input->getHtml('eq')."\"";
 		}
-	
+
 		if ($application->input->get('oq')) {
 			$parts = explode(' ', $application->input->getHtml('oq'));
-			
+
 			if ($parts) {
 				$q[] = implode(" OR ", $parts);
 			}
-		}		
+		}
 
 		if ($application->input->get('nq')) {
 			$matches = array();
 			preg_match_all('/"{1}.+"{1}|\S+/', $application->input->getHtml('nq'), $matches);
-			
+
 			foreach (JArrayHelper::getValue($matches, 0) as $match) {
-				$q[] = '-'.$match;				
+				$q[] = '-'.$match;
 			}
 		}
-		
+
 		if ($application->input->get('aq')) {
 			$q[] = $application->input->getHtml('aq');
 		}
 
 		return trim(implode(" ", $q));
 	}
-	
-	public function parseQuery() 
+
+	public function parseQuery()
 	{
 		$query = JFactory::getApplication()->input->getHtml("q");
 		$data = array();
@@ -102,23 +102,23 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 		$nq = array();
 		$matches = array();
 		preg_match_all('/-"{1}.+"{1}|-\S+/', $query, $matches);
-		
+
 		foreach (JArrayHelper::getValue($matches, 0) as $match) {
 			$nq[] = implode("", explode("-", $match, 2));
 			$query = str_replace($match, '', $query);
 		}
-		
+
 		$data['nq'] = implode(' ', $nq);
-		
+
 		preg_match('/"{1}.+?"{1}/', $query, $eq);
-		
+
 		if ($eq) {
 			$data['eq'] = str_replace("\"", "", JArrayHelper::getValue($eq, 0));
 			$query = str_replace(JArrayHelper::getValue($eq, 0), '', $query);
 		}
-	
+
 		$oq = array();
-		
+
 		$array = explode(' OR ', $query);
 
 		if (count($array) > 1) {
@@ -152,7 +152,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 
 		return $data;
 	}
-	
+
 	/**
 	 * Gets the search url.
 	 *
@@ -161,19 +161,19 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 	public function getURI()
 	{
 		$uri = new JURI("index.php");
-	
+
 		$uri->setVar("option", "com_jsolrsearch");
 		$uri->setVar("view", "search");
 		$uri->setVar("Itemid", JRequest::getVar('Itemid'));
-	
+
 		if ($query = $this->buildQuery()) {
 			$uri->setVar('q', urlencode($query));
 		}
-	
+
 		if ($this->getState('query.o', null)) {
 			$uri->setVar('o', $this->getState('query.o'));
 		}
-		
+
 		$vars = array('task', 'nq', 'oq', 'eq', 'aq', 'as');
 
 		foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
@@ -181,20 +181,20 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 				$uri->setVar($key, $value);
 			}
 		}
-		
+
 		// add the filters.
 		foreach (JFactory::getApplication()->input->get('as', array(), 'array') as $key=>$value) {
 			if (!empty($value)) {
 				$uri->setVar($key, $value);
 			}
 		}
-		
+
 		// finally add the Itemid for basic search
 		$uri->setVar('Itemid', JSolrSearchFactory::getSearchRoute()->getVar('Itemid'));
 
 		return $uri;
 	}
-	
+
 	/**
 	 * Method to get the search form.
 	 *
@@ -213,7 +213,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 
 		return $form;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see JModelForm::preprocessForm()
@@ -221,10 +221,10 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 	protected function preprocessForm(JForm $form, $data, $group = 'plugin')
 	{
 		$form->loadFile($this->getCustomFormPath('filters'), false);
-      
+
 		parent::preprocessForm($form, $data, $group);
 
-		// Set 'as' field group fields to their respective values using the 
+		// Set 'as' field group fields to their respective values using the
 		// supplied 'data'.
 		foreach ($data as $key=>$value) {
 			if ($form->getField($key, 'as') !== false) {
@@ -245,13 +245,13 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 			$query = array_merge($query, $this->parseQuery());
 			$data = $query;
 		}
-      
+
 		$context = $this->get('option').'.'.$this->getName();
 
 		if (version_compare(JVERSION, "3.0", "ge")) {
 			$this->preprocessData($this->get('context'), $data);
 		}
-      
+
 		return $data;
 	}
 
@@ -286,7 +286,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 		// Get the form.
 		JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
 
-		try 
+		try
         {
 			$form = JSolrForm::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
 

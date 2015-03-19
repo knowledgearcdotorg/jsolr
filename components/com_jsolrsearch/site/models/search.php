@@ -1,32 +1,32 @@
-<?php 
+<?php
 /**
  * A model that provides default search capabilities.
- * 
- * @package    JSolr
- * @subpackage Search
- * @copyright  Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.
+ *
+ * @package     JSolr
+ * @subpackage  Search
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolrSearch component for Joomla!.
  *
- *   The JSolrSearch component for Joomla! is free software: you can redistribute it 
- *   and/or modify it under the terms of the GNU General Public License as 
- *   published by the Free Software Foundation, either version 3 of the License, 
+ *   The JSolrSearch component for Joomla! is free software: you can redistribute it
+ *   and/or modify it under the terms of the GNU General Public License as
+ *   published by the Free Software Foundation, either version 3 of the License,
  *   or (at your option) any later version.
  *
- *   The JSolrSearch component for Joomla! is distributed in the hope that it will be 
+ *   The JSolrSearch component for Joomla! is distributed in the hope that it will be
  *   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with the JSolrSearch component for Joomla!.  If not, see 
+ *   along with the JSolrSearch component for Joomla!.  If not, see
  *   <http://www.gnu.org/licenses/>.
  *
  * Contributors
- * Please feel free to add your name and email (optional) here if you have 
+ * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
  * @author Hayden Young <hayden@knowledgearc.com>
- * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com> 
- * 
+ * @author Bartłomiej Kiełbasa <bartlomiejkielbasa@wijiti.com>
+ *
  */
 
 defined('_JEXEC') or die('Restricted access');
@@ -53,13 +53,13 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		
+
 		$this->set('option', 'com_jsolrsearch');
 		$this->set('context', $this->get('option').'.search');
 
 		JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
 	}
-   
+
    /**
     * (non-PHPdoc)
     * @see JModelList::populateState()
@@ -76,46 +76,46 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
 		$value = $application->input->get('limitstart', 0);
 		$this->setState('list.start', $value);
-		
+
 		$params = $application->getParams();
 		$this->setState('params', $params);
 
 		parent::populateState($ordering, $direction);
    }
-   
+
    public function getItems()
-   {    
-        try 
+   {
+        try
         {
             $query = $this->_getListQuery();
-            
+
             if (is_null($query))
             {
                 return $query;
             }
-            
+
             $bq = array();
-            
+
             JPluginHelper::importPlugin("jsolrsearch");
-            
-            if (version_compare(JVERSION, "3.0", "l")) 
+
+            if (version_compare(JVERSION, "3.0", "l"))
             {
                 $class = "JDispatcher";
-            } 
-            else 
+            }
+            else
             {
                 $class = "JEventDispatcher";
             }
-            
+
             $dispatcher = $class::getInstance();
-            
+
             // get query filter params and boosts from plugin.
-            foreach ($dispatcher->trigger('onJSolrSearchPrepareBoostQueries') as $result) 
+            foreach ($dispatcher->trigger('onJSolrSearchPrepareBoostQueries') as $result)
             {
                 $bq = array_merge($bq, $result);
             }
             $query->boostQueries($bq);
-            
+
             $results = $query->search();
 
             JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
@@ -132,28 +132,28 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
             return null;
         }
     }
-    
+
     /**
      * Gets a list of featured items.
      * @TODO This is a proof of concept. Needs much more work.
      */
     public function getFeaturedItems()
     {
-        try 
+        try
         {
             $filters = array('context:com_content.article');
-        
+
             $query = $this->_getListQuery();
             $query
                 ->filters($filters)
                 ->limit(5)
                 ->mergeParams(array('mm'=>'100%'));
-        
+
             if (is_null($query))
             {
                 return $query;
             }
-            
+
             return $query->search();
         }
         catch (Exception $e)
@@ -162,7 +162,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
             return null;
         }
     }
-    
+
     /**
      * Gets the Solr query for the list.
      *
@@ -179,65 +179,65 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
         $filters = $this->getForm()->getFilters();
 
         $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
-        
-        if ($access) 
+
+        if ($access)
         {
             $access = 'access:'.'('.$access.') OR null';
             $filters[] = $access;
         }
-        
-        if (!$this->getState('query.q')) 
+
+        if (!$this->getState('query.q'))
         {
-            if (!$this->getAppliedFacetFilters()) 
+            if (!$this->getAppliedFacetFilters())
             {
                 return null; // nothing passed. Get out of here.
             }
         }
-        
+
         $sort = $this->getForm()->getSorts();
-        
+
         $facets = $this->getForm()->getFacets();
-                
+
         JPluginHelper::importPlugin("jsolrsearch");
-        
-        if (version_compare(JVERSION, "3.0", "l")) 
+
+        if (version_compare(JVERSION, "3.0", "l"))
         {
             $class = "JDispatcher";
-        } 
-        else 
+        }
+        else
         {
             $class = "JEventDispatcher";
         }
-        
+
         $dispatcher = $class::getInstance();
-        
+
         // Get any additional filters which may be needed as part of the search query.
-        foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) 
+        foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result)
         {
             $filters = array_merge($filters, $result);
         }
-   
+
         // Get Highlight fields for results.
-        foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) 
+        foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result)
         {
             $hl = array_merge($hl, $result);
         }
 
         // get query filter params and boosts from plugin.
-        foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) 
+        foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result)
         {
             $qf = array_merge($qf, $result);
         }
 
         // get context.
         if ($this->getState('query.o', null)) {
-            foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {              
+            foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {
                 if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
                     $filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
                 }
             }
         }
-        
+
         $q = $this->getState('query.q', "*:*");
 
         $query = JSolrSearchFactory::getQuery($q)
@@ -269,7 +269,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
             {
                 $query->mergeParams($facet);
             }
-            
+
             $query->facet(1, true, 10);
         }
 
@@ -280,19 +280,19 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 	{
 		return $this->pagination;
 	}
-	
+
 	public function getSuggestionQueryURIs()
 	{
 		$uris = array();
 		$i = 0;
-		
+
 		$uri = JSolrSearchFactory::getQueryRouteWithPlugin();
 
 		$uri->setVar('q', $this->getItems()->getSuggestions());
 
 		$uris[$i]['uri'] = $uri;
 		$uris[$i]['title'] = $this->getItems()->getSuggestions();
-		
+
 		return $uris;
 	}
 
@@ -320,12 +320,12 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
         return $this->form;
     }
-   
+
     protected function preprocessForm(JForm $form, $data, $group = 'plugin')
     {
         // load additional filters.
         $form->loadFile($this->getCustomFormPath('filters'), false);
-        
+
         parent::preprocessForm($form, $data, $group);
     }
 
@@ -336,22 +336,22 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 	protected function loadFormData()
 	{
 		$data = array();
-		
+
 		$query = JURI::getInstance()->getQuery(true);
 
 		if (count($query)) {
 			$data = $query;
 		}
-      
+
 		$context = $this->get('option').'.'.$this->getName();
 
 		if (version_compare(JVERSION, "3.0", "ge")) {
 			$this->preprocessData($this->get('context'), $data);
 		}
-      
+
 		return $data;
 	}
-   
+
    /**
     * Override to use JSorlForm.
     * Method to get a form object.
@@ -456,13 +456,13 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
 	/**
 	 * Gets a list of applied filters based on any currently selected facets.
-	 * 
+	 *
 	 * @return array A list of applied filters based on any currently selected facets.
 	 */
 	public function getAppliedFacetFilters()
 	{
 		$fields = array();
-			
+
 		foreach ($this->getForm()->getFieldset("facets") as $field) {
 			if ($field->value) {
 				$fields[] = $field;
@@ -471,19 +471,19 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
 		return $fields;
 	}
-	
+
 	/**
-	 * Gets a list of applied filters based on any specified advanced search 
+	 * Gets a list of applied filters based on any specified advanced search
 	 * parameters.
 	 *
-	 * @return array a list of applied filters based on any specified advanced 
+	 * @return array a list of applied filters based on any specified advanced
 	 * search parameters.
 	 */
 	public function getAppliedAdvancedFilters()
 	{
 		$fields = array();
-		
-		foreach ($this->getForm()->getFieldset('tools') as $field) {			
+
+		foreach ($this->getForm()->getFieldset('tools') as $field) {
 			if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolrFormFieldHiddenFilter')) {
 
 				if ($field->value) {
