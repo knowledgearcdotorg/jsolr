@@ -1,30 +1,30 @@
 <?php
 /**
  * Provides a hidden field for applying filters directly to the query.
- * 
+ *
  * @package		JSolr
  * @subpackage	Form
  * @copyright	Copyright (C) 2013-2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSpace component for Joomla!.
 
-   The JSpace component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
+   The JSpace component for Joomla! is free software: you can redistribute it
+   and/or modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of the License,
    or (at your option) any later version.
 
-   The JSpace component for Joomla! is distributed in the hope that it will be 
+   The JSpace component for Joomla! is distributed in the hope that it will be
    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with the JSpace component for Joomla!.  If not, see 
+   along with the JSpace component for Joomla!.  If not, see
    <http://www.gnu.org/licenses/>.
 
  * Contributors
- * Please feel free to add your name and email (optional) here if you have 
+ * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
- * Name							Email 
+ * Name							Email
  * @author Hayden Young <haydenyoung@knowledgearc.com>
  */
 
@@ -34,7 +34,7 @@ jimport('joomla.form.formfield');
 jimport('jsolr.form.fields.filterable');
 jimport('jsolr.form.fields.hiddenfilter');
 
-class JSolrFormFieldQueryFilter extends JSolrFormFieldHiddenFilter implements JSolrFilterable
+class JSolrFormFieldQueryFilter extends JSolrFormFieldHiddenFilter
 {
 	/**
 	 * The form field type.
@@ -42,7 +42,7 @@ class JSolrFormFieldQueryFilter extends JSolrFormFieldHiddenFilter implements JS
 	 * @var         string
 	 */
 	protected $type = 'JSolr.QueryFilter';
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see JSolrFilterable::getFilters()
@@ -50,13 +50,13 @@ class JSolrFormFieldQueryFilter extends JSolrFormFieldHiddenFilter implements JS
 	public function getFilters()
 	{
 		$application = JFactory::getApplication();
-		
+
 		$filters = array();
-		
+
 		if ($this->filter && $application->input->getString('q', null)) {
 			$filters[] = $this->filter.":".$application->input->getString('q', null);
 		}
-		
+
 		return (count($filters)) ? $filters : array();
 	}
 
@@ -67,7 +67,7 @@ class JSolrFormFieldQueryFilter extends JSolrFormFieldHiddenFilter implements JS
 				$application = JFactory::getApplication();
 				return $application->input->getString($this->name, null);
 				break;
-	
+
 			default:
 				return parent::__get($name);
 				break;

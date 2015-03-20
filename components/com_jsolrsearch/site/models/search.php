@@ -178,12 +178,15 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
         $filters = $this->getForm()->getFilters();
 
-        $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
+        // TODO: temporary fix for turning off access checking. Need to provide a mechanism
+        // for checking per plugin.
+        if ($this->getState('params')->get('access_control', 1)) {
+            $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
 
-        if ($access)
-        {
-            $access = 'access:'.'('.$access.') OR null';
-            $filters[] = $access;
+            if ($access) {
+                $access = 'access:'.'('.$access.') OR null';
+                $filters[] = $access;
+            }
         }
 
         if (!$this->getState('query.q'))

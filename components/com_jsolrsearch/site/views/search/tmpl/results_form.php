@@ -68,14 +68,15 @@ JHTML::_('behavior.formvalidation');
 			<?php for ($i = 0; $i < count($plugins); ++$i): ?>
 			<li>
 				<?php
-					$isSelected = ($plugins[$i]['name'] == JFactory::getApplication()->input->get('o')) ? true : false;
+                    $plugin = JArrayHelper::getValue($plugins, $i);
+					$isSelected = (JArrayHelper::getValue($plugin, 'name') == JFactory::getApplication()->input->get('o')) ? true : false;
 
 					echo JHTML::_(
 						'link',
 						$plugins[$i]['uri'],
 						JText::_($plugins[$i]['label']),
 						array(
-							'data-category'=>$plugins[$i]['name'],
+							'data-category'=>JArrayHelper::getValue($plugin, 'name'),
 							'class'=> $isSelected ? 'active' : ''));
 				?>
 				</li>
