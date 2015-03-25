@@ -51,11 +51,13 @@ class JSolrSearchController extends JControllerLegacy
 
 		$viewName = JFactory::getApplication()->input->get("view", $default, 'cmd');
 
-		$modelName = $viewName;
+		$model = $this->getModel($viewName);
 
-		$model = $this->getModel($modelName);
+		// Add more views for custom layouts; xlsx, xml, etc.
+		$this->addViewPath(JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().'/html/com_jsolrsearch');
 
 		$view = $this->getView($viewName, JFactory::getApplication()->input->get("format", "html", 'cmd'));
+
 		$view->setModel($model, true);
 
 		if (($viewName == "" || $viewName == $default) &&
