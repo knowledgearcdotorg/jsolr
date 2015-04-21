@@ -270,8 +270,14 @@ class JSolrApacheSolrService
 		{
 			$queryString = '';
 		}
+		
+        //@TODO work around. Change setting so user specifies url with protocol, not with port.
+        $protocol = 'http';
+        if ($this->_port === 443) {
+            $protocol = 'https';
+        }
 
-		return 'http://' . $this->_host . ':' . $this->_port . $this->_path . $servlet . $queryString;
+        return $protocol.'://' . $this->_host . $this->_path . $servlet . $queryString;
 	}
 
 	/**
@@ -612,7 +618,7 @@ class JSolrApacheSolrService
 	public function ping($timeout = 2)
 	{
 		$start = microtime(true);
-		
+
 		$httpTransport = $this->getHttpTransport();
 
 		$httpResponse = $httpTransport->performHeadRequest($this->_pingUrl, $timeout);
@@ -627,7 +633,7 @@ class JSolrApacheSolrService
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Call the /admin/luke servlet, can be used to quickly tell if a connection to the
 	 * server is able to be made.
@@ -672,24 +678,20 @@ class JSolrApacheSolrService
 	 * Add a Solr Document to the index
 	 *
 	 * @param JSolrApacheSolrDocument $document
-	 * @param boolean $allowDups
-	 * @param boolean $overwritePending
-	 * @param boolean $overwriteCommitted
+	 * @param boolean $overwrite
 	 * @param integer $commitWithin The number of milliseconds that a document must be committed within, see @{link http://wiki.apache.org/solr/UpdateXmlMessages#The_Update_Schema} for details.  If left empty this property will not be set in the request.
 	 * @return JSolrApacheSolrResponse
 	 *
 	 * @throws JSolrApacheSolrHttpTransportException If an error occurs during the service call
 	 */
-	public function addDocument(JSolrApacheSolrDocument $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true, $commitWithin = 0)
+	public function addDocument(JSolrApacheSolrDocument $document, $overwrite = true, $commitWithin = 0)
 	{
-		$dupValue = $allowDups ? 'true' : 'false';
-		$pendingValue = $overwritePending ? 'true' : 'false';
-		$committedValue = $overwriteCommitted ? 'true' : 'false';
-		
+		$overwriteValue = $overwrite ? 'true' : 'false';
+
 		$commitWithin = (int) $commitWithin;
 		$commitWithinString = $commitWithin > 0 ? " commitWithin=\"{$commitWithin}\"" : '';
-		
-		$rawPost = "<add allowDups=\"{$dupValue}\" overwritePending=\"{$pendingValue}\" overwriteCommitted=\"{$committedValue}\"{$commitWithinString}>";
+
+		$rawPost = "<add overwrite=\"{$overwriteValue}\"{$commitWithinString}>";
 		$rawPost .= $this->_documentToXmlFragment($document);
 		$rawPost .= '</add>';
 
@@ -700,24 +702,20 @@ class JSolrApacheSolrService
 	 * Add an array of Solr Documents to the index all at once
 	 *
 	 * @param array $documents Should be an array of JSolrApacheSolrDocument instances
-	 * @param boolean $allowDups
-	 * @param boolean $overwritePending
-	 * @param boolean $overwriteCommitted
+	 * @param boolean $overwrite
 	 * @param integer $commitWithin The number of milliseconds that a document must be committed within, see @{link http://wiki.apache.org/solr/UpdateXmlMessages#The_Update_Schema} for details.  If left empty this property will not be set in the request.
 	 * @return JSolrApacheSolrResponse
 	 *
 	 * @throws JSolrApacheSolrHttpTransportException If an error occurs during the service call
 	 */
-	public function addDocuments($documents, $allowDups = false, $overwritePending = true, $overwriteCommitted = true, $commitWithin = 0)
+	public function addDocuments($documents, $overwrite = true, $commitWithin = 0)
 	{
-		$dupValue = $allowDups ? 'true' : 'false';
-		$pendingValue = $overwritePending ? 'true' : 'false';
-		$committedValue = $overwriteCommitted ? 'true' : 'false';
+		$overwriteValue = $overwrite ? 'true' : 'false';
 
 		$commitWithin = (int) $commitWithin;
 		$commitWithinString = $commitWithin > 0 ? " commitWithin=\"{$commitWithin}\"" : '';
 
-		$rawPost = "<add allowDups=\"{$dupValue}\" overwritePending=\"{$pendingValue}\" overwriteCommitted=\"{$committedValue}\"{$commitWithinString}>";
+		$rawPost = "<add overwrite=\"{$overwriteValue}\"{$commitWithinString}>";
 
 		foreach ($documents as $document)
 		{
@@ -952,13 +950,13 @@ class JSolrApacheSolrService
 		{
 			$params = array();
 		}
-		
+
 		// if $file is an http request, defer to extractFromUrl instead
 		if (substr($file, 0, 7) == 'http://' || substr($file, 0, 8) == 'https://')
 		{
 			return $this->extractFromUrl($file, $params, $document, $mimetype);
 		}
-		
+
 		// read the contents of the file
 		$contents = @file_get_contents($file);
 
@@ -978,7 +976,7 @@ class JSolrApacheSolrService
 			throw new JSolrApacheSolrInvalidArgumentException("File '{$file}' is empty or could not be read");
 		}
 	}
-	
+
 	/**
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
@@ -1043,7 +1041,7 @@ class JSolrApacheSolrService
 		// the file contents will be sent to SOLR as the POST BODY - we use application/octect-stream as default mimetype
 		return $this->_sendRawPost($this->_extractUrl . $this->_queryDelimiter . $queryString, $data, false, $mimetype);
 	}
-	
+
 	/**
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
@@ -1078,10 +1076,10 @@ class JSolrApacheSolrService
 		}
 
 		$httpTransport = $this->getHttpTransport();
-		
+
 		// read the contents of the URL using our configured Http Transport and default timeout
 		$httpResponse = $httpTransport->performGetRequest($url);
-		
+
 		// check that its a 200 response
 		if ($httpResponse->getStatusCode() == 200)
 		{
@@ -1147,7 +1145,7 @@ class JSolrApacheSolrService
 		{
 			$params = array();
 		}
-		
+
 		// construct our full parameters
 
 		// common parameters in this interface
