@@ -270,14 +270,20 @@ class JSolrApacheSolrService
 		{
 			$queryString = '';
 		}
-		
+
+		$host = $this->_host;
+
         //@TODO work around. Change setting so user specifies url with protocol, not with port.
         $protocol = 'http';
         if ($this->_port === 443) {
             $protocol = 'https';
         }
 
-        return $protocol.'://' . $this->_host . $this->_path . $servlet . $queryString;
+        if ($this->_port !== 80 || $this->_port !== 443) {
+            $host = $this->_host.":".$this->_port;
+        }
+
+        return $protocol.'://' . $host . $this->_path . $servlet . $queryString;
 	}
 
 	/**
