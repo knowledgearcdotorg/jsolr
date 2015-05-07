@@ -40,3 +40,4 @@ JError::setErrorHandling(E_WARNING, 'ignore');
 JError::setErrorHandling(E_ERROR, 'ignore');
 
 require_once JPATH_PLATFORM.'/loader.php';
+JLoader::registerNamespace('JSolr', dirname(dirname(dirname(__FILE__))).'/libraries');
