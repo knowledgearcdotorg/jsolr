@@ -54,7 +54,7 @@ namespace JSolr\Apache\Solr;
  * }
  * </code>
  */
-class Document implements IteratorAggregate
+class Document implements \IteratorAggregate
 {
 	/**
 	 * SVN Revision meta data for this class
@@ -300,7 +300,7 @@ class Document implements IteratorAggregate
 	 */
 	public function getIterator()
 	{
-		$arrayObject = new ArrayObject($this->_fields);
+		$arrayObject = new \ArrayObject($this->_fields);
 
 		return $arrayObject->getIterator();
 	}

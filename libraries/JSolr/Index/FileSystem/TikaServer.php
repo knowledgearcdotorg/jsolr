@@ -6,6 +6,11 @@
 
 namespace JSolr\Index\FileSystem;
 
+use \JString as JString;
+use \JFactory as JFactory;
+use \JLanguageHelper as JLanguageHelper;
+use \JArrayHelper as JArrayHelper;
+
 /**
  * A class for extracting metadata, content and other information from a file.
  */
@@ -15,7 +20,7 @@ class TikaServer extends Extractor
     {
         if (!$this->contentType) {
             // sometimes the charset is appended to the file type.
-            $this->contentType = $this->extract('meta/Content-Type');
+            $this->contentType = $this->getMetadata()->get('Content-Type');
         }
 
         return $this->contentType;
@@ -35,8 +40,8 @@ class TikaServer extends Extractor
      */
     public function getLanguage()
     {
-        if (!$this->get('language')) {
-            $result = $this->extract('-l');
+        if (!$this->language) {
+            $result = $this->getMetadata()->get('language');
 
             $results = explode("\n", str_replace("\r", "\n", $result));
 
@@ -73,10 +78,10 @@ class TikaServer extends Extractor
                 $array[] = JFactory::getLanguage()->getTag();
             }
 
-            $this->set('language', $array);
+            $this->language = $array;
         }
 
-        return $this->get('language');
+        return $this->language;
     }
 
     public function getContent()
@@ -134,7 +139,7 @@ class TikaServer extends Extractor
         if ($response->code == 200) {
             return $response->body;
         } else {
-            throw new Exception($response->body, $response->code);
+            throw new \Exception($response->body, $response->code);
         }
     }
 }

@@ -350,7 +350,7 @@ class Service
 
 		if ($solrResponse->getHttpStatus() != 200)
 		{
-			throw new \JSolr\Apache\Solr\Http\Transport\Exception($solrResponse);
+			throw new \JSolr\Apache\Solr\Exception($solrResponse);
 		}
 
 		return $solrResponse;
@@ -741,43 +741,39 @@ class Service
 
 		$xml .= '>';
 
-		foreach ($document as $key => $value)
+		foreach ($document as $key=>$item)
 		{
 			$key = htmlspecialchars($key, ENT_QUOTES, 'UTF-8');
 			$fieldBoost = $document->getFieldBoost($key);
 
-			if (is_array($value))
-			{
-				foreach ($value as $multivalue)
-				{
-					$xml .= '<field name="' . $key . '"';
+			if (!is_array($item))
+            {
+                $item = array($item);
+            }
 
-					if ($fieldBoost !== false)
-					{
-						$xml .= ' boost="' . $fieldBoost . '"';
+            foreach ($item as $multivalue)
+            {
+                if (!is_array($multivalue)) {
+                    $multivalue = array($multivalue);
+                }
 
-						// only set the boost for the first field in the set
-						$fieldBoost = false;
-					}
+                foreach ($multivalue as $value)
+                {
+                    $xml .= '<field name="' . $key . '"';
 
-					$multivalue = htmlspecialchars($multivalue, ENT_NOQUOTES, 'UTF-8');
+                    if ($fieldBoost !== false)
+                    {
+                        $xml .= ' boost="' . $fieldBoost . '"';
 
-					$xml .= '>' . $multivalue . '</field>';
-				}
-			}
-			else
-			{
-				$xml .= '<field name="' . $key . '"';
+                        // only set the boost for the first field in the set
+                        $fieldBoost = false;
+                    }
 
-				if ($fieldBoost !== false)
-				{
-					$xml .= ' boost="' . $fieldBoost . '"';
-				}
+                    $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
 
-				$value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
-
-				$xml .= '>' . $value . '</field>';
-			}
+                    $xml .= '>' . $value . '</field>';
+                }
+            }
 		}
 
 		$xml .= '</doc>';

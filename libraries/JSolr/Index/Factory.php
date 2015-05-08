@@ -30,7 +30,7 @@ class Factory extends \JSolr\Factory
 
 		$type = JString::ucfirst($params->get('component.extractor'));
 
-		$class = $type;
+		$class = "\JSolr\Index\FileSystem\\$type";
 
 		return new $class($fileOrUrl);
 	}

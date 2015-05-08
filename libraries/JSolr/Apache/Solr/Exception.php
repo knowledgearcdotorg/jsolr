@@ -33,7 +33,7 @@
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
 
-namespace JSolr\Apache\Solr\Http\Transport;
+namespace JSolr\Apache\Solr;
 
 // no direct access
 defined('_JEXEC') or die();
@@ -60,9 +60,9 @@ class Exception extends \Exception
 	/**
 	 * HttpTransportException Constructor
 	 *
-	 * @param Response $response
+	 * @param \JSolr\Apache\Solr\Response $response
 	 */
-	public function __construct(Response $response)
+	public function __construct(\JSolr\Apache\Solr\Response $response)
 	{
 		parent::__construct("'{$response->getHttpStatus()}' Status: {$response->getHttpStatusMessage()}", $response->getHttpStatus());
 

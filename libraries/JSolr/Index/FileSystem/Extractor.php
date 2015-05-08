@@ -22,6 +22,8 @@ abstract class Extractor
 
 	private $contentType;
 
+	private $language;
+
     private $metadata;
 
     private $content;
@@ -83,14 +85,14 @@ abstract class Extractor
 
 	public function getAllowedContentTypes()
 	{
-		$types = $this->get('params')->get('component.content_types_allowed');
+		$types = $this->params->get('component.content_types_allowed');
 
 		return array_map('trim', explode(',', trim($types)));
 	}
 
 	public function getIndexContentContentTypes()
 	{
-		$types = $this->get('params')->get('component.content_types_index_content');
+		$types = $this->params->get('component.content_types_index_content');
 
 		return array_map('trim', explode(',', trim($types)));
 	}
