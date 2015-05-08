@@ -1,113 +1,92 @@
 <?php
 /**
  * A controller for managing Solr indexing and searching.
- * 
- * @package		JSolr.Index
- * @subpackage  Controller	
- * @copyright	Copyright (C) 2012-2013 KnowledgeARC Ltd. All rights reserved.
- * @license     This file is part of the JSolrIndex component for Joomla!.
-
-   The JSolrIndex component for Joomla! is free software: you can redistribute it 
-   and/or modify it under the terms of the GNU General Public License as 
-   published by the Free Software Foundation, either version 3 of the License, 
-   or (at your option) any later version.
-
-   The JSolrIndex component for Joomla! is distributed in the hope that it will be 
-   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with the JSolrIndex component for Joomla!.  If not, see 
-   <http://www.gnu.org/licenses/>.
-
- * Contributors
- * Please feel free to add your name and email (optional) here if you have 
- * contributed any source code changes.
- * Name							Email
- * Hayden Young					<haydenyoung@knowledgearc.com> 
- * 
+ *
+ * @package     JSolr.Index
+ * @subpackage  Controller
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die('Restricted access');
 
 class JSolrIndexController extends JControllerLegacy
 {
-	protected $default_view = 'configuration';
+    protected $default_view = 'configuration';
 
-	public function test()
-	{
-		$model = $this->getModel($this->default_view);
-		
-		if ($success = $model->test()) {
-			$msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
-		} else {
-			$msg = JText::_($model->getError());
-		}
+    public function test()
+    {
+        $model = $this->getModel($this->default_view);
 
-		$search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
-		$replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
-		$msg = str_replace($search, $replace, $msg);
-		
-		echo json_encode(array("success"=>$success, "message"=>$msg));
-	}
-	
-	public function testTika()
-	{
-		$model = $this->getModel($this->default_view);
-		
-		if ($success = $model->testTika()) {
-			$msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
-		} else {
-			$msg = JText::_($model->getError());
-		}
+        if ($success = $model->test()) {
+            $msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
+        } else {
+            $msg = JText::_($model->getError());
+        }
 
-		$search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
-		$replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
-		$msg = str_replace($search, $replace, $msg);
-		
-		echo json_encode(array("success"=>$success, "message"=>$msg));
-	}	
-	
-	public function index()
-	{
-		$model = $this->getModel($this->default_view);
-		
-		$start = new JDate('now');
-		
-		if ($success = $model->index()) {
-			$msg = JText::_("Index successful");
-		} else {
-			error_log('failed to index');
-			$msg = JText::_($model->getError());
-		}
-		
-		$end = new JDate('now');
+        $search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
+        $replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
+        $msg = str_replace($search, $replace, $msg);
 
-		$time = $start->diff($end);
+        echo json_encode(array("success"=>$success, "message"=>$msg));
+    }
 
-		$msg = $msg." (execution time: ".$time->format("%H:%M:%S").")";
-		
-		echo json_encode(array("success"=>$success, "message"=>$msg));		
-	}
+    public function testTika()
+    {
+        $model = $this->getModel($this->default_view);
 
-	public function purge()
-	{
-		$model = $this->getModel($this->default_view);
-		
-		if ($success = $model->purge()) {
-			$msg = JText::_("Index purged successfully");
-		} else {
-			$msg = JText::_($model->getError());
-		}
-		
-		echo json_encode(array("success"=>$success, "message"=>$msg));
-	}
-	
-	function display($cachable = false, $urlparams = false)
-	{
-		parent::display($cachable, $urlparams);
-		
-		return $this;
-	}
+        if ($success = $model->testTika()) {
+            $msg = JText::_("COM_JSOLRINDEX_".strtoupper(JRequest::getWord("view", "configuration"))."_PING_SUCCESS");
+        } else {
+            $msg = JText::_($model->getError());
+        }
+
+        $search = array("\n", "\r", "\u", "\t", "\f", "\b", "/", '"');
+        $replace = array("\\n", "\\r", "\\u", "\\t", "\\f", "\\b", "\/", "\"");
+        $msg = str_replace($search, $replace, $msg);
+
+        echo json_encode(array("success"=>$success, "message"=>$msg));
+    }
+
+    public function index()
+    {
+        $model = $this->getModel($this->default_view);
+
+        $start = new JDate('now');
+
+        if ($success = $model->index()) {
+            $msg = JText::_("Index successful");
+        } else {
+            error_log('failed to index');
+            $msg = JText::_($model->getError());
+        }
+
+        $end = new JDate('now');
+
+        $time = $start->diff($end);
+
+        $msg = $msg." (execution time: ".$time->format("%H:%M:%S").")";
+
+        echo json_encode(array("success"=>$success, "message"=>$msg));
+    }
+
+    public function purge()
+    {
+        $model = $this->getModel($this->default_view);
+
+        if ($success = $model->purge()) {
+            $msg = JText::_("Index purged successfully");
+        } else {
+            $msg = JText::_($model->getError());
+        }
+
+        echo json_encode(array("success"=>$success, "message"=>$msg));
+    }
+
+    function display($cachable = false, $urlparams = false)
+    {
+        parent::display($cachable, $urlparams);
+
+        return $this;
+    }
 }

@@ -63,8 +63,8 @@
             description="COM_JSOLRINDEX_ATTACHMENTS_EXTRACTOR_DESC"
             class="inputbox"
             default="local">
-                <option value="local">COM_JSOLRINDEX_ATTACHMENTS_EXTRACTOR_LOCAL</option>
-                <option value="tikaserver">COM_JSOLRINDEX_ATTACHMENTS_EXTRACTOR_TIKASERVER</option>
+                <option value="TikaApp">COM_JSOLRINDEX_ATTACHMENTS_EXTRACTOR_LOCAL</option>
+                <option value="TikaServer">COM_JSOLRINDEX_ATTACHMENTS_EXTRACTOR_TIKASERVER</option>
         </field>
         <field
             name="attachments_spacer1"
