@@ -6,10 +6,14 @@
 
 namespace JSolr;
 
+use \JFactory as JFactory;
+use \JComponentHelper as JComponentHelper;
+use \JLanguageHelper as JLanguageHelper;
+
 /**
  * The JSolr factory class.
  */
-abstract class Factory extends \JObject
+abstract class Factory
 {
 	/**
 	 * @static
@@ -25,7 +29,7 @@ abstract class Factory extends \JObject
 	 * Gets a connection to the Solr Service using settings from the specified
 	 * component.
 	 *
-	 * @return JSolrApacheSolrService A connection to the Solr Service.
+	 * @return Apache\Solr\Service A connection to the Solr Service.
 	 * @throws Exception An exception when a connection issue occurs.
 	 */
 	public static function getService()
@@ -39,10 +43,10 @@ abstract class Factory extends \JObject
 			$url = $params->get('username') . ":" . $params->get('password') . "@" . $url;
 		}
 
-		$service = new JSolrApacheSolrService($url, $params->get('port'), $params->get('path'));
+		$service = new Apache\Solr\Service($url, $params->get('port'), $params->get('path'));
 
 		if (!$service->ping()) {
-			throw new Exception('Could not contact the index server.', 503);
+			throw new \Exception('Could not contact the index server.', 503);
 		}
 
 		return $service;

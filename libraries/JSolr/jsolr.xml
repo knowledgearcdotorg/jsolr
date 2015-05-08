@@ -2,7 +2,7 @@
 <extension type="library" method="upgrade" version="3.3">
 	<name>JSolr library</name>
 	<creationDate>2012-07-09</creationDate>
-	<libraryname>jsolr</libraryname>
+	<libraryname>JSolr</libraryname>
 	<author>KnowledgeArc Ltd</author>
 	<authorEmail>development@knowledgearc.com</authorEmail>
 	<authorUrl>http://www.knowledgearc.org</authorUrl>
@@ -12,20 +12,13 @@
     <description>LIB_JSOLR_XML_DESCRIPTION</description>
 
     <files folder="libraries">
-        <folder>apache</folder>
-        <folder>form</folder>
-        <folder>helper</folder>
-        <folder>index</folder>
-        <folder>pagination</folder>
-        <folder>search</folder>
-        <filename>factory.php</filename>
-        <filename>helper.php</filename>
+        <folder>Apache</folder>
+        <folder>Form</folder>
+        <folder>Index</folder>
+        <folder>Search</folder>
+        <filename>Factory.php</filename>
+        <filename>Helper.php</filename>
     </files>
-
-    <media destination="jsolr">
-    	<folder>js</folder>
-    	<folder>css</folder>
-    </media>
 
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.lib_jsolr.ini</language>

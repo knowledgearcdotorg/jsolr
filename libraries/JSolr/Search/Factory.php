@@ -13,16 +13,16 @@ class Factory extends \JSolr\Factory
 	protected static $lookup;
 
 	/**
-	 * Gets an instance of the JSolrSearchQuery class.
+	 * Gets an instance of the Query class.
 	 *
 	 * @param string $query The initial query to search for.
-	 * @return JSolrSearchQuery An instance of the JSolrSearchQuery class.
+	 * @return Query An instance of the Query class.
 	 */
 	public static function getQuery($query = null)
 	{
 		$solr = self::getService();
 
-		return new JSolrSearchQuery($query, $solr);
+		return new Query($query, $solr);
 	}
 
 	/**
@@ -34,7 +34,7 @@ class Factory extends \JSolr\Factory
 	 * $query = 'author: Ann-Teresa Young';
 	 * $filters = array('q_custom'=>'my custom filter');
 	 *
-	 * JSolrSearchFactory::getSearchRoute($query, $filters);
+	 * \JSolr\Search\Factory::getSearchRoute($query, $filters);
 	 *
 	 * @param array $additionalFilters An array of additional query filters. Each filter
 	 * should be defined within the array as $array[$key] = $value.

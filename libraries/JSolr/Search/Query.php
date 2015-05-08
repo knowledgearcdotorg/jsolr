@@ -128,7 +128,7 @@ class Query
 	 * @see query()
 	 * @see solr()
 	 */
-	public function __construct($query, JSolrApacheSolrService $solr)
+	public function __construct($query, \JSolr\Apache\Solr\Service $solr)
 	{
   		$this->solr = $solr;
 		$this->query = $query;
@@ -987,8 +987,8 @@ class Query
 	 * setting. It assumes you have done that already.
 	 *
 	 * @return
-	 *  The search results as an JSolrSearchResultSet object.
-	 * @see JSolrApacheSolrService
+	 *  The search results as an ResultSet object.
+	 * @see \JSolr\Apache\Solr\Service
 	 */
   	public function search()
 	{
@@ -1002,7 +1002,7 @@ class Query
 
 		$response = $this->solr->search($query, $this->offset(), $this->limit(), $this->params);
 
-		return new JSolrSearchResultSet($response);
+		return new ResultSet($response);
 	}
 
 	/**
@@ -1027,7 +1027,7 @@ class Query
 	 *  - setter: This object
 	 *  - getter: The Apache Solr Service instance.
 	 */
-	public function solr(JSolrApacheSolrService $instance = null)
+	public function solr(\JSolr\Apache\Solr\Service $instance = null)
 	{
 		if (is_null($instance)) {
 			return $this->solr;

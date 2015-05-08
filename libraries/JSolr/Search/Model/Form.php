@@ -114,7 +114,7 @@ abstract class Form extends \JModelForm
 
         for ($i = 0; $i < count($array); $i++)
         {
-            $uri = clone JSolrSearchFactory::getQueryRoute();
+            $uri = clone \JSolr\Search\Factory::getQueryRoute();
 
             if (JArrayHelper::getValue($array[$i], 'name'))
             {

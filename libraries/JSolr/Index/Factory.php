@@ -6,7 +6,8 @@
 
 namespace JSolr\Index;
 
-use \JSolr\Index\Filesystem;
+use \JComponentHelper as JComponentHelper;
+use \JString as JString;
 
 class Factory extends \JSolr\Factory
 {
@@ -17,8 +18,8 @@ class Factory extends \JSolr\Factory
 	 *
 	 * @param string $fileOrUrl A file path or url.
 	 *
-	 * @return JSolrIndexFilesystemExtractor A sub class of the
-	 * JSolrIndexFilesystemExtractor, based on the JSolr Index component's
+	 * @return FileSystem\Extractor A sub class of the
+	 * FileSystem\Extractor, based on the JSolr Index component's
 	 * configuration.
 	 */
 	public static function getExtractor($fileOrUrl)

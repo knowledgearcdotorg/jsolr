@@ -118,7 +118,7 @@ class Form extends \JForm
 			}
 
 			// Instantiate the form.
-			$forms[$name] = new JSolrForm($name, $options);
+			$forms[$name] = new Form($name, $options);
 
 			// Load the data.
 			if (substr(trim($data), 0, 1) == '<')

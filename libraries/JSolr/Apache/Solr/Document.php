@@ -137,7 +137,7 @@ class Document implements IteratorAggregate
 	 * on field values - this is similar to SolrJ's functionality.
 	 *
 	 * <code>
-	 * $doc = new JSolrApacheSolrDocument();
+	 * $doc = new \JSolr\Apache\Solr\Document();
 	 *
 	 * $doc->addField('foo', 'bar', 2.0);
 	 * $doc->addField('foo', 'baz', 3.0);

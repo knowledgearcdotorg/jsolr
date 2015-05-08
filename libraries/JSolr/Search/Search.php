@@ -41,7 +41,7 @@ abstract class Search extends \JPlugin
 
 		foreach ($boosts as $boost) {
 			if ($boost)
-				$qf[] = JSolrHelper::localize($boost);
+				$qf[] = \JSolr\Helper::localize($boost);
 		}
 
 		return $qf;
@@ -60,7 +60,7 @@ abstract class Search extends \JPlugin
 
         foreach ($boosts as $boost) {
             if ($boost)
-                $bq[] = JSolrHelper::localize($boost);
+                $bq[] = \JSolr\Helper::localize($boost);
         }
 
         return $bq;
@@ -90,7 +90,7 @@ abstract class Search extends \JPlugin
 
 		foreach ($this->highlighting as $higlighting) {
 			if ($higlighting)
-				$hl[] = JSolrHelper::localize($higlighting);
+				$hl[] = \JSolr\Helper::localize($higlighting);
 		}
 
 		return $hl;

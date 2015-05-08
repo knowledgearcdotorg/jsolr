@@ -35,6 +35,8 @@
 
  namespace JSolr\Apache\Solr;
 
+ use \InvalidArgumentException as InvalidArgumentException;
+
 /**
  * Starting point for the Solr API. Represents a Solr server resource and has
  * methods for pinging, adding, deleting, committing, optimizing and searching.
@@ -48,7 +50,7 @@
  * {
  * 		$solr->deleteByQuery('*:*'); //deletes ALL documents - be careful :)
  *
- * 		$document = new JSolrApacheSolrDocument();
+ * 		$document = new Document();
  * 		$document->id = uniqid(); //or something else suitably unique
  *
  * 		$document->title = 'Some Title';
@@ -118,7 +120,7 @@ class Service
 	protected $_host, $_port, $_path;
 
 	/**
-	 * Whether {@link Response} objects should create {@link JSolrApacheSolrDocument}s in
+	 * Whether {@link Response} objects should create {@link Document}s in
 	 * the returned parsed data
 	 *
 	 * @var boolean
@@ -166,7 +168,7 @@ class Service
 	/**
 	 * HTTP Transport implementation (pluggable)
 	 *
-	 * @var JSolrApacheSolrHttpTransportInterface
+	 * @var Http\Transportable
 	 */
 	protected $_httpTransport = false;
 
@@ -219,7 +221,7 @@ class Service
 	 * @param string $host
 	 * @param string $port
 	 * @param string $path
-	 * @param JSolrApacheSolrHttpTransportInterface $httpTransport
+	 * @param Http\Transportable $httpTransport
 	 */
 	public function __construct($host = 'localhost', $port = 8180, $path = '/solr/', $httpTransport = false)
 	{
@@ -463,9 +465,7 @@ class Service
 		// lazy load a default if one has not be set
 		if ($this->_httpTransport === false)
 		{
-			require_once(dirname(__FILE__) . '/httptransport/filegetcontents.php');
-
-			$this->_httpTransport = new JSolrApacheSolrHttpTransportFileGetContents();
+			$this->_httpTransport = new Http\Transport\FileGetContents();
 		}
 
 		return $this->_httpTransport;
@@ -474,16 +474,16 @@ class Service
 	/**
 	 * Set the HTTP Transport implemenation that will be used for all HTTP requests
 	 *
-	 * @param JSolrApacheSolrHttpTransportInterface
+	 * @param Http\Transportable
 	 */
-	public function setHttpTransport(JSolrApacheSolrHttpTransportInterface $httpTransport)
+	public function setHttpTransport(Http\Transportable $httpTransport)
 	{
 		$this->_httpTransport = $httpTransport;
 	}
 
 	/**
 	 * Set the create documents flag. This determines whether {@link Response} objects will
-	 * parse the response and create {@link JSolrApacheSolrDocument} instances in place.
+	 * parse the response and create {@link Document} instances in place.
 	 *
 	 * @param boolean $createDocuments
 	 */
@@ -617,7 +617,7 @@ class Service
 		$httpTransport = $this->getHttpTransport();
 
 		$httpResponse = $httpTransport->performHeadRequest($this->_pingUrl, $timeout);
-		$solrResponse = new Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
+		$solrResponse = new \JSolr\Apache\Solr\Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
 		if ($solrResponse->getHttpStatus() == 200)
 		{
@@ -672,14 +672,14 @@ class Service
 	/**
 	 * Add a Solr Document to the index
 	 *
-	 * @param JSolrApacheSolrDocument $document
+	 * @param Document $document
 	 * @param boolean $overwrite
 	 * @param integer $commitWithin The number of milliseconds that a document must be committed within, see @{link http://wiki.apache.org/solr/UpdateXmlMessages#The_Update_Schema} for details.  If left empty this property will not be set in the request.
 	 * @return Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
-	public function addDocument(JSolrApacheSolrDocument $document, $overwrite = true, $commitWithin = 0)
+	public function addDocument(Document $document, $overwrite = true, $commitWithin = 0)
 	{
 		$overwriteValue = $overwrite ? 'true' : 'false';
 
@@ -696,7 +696,7 @@ class Service
 	/**
 	 * Add an array of Solr Documents to the index all at once
 	 *
-	 * @param array $documents Should be an array of JSolrApacheSolrDocument instances
+	 * @param array $documents Should be an array of Document instances
 	 * @param boolean $overwrite
 	 * @param integer $commitWithin The number of milliseconds that a document must be committed within, see @{link http://wiki.apache.org/solr/UpdateXmlMessages#The_Update_Schema} for details.  If left empty this property will not be set in the request.
 	 * @return Response
@@ -714,7 +714,7 @@ class Service
 
 		foreach ($documents as $document)
 		{
-			if ($document instanceof JSolrApacheSolrDocument)
+			if ($document instanceof Document)
 			{
 				$rawPost .= $this->_documentToXmlFragment($document);
 			}
@@ -726,11 +726,11 @@ class Service
 	}
 
 	/**
-	 * Create an XML fragment from a {@link JSolrApacheSolrDocument} instance appropriate for use inside a Solr add call
+	 * Create an XML fragment from a {@link Document} instance appropriate for use inside a Solr add call
 	 *
 	 * @return string
 	 */
-	protected function _documentToXmlFragment(JSolrApacheSolrDocument $document)
+	protected function _documentToXmlFragment(Document $document)
 	{
 		$xml = '<doc';
 
@@ -917,14 +917,14 @@ class Service
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
 	 *
-	 * NOTE: when passing an JSolrApacheSolrDocument instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * NOTE: when passing an Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
 	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
 	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
 	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
 	 *
 	 * @param string $file Path to file to extract data from
 	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
-	 * @param JSolrApacheSolrDocument $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
 	 * @param string $mimetype optional mimetype specification (for the file being extracted)
 	 *
 	 * @return Response
@@ -976,14 +976,14 @@ class Service
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
 	 *
-	 * NOTE: when passing an JSolrApacheSolrDocument instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * NOTE: when passing an Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
 	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
 	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
 	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
 	 *
 	 * @param string $data Data that will be passed to Solr Cell
 	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
-	 * @param JSolrApacheSolrDocument $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
 	 * @param string $mimetype optional mimetype specification (for the file being extracted)
 	 *
 	 * @return Response
@@ -1011,8 +1011,8 @@ class Service
 		$params['wt'] = self::SOLR_WRITER;
 		$params['json.nl'] = $this->_namedListTreatment;
 
-		// check if $document is an JSolrApacheSolrDocument instance
-		if (!is_null($document) && $document instanceof JSolrApacheSolrDocument)
+		// check if $document is an Document instance
+		if (!is_null($document) && $document instanceof Document)
 		{
 			// iterate document, adding literal.* and boost.* fields to $params as appropriate
 			foreach ($document as $field => $fieldValue)
@@ -1041,14 +1041,14 @@ class Service
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
 	 *
-	 * NOTE: when passing an JSolrApacheSolrDocument instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * NOTE: when passing an Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
 	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
 	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
 	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
 	 *
 	 * @param string $url URL
 	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
-	 * @param JSolrApacheSolrDocument $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
 	 * @param string $mimetype optional mimetype specification (for the file being extracted)
 	 *
 	 * @return Response

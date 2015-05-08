@@ -35,6 +35,8 @@
 
 namespace JSolr\Apache\Solr\Service;
 
+use \InvalidArgumentException as InvalidArgumentException;
+
 /**
  * Reference Implementation for using multiple Solr services in a distribution. Functionality
  * includes:
@@ -73,14 +75,14 @@ class ServiceBalancer
 	/**
 	 * Escape a value for special query characters such as ':', '(', ')', '*', '?', etc.
 	 *
-	 * NOTE: inside a phrase fewer characters need escaped, use {@link JSolrApacheSolrService::escapePhrase()} instead
+	 * NOTE: inside a phrase fewer characters need escaped, use {@link \JSolr\Apache\Solr\Service::escapePhrase()} instead
 	 *
 	 * @param string $value
 	 * @return string
 	 */
 	static public function escape($value)
 	{
-		return JSolrApacheSolrService::escape($value);
+		return \JSolr\Apache\Solr\Service::escape($value);
 	}
 
 	/**
@@ -91,7 +93,7 @@ class ServiceBalancer
 	 */
 	static public function escapePhrase($value)
 	{
-		return JSolrApacheSolrService::escapePhrase($value);
+		return \JSolr\Apache\Solr\Service::escapePhrase($value);
 	}
 
 	/**
@@ -102,7 +104,7 @@ class ServiceBalancer
 	 */
 	static public function phrase($value)
 	{
-		return JSolrApacheSolrService::phrase($value);
+		return \JSolr\Apache\Solr\Service::phrase($value);
 	}
 
 	/**
@@ -160,11 +162,11 @@ class ServiceBalancer
 	 *
 	 * @param mixed $service
 	 *
-	 * @throws JSolrApacheSolrInvalidArgumentException If service descriptor is not valid
+	 * @throws InvalidArgumentException If service descriptor is not valid
 	 */
 	public function addReadService($service)
 	{
-		if ($service instanceof JSolrApacheSolrService)
+		if ($service instanceof \JSolr\Apache\Solr\Service)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 
@@ -180,7 +182,7 @@ class ServiceBalancer
 			}
 			else
 			{
-				throw new JSolrApacheSolrInvalidArgumentException('A Readable Service description array does not have all required elements of host, port, and path');
+				throw new InvalidArgumentException('A Readable Service description array does not have all required elements of host, port, and path');
 			}
 		}
 	}
@@ -190,13 +192,13 @@ class ServiceBalancer
 	 *
 	 * @param mixed $service
 	 *
-	 * @throws JSolrApacheSolrInvalidArgumentException If service descriptor is not valid
+	 * @throws InvalidArgumentException If service descriptor is not valid
 	 */
 	public function removeReadService($service)
 	{
 		$id = '';
 
-		if ($service instanceof JSolrApacheSolrService)
+		if ($service instanceof \JSolr\Apache\Solr\Service)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 		}
@@ -208,7 +210,7 @@ class ServiceBalancer
 			}
 			else
 			{
-				throw new JSolrApacheSolrInvalidArgumentException('A Readable Service description array does not have all required elements of host, port, and path');
+				throw new InvalidArgumentException('A Readable Service description array does not have all required elements of host, port, and path');
 			}
 		}
 		else if (is_string($service))
@@ -228,11 +230,11 @@ class ServiceBalancer
 	 *
 	 * @param mixed $service
 	 *
-	 * @throws JSolrApacheSolrInvalidArgumentException If service descriptor is not valid
+	 * @throws InvalidArgumentException If service descriptor is not valid
 	 */
 	public function addWriteService($service)
 	{
-		if ($service instanceof JSolrApacheSolrService)
+		if ($service instanceof \JSolr\Apache\Solr\Service)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 
@@ -248,7 +250,7 @@ class ServiceBalancer
 			}
 			else
 			{
-				throw new JSolrApacheSolrInvalidArgumentException('A Writeable Service description array does not have all required elements of host, port, and path');
+				throw new InvalidArgumentException('A Writeable Service description array does not have all required elements of host, port, and path');
 			}
 		}
 	}
@@ -258,13 +260,13 @@ class ServiceBalancer
 	 *
 	 * @param mixed $service
 	 *
-	 * @throws JSolrApacheSolrInvalidArgumentException If service descriptor is not valid
+	 * @throws InvalidArgumentException If service descriptor is not valid
 	 */
 	public function removeWriteService($service)
 	{
 		$id = '';
 
-		if ($service instanceof JSolrApacheSolrService)
+		if ($service instanceof \JSolr\Apache\Solr\Service)
 		{
 			$id = $this->_getServiceId($service->getHost(), $service->getPort(), $service->getPath());
 		}
@@ -276,7 +278,7 @@ class ServiceBalancer
 			}
 			else
 			{
-				throw new JSolrApacheSolrInvalidArgumentException('A Readable Service description array does not have all required elements of host, port, and path');
+				throw new InvalidArgumentException('A Readable Service description array does not have all required elements of host, port, and path');
 			}
 		}
 		else if (is_string($service))
@@ -294,9 +296,9 @@ class ServiceBalancer
 	 * Iterate through available read services and select the first with a ping
 	 * that satisfies configured timeout restrictions (or the default)
 	 *
-	 * @return JSolrApacheSolrService
+	 * @return \JSolr\Apache\Solr\Service
 	 *
-	 * @throws JSolrApacheSolrNoServiceAvailableException If there are no read services that meet requirements
+	 * @throws \JSolr\Apache\Solr\NoServiceAvailableException If there are no read services that meet requirements
 	 */
 	protected function _selectReadService($forceSelect = false)
 	{
@@ -322,7 +324,7 @@ class ServiceBalancer
 				if (is_array($service))
 				{
 					//convert the array definition to a client object
-					$service = new JSolrApacheSolrService($service['host'], $service['port'], $service['path']);
+					$service = new \JSolr\Apache\Solr\Service($service['host'], $service['port'], $service['path']);
 					$this->_readableServices[$id] = $service;
 				}
 
@@ -331,7 +333,7 @@ class ServiceBalancer
 			}
 			else
 			{
-				throw new JSolrApacheSolrNoServiceAvailableException('No read services were available');
+				throw new \JSolr\Apache\Solr\NoServiceAvailableException('No read services were available');
 			}
 		}
 
@@ -342,9 +344,9 @@ class ServiceBalancer
 	 * Iterate through available write services and select the first with a ping
 	 * that satisfies configured timeout restrictions (or the default)
 	 *
-	 * @return JSolrApacheSolrService
+	 * @return \JSolr\Apache\Solr\Service
 	 *
-	 * @throws JSolrApacheSolrNoServiceAvailableException If there are no write services that meet requirements
+	 * @throws \JSolr\Apache\Solr\NoServiceAvailableException If there are no write services that meet requirements
 	 */
 	protected function _selectWriteService($forceSelect = false)
 	{
@@ -375,7 +377,7 @@ class ServiceBalancer
 				if (is_array($service))
 				{
 					//convert the array definition to a client object
-					$service = new JSolrApacheSolrService($service['host'], $service['port'], $service['path']);
+					$service = new \JSolr\Apache\Solr\Service($service['host'], $service['port'], $service['path']);
 					$this->_writeableServices[$id] = $service;
 				}
 
@@ -383,7 +385,7 @@ class ServiceBalancer
 			}
 			else
 			{
-				throw new JSolrApacheSolrNoServiceAvailableException('No write services were available');
+				throw new \JSolr\Apache\Solr\NoServiceAvailableException('No write services were available');
 			}
 		}
 
@@ -397,9 +399,9 @@ class ServiceBalancer
 	 * reached.   This will allow for increased reliability with heavily loaded
 	 * server(s).
 	 *
-	 * @return JSolrApacheSolrService
+	 * @return \JSolr\Apache\Solr\Service
 	 *
-	 * @throws JSolrApacheSolrNoServiceAvailableException If there are no write services that meet requirements
+	 * @throws \JSolr\Apache\Solr\NoServiceAvailableException If there are no write services that meet requirements
 	 */
 
 	protected function _selectWriteServiceSafe($forceSelect = false)
@@ -420,7 +422,7 @@ class ServiceBalancer
 					if (is_array($service))
 					{
 						//convert the array definition to a client object
-						$service = new JSolrApacheSolrService($service['host'], $service['port'], $service['path']);
+						$service = new \JSolr\Apache\Solr\Service($service['host'], $service['port'], $service['path']);
 						$this->_writeableServices[$id] = $service;
 					}
 
@@ -430,14 +432,14 @@ class ServiceBalancer
 
 					if($backoff > $this->_backoffLimit)
 					{
-						throw new JSolrApacheSolrNoServiceAvailableException('No write services were available.  All timeouts exceeded.');
+						throw new \JSolr\Apache\Solr\NoServiceAvailableException('No write services were available.  All timeouts exceeded.');
 					}
 
 				} while($this->_writeableServices[$this->_currentWriteService]->ping($backoff) === false);
 			}
 			else
 			{
-				throw new JSolrApacheSolrNoServiceAvailableException('No write services were available');
+				throw new \JSolr\Apache\Solr\NoServiceAvailableException('No write services were available');
 			}
 		}
 
@@ -445,8 +447,8 @@ class ServiceBalancer
 	}
 
 	/**
-	 * Set the create documents flag. This determines whether {@link JSolrApacheSolrResponse} objects will
-	 * parse the response and create {@link JSolrApacheSolrDocument} instances in place.
+	 * Set the create documents flag. This determines whether {@link \JSolr\Apache\Solr\Response} objects will
+	 * parse the response and create {@link \JSolr\Apache\Solr\Document} instances in place.
 	 *
 	 * @param boolean $createDocuments
 	 */
@@ -477,7 +479,7 @@ class ServiceBalancer
 	 * should be a complete and well formed "add" xml document.
 	 *
 	 * @param string $rawPost
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -508,15 +510,15 @@ class ServiceBalancer
 	/**
 	 * Add a Solr Document to the index
 	 *
-	 * @param JSolrApacheSolrDocument $document
+	 * @param \JSolr\Apache\Solr\Document $document
 	 * @param boolean $allowDups
 	 * @param boolean $overwritePending
 	 * @param boolean $overwriteCommitted
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
-	public function addDocument(JSolrApacheSolrDocument $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true)
+	public function addDocument(\JSolr\Apache\Solr\Document $document, $allowDups = false, $overwritePending = true, $overwriteCommitted = true)
 	{
 		$service = $this->_selectWriteService();
 
@@ -543,11 +545,11 @@ class ServiceBalancer
 	/**
 	 * Add an array of Solr Documents to the index all at once
 	 *
-	 * @param array $documents Should be an array of JSolrApacheSolrDocument instances
+	 * @param array $documents Should be an array of \JSolr\Apache\Solr\Document instances
 	 * @param boolean $allowDups
 	 * @param boolean $overwritePending
 	 * @param boolean $overwriteCommitted
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -581,7 +583,7 @@ class ServiceBalancer
 	 *
 	 * @param boolean $waitFlush
 	 * @param boolean $waitSearcher
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -615,7 +617,7 @@ class ServiceBalancer
 	 *
 	 * @param string $rawPost
 	 * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -650,7 +652,7 @@ class ServiceBalancer
 	 * @param boolean $fromPending
 	 * @param boolean $fromCommitted
 	 * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -685,7 +687,7 @@ class ServiceBalancer
 	 * @param boolean $fromPending
 	 * @param boolean $fromCommitted
 	 * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -720,7 +722,7 @@ class ServiceBalancer
 	 * @param boolean $fromPending
 	 * @param boolean $fromCommitted
 	 * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -752,19 +754,19 @@ class ServiceBalancer
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
 	 *
-	 * NOTE: when passing an JSolrApacheSolrDocument instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * NOTE: when passing an \JSolr\Apache\Solr\Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
 	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
 	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
 	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
 	 *
 	 * @param string $file Path to file to extract data from
 	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
-	 * @param JSolrApacheSolrDocument $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param \JSolr\Apache\Solr\Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
 	 * @param string $mimetype optional mimetype specification (for the file being extracted)
 	 *
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
-	 * @throws JSolrApacheSolrInvalidArgumentException if $file, $params, or $document are invalid.
+	 * @throws InvalidArgumentException if $file, $params, or $document are invalid.
 	 */
 	public function extract($file, $params = array(), $document = null, $mimetype = 'application/octet-stream')
 	{
@@ -794,19 +796,19 @@ class ServiceBalancer
 	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
 	 * to use Solr Cell and what parameters are available.
 	 *
-	 * NOTE: when passing an JSolrApacheSolrDocument instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * NOTE: when passing an \JSolr\Apache\Solr\Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
 	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
 	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
 	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
 	 *
 	 * @param string $data Data that will be passed to Solr Cell
 	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
-	 * @param JSolrApacheSolrDocument $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param \JSolr\Apache\Solr\Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
 	 * @param string $mimetype optional mimetype specification (for the file being extracted)
 	 *
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
-	 * @throws JSolrApacheSolrInvalidArgumentException if $file, $params, or $document are invalid.
+	 * @throws InvalidArgumentException if $file, $params, or $document are invalid.
 	 *
 	 * @todo Should be using multipart/form-data to post parameter values, but I could not get my implementation to work. Needs revisisted.
 	 */
@@ -841,7 +843,7 @@ class ServiceBalancer
 	 * @param boolean $waitFlush
 	 * @param boolean $waitSearcher
 	 * @param float $timeout Maximum expected duration of the optimize operation on the server (otherwise, will throw a communication exception)
-	 * @return JSolrApacheSolrResponse
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
@@ -876,12 +878,12 @@ class ServiceBalancer
 	 * @param int $offset The starting offset for result documents
 	 * @param int $limit The maximum number of result documents to return
 	 * @param array $params key / value pairs for query parameters, use arrays for multivalued parameters
-	 * @param string $method The HTTP method (JSolrApacheSolrService::METHOD_GET or JSolrApacheSolrService::METHOD::POST)
-	 * @return JSolrApacheSolrResponse
+	 * @param string $method The HTTP method (\JSolr\Apache\Solr\Service::METHOD_GET or \JSolr\Apache\Solr\Service::METHOD::POST)
+	 * @return \JSolr\Apache\Solr\Response
 	 *
 	 * @throws \JSolr\Apache\Solr\Http\Transport\Exception If an error occurs during the service call
 	 */
-	public function search($query, $offset = 0, $limit = 10, $params = array(), $method = JSolrApacheSolrService::METHOD_GET)
+	public function search($query, $offset = 0, $limit = 10, $params = array(), $method = \JSolr\Apache\Solr\Service::METHOD_GET)
 	{
 		$service = $this->_selectReadService();
 

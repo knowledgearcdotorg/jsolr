@@ -38,7 +38,7 @@ namespace JSolr\Apache\Solr\Http\Transport;
 /**
  * HTTP Transport implemenation that uses the builtin http URL wrappers and file_get_contents
  */
-class FileGetContents extends Transport
+class FileGetContents extends \JSolr\Apache\Solr\Http\Transport
 {
 	/**
 	 * SVN Revision meta data for this class
@@ -207,6 +207,6 @@ class FileGetContents extends Transport
 			}
 		}
 
-		return new HttpTransportResponse($status, $contentType, $rawResponse);
+		return new Response($status, $contentType, $rawResponse);
 	}
 }

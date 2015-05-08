@@ -57,7 +57,7 @@ class Response
 	/**
 	 * Holds the raw response used in construction
 	 *
-	 * @var JSolrApacheSolrHttpTransportResponse HTTP response
+	 * @var Response HTTP response
 	 */
 	protected $_response;
 
@@ -87,11 +87,11 @@ class Response
 	/**
 	 * Constructor. Takes the raw HTTP response body and the exploded HTTP headers
 	 *
-	 * @return JSolrApacheSolrHttpTransportResponse HTTP response
-	 * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to JSolrApacheSolrDocument instances
+	 * @return \JSolr\Apache\Solr\Http\Transport\Response HTTP response
+	 * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to Document instances
 	 * @param boolean $collapseSingleValueArrays Whether to make multivalued fields appear as single values
 	 */
-	public function __construct(JSolrApacheSolrHttpTransportResponse $response, $createDocuments = true, $collapseSingleValueArrays = true)
+	public function __construct(\JSolr\Apache\Solr\Http\Transport\Response $response, $createDocuments = true, $collapseSingleValueArrays = true)
 	{
 		$this->_response = $response;
 		$this->_createDocuments = (bool) $createDocuments;
@@ -190,7 +190,7 @@ class Response
 	/**
 	 * Parse the raw response into the parsed_data array for access
 	 *
-	 * @throws JSolrApacheSolrParserException If the data could not be parsed
+	 * @throws ParserException If the data could not be parsed
 	 */
 	protected function _parseData()
 	{
@@ -200,10 +200,10 @@ class Response
 		// check that we receive a valid JSON response - we should never receive a null
 		if ($data === null)
 		{
-			throw new JSolrApacheSolrParserException('Solr response does not appear to be valid JSON, please examine the raw response with getRawResponse() method');
+			throw new ParserException('Solr response does not appear to be valid JSON, please examine the raw response with getRawResponse() method');
 		}
 
-		//if we're configured to collapse single valued arrays or to convert them to JSolrApacheSolrDocument objects
+		//if we're configured to collapse single valued arrays or to convert them to Document objects
 		//and we have response documents, then try to collapse the values and / or convert them now
 		if (($this->_createDocuments || $this->_collapseSingleValueArrays) && isset($data->response) && is_array($data->response->docs))
 		{
@@ -213,7 +213,7 @@ class Response
 			{
 				if ($this->_createDocuments)
 				{
-					$document = new JSolrApacheSolrDocument();
+					$document = new Document();
 				}
 				else
 				{

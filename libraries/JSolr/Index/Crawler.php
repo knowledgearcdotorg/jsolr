@@ -123,7 +123,7 @@ abstract class Crawler extends \JPlugin
 	 * The key can be customized by overriding this method but it is not
 	 * recommended.
 	 *
-	 * @param JSolrApacheSolrDocument $document The document to use to build the
+	 * @param \JSolr\Apache\Solr\Document $document The document to use to build the
 	 * key.
 	 *
 	 * @return string The item's key.
@@ -231,7 +231,7 @@ abstract class Crawler extends \JPlugin
 			$document = $this->prepare($database->loadObject());
 
 			try {
-				$solr = JSolrIndexFactory::getService();
+				$solr = \JSolr\Index\Factory::getService();
 
 				$solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
 			} catch (Exception $e) {
@@ -315,7 +315,7 @@ abstract class Crawler extends \JPlugin
 		{
 			$items = $this->getItems($start, $limit);
 
-			$solr = JSolrIndexFactory::getService();
+			$solr = \JSolr\Index\Factory::getService();
 
 			if (is_array($items)) {
 				$documents = array();
@@ -358,7 +358,7 @@ abstract class Crawler extends \JPlugin
 	 */
 	protected function purge()
 	{
-		$solr = JSolrIndexFactory::getService();
+		$solr = \JSolr\Index\Factory::getService();
 		$solr->deleteByQuery("context:".$this->get('context').'*');
 		$solr->commit();
 	}
@@ -370,7 +370,7 @@ abstract class Crawler extends \JPlugin
 	 */
 	protected function deleteItem($key)
 	{
-		$solr = JSolrIndexFactory::getService();
+		$solr = \JSolr\Index\Factory::getService();
 		$solr->deleteById($key);
 		$solr->commit();
 	}
@@ -379,18 +379,18 @@ abstract class Crawler extends \JPlugin
 	 * Prepare the item for indexing.
 	 *
 	 * @param stdClass $item
-	 * @return JSolrApacheSolrDocument
+	 * @return \JSolr\Apache\Solr\Document
 	 */
 	protected function prepare($item)
 	{
 		// Initialize the item's parameters.
 		if (isset($item->params)) {
-			$registry = new JRegistry();
+			$registry = new \Joomla\Registry\Registry();
 			$registry->loadString($item->params);
 		}
 
 		if (isset($item->metadata)) {
-			$registry = new JRegistry();
+			$registry = new \Joomla\Registry\Registry();
 			$registry->loadString($item->metadata);
 			$item->metadata = $registry;
 		}
@@ -419,7 +419,7 @@ abstract class Crawler extends \JPlugin
 	 *
 	 * @param bool $nl True if a new line character should be appended, false
 	 * otherwise. The default is true.
-	 * @return JSolrIndexCrawler Returns $this for chaining output.
+	 * @return \JSolr\Index\Crawler Returns $this for chaining output.
 	 */
 	protected function out($text = '', $nl = true)
 	{
@@ -460,7 +460,7 @@ abstract class Crawler extends \JPlugin
 				break;
 
 			case 2:
-				return JSolrHelper::toCaseInsensitiveFacet($facet);
+				return \JSolr\Helper::toCaseInsensitiveFacet($facet);
 				break;
 
 			default:
