@@ -29,6 +29,7 @@ $_SERVER['REQUEST_URI'] = '/index.php';
 //$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
 $app = JFactory::getApplication('site');
+$app->set('build.properties', $properties);
 
 if (!defined('JSPACEPATH_TESTS')) {
     define('JSPACEPATH_TESTS', dirname(__FILE__));

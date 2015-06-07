@@ -324,7 +324,7 @@ class Service
 
 		if ($solrResponse->getHttpStatus() != 200)
 		{
-			throw new \JSolr\Apache\Solr\Http\Transport\Exception($solrResponse);
+			throw new \JSolr\Apache\Solr\Exception($solrResponse);
 		}
 
 		return $solrResponse;

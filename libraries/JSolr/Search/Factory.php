@@ -6,6 +6,11 @@
 
 namespace JSolr\Search;
 
+use \JUri as JUri;
+use \JFactory as JFactory;
+use \JComponentHelper as JComponentHelper;
+use \JArrayHelper as JArrayHelper;
+
 class Factory extends \JSolr\Factory
 {
 	protected static $component = 'com_jsolrsearch';

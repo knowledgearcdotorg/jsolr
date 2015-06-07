@@ -54,12 +54,12 @@
 			description="COM_JSOLRSEARCH_ADVANCED_MM_DESCRIPTION"
 			default="1"/>
         <field
-            name="access_control"
+            name="override_schema"
             type="radio"
             class="btn-group btn-group-yesno"
-            default="1"
-            label="COM_JSOLRSEARCH_ADVANCED_ACCESS_CONTROL_LABEL"
-            description="COM_JSOLRSEARCH_ADVANCED_ACCESS_CONTROL_DESCRIPTION">
+            default="0"
+            label="COM_JSOLRSEARCH_ADVANCED_OVERRIDE_SCHEMA_LABEL"
+            description="COM_JSOLRSEARCH_ADVANCED_OVERRIDE_SCHEMA_DESCRIPTION">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>

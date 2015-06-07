@@ -1,5 +1,7 @@
 <?php
 /**
+ * Adapted from Technosophos' SolrQ library. https://github.com/technosophos/SolrAPI.
+ *
  * @file
  * A chaining API for Apache Solr searches.
  *
@@ -36,10 +38,12 @@
  *
  * @file
  *
- * @see http://code.google.com/p/solr-php-client/ The Solr PHP Client library.
+ * @see https://github.com/PTCInc/solr-php-client The Solr PHP Client library.
  */
 
 namespace JSolr\Search;
+
+use \JArrayHelper as JArrayHelper;
 
 /**
  * The main Solr API class.
@@ -60,7 +64,7 @@ class Query
 	 * Stripped down Lucene parser with amenities for user-entered searches.
 	 * @see http://wiki.apache.org/solr/SolrQuerySyntax
 	 */
-	const QUERY_PARSER_DISMAX = 'dismax';
+	const QUERY_PARSER_DISMAX = 'edismax';
 
 	/**
 	 * The input string is unanalyzed.
@@ -170,7 +174,7 @@ class Query
 	 *  - getter: The query ($query = $solrq->query())
 	 * @see http://wiki.apache.org/solr/SolrQuerySyntax Query syntax.
 	 */
-	public function query($query = NULL)
+	public function query($query = null)
 	{
 		if (is_null($query)) {
 			return $this->query;
@@ -290,7 +294,7 @@ class Query
 	 *   - getter: The array of filters.
 	 * @see http://wiki.apache.org/solr/CommonQueryParameters#fq
 	 */
-	public function filters($filter_array = NULL)
+	public function filters($filter_array = null)
 	{
 		if (is_null($filter_array)) {
 			return $this->params['fq'];
@@ -471,55 +475,36 @@ class Query
 	}
 
 	/**
-	 * Get or set facet date information
+	 * Specifies facet range information for the query.
 	 *
-	 * @param $fields
-	 *  An array of fields.
-	 * @param $start
-	 *  The start date
-	 * @param $end
-	 *  The end date
-	 * @param $interval
-	 *  The gap between dates (e.g. '%2B1DAY' for 1 day)
-	 * @param $other
-	 *  If information about data outside of the specified range should be included, specify it. Use
-	 *  one of the following string values:
+	 * @param   string  $field  The field the range is based on.
+	 * @param   string  $start  The range start.
+	 * @param   string  $end    The range end.
+	 * @param   string  $gap    The gap between ranges (e.g. '%2B1DAY' for 1 day)
+	 * @param   string  $other  If information about data outside of the specified range should be included, specify it. Use one of the following string values:
 	 *   - before
 	 *   - after
 	 *   - between
 	 *   - none
 	 *   - all
-	 * @param $hardend
-	 *  Boolean indicating how date ranges should be handled when the interval does not divide
-	 *  evenly. See {@link http://wiki.apache.org/solr/SimpleFacetParameters}.
-	 * @return
-	 *  - Getter: The date fields
-	 *  - Setter: This object
+	 * @param   bool    $hardend     Specifies how ranges should be handled when the interval does not divide evenly. See {@link http://wiki.apache.org/solr/SimpleFacetParameters}.
+	 * @return  \JSolr\Search\Query  The current object for chaining methods.
 	 */
-	public function facetDateFields($fields = NULL, $start = NULL, $end = NULL, $interval = NULL, $other = NULL, $hardend = NULL)
+	public function facetRange($field = null, $start = null, $end = null, $gap = null, $other = null, $hardend = null)
 	{
-		$args = func_get_args();
+		$hardened = (empty($hardened) || $hardened == false) ? 'false' : 'true';
 
-		$setter = FALSE;
-		foreach ($args as $a) {
-			if(!is_null($a)) {
-				$setter = TRUE;
-			};
+		if (!JArrayHelper::getValue($this->params, 'facet.range')) {
+            $this->params['facet.range'] = array();
 		}
 
-		if (!$setter) {
-			return $this->params['facet.date'];
-		}
+        $this->params['facet.range'][] = $field;
 
-		$hardened = (empty($hardened) || $hardened == FALSE) ? 'false' : 'true';
-		//$other = (empty($hardened) || $other == FALSE) 'false' : 'true';
-
-		$this->params['facet.date'] = $fields;
-		$this->params['facet.date.start'] = $start;
-		$this->params['facet.date.end'] = $end;
-		$this->params['facet.date.gap'] = $interval;
-		$this->params['facet.date.hardend'] = $hardend;
-		$this->params['facet.date.other'] = $other;
+		$this->params['f.'.$field.'.facet.range.start'] = $start;
+		$this->params['f.'.$field.'.facet.range.end'] = $end;
+		$this->params['f.'.$field.'.facet.range.gap'] = $gap;
+		$this->params['f.'.$field.'.facet.range.hardend'] = $hardend;
+		$this->params['f.'.$field.'.facet.range.other'] = $other;
 
 		return $this;
 	}

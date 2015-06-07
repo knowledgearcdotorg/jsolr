@@ -32,6 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 
 JLoader::register('JSolrSearchHelper', dirname(__FILE__) . '/helpers/jsolrsearch.php');
+JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
 $JControllerName = class_exists('JControllerLegacy') ? 'JControllerLegacy' : 'JController';
 

@@ -37,12 +37,8 @@ jimport('joomla.filesystem.path');
 jimport('joomla.html.pagination');
 jimport('joomla.application.component.modelform');
 jimport('joomla.filesystem.file');
-jimport('jsolr.search.factory');
-jimport('jsolr.form.form');
-jimport('jsolr.pagination.pagination');
-jimport('jsolr.search.model.form');
 
-class JSolrSearchModelSearch extends JSolrSearchModelForm
+class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
 {
 	const MM_DEFAULT = '1';
 
@@ -128,7 +124,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
         catch (Exception $e)
         {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
-            $this->pagination = new JSolrPagination($this->get('total', 0), 0, 0);
+            $this->pagination = new JPagination($this->get('total', 0), 0, 0);
             return null;
         }
     }
@@ -178,9 +174,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
         $filters = $this->getForm()->getFilters();
 
-        // TODO: temporary fix for turning off access checking. Need to provide a mechanism
-        // for checking per plugin.
-        if ($this->getState('params')->get('access_control', 1)) {
+        if (!$this->getState('params')->get('override_schema', 0)) {
             $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
 
             if ($access) {
@@ -243,7 +237,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
         $q = $this->getState('query.q', "*:*");
 
-        $query = JSolrSearchFactory::getQuery($q)
+        $query = \JSolr\Search\Factory::getQuery($q)
             ->spellcheck(true)
             ->useQueryParser("edismax")
             ->retrieveFields("*,score")
@@ -289,7 +283,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 		$uris = array();
 		$i = 0;
 
-		$uri = JSolrSearchFactory::getQueryRouteWithPlugin();
+		$uri = \JSolr\Search\Factory::getQueryRouteWithPlugin();
 
 		$uri->setVar('q', $this->getItems()->getSuggestions());
 
@@ -389,7 +383,7 @@ class JSolrSearchModelSearch extends JSolrSearchModelForm
 
       try
       {
-         $form = JSolrForm::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
+         $form = \JSolr\Form\Form::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
 
          if (isset($options['load_data']) && $options['load_data'])
          {

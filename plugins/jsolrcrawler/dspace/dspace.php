@@ -113,7 +113,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             $doc->addField('access', $record->access);
         }
 
-        $collection = $this->_getCollection($record->collection->id);
+        $collection = $this->getCollection($record->collection->id);
 
         $doc->addField("parent_id", $collection->id);
         $doc->addField("collection_s", $collection->name);
@@ -158,44 +158,41 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             // Handle dates carefully then just save out all other field
             // values to generic multi-valued indexing fields.
             if ($item->element == 'date') {
-                // @todo Dates are confusing in DSpace as they are never
-                // guaranteed to be generated. There may need to be a
-                // better method devised for handling them.
+                $doc->addField($field.'_txt', $item->value); // store raw value.
 
-                $datePattern = "/[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}[Zz]/";
-                $suffix = 's';
                 $value = $item->value;
 
-                // if the date is a valid iso date then index it as such.
-                if (preg_match($datePattern, $item->value) > 0) {
-                    $suffix = 'tdt';
-                    $date = JFactory::getDate($item->value);
-                    $value = $date->format('Y-m-d\TH:i:s\Z', false);
-
-                    if ($item->qualifier == 'created' || $item->qualifier == 'modified') {
-                        $doc->addField('created', $value);
-                        $doc->addField('modified', $value);
-                    }
-
-                    if (!is_array($value)) {
-                        $doc->addField($field.'_sort', $value); // for sorting
-                    } else {
-                        JLog::add('Date field '.$field.' contains multiple values and so cannot be indexed for sorting.', JLog::WARNING, 'jsolrcrawler');
-                    }
+                // if only a year is given, add a month so it converts correctly.
+                if (preg_match("/^\d{4}$/", $item->value) > 0) {
+                    $value .= "-01";
                 }
 
-                $doc->addField($field.'_'.$suffix, $value);
+                $date = JFactory::getDate($value);
+                $value = $date->format('Y-m-d\TH:i:s\Z', false);
+                $year = $date->format('Y', false);
+
+                if (array_search($item->qualifier, array('created', 'modified'))) {
+                    $name = $item->qualifier;
+                } else {
+                    $name = $field.'_tdt';
+                }
+
+                $doc->addField($name, $value); // store as an iso date.
+                $doc->addField($field.'_year_ti', $year); // store year only.
+
+                if (!$doc->getField($field.'_sort')) {
+                    $doc->addField($field.'_sort', $value); // for sorting
+                } else {
+                    JLog::add('Date field '.$field.' contains multiple values and so cannot be indexed for sorting.', JLog::WARNING, 'jsolrcrawler');
+                }
             } else {
                 if (isset($item->lang)) {
                     $doc->addField($field.'_'.$item->lang, $item->value); // language-specific indexing.
                 }
+            }
 
-                if (JString::strlen($item->value) < 32776)
-                {
-                    $doc->addField($field.'_sm', $item->value); // for (almost) exact matching.
-                }
-
-                $doc->addField($field.'_txt', $item->value); // for lower-case searching
+            if (JString::strlen($item->value) < 32776) {
+                $doc->addField($field.'_sm', $item->value); // for (almost) exact matching.
             }
         }
 
@@ -204,7 +201,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
     /**
      * @todo A bruteforce/messy way to get multilingual information out of DSpace
-     * and into JSolr. To be superseded by native JSpace storage.
+     * and into JSolr.
      */
     private function getMultilingualDocument($record)
     {
@@ -413,7 +410,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
         }
 
         foreach ($record->metadata->toArray() as $key=>$value) {
-            $metakey = $this->_cleanBitstreamMetadataKey($key);
+            $metakey = $this->cleanBitstreamMetadataKey($key);
 
             if (is_float($value)) {
                 $doc->addField($metakey.'_tfm', $value);
@@ -432,6 +429,10 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
         return $doc;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \JSolr\Index\Crawler::clean()
+     */
     protected function clean()
     {
         $items = $this->getItems();
@@ -558,7 +559,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                         }
 
                         foreach ($bitstream->metadata->toArray() as $key=>$value) {
-                            $metakey = $this->_cleanBitstreamMetadataKey($key);
+                            $metakey = $this->cleanBitstreamMetadataKey($key);
 
                             if (is_float($value)) {
                                 $documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
@@ -641,40 +642,32 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      */
     public function onItemAdd($id)
     {
-        $item = new JObject();
-        $item->dspaceId = $id;
+        try {
+            $url = new JUri($this->params->get('rest_url').'/items/'.$id.'.json');
 
-        $this->onJSolrIndexAfterSave('com_jspace.submission', $item, true);
+            $http = JHttpFactory::getHttp();
+
+            $response = $http->get((string)$url);
+
+            if ((int)$response->code !== 200) {
+                throw new Exception($response->body, $response->code);
+            }
+
+            $documents = $this->prepare(json_decode($response->body));
+
+            $solr = \JSolr\Index\Factory::getService();
+
+            $commitWithin = $this->params->get('component.commitWithin', '1000');
+
+            $solr->addDocuments($documents, false, true, true, $commitWithin);
+        } catch (Exception $e) {
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+        }
     }
 
     protected function buildQuery()
     {
         return "";
-    }
-
-    public function onJSolrIndexAfterSave($context, $item, $isNew)
-    {
-        if ($context == 'com_jspace.submission') {
-            try {
-                $url = new JUri($this->params->get('rest_url').'/items/'.$item->get('dspaceId').'.json');
-
-                $http = JHttpFactory::getHttp();
-
-                $response = $http->get((string)$url);
-
-                if ((int)$response->code !== 200) {
-                    throw new Exception($response->body, $response->code);
-                }
-
-                $documents = $this->prepare(json_decode($response->body));
-
-                $solr = \JSolr\Index\Factory::getService();
-
-                $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitWithin', '1000'));
-            } catch (Exception $e) {
-                JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
-            }
-        }
     }
 
     /**
@@ -730,7 +723,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 }
 
                 foreach ($bitstream->metadata->toArray() as $key=>$value) {
-                    $metakey = $this->_cleanBitstreamMetadataKey($key);
+                    $metakey = $this->cleanBitstreamMetadataKey($key);
 
                     if (is_float($value)) {
                         $documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
@@ -781,7 +774,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      * @param string $key The key to clean.
      * @return string The cleaned metadata key.
      */
-    private function _cleanBitstreamMetadataKey($key)
+    private function cleanBitstreamMetadataKey($key)
     {
           $metakey = strtolower($key);
         $metakey = preg_replace("/[^a-z0-9\s\-]/i", "", $metakey);
@@ -790,7 +783,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
         return $metakey;
     }
 
-    private function _getCollection($id)
+    private function getCollection($id)
     {
         $collection = null;
 

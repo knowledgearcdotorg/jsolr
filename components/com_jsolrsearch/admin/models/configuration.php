@@ -40,7 +40,7 @@ class JSolrSearchModelConfiguration extends JModelLegacy
 {
 	public function test()
 	{
-		$solr = JSolrSearchFactory::getService();
+		$solr = \JSolr\Search\Factory::getService();
 
 		$response = $solr->ping();
 

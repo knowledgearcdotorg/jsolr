@@ -8,6 +8,12 @@
 
 namespace JSolr\Search\Model;
 
+use \JFactory as JFactory;
+use \JFile as JFile;
+use \JPluginHelper as JPluginHelper;
+use \JText as JText;
+use \JArrayHelper as JArrayHelper;
+
 abstract class Form extends \JModelForm
 {
     /**

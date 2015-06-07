@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fieldset 
+	<fieldset
 		name="query"
 		label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
-		addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
-		
+        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+
 		<!-- only JSolrFormFields should be used here -->
-		<field 
-            name="q"        
+		<field
+            name="q"
             type="jsolr.textsuggest"
             label=""
             size="20"

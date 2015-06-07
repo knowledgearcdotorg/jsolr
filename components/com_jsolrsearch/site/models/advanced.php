@@ -190,7 +190,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 		}
 
 		// finally add the Itemid for basic search
-		$uri->setVar('Itemid', JSolrSearchFactory::getSearchRoute()->getVar('Itemid'));
+		$uri->setVar('Itemid', \JSolr\Search\Factory::getSearchRoute()->getVar('Itemid'));
 
 		return $uri;
 	}
@@ -239,7 +239,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
 	 */
 	protected function loadFormData()
 	{
-		$query = JSolrSearchFactory::getSearchRoute()->getQuery(true);
+		$query = \JSolr\Search\Factory::getSearchRoute()->getQuery(true);
 
 		if (count($query)) {
 			$query = array_merge($query, $this->parseQuery());

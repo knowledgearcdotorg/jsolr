@@ -47,7 +47,7 @@ class JSolrSearchModelSuggest extends JModelList
 	   	$fields = JFactory::getApplication()->input->getString('fields');
 	   	$suggest = JFactory::getApplication()->input->getString('suggest');
 
-		$query = JSolrSearchFactory::getQuery('*:*')
+		$query = \JSolr\Search\Factory::getQuery('*:*')
 			->useQueryParser("edismax")
 			->retrieveFields("*,score")
 			->limit(10) // TODO: move to config

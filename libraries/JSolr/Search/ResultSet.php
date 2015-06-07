@@ -6,6 +6,10 @@
 
 namespace JSolr\Search;
 
+use \JPluginHelper as JPluginHelper;
+use \JEventDispatcher as JEventDispatcher;
+use \JArrayHelper as JArrayHelper;
+
 class ResultSet extends \JObject implements \IteratorAggregate, \Countable
 {
 	protected $numFound;
@@ -29,7 +33,7 @@ class ResultSet extends \JObject implements \IteratorAggregate, \Countable
 		$this->documents = $response->response->docs;
 
 		JPluginHelper::importPlugin("jsolrsearch");
-		$dispatcher = JDispatcher::getInstance();
+		$dispatcher = JEventDispatcher::getInstance();
 
 		for ($i = 0; $i < count($this->documents); $i++) {
 			// Get Highlight fields for results.
@@ -68,7 +72,7 @@ class ResultSet extends \JObject implements \IteratorAggregate, \Countable
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->documents);
+		return new \ArrayIterator($this->documents);
 	}
 
 	public function count()

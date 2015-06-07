@@ -54,24 +54,28 @@ class JSolrFormFieldMetadataFieldList extends JFormFieldList
 	{
 		$options = parent::getOptions();
 
-		JPluginHelper::importPlugin("jsolrcrawler");
-		$dispatcher = JEventDispatcher::getInstance();
+		try {
+            JPluginHelper::importPlugin("jsolrcrawler");
+            $dispatcher = JEventDispatcher::getInstance();
 
-		$result = $dispatcher->trigger("onListMetadataFields");
+            $result = $dispatcher->trigger("onListMetadataFields");
 
-		$array = JArrayHelper::getValue($result, 0, array());
+            $array = JArrayHelper::getValue($result, 0, array());
 
-		foreach ($array as $item) {
-			$tmp = JHtml::_(
-				'select.option', $item->name,
-				JText::alt(trim($item->name), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
-			);
+            foreach ($array as $item) {
+                $tmp = JHtml::_(
+                    'select.option', $item->name,
+                    JText::alt(trim($item->name), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
+                );
 
-			$options[] = $tmp;
-		}
+                $options[] = $tmp;
+            }
 
-		reset($options);
+            reset($options);
+        } catch (Exception $e) {
+            JLog::add($e->getMessage(), JLog::DEBUG, 'jsolrcrawler');
+        }
 
-		return $options;
+        return $options;
 	}
 }

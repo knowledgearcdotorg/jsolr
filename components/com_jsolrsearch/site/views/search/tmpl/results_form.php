@@ -57,7 +57,7 @@ JHTML::_('behavior.formvalidation');
 		<button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
 	</fieldset>
 
-	<a href="<?php echo JRoute::_(JSolrSearchFactory::getAdvancedSearchRoute()); ?>">Advanced search</a>
+	<a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
 
 	<div class="clr"></div>
 
@@ -96,7 +96,7 @@ JHTML::_('behavior.formvalidation');
 </form>
 
 <div id="custom-dates">
-	<form id="custom-dates-form" action="<?php echo JRoute::_(JSolrSearchFactory::getSearchRoute()); ?>" method="get">
+	<form id="custom-dates-form" action="<?php echo JRoute::_(\JSolr\Search\Factory::getSearchRoute()); ?>" method="get">
 		<?php echo JHtml::_('calendar', '', "qdr_min", "qdr_min", "%Y-%m-%d"); ?>
 		<?php echo JHtml::_('calendar', '', "qdr_max", "qdr_max", "%Y-%m-%d"); ?>
 

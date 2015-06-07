@@ -6,6 +6,10 @@
 
 namespace JSolr;
 
+use \JArrayHelper as JArrayHelper;
+use \JTable as JTable;
+use \JFactory as JFactory;
+
 class Helper extends \JObject
 {
 	const FACET_DELIMITER = '|||';
@@ -47,8 +51,8 @@ class Helper extends \JObject
 		}
 
 		// Instantiate the parameter object if necessary.
-		if (!($params instanceof JRegistry)) {
-			$registry = new JRegistry;
+		if (!($params instanceof \Joomla\Registry\Registry)) {
+			$registry = new \Joomla\Registry\Registry;
 			$registry->loadString($params);
 			$params = $registry;
 		}

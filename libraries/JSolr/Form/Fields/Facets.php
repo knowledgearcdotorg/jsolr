@@ -171,7 +171,7 @@ class Facets extends JFormFieldList implements Filterable, Facetable
 	 */
 	protected function isSelected($facet)
 	{
-		$url = JSolrSearchFactory::getSearchRoute();
+		$url = \JSolr\Search\Factory::getSearchRoute();
 
 		$cleaned = JString::trim($this->value);
 		$filters = explode(self::FACET_DELIMITER, $cleaned);
@@ -197,7 +197,7 @@ class Facets extends JFormFieldList implements Filterable, Facetable
 	 */
 	protected function getFilterURI($facet)
 	{
-		$url = clone JSolrSearchFactory::getSearchRoute();
+		$url = clone \JSolr\Search\Factory::getSearchRoute();
 
 		foreach ($url->getQuery(true) as $key=>$value) {
 			$url->setVar($key, urlencode($value));

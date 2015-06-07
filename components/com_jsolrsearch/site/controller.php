@@ -42,7 +42,7 @@ class JSolrSearchController extends JControllerLegacy
 
 	public function search()
 	{
-		$this->setRedirect(JRoute::_(JSolrSearchFactory::getSearchRoute(), false));
+		$this->setRedirect(JRoute::_(\JSolr\Search\Factory::getSearchRoute(), false));
 	}
 
 	public function display($cachable = false, $urlparams = false)

@@ -10,6 +10,7 @@ use \JFactory as JFactory;
 use \JArrayHelper as JArrayHelper;
 use \JString as JString;
 use \JText as JText;
+use \JFormFieldHidden as JFormFieldHidden;
 
 \JLoader::import('joomla.form.formfield');
 \JLoader::import('joomla.form.helper');

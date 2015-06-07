@@ -12,7 +12,7 @@ namespace JSolr\Form\Fields;
  * Implement this interface when the form field must provide facets for the
  * query (E.g. Solr field fq).
  */
-interface JSolrFacetable
+interface Facetable
 {
 	/**
 	 * Gets the facet HTML input (a list of links).

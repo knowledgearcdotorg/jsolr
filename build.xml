@@ -248,7 +248,11 @@
         </phpcpd>
     </target>
 
-    <target name="package" description="Packages extensions ready for installation into Joomla!.">
+    <target name="clean" description="Cleans the build path.">
+        <delete dir="${src}/build"/>
+    </target>
+
+    <target name="package" description="Packages extensions ready for installation into Joomla!." depends="clean">
         <mkdir dir="${package.dest}"/>
         <foreach list="${joomla.extension.types}" param="extension" target="package_extensions"/>
     </target>

@@ -11,6 +11,8 @@ namespace JSolr\Form\Fields;
 
 \JFormHelper::loadFieldClass('list');
 
+use \JText as JText;
+
 class SearchTool extends \JFormFieldList
 {
     /**

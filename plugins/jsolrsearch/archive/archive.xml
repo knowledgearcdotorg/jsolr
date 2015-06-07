@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension version="3.0" type="plugin" group="jsolrsearch" method="upgrade">
-	<name>plg_jsolrsearch_dspace</name>
+<extension version="3.3" type="plugin" group="jsolrsearch" method="upgrade">
+	<name>plg_jsolrsearch_archive</name>
 	<creationDate>2012-08-21</creationDate>
-	<author>KnowledgeARC</author>
+	<author>KnowledgeArc Ltd</author>
 	<authorEmail>development@knowledgearc.com</authorEmail>
 	<authorUrl>http://www.knowledgearc.org</authorUrl>
 	<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<version>1.0.0</version>
-	<description>PLG_JSOLRSEARCH_DSPACE_XML_DESCRIPTION</description>
+	<description>PLG_JSOLRSEARCH_ARCHIVE_XML_DESCRIPTION</description>
 	<files>
-		<filename plugin="dspace">dspace.php</filename>
+		<filename plugin="archive">archive.php</filename>
 		<folder>views</folder>
 		<folder>forms</folder>
 	</files>
 	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_dspace.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_dspace.sys.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_archive.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_archive.sys.ini</language>
 	</languages>
 	<config>
 		<fields name="params">
@@ -24,8 +24,8 @@
 				<field
 					name="boosts"
 					type="textarea"
-					description="PLG_JSOLRSEARCH_DSPACE_BASIC_BOOSTS_DESC"
-					label="PLG_JSOLRSEARCH_DSPACE_BASIC_BOOSTS_LABEL"
+					description="PLG_JSOLRSEARCH_ARCHIVE_BASIC_BOOSTS_DESC"
+					label="PLG_JSOLRSEARCH_ARCHIVE_BASIC_BOOSTS_LABEL"
 					cols="30"
 					rows="5"
 					filter="string"
@@ -33,8 +33,8 @@
                 <field
                     name="query_boosts"
                     type="textarea"
-                    description="PLG_JSOLRSEARCH_DSPACE_BASIC_QUERYBOOSTS_DESC"
-                    label="PLG_JSOLRSEARCH_DSPACE_BASIC_QUERYBOOSTS_LABEL"
+                    description="PLG_JSOLRSEARCH_ARCHIVE_BASIC_QUERYBOOSTS_DESC"
+                    label="PLG_JSOLRSEARCH_ARCHIVE_BASIC_QUERYBOOSTS_LABEL"
                     cols="30"
                     rows="5"
                     filter="string"
