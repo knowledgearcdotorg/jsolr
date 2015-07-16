@@ -5,9 +5,9 @@
 	<author>KnowledgeArc Ltd</author>
 	<authorEmail>development@knowledgearc.com</authorEmail>
 	<authorUrl>http://www.knowledgearc.org</authorUrl>
-	<copyright>>Copyright (C) 2012-2014 KnowledgeArc Ltd. All rights reserved.</copyright>
+	<copyright>>Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<description>PLG_JSOLRCRAWLER_DSPACE_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="dspace">dspace.php</filename>

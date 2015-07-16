@@ -42,7 +42,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      *
      * @return array A list of DSpace items.
      */
-    protected function getItems($start = 0, $limit = 20)
+    protected function getItems($start = 0, $limit = 20, $query = '*:*')
     {
         $items = array();
 
@@ -50,7 +50,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             $items = array();
 
             $vars = array();
-            $vars['q'] = '*:*';
+            $vars['q'] = $query;
             $vars['fl'] = 'search.resourceid,search.uniqueid,read';
             $vars['fq'] = 'search.resourcetype:2';
             $vars['rows'] = '2147483647';
@@ -174,16 +174,16 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 if (array_search($item->qualifier, array('created', 'modified'))) {
                     $name = $item->qualifier;
                 } else {
-                    $name = $field.'_tdt';
+                    $name = $field.'_tdtm';
                 }
 
                 $doc->addField($name, $value); // store as an iso date.
-                $doc->addField($field.'_year_ti', $year); // store year only.
+                $doc->addField($field.'_year_tim', $year); // store year only.
 
                 if (!$doc->getField($field.'_sort')) {
                     $doc->addField($field.'_sort', $value); // for sorting
                 } else {
-                    JLog::add('Date field '.$field.' contains multiple values and so cannot be indexed for sorting.', JLog::WARNING, 'jsolrcrawler');
+                    JLog::add(JText::sprintf('Item %s has date field %s contains multiple values and so cannot be indexed for sorting.', $record->id, $field), JLog::WARNING, 'jsolrcrawler');
                 }
             } else {
                 if (isset($item->lang)) {
@@ -488,6 +488,12 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      */
     protected function index()
     {
+        $commitWithin = $this->params->get(
+                            'component.commitsWithin',
+                            '10000');
+
+        $endpoint = $this->params->get('rest_url').'/items/%s.json';
+
         $total = 0;
         $totalBitstreams = 0;
 
@@ -497,13 +503,12 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
         $documents = array();
 
-        $i = 0;
-
         foreach ($items as $temp) {
             $total++;
 
             try {
-                $url = new JUri($this->params->get('rest_url').'/items/'.$temp->{'search.resourceid'}.'.json');
+                $id = $temp->{'search.resourceid'};
+                $url = new JUri(JText::sprintf($endpoint, $id));
                 $http = JHttpFactory::getHttp();
 
                 $response = $http->get((string)$url);
@@ -513,119 +518,36 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 }
 
                 $item = json_decode($response->body);
+                $item->access = $this->getAccess($temp);
 
-                // g0 = public
-                if (array_search('g0', $temp->read) !== false) {
-                    $item->access = $this->get('params')->get('anonymous_access', null);
-                } else {
-                    $item->access = $this->get('params')->get('private_access', null);
-                }
+                $document = $this->prepare($item);
 
-                $documents[$i] = $this->getDocument($item);
-                $documents[$i]->addField('id', $item->id);
-                $documents[$i]->addField('context', $this->get('itemContext'));
+                // assuming that when we get a document, it will be the document + n bitstreams.
+                // Not a smart calculation, needs to be reworked.
+                $totalBitstreams += count($document) - 1;
 
-                if ($this->get('params')->get('ignore_language', 1))
-                {
-                    $documents[$i]->addField('lang', '*');
-                }
-                else
-                {
-                    $documents[$i]->addField('lang', $this->getLanguage($item));
-                }
-
-                $key = $this->buildKey($documents[$i]);
-
-                $documents[$i]->addField('key', $key);
-
-                $this->out(array('item '.$key, '[queued]'));
-
-                if ($this->params->get('component.index')) {
-                    $bitstreams = $this->getBitstreams($item);
-
-                    $bitstreamDocuments = array();
-                    $j = 0;
-
-                    foreach ($bitstreams as $bitstream) {
-                        $totalBitstreams++;
-
-                        $type = strtolower($bitstream->type);
-
-                        $documents[$i]->addField($type.'_bitstream_id_tim', $bitstream->id);
-                        $documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
-
-                        if (isset($bitstream->body)) {
-                            $documents[$i]->addField($type.'_bitstream_body_'.$this->getLanguage($item, false), strip_tags($bitstream->body));
-                        }
-
-                        foreach ($bitstream->metadata->toArray() as $key=>$value) {
-                            $metakey = $this->cleanBitstreamMetadataKey($key);
-
-                            if (is_float($value)) {
-                                $documents[$i]->addField($type.'_bitstream_'.$metakey.'_tfm', $value);
-                            } elseif (is_int($value)) {
-                                // handle solr int/long differentiation.
-                                if ((int)$value > 2147483647 || (int)$value < -2147483648) {
-                                    $documents[$i]->addField($type.'_bitstream_'.$metakey.'_tlm', $value);
-                                } else {
-                                    $documents[$i]->addField($type.'_bitstream_'.$metakey.'_tim', $value);
-                                }
-                            } else {
-                                $documents[$i]->addField($type.'_bitstream_'.$metakey.'_sm', $value);
-                            }
-                        }
-
-                        $bitstreamDocuments[$j] = $this->getBitstreamDocument($bitstream);
-
-                        if ($documents[$i]->getField('created')) {
-                            $bitstreamDocuments[$j]->addField("created", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('created'), 'value'), 0));
-                        }
-
-                        if ($documents[$i]->getField('modified')) {
-                            $bitstreamDocuments[$j]->addField("modified", JArrayHelper::getValue(JArrayHelper::getValue($documents[$i]->getField('modified'), 'value'), 0));
-                        }
-
-                        $bitstreamDocuments[$j]->addField("parent_id", $item->id);
-
-                        $key =
-                            JArrayHelper::getValue(
-                                JArrayHelper::getValue(
-                                    $bitstreamDocuments[$j]->getField('key'),
-                                    'value'),
-                                0);
-
-                        $this->out(array('bitstream '.$key, '[queued]'));
-
-                        $j++;
-                    }
-
-                    $documents = array_merge($documents, $bitstreamDocuments);
-                }
-
-                $i = count($documents) + 1;
-
+                $documents = array_merge($documents, $document);
             } catch (Exception $e) {
                 if ($e->getCode() == 403) {
                     $this
-                        ->out(array('Could not index item '.$temp->{'search.resourceid'},'[skipping]'))
+                        ->out(array('Could not index item '.$id, '[skipping]'))
                         ->out("\tReason:".$e->getMessage());
                     // continue from this kind of error.
                 }
             }
 
-            // readjust counter.
-            $i--;
-
             // index when either the number of items retrieved matches
             // the total number of items being indexed or when the
             // index chunk size has been reached.
-            if ($total == count($items) || $i >= static::$chunk) {
-                $response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
+            if ($total == count($items) || count($documents) >= static::$chunk) {
+                $response = $solr->addDocuments($documents, false, true, true, $commitWithin);
 
-                $this->out(array($i.' documents successfully indexed', '[status:'.$response->getHttpStatus().']'));
+                $this->out(
+                    array(
+                        count($documents).' documents successfully indexed',
+                        '[status:'.$response->getHttpStatus().']'));
 
                 $documents = array();
-                $i = 0;
             }
         }
 
@@ -642,8 +564,11 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      */
     public function onItemAdd($id)
     {
+        $commitWithin = $this->params->get('component.commitWithin', '1000');
+        $endpoint = $this->params->get('rest_url').'/items/%s.json';
+
         try {
-            $url = new JUri($this->params->get('rest_url').'/items/'.$id.'.json');
+            $url = new JUri(JText::sprintf($endpoint, $id));
 
             $http = JHttpFactory::getHttp();
 
@@ -653,13 +578,18 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 throw new Exception($response->body, $response->code);
             }
 
-            $documents = $this->prepare(json_decode($response->body));
+            $item = json_decode($response->body);
+
+            // DSpace is incapable of exposing item permissions in a clean acl
+            // manner. Query src Solr for this information.
+            $temp = $this->getItems(0, 1, "search.resourceid:".$id);
+            $item->access = $this->setAccess($temp);
+
+            $document = $this->prepare($item);
 
             $solr = \JSolr\Index\Factory::getService();
 
-            $commitWithin = $this->params->get('component.commitWithin', '1000');
-
-            $solr->addDocuments($documents, false, true, true, $commitWithin);
+            $solr->addDocuments($document, false, true, true, $commitWithin);
         } catch (Exception $e) {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
         }
@@ -668,6 +598,16 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
     protected function buildQuery()
     {
         return "";
+    }
+
+    private function getAccess($item)
+    {
+        // g0 = public
+        if (array_search('g0', $item->read) !== false) {
+            return $this->get('params')->get('anonymous_access', null);
+        } else {
+            return $this->get('params')->get('private_access', null);
+        }
     }
 
     /**
@@ -683,9 +623,6 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
         $documents = array();
 
         $i = 0;
-
-        // g0 = public
-        $item->access = $this->get('params')->get('anonymous_access', 1);
 
         $documents[$i] = $this->getDocument($item);
         $documents[$i]->addField('id', $item->id);
@@ -763,8 +700,6 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 $j++;
             }
         }
-
-        $i=$j;
 
         return $documents;
     }
