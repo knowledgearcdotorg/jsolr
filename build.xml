@@ -12,10 +12,10 @@
     <property   name="dest.libs"                     value="${dest}/libraries"/>
     <property   name="dest.cli"                      value="${dest}/cli"/>
     <property   name="package.dest"                  value="${src}/build"/>
-    <property   name="joomla.extension.types"        value="components,libraries,modules,plugins"/>
+    <property   name="extensions"                    value="components,libraries,modules,plugins"/>
 
     <target name="deploy" description="Updates existing extensions in a Joomla! site.">
-        <foreach list="${joomla.extension.types}" param="extension" target="deploy_extensions"/>
+        <foreach list="${extensions}" param="extension" target="deploy_extensions"/>
     </target>
 
     <target name="deploy_extensions" hidden="true">
@@ -254,7 +254,7 @@
 
     <target name="package" description="Packages extensions ready for installation into Joomla!." depends="clean">
         <mkdir dir="${package.dest}"/>
-        <foreach list="${joomla.extension.types}" param="extension" target="package_extensions"/>
+        <foreach list="${extensions}" param="extension" target="package_extensions"/>
     </target>
 
     <target name="package_extensions" hidden="true">
@@ -308,6 +308,46 @@
     </target>
 
     <target name="help" description="Help documentation for this build file.">
-        <echo message="Help documentation."/>
+        <echo message="JSolr for Joomla!"/>
+        <echo message="Targets:"/>
+
+        <echo message="cpd          Check for copy/paste code duplication."/>
+
+        <echo message=""/>
+
+        <echo message="deploy       Copy extension code to an existing Joomla"/>
+        <echo message="             installation as defined by the dest"/>
+        <echo message="             parameter in your build.properties file."/>
+
+        <echo message=""/>
+
+        <echo message="package      Packages all extensions for installation"/>
+        <echo message="             via the Joomla Extension Manager."/>
+
+        <echo message=""/>
+
+        <echo message="test         Run the unit tests."/>
+
+        <echo message=""/>
+
+        <echo message="Additional Flags:"/>
+
+        <echo message=""/>
+
+        <echo message="extensions   Specify one or more extension types to"/>
+        <echo message="             target when calling deploy or package."/>
+        <echo message="             Available options are:"/>
+        <echo message="             - components"/>
+        <echo message="             - libraries"/>
+        <echo message="             - modules"/>
+        <echo message="             - plugins"/>
+
+
+        <echo message="Examples:"/>
+
+        <echo message=""/>
+
+        <echo message="phing deploy -Dextensions=plugins"/>
+        <echo message="phing package -Dextensions=components"/>
     </target>
 </project>
