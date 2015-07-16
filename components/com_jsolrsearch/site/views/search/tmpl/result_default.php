@@ -38,10 +38,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 <article class="jsolrsearch-result">
 	<header>
 		<h4>
-			<a href="<?php echo  $this->item->link; ?>"><?php echo JSolrHelper::highlight($this->item->key, 'title', $this->item->title); ?></a>
+			<a href="<?php echo  $this->item->link; ?>"><?php echo \JSolr\Helper::highlight($this->item->key, 'title', $this->item->title); ?></a>
 		</h4>
 	</header>
-	<p><?php echo JSolrHelper::highlight($this->item->key, JSolrHelper::localize('body_*')); ?></p>
+	<p><?php echo \JSolr\Helper::highlight($this->item->key, \JSolr\Helper::localize('body_*')); ?></p>
 	<footer>
 		<dl>
 			<?php if ($this->item->created) : ?>

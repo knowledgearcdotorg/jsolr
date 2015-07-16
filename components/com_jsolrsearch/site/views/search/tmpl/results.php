@@ -54,10 +54,10 @@ integrating faceting within the component. Use template overrides to improve. --
 <?php if ($this->params->get('facets_embed')) : ?>
 <section id="jsolrFacetFilters">
 	<?php
-	if ($module = JModuleHelper::getModule('mod_jsolrfilter')) {
+	if ($module = JModuleHelper::getModule('mod_jsolrfilter')) :
 		$renderer = $document->loadRenderer('module');
 		echo $renderer->render($module);
-	}
+	endif;
 	?>
 </section>
 <?php endif; ?>

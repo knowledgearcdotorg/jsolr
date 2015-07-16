@@ -60,7 +60,7 @@ endif;
 <span><?php JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></span>
 <?php endif; ?>
 
-<?php if ($this->get("Pagination")->get('pages.current') == 1 && $featuredItems) : ?>
+<?php if ($this->get("Pagination")->get('pages.current') == 1 && $featuredItems->get("numFound")) : ?>
     <?php echo $this->loadResultTemplate($featuredItems->getIterator()->current(), $featuredItems->getHighlighting()->{$featuredItems->getIterator()->current()->key}); ?>
 <?php endif; ?>
 
