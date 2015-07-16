@@ -25,7 +25,6 @@
 
     <media folder="media" destination="com_jsolrindex">
         <folder>js</folder>
-        <folder>css</folder>
     </media>
 
     <administration>
