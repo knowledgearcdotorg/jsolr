@@ -6,9 +6,10 @@
 
 namespace JSolr;
 
-use \JArrayHelper as JArrayHelper;
+use \JArrayHelper as JArrayHelper; // @TODO: Eventually replace with \Joomla\Utilities\ArrayHelper
 use \JTable as JTable;
 use \JFactory as JFactory;
+use \JString as JString;
 
 class Helper extends \JObject
 {

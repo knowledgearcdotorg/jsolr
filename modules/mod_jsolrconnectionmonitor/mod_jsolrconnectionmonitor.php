@@ -1,7 +1,7 @@
 <?php
 /**
- * @package		JSolr
- * @copyright	Copyright (C) 2014 KnowledgeARC Ltd. All rights reserved.
+ * @package        JSolr
+ * @copyright    Copyright (C) 2014 KnowledgeARC Ltd. All rights reserved.
  * @license     This file is part of the JSolr Connection Monitor module for Joomla!.
 
    The JSolr Connection Monitor module for Joomla! is free software: you can
@@ -21,8 +21,8 @@
  * Contributors
  * Please feel free to add your name and email (optional) here if you have
  * contributed any source code changes.
- * Name							Email
- * Hayden Young					<hayden@knowledgearc.com>
+ * Name                            Email
+ * Hayden Young                    <hayden@knowledgearc.com>
  *
  */
 
@@ -39,56 +39,56 @@ $noValue = JText::_('MOD_JSOLRCONNECTIONMONITOR_NOVALUE');
 if (version_compare(JVERSION, "3.0", "ge")) {
 $js = <<<JS
 (function ($) {
-	$(document).ready(function() {
-		poll = function() {
-			var request = {
-				'option' : 'com_ajax',
-				'module' : '{$module->name}',
-				'method' : 'getIndex',
-				'format' : 'json'
-			};
+    $(document).ready(function() {
+        poll = function() {
+            var request = {
+                'option' : 'com_ajax',
+                'module' : '{$module->name}',
+                'method' : 'getIndex',
+                'format' : 'json'
+            };
 
-			setTimeout(function() {
-				$.ajax({
-					type : 'POST',
-					data : request,
-					success: function (response) {
-						if (response.data) {
-							var index = response.data;
+            setTimeout(function() {
+                $.ajax({
+                    type : 'POST',
+                    data : request,
+                    success: function (response) {
+                        if (response.data) {
+                            var index = response.data;
 
-							if ('statusText' in index) {
-								$('#jsolrStatus').html(index['statusText']);
-							}
+                            if ('statusText' in index) {
+                                $('#jsolrStatus').html(index['statusText']);
+                            }
 
-							if (index['status']) {
-								if ('statistics' in index) {
-									var statistics = index['statistics'];
+                            if (index['status']) {
+                                if ('statistics' in index) {
+                                    var statistics = index['statistics'];
 
-									if ('numDocs' in statistics) {
-										$('#jsolrNumDocs').html(statistics['numDocs']);
-									}
+                                    if ('numDocs' in statistics) {
+                                        $('#jsolrNumDocs').html(statistics['numDocs']);
+                                    }
 
-									if ('lastModifiedFormatted' in statistics) {
-										$('#jsolrLastModified').html(statistics['lastModifiedFormatted']);
-									}
-								}
-							} else {
-								$('#jsolrNumDocs').html('{$noValue}');
-								$('#jsolrLastModified').html('{$noValue}');
-							}
-						}
-					}, dataType: "json", complete: poll});
-			}, 120000);
+                                    if ('lastModifiedFormatted' in statistics) {
+                                        $('#jsolrLastModified').html(statistics['lastModifiedFormatted']);
+                                    }
+                                }
+                            } else {
+                                $('#jsolrNumDocs').html('{$noValue}');
+                                $('#jsolrLastModified').html('{$noValue}');
+                            }
+                        }
+                    }, dataType: "json", complete: poll});
+            }, 30000);
 
-			return false;
-		};
+            return false;
+        };
 
-		poll();
-	});
+        poll();
+    });
 })(jQuery)
 JS;
 
-	$document->addScriptDeclaration($js);
+    $document->addScriptDeclaration($js);
 }
 
 $index = ModJSolrConnectionMonitorHelper::getIndex($params);

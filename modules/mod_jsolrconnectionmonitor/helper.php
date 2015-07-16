@@ -55,7 +55,7 @@ abstract class ModJSolrConnectionMonitorHelper
 			if (isset($statistics->lastModified)) {
 				$index['statistics']->lastModifiedFormatted = JHtml::_('date', $statistics->lastModified, JText::_('DATE_FORMAT_LC2'));
 			}
-		}
+        }
 
 		return ($index) ? $index : false;
 	}
@@ -65,7 +65,7 @@ abstract class ModJSolrConnectionMonitorHelper
 		$index = array();
 
 		try {
-			$config = self::_getConfig($params);
+			$config = self::getConfig($params);
 
 			$index['status'] = self::isConnected($params);
 			$index['host'] = $config->get('host', null);
@@ -118,8 +118,9 @@ abstract class ModJSolrConnectionMonitorHelper
 		return $class::getService();
 	}
 
-	private static function _getConfig($params)
+	private static function getConfig($params)
 	{
+        JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 		$class = '\JSolr\Index\Factory';
 
 		if ($params->get('service') == 1) {
@@ -143,7 +144,7 @@ abstract class ModJSolrConnectionMonitorHelper
 	{
 		$settings = array();
 
-		$config = self::_getConfig($params);
+		$config = self::getConfig($params);
 
 		if (!$params->get('service')) {
 			if ($config->get('index')) {
