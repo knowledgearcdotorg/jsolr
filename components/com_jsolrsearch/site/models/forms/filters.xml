@@ -5,7 +5,7 @@
         addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
         <field
             name="author"
-            facet="author_fc"
+            facet="author"
             filter="author"
             type="jsolr.facets"
             label="By Author"

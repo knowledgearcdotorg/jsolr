@@ -40,21 +40,21 @@ jimport('joomla.filesystem.file');
 
 class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
 {
-	const MM_DEFAULT = '1';
+    const MM_DEFAULT = '1';
 
-	protected $form;
-	protected $lang;
-	protected $pagination;
+    protected $form;
+    protected $lang;
+    protected $pagination;
 
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
+    public function __construct($config = array())
+    {
+        parent::__construct($config);
 
-		$this->set('option', 'com_jsolrsearch');
-		$this->set('context', $this->get('option').'.search');
+        $this->set('option', 'com_jsolrsearch');
+        $this->set('context', $this->get('option').'.search');
 
-		JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
-	}
+        JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
+    }
 
    /**
     * (non-PHPdoc)
@@ -62,31 +62,29 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
     */
    public function populateState($ordering = null, $direction = null)
    {
-		$application = JFactory::getApplication('site');
+        $application = JFactory::getApplication('site');
 
-		$this->setState('query.q', $application->input->get("q", null, "html"));
-		$this->setState('query.o', $application->input->getString("o", null, "string"));
+        $this->setState('query.q', $application->input->get("q", null, "html"));
+        $this->setState('query.o', $application->input->getString("o", null, "string"));
 
-		$value = $application->input->get('limit', $application->getCfg('list_limit', 0));
-		$this->setState('list.limit', $value);
+        $value = $application->input->get('limit', $application->getCfg('list_limit', 0));
+        $this->setState('list.limit', $value);
 
-		$value = $application->input->get('limitstart', 0);
-		$this->setState('list.start', $value);
+        $value = $application->input->get('limitstart', 0);
+        $this->setState('list.start', $value);
 
-		$params = $application->getParams();
-		$this->setState('params', $params);
+        $params = $application->getParams();
+        $this->setState('params', $params);
 
-		parent::populateState($ordering, $direction);
+        parent::populateState($ordering, $direction);
    }
 
    public function getItems()
    {
-        try
-        {
+        try {
             $query = $this->_getListQuery();
 
-            if (is_null($query))
-            {
+            if (is_null($query)) {
                 return $query;
             }
 
@@ -94,22 +92,13 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
 
             JPluginHelper::importPlugin("jsolrsearch");
 
-            if (version_compare(JVERSION, "3.0", "l"))
-            {
-                $class = "JDispatcher";
-            }
-            else
-            {
-                $class = "JEventDispatcher";
-            }
-
-            $dispatcher = $class::getInstance();
+            $dispatcher = JEventDispatcher::getInstance();
 
             // get query filter params and boosts from plugin.
-            foreach ($dispatcher->trigger('onJSolrSearchPrepareBoostQueries') as $result)
-            {
+            foreach ($dispatcher->trigger('onJSolrSearchPrepareBoostQueries') as $result) {
                 $bq = array_merge($bq, $result);
             }
+
             $query->boostQueries($bq);
 
             $results = $query->search();
@@ -117,12 +106,10 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
             JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
             JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
 
-            $this->pagination = new JSolrPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
+            $this->pagination = new JPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
 
             return $results;
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
             $this->pagination = new JPagination($this->get('total', 0), 0, 0);
             return null;
@@ -135,8 +122,7 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
      */
     public function getFeaturedItems()
     {
-        try
-        {
+        try {
             $filters = array('context:com_content.article');
 
             $query = $this->_getListQuery();
@@ -145,15 +131,12 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
                 ->limit(5)
                 ->mergeParams(array('mm'=>'100%'));
 
-            if (is_null($query))
-            {
+            if (is_null($query)) {
                 return $query;
             }
 
             return $query->search();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
             return null;
         }
@@ -183,10 +166,8 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
             }
         }
 
-        if (!$this->getState('query.q'))
-        {
-            if (!$this->getAppliedFacetFilters())
-            {
+        if (!$this->getState('query.q')) {
+            if (!$this->getAppliedFacetFilters()) {
                 return null; // nothing passed. Get out of here.
             }
         }
@@ -197,32 +178,20 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
 
         JPluginHelper::importPlugin("jsolrsearch");
 
-        if (version_compare(JVERSION, "3.0", "l"))
-        {
-            $class = "JDispatcher";
-        }
-        else
-        {
-            $class = "JEventDispatcher";
-        }
-
-        $dispatcher = $class::getInstance();
+        $dispatcher = JEventDispatcher::getInstance();
 
         // Get any additional filters which may be needed as part of the search query.
-        foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result)
-        {
+        foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) {
             $filters = array_merge($filters, $result);
         }
 
         // Get Highlight fields for results.
-        foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result)
-        {
+        foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) {
             $hl = array_merge($hl, $result);
         }
 
         // get query filter params and boosts from plugin.
-        foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result)
-        {
+        foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) {
             $qf = array_merge($qf, $result);
         }
 
@@ -247,23 +216,18 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
             ->offset($this->getState("list.start", 0))
             ->mergeParams(
                 array(
-                    'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)
-            ));
+                    'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)));
 
-        if (count($sort))
-        {
+        if (count($sort)) {
             $query->sort(implode(', ', $sort));
         }
 
-        if (count($qf))
-        {
+        if (count($qf)) {
             $query->queryFields($qf);
         }
 
-        if (count($facets))
-        {
-            foreach ($facets as $facet)
-            {
+        if (count($facets)) {
+            foreach ($facets as $facet) {
                 $query->mergeParams($facet);
             }
 
@@ -273,45 +237,43 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
         return $query;
     }
 
-	public function getPagination()
-	{
-		return $this->pagination;
-	}
+    public function getPagination()
+    {
+        return $this->pagination;
+    }
 
-	public function getSuggestionQueryURIs()
-	{
-		$uris = array();
-		$i = 0;
+    public function getSuggestionQueryURIs()
+    {
+        $uris = array();
+        $i = 0;
 
-		$uri = \JSolr\Search\Factory::getQueryRouteWithPlugin();
+        $uri = \JSolr\Search\Factory::getQueryRouteWithPlugin();
 
-		$uri->setVar('q', $this->getItems()->getSuggestions());
+        $uri->setVar('q', $this->getItems()->getSuggestions());
 
-		$uris[$i]['uri'] = $uri;
-		$uris[$i]['title'] = $this->getItems()->getSuggestions();
+        $uris[$i]['uri'] = $uri;
+        $uris[$i]['title'] = $this->getItems()->getSuggestions();
 
-		return $uris;
-	}
+        return $uris;
+    }
 
-	/**
-	 * Method to get the search form.
-	 *
-	 * @param   array $data    An optional array of data for the form to interrogate.
-	 * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
-	 * @return  JForm          A JForm object on success, false on failure.
-	 */
+    /**
+     * Method to get the search form.
+     *
+     * @param   array $data    An optional array of data for the form to interrogate.
+     * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
+     * @return  JForm          A JForm object on success, false on failure.
+     */
     public function getForm($data = array(), $loadData = true)
     {
-        if (!is_null($this->form))
-        {
+        if (!is_null($this->form)) {
             return $this->form;
         }
 
         $context = $this->get('option').'.'.$this->getName();
         $this->form = $this->loadForm($context, $this->getCustomFormPath('search'), array('load_data'=>$loadData));
 
-        if (empty($this->form))
-        {
+        if (empty($this->form)) {
             return false;
         }
 
@@ -326,28 +288,28 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
         parent::preprocessForm($form, $data, $group);
     }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see JModelForm::loadFormData()
-	 */
-	protected function loadFormData()
-	{
-		$data = array();
+    /**
+     * (non-PHPdoc)
+     * @see JModelForm::loadFormData()
+     */
+    protected function loadFormData()
+    {
+        $data = array();
 
-		$query = JURI::getInstance()->getQuery(true);
+        $query = JURI::getInstance()->getQuery(true);
 
-		if (count($query)) {
-			$data = $query;
-		}
+        if (count($query)) {
+            $data = $query;
+        }
 
-		$context = $this->get('option').'.'.$this->getName();
+        $context = $this->get('option').'.'.$this->getName();
 
-		if (version_compare(JVERSION, "3.0", "ge")) {
-			$this->preprocessData($this->get('context'), $data);
-		}
+        if (version_compare(JVERSION, "3.0", "ge")) {
+            $this->preprocessData($this->get('context'), $data);
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
    /**
     * Override to use JSorlForm.
@@ -373,25 +335,20 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
       $hash = md5($source . serialize($options));
 
       // Check if we can use a previously loaded form.
-      if (isset($this->_forms[$hash]) && !$clear)
-      {
+      if (isset($this->_forms[$hash]) && !$clear) {
          return $this->_forms[$hash];
       }
 
       // Get the form.
       JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
 
-      try
-      {
+      try {
          $form = \JSolr\Form\Form::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
 
-         if (isset($options['load_data']) && $options['load_data'])
-         {
+         if (isset($options['load_data']) && $options['load_data']) {
             // Get the data for the form.
             $data = $this->loadFormData();
-         }
-         else
-         {
+         } else {
             $data = array();
          }
 
@@ -402,9 +359,7 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
          // Load the data into the form after the plugins have operated.
          $form->bind($data);
 
-      }
-      catch (Exception $e)
-      {
+      } catch (Exception $e) {
          $this->setError($e->getMessage());
          return false;
       }
@@ -451,44 +406,44 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
     return $result;
   }
 
-	/**
-	 * Gets a list of applied filters based on any currently selected facets.
-	 *
-	 * @return array A list of applied filters based on any currently selected facets.
-	 */
-	public function getAppliedFacetFilters()
-	{
-		$fields = array();
+    /**
+     * Gets a list of applied filters based on any currently selected facets.
+     *
+     * @return array A list of applied filters based on any currently selected facets.
+     */
+    public function getAppliedFacetFilters()
+    {
+        $fields = array();
 
-		foreach ($this->getForm()->getFieldset("facets") as $field) {
-			if ($field->value) {
-				$fields[] = $field;
-			}
-		}
+        foreach ($this->getForm()->getFieldset("facets") as $field) {
+            if ($field->value) {
+                $fields[] = $field;
+            }
+        }
 
-		return $fields;
-	}
+        return $fields;
+    }
 
-	/**
-	 * Gets a list of applied filters based on any specified advanced search
-	 * parameters.
-	 *
-	 * @return array a list of applied filters based on any specified advanced
-	 * search parameters.
-	 */
-	public function getAppliedAdvancedFilters()
-	{
-		$fields = array();
+    /**
+     * Gets a list of applied filters based on any specified advanced search
+     * parameters.
+     *
+     * @return array a list of applied filters based on any specified advanced
+     * search parameters.
+     */
+    public function getAppliedAdvancedFilters()
+    {
+        $fields = array();
 
-		foreach ($this->getForm()->getFieldset('tools') as $field) {
-			if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolrFormFieldHiddenFilter')) {
+        foreach ($this->getForm()->getFieldset('tools') as $field) {
+            if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolrFormFieldHiddenFilter')) {
 
-				if ($field->value) {
-					$fields[] = $field;
-				}
-			}
-		}
+                if ($field->value) {
+                    $fields[] = $field;
+                }
+            }
+        }
 
-		return $fields;
-	}
+        return $fields;
+    }
 }
