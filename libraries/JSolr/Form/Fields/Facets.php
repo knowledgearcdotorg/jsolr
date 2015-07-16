@@ -41,7 +41,7 @@ class Facets extends JFormFieldList implements Filterable, Facetable
 	{
 		$params = array();
 
-		$params[] = array('facet.field'=>$this->facet);
+		$params[] = array('facet.field'=>$this->getAttribute('facet'));
 
 		return $params;
 	}
@@ -54,7 +54,7 @@ class Facets extends JFormFieldList implements Filterable, Facetable
 	 */
 	protected function getFacets()
 	{
-		if ($facet = $this->facet) {
+		if ($facet = $this->getAttribute('facet')) {
 			$app = JFactory::getApplication('site');
 			$facets = $app->getUserState('com_jsolrsearch.facets', null);
 
