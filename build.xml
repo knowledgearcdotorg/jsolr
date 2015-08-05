@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSpace" default="update" basedir=".">
     <property   file="build.properties"/>
-    <property   name="dest.administrator"            value="${dest}/administrator"/>
-    <property   name="dest.administrator.components" value="${dest.administrator}/components"/>
-    <property   name="dest.administrator.languages"  value="${dest.administrator}/language"/>
-    <property   name="dest.components"               value="${dest}/components"/>
-    <property   name="dest.languages"                value="${dest}/language"/>
-    <property   name="dest.media"                    value="${dest}/media"/>
-    <property   name="dest.plugins"                  value="${dest}/plugins"/>
-    <property   name="dest.modules"                  value="${dest}/modules"/>
-    <property   name="dest.libs"                     value="${dest}/libraries"/>
-    <property   name="dest.cli"                      value="${dest}/cli"/>
+    <property   name="path.administrator"            value="${path.joomla}/administrator"/>
+    <property   name="path.administrator.components" value="${path.administrator}/components"/>
+    <property   name="path.administrator.languages"  value="${path.administrator}/language"/>
+    <property   name="path.components"               value="${path.joomla}/components"/>
+    <property   name="path.languages"                value="${path.joomla}/language"/>
+    <property   name="path.media"                    value="${path.joomla}/media"/>
+    <property   name="path.plugins"                  value="${path.joomla}/plugins"/>
+    <property   name="path.modules"                  value="${path.joomla}/modules"/>
+    <property   name="path.libs"                     value="${path.joomla}/libraries"/>
+    <property   name="path.cli"                      value="${path.joomla}/cli"/>
     <property   name="package.dest"                  value="${src}/build"/>
     <property   name="extensions"                    value="components,libraries,modules,plugins"/>
 
@@ -55,27 +55,28 @@
 
     <target name="deploy_component" hidden="true">
         <if>
-            <available file="${dest.components}/${directory}" type="dir"/>
+            <available file="${path.components}/${directory}" type="dir"/>
             <then>
                 <delete includeemptydirs="false">
-                    <fileset dir="${dest.components}/${directory}" includes="**/*"/>
-                    <fileset dir="${dest.administrator.components}/${directory}" includes="**/*"/>
+                    <fileset dir="${path.components}/${directory}" includes="**/*"/>
+                    <fileset dir="${path.administrator.components}/${directory}" includes="**/*"/>
+                    <fileset dir="${path.media}/${directory}" includes="**/*"/>
                 </delete>
 
-                <copy todir="${dest.components}/${directory}">
+                <copy todir="${path.components}/${directory}">
                     <fileset dir="./components/${directory}/site">
                         <include name="**/**"/>
                         <exclude name="language/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.languages}">
+                <copy todir="${path.languages}">
                     <fileset dir="components/${directory}/site/language">
                         <include name="**/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.administrator.components}/${directory}">
+                <copy todir="${path.administrator.components}/${directory}">
                     <fileset dir="components/${directory}/admin">
                         <exclude name="cli/**"/>
                         <exclude name="language/**"/>
@@ -86,7 +87,7 @@
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.administrator.languages}">
+                <copy todir="${path.administrator.languages}">
                     <fileset dir="components/${directory}/admin/language">
                         <include name="**/**"/>
                     </fileset>
@@ -95,9 +96,21 @@
                 <if>
                     <available file='components/${directory}/admin/cli' type='dir'/>
                     <then>
-                        <copy todir="${dest.cli}">
+                        <copy todir="${path.cli}">
                             <fileset dir="./components/${directory}/admin/cli">
                                 <include name="*"/>
+                            </fileset>
+                        </copy>
+                    </then>
+                </if>
+
+                <if>
+                    <available file='${src}/components/${directory}/media' type='dir'/>
+                    <then>
+                        <mkdir dir="${path.media}/${directory}"/>
+                        <copy todir="${path.media}/${directory}">
+                            <fileset dir="./components/${directory}/media/">
+                                <include name="**/**"/>
                             </fileset>
                         </copy>
                     </then>
@@ -108,32 +121,32 @@
 
     <target name="deploy_library" hidden="true">
         <if>
-            <available file="${dest.libs}/${directory}" type="dir"/>
+            <available file="${path.libs}/${directory}" type="dir"/>
             <then>
                 <delete includeemptydirs="false">
-                    <fileset dir="${dest.libs}/${directory}" includes="**/*"/>
+                    <fileset dir="${path.libs}/${directory}" includes="**/*"/>
                 </delete>
 
-                <copy todir="${dest.libs}/${directory}">
+                <copy todir="${path.libs}/${directory}">
                     <fileset dir="./libraries/${directory}">
                         <include name="**/**"/>
                         <exclude name="language/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.languages}">
+                <copy todir="${path.languages}">
                     <fileset dir="./libraries/${directory}/language">
                         <include name="**/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.administrator.languages}">
+                <copy todir="${path.administrator.languages}">
                     <fileset dir="./libraries/${directory}/language">
                         <include name="**/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.administrator}/manifests">
+                <copy todir="${path.administrator}/manifests">
                     <fileset dir="libraries/${directory}">
                         <include name="*.xml"/>
                     </fileset>
@@ -144,20 +157,20 @@
 
     <target name="deploy_module" hidden="true">
         <if>
-            <available file="${dest.modules}/${directory}" type="dir"/>
+            <available file="${path.modules}/${directory}" type="dir"/>
             <then>
                 <delete includeemptydirs="false">
-                    <fileset dir="${dest.modules}/${directory}" includes="**/*"/>
+                    <fileset dir="${path.modules}/${directory}" includes="**/*"/>
                 </delete>
 
-                <copy todir="${dest.modules}/${directory}">
+                <copy todir="${path.modules}/${directory}">
                     <fileset dir="./modules/${directory}">
                         <include name="**/**"/>
                         <exclude name="language/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.languages}">
+                <copy todir="${path.languages}">
                     <fileset dir="./modules/${directory}/language">
                         <include name="**/**"/>
                     </fileset>
@@ -182,20 +195,20 @@
 
     <target name="deploy_plugin" hidden="true">
         <if>
-            <available file="${dest.plugins}/${directory}/${subdirectory}" type="dir"/>
+            <available file="${path.plugins}/${directory}/${subdirectory}" type="dir"/>
             <then>
                 <delete includeemptydirs="false">
-                    <fileset dir="${dest.plugins}/${directory}/${subdirectory}" includes="**/*"/>
+                    <fileset dir="${path.plugins}/${directory}/${subdirectory}" includes="**/*"/>
                 </delete>
 
-                <copy todir="${dest.plugins}/${directory}/${subdirectory}">
+                <copy todir="${path.plugins}/${directory}/${subdirectory}">
                     <fileset dir="${src}/plugins/${directory}/${subdirectory}">
                         <include name="**/**"/>
                         <exclude name="language/**"/>
                     </fileset>
                 </copy>
 
-                <copy todir="${dest.administrator.languages}">
+                <copy todir="${path.administrator.languages}">
                     <fileset dir="${src}/plugins/${directory}/${subdirectory}/language">
                         <include name="**/**"/>
                     </fileset>
@@ -225,18 +238,18 @@
 
     <target name="deploy_test_data">
         <delete includeemptydirs="false">
-            <fileset dir="${dest}/../jspace" includes="**/*"/>
+            <fileset dir="${path.joomla}/../jspace" includes="**/*"/>
         </delete>
 
-        <copy todir="${dest}/../jspace">
+        <copy todir="${path.joomla}/../jspace">
             <fileset dir="tests/unit/stubs">
                 <include name="**/**"/>
             </fileset>
         </copy>
 
         <move
-            file="${dest}/../jspace/opensearch/htaccess.txt"
-            tofile="${dest}/../jspace/opensearch/.htaccess"/>
+            file="${path.joomla}/../jspace/opensearch/htaccess.txt"
+            tofile="${path.joomla}/../jspace/opensearch/.htaccess"/>
     </target>
 
     <target name="cpd" description="Check for copying and pasting.">
@@ -248,11 +261,7 @@
         </phpcpd>
     </target>
 
-    <target name="clean" description="Cleans the build path.">
-        <delete dir="${src}/build"/>
-    </target>
-
-    <target name="package" description="Packages extensions ready for installation into Joomla!." depends="clean">
+    <target name="package" description="Packages extensions ready for installation into Joomla!.">
         <mkdir dir="${package.dest}"/>
         <foreach list="${extensions}" param="extension" target="package_extensions"/>
     </target>
