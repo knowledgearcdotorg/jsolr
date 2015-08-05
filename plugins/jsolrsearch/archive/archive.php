@@ -11,8 +11,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use \JSolr\Search\Search;
 
-JLoader::import('joomla.error.log');
-
 class PlgJSolrSearchArchive extends Search
 {
 	protected $context = 'archive';
@@ -38,9 +36,11 @@ class PlgJSolrSearchArchive extends Search
 	public function onJSolrSearchURIGet($document)
 	{
 		if ($this->get('context').'.item' == $document->context) {
-			require_once(JPATH_ROOT."/components/com_jspace/helpers/route.php");
+            if (JComponentHelper::isInstalled("com_jcar")) {
+                require_once(JPATH_ROOT."/components/com_jcar/helpers/route.php");
 
-			return JSpaceHelperRoute::getItemFullRoute($document->id);
+                return JCarHelperRoute::getItemRoute($document->id);
+            }
 		}
 
 		return null;
