@@ -284,7 +284,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
       	}
 
 		// Get the form.
-		JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
+		JForm::addFieldPath(JPATH_BASE.'/libraries/JSolr/Form/Fields/Legacy');
 
 		try
         {

@@ -340,7 +340,7 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
       }
 
       // Get the form.
-      JForm::addFieldPath(JPATH_BASE.'/libraries/jsolr/form/fields');
+      JForm::addFieldPath(JPATH_BASE.'/libraries/JSolr/Form/Fields/Legacy');
 
       try {
          $form = \JSolr\Form\Form::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
