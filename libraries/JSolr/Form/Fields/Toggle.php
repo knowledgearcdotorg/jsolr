@@ -28,7 +28,7 @@ class Toggle extends Facets
 
 			$count = '';
 
-			if (JArrayHelper::getValue($this->element, 'count', false)) {
+			if ((bool)$this->getAttribute('count')) {
 				$count = '<span>('.$value.')</span>';
 			}
 

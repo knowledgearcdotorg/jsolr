@@ -23,243 +23,243 @@ use \JFormFieldList as JFormFieldList;
  */
 class Facets extends JFormFieldList implements Filterable, Facetable
 {
-	const FACET_DELIMITER = '|';
+    const FACET_DELIMITER = '|';
 
-	protected $type = 'JSolr.Facets';
+    protected $type = 'JSolr.Facets';
 
-	protected $facetInput;
+    protected $facetInput;
 
-	/**
-	 * Get the params for building this facet.
-	 *
-	 * Maybe as simple as facet.field or may include complex ranges and
-	 * queries.
-	 *
-	 * @return array An array of params for building this facet.
-	 */
-	public function getFacetParams()
-	{
-		$params = array();
+    /**
+     * Get the params for building this facet.
+     *
+     * Maybe as simple as facet.field or may include complex ranges and
+     * queries.
+     *
+     * @return array An array of params for building this facet.
+     */
+    public function getFacetParams()
+    {
+        $params = array();
 
-		$params[] = array('facet.field'=>$this->getAttribute('facet'));
+        $params[] = array('facet.field'=>$this->getAttribute('facet'));
 
-		return $params;
-	}
+        return $params;
+    }
 
-	/**
-	 * Gets an array of facets from the current search results (provided via the
-	 * user's session).
-	 *
-	 * @return array An array of facets from the current search results.
-	 */
-	protected function getFacets()
-	{
-		if ($facet = $this->getAttribute('facet')) {
-			$app = JFactory::getApplication('site');
-			$facets = $app->getUserState('com_jsolrsearch.facets', null);
+    /**
+     * Gets an array of facets from the current search results (provided via the
+     * user's session).
+     *
+     * @return array An array of facets from the current search results.
+     */
+    protected function getFacets()
+    {
+        if ($facet = $this->getAttribute('facet')) {
+            $app = JFactory::getApplication('site');
+            $facets = $app->getUserState('com_jsolrsearch.facets', null);
 
-			if ($facets) {
-				if (isset($facets->{$facet})) {
-					return $facets->{$facet};
-				}
-			}
-		}
+            if ($facets) {
+                if (isset($facets->{$facet})) {
+                    return $facets->{$facet};
+                }
+            }
+        }
 
-		return array();
-	}
+        return array();
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see JFormFieldList::getInput()
-	 */
-	protected function getInput()
-	{
-		return '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
-			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"/>';
-	}
+    /**
+     * (non-PHPdoc)
+     * @see JFormFieldList::getInput()
+     */
+    protected function getInput()
+    {
+        return '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
+            . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"/>';
+    }
 
-	/**
-	 * Method to get the field input markup for a generic list.
-	 * Use the multiple attribute to enable multiselect.
-	 *
-	 * @return  string  The field input markup.
-	 *
-	 * @since   11.1
-	 */
-	public function getFacetInput()
-	{
-		// Initialize variables.
-		$html = array();
+    /**
+     * Method to get the field input markup for a generic list.
+     * Use the multiple attribute to enable multiselect.
+     *
+     * @return  string  The field input markup.
+     *
+     * @since   11.1
+     */
+    public function getFacetInput()
+    {
+        // Initialize variables.
+        $html = array();
 
-		if ($class = JArrayHelper::getValue($this->element, "class", null)) {
-			$class = ' class="'.$class.'"';
-		}
+        if ($class = $this->getAttribute("class", null)) {
+            $class = ' class="'.$class.'"';
+        }
 
-		$html[] = '<ul'.$class.'>';
-		foreach ($this->getOptions() as $option) {
-			$html[] = $option;
-		}
-		$html[] = "</ul>";
+        $html[] = '<ul'.$class.'>';
+        foreach ($this->getOptions() as $option) {
+            $html[] = $option;
+        }
+        $html[] = "</ul>";
 
-		return implode($html);
-	}
+        return implode($html);
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see JFormFieldList::getOptions()
-	 */
-	protected function getOptions()
-	{
-		// Initialize variables.
-		$options = array();
+    /**
+     * (non-PHPdoc)
+     * @see JFormFieldList::getOptions()
+     */
+    protected function getOptions()
+    {
+        // Initialize variables.
+        $options = array();
 
-		$facets = $this->getFacets();
+        $facets = $this->getFacets();
 
-		foreach ($facets as $key=>$value) {
-			$html = array("<li>", "%s", "</li>");
+        foreach ($facets as $key=>$value) {
+            $html = array("<li>", "%s", "</li>");
 
-			$key = \JSolr\Helper::getOriginalFacet($key);
+            $key = \JSolr\Helper::getOriginalFacet($key);
 
-			if ($this->isSelected($key)) {
-				$html = array("<li class=\"active\">", "%s", "</li>");
-			}
+            if ($this->isSelected($key)) {
+                $html = array("<li class=\"active\">", "%s", "</li>");
+            }
 
-			$count = '';
+            $count = '';
 
-			if (JArrayHelper::getValue($this->element, 'count', 'false', 'string') === 'true') {
-				$count = '<span>('.$value.')</span>';
-			}
+            if ($this->getAttribute('count', 'false') === 'true') {
+                $count = '<span>('.$value.')</span>';
+            }
 
-			$facet = '<a href="'.$this->getFilterURI($key).'">'.$key.'</a>'.$count;
+            $facet = '<a href="'.$this->getFilterURI($key).'">'.$key.'</a>'.$count;
 
-			$options[] = JText::sprintf(implode($html), $facet);
-		}
+            $options[] = JText::sprintf(implode($html), $facet);
+        }
 
-		reset($options);
+        reset($options);
 
-		return $options;
-	}
+        return $options;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see JSolrFilterable::getFilters()
-	 */
-	public function getFilters()
-	{
-		$cleaned = JString::trim($this->value);
-		$array = explode(self::FACET_DELIMITER, $cleaned);
-		$filters = array();
+    /**
+     * (non-PHPdoc)
+     * @see JSolrFilterable::getFilters()
+     */
+    public function getFilters()
+    {
+        $cleaned = JString::trim($this->value);
+        $array = explode(self::FACET_DELIMITER, $cleaned);
+        $filters = array();
 
-		if ($cleaned) {
-			for ($i = 0; $i < count($array); $i++) {
-				if ($this->exactmatch) {
-					$array[$i] = '"'.$array[$i].'"';
-				}
+        if ($cleaned) {
+            for ($i = 0; $i < count($array); $i++) {
+                if ($this->exactmatch) {
+                    $array[$i] = '"'.$array[$i].'"';
+                }
 
-				$filters[$i] = $this->filter.":".$array[$i];
-			}
-		}
+                $filters[$i] = $this->filter.":".$array[$i];
+            }
+        }
 
-		return (count($filters)) ? $filters : array();
-	}
+        return (count($filters)) ? $filters : array();
+    }
 
-	/**
-	 * Evaluates whether the current facet is selected or not.
-	 *
-	 * @param string $facet The facet value to evaluate.
-	 * @return bool True if the current facet is selected, false otherwise.
-	 */
-	protected function isSelected($facet)
-	{
-		$url = \JSolr\Search\Factory::getSearchRoute();
+    /**
+     * Evaluates whether the current facet is selected or not.
+     *
+     * @param string $facet The facet value to evaluate.
+     * @return bool True if the current facet is selected, false otherwise.
+     */
+    protected function isSelected($facet)
+    {
+        $url = \JSolr\Search\Factory::getSearchRoute();
 
-		$cleaned = JString::trim($this->value);
-		$filters = explode(self::FACET_DELIMITER, $cleaned);
+        $cleaned = JString::trim($this->value);
+        $filters = explode(self::FACET_DELIMITER, $cleaned);
 
-		$selected = false;
+        $selected = false;
 
-		while (($filter = current($filters)) && !$selected) {
-			if ($filter == $facet) {
-				$selected = true;
-			}
+        while (($filter = current($filters)) && !$selected) {
+            if ($filter == $facet) {
+                $selected = true;
+            }
 
-			next($filters);
-		}
+            next($filters);
+        }
 
-		return $selected;
-	}
+        return $selected;
+    }
 
-	/**
-	 * Gets the filter uri for the current facet.
-	 *
-	 * @param string $facet The facet value to build into the filter uri.
-	 * @return string The filter uri for the current facet.
-	 */
-	protected function getFilterURI($facet)
-	{
-		$url = clone \JSolr\Search\Factory::getSearchRoute();
+    /**
+     * Gets the filter uri for the current facet.
+     *
+     * @param string $facet The facet value to build into the filter uri.
+     * @return string The filter uri for the current facet.
+     */
+    protected function getFilterURI($facet)
+    {
+        $url = clone \JSolr\Search\Factory::getSearchRoute();
 
-		foreach ($url->getQuery(true) as $key=>$value) {
-			$url->setVar($key, urlencode($value));
-		}
+        foreach ($url->getQuery(true) as $key=>$value) {
+            $url->setVar($key, urlencode($value));
+        }
 
-		$filters = array();
-		if ($cleaned = JString::trim($this->value)) {
-			$filters = explode(self::FACET_DELIMITER, $cleaned);
-		}
+        $filters = array();
+        if ($cleaned = JString::trim($this->value)) {
+            $filters = explode(self::FACET_DELIMITER, $cleaned);
+        }
 
-		if ($this->isSelected($facet)) {
-			if (count($filters) > 1) {
-				$found = false;
+        if ($this->isSelected($facet)) {
+            if (count($filters) > 1) {
+                $found = false;
 
-				for ($i = 0; ($filter = current($filters)) && !$found; $i++) {
-					if ($filter == $facet) {
-						unset($filters[$i]);
-						$found = true;
-					} else {
-						next($filters);
-					}
-				}
+                for ($i = 0; ($filter = current($filters)) && !$found; $i++) {
+                    if ($filter == $facet) {
+                        unset($filters[$i]);
+                        $found = true;
+                    } else {
+                        next($filters);
+                    }
+                }
 
-				$url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
+                $url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
 
-			} else {
-				$url->delVar($this->name);
-			}
-		} else {
-			$filters[] = $facet;
-			$url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
-		}
+            } else {
+                $url->delVar($this->name);
+            }
+        } else {
+            $filters[] = $facet;
+            $url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
+        }
 
-		return (string)$url;
-	}
+        return (string)$url;
+    }
 
-	public function __get($name)
-	{
-		switch ($name) {
-			case 'filter':
-			case 'facet':
-				return JArrayHelper::getValue($this->element, $name, null, 'string');
-				break;
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'filter':
+            case 'facet':
+                return $this->getAttribute($name, null);
+                break;
 
-			case 'exactmatch':
-				if (JArrayHelper::getValue($this->element, $name, null, 'string') === 'true')
-					return true;
-				else
-					return false;
-				break;
+            case 'exactmatch':
+                if ($this->getAttribute($name, null) === 'true')
+                    return true;
+                else
+                    return false;
+                break;
 
-			case 'facetInput':
-				// If the input hasn't yet been generated, generate it.
-				if (empty($this->facetInput)) {
-					$this->facetInput = $this->getFacetInput();
-				}
+            case 'facetInput':
+                // If the input hasn't yet been generated, generate it.
+                if (empty($this->facetInput)) {
+                    $this->facetInput = $this->getFacetInput();
+                }
 
-				return $this->facetInput;
-				break;
+                return $this->facetInput;
+                break;
 
-			default:
-				return parent::__get($name);
-		}
-	}
+            default:
+                return parent::__get($name);
+        }
+    }
 }

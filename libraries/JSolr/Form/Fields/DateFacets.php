@@ -119,7 +119,7 @@ class DateFacets extends Facets
 		switch ($name) {
 			case 'min':
 			case 'max':
-				if (!($this->$name = JArrayHelper::getValue($this->element, $name, null, 'string'))) {
+				if (!($this->$name = $this->getAttribute($name, null))) {
 					// lazy load defaults.
 					$this->_loadDefaultRanges();
 					$this->$name = JArrayHelper::getValue($this->ranges, $name);
@@ -129,7 +129,7 @@ class DateFacets extends Facets
 				break;
 
 			case 'gap':
-				if (!($this->$name = JArrayHelper::getValue($this->element, $name, null, 'string'))) {
+				if (!($this->$name = $this->getAttribute($name, null))) {
 					$this->$name = self::RANGE_GAP;
 				}
 

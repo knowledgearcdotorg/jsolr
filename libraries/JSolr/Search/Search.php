@@ -81,20 +81,21 @@ abstract class Search extends \JPlugin
 		return $this->operators;
 	}
 
-	/**
-	 * Lists fields that have highlighting applied on the found text.
-	 */
-	final public function onJSolrSearchHLAdd()
-	{
-		$hl = array();
+    /**
+     * Lists fields that have highlighting applied on the found text.
+     */
+    final public function onJSolrSearchHLAdd()
+    {
+        $hl = array();
 
-		foreach ($this->highlighting as $higlighting) {
-			if ($higlighting)
-				$hl[] = \JSolr\Helper::localize($higlighting);
-		}
+        foreach ($this->highlighting as $higlighting) {
+            if ($higlighting) {
+                $hl[] = \JSolr\Helper::localize($higlighting);
+            }
+        }
 
-		return $hl;
-	}
+        return $hl;
+    }
 
 	/**
 	 * Registers the plugin details.

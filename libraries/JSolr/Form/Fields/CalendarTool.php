@@ -158,12 +158,12 @@ HTML;
     {
         switch ($name) {
             case 'filter':
-                return JArrayHelper::getValue($this->element, $name, null, 'string');
+                return $this->getAttribute($name, null);
                 break;
 
             case 'filter_quoted':
             case 'show_custom':
-                if (JArrayHelper::getValue($this->element, $name, null, 'string') === 'true')
+                if ($this->getAttribute($name, null) === 'true')
                     return true;
                 else
                     return false;
