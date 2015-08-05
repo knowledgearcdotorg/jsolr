@@ -59,10 +59,16 @@ class plgContentJSolrCrawler extends JPlugin
 	}
 	
 	public function onContentAfterDelete($context, $article)
+
 	{
+
 		$dispatcher = JDispatcher::getInstance();
+
 		JPluginHelper::importPlugin('jsolrcrawler');
+
 	
+
 		$results = $dispatcher->trigger('onJSolrIndexAfterDelete', array($context, $article));
+
 	}
 }

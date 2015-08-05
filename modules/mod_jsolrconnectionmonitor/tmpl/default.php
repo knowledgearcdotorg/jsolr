@@ -26,12 +26,19 @@
  * 
  */
 defined('_JEXEC') or die;
+
 ?>
+
 <div class="row-striped">
+
 	<div class="row-fluid">
+
 		<div class="span6">		
+
 			<strong class="row-title"><?php echo JText::_('MOD_JSOLRCONNECTIONMONITOR_STATUS');?></strong>
+
 		</div>
+
 		
 		<div id="jsolrStatus" class="span6">
 		<?php 
@@ -41,7 +48,9 @@ defined('_JEXEC') or die;
 			echo JText::_("MOD_JSOLRCONNECTIONMONITOR_NOT_CONNECTED");
 		endif;
 		?>
+
 		</div>
+
 	</div>
 	
 	<?php foreach (array('host', 'port', 'path') as $setting) : ?>
@@ -131,4 +140,5 @@ defined('_JEXEC') or die;
 		</div>
 		<?php endif; ?>
 	<?php endif; ?>
+
 </div>

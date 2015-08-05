@@ -60,14 +60,24 @@ class plgJSolrSearchNewsfeeds extends JSolrSearchSearch
 		return implode("...", $hl);
 	}
 
+
 	public function onJSolrSearchURIGet($document)
+
 	{
+
 		if ($this->get('context') == $document->context) {
+
 			require_once(JPATH_ROOT."/components/com_newsfeeds/helpers/route.php");
+
 				
+
 			return NewsfeedsHelperRoute::getNewsfeedRoute($document->id, $document->parent_id);
+
 		}
+
 	
+
 		return null;
+
 	}
 }
