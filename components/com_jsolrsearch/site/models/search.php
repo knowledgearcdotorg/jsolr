@@ -31,9 +31,12 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
         parent::__construct($config);
 
         $this->set('option', 'com_jsolrsearch');
+
         $this->set('context', $this->get('option').'.search');
 
         JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
+
+        Jlog::addLogger(array());
     }
 
    /**
@@ -95,7 +98,8 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
 
             return $results;
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            JLog::add((string)$e, JLog::ERROR, 'jsolrsearch');
             $this->pagination = new JPagination($this->get('total', 0), 0, 0);
 
             return null;
