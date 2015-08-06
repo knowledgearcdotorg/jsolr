@@ -5,102 +5,102 @@
  *
  * Copy this file to override the layout and style of the search results form.
  *
+ * @package     JSolr.Search
+ * @subpackage  View
  * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
- * @license     This file is part of the JSolrSearch Component for Joomla!.
-
-   The JSolrSearch Component for Joomla! is free software: you can redistribute it
-   and/or modify it under the terms of the GNU General Public License as
-   published by the Free Software Foundation, either version 3 of the License,
-   or (at your option) any later version.
-
-   The JSolrSearch Component for Joomla! is distributed in the hope that it will be
-   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with the JSolrSearch Component for Joomla!.  If not, see
-   <http://www.gnu.org/licenses/>.
-
- * Contributors
- * Please feel free to add your name and email (optional) here if you have
- * contributed any source code changes.
- * Name							Email
- * Hayden Young					<hayden@knowledgearc.com>
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 
 JHTML::_('behavior.formvalidation');
 ?>
-<form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">
-	<input type="hidden" name="option" value="com_jsolrsearch"/>
-	<input type="hidden" name="task" value="search"/>
+<form
+    action="<?php echo JRoute::_("index.php"); ?>"
+    method="get"
+    name="adminForm"
+    class="form-validate jsolr-search-result-form"
+    id="jsolr-search-result-form">
 
-	<?php if (JFactory::getApplication()->input->get('o', null)) : ?>
-	<input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get('o'); ?>"/>
-	<?php endif; ?>
+    <?php if (JFactory::getApplication()->input->get('o', null)) : ?>
+    <input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get('o'); ?>"/>
+    <?php endif; ?>
 
-	<fieldset class="query">
-		<!-- Output search fields (in almost all cases will be a single query field). -->
-		<?php foreach ($this->get('Form')->getFieldset('query') as $field): ?>
-			<?php echo $this->form->getInput($field->fieldname); ?>
-		<?php endforeach;?>
+    <fieldset class="query">
 
-		<!-- Output the hidden form fields for the various selected facet filters. -->
-		<?php foreach ($this->get('Form')->getFieldset('facets') as $field): ?>
-			<?php if (trim($field->value)) : ?>
-				<?php echo $this->form->getInput($field->fieldname); ?>
-			<?php endif; ?>
-		<?php endforeach;?>
+        <!-- Output search fields (in almost all cases will be a single query field). -->
+        <?php
+        foreach ($this->get('Form')->getFieldset('query') as $field):
+            echo $this->form->getInput($field->fieldname);
+        endforeach;
+        ?>
 
-		<button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
-	</fieldset>
+        <!-- Output the hidden form fields for the various selected facet filters. -->
+        <?php
+        foreach ($this->get('Form')->getFieldset('facets') as $field):
+            if (trim($field->value)) :
+                echo $this->form->getInput($field->fieldname);
+            endif;
+        endforeach;
+        ?>
 
-	<a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
+        <button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
+    </fieldset>
 
-	<div class="clr"></div>
+    <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
 
-	<?php $plugins = $this->get('Plugins'); ?>
+    <div class="clr"></div>
 
-	<nav>
-		<ul>
-			<?php for ($i = 0; $i < count($plugins); ++$i): ?>
-			<li>
-				<?php
-                    $plugin = JArrayHelper::getValue($plugins, $i);
-					$isSelected = (JArrayHelper::getValue($plugin, 'name') == JFactory::getApplication()->input->get('o')) ? true : false;
+    <?php $plugins = $this->get('Plugins'); ?>
 
-					echo JHTML::_(
-						'link',
-						$plugins[$i]['uri'],
-						JText::_($plugins[$i]['label']),
-						array(
-							'data-category'=>JArrayHelper::getValue($plugin, 'name'),
-							'class'=> $isSelected ? 'active' : ''));
-				?>
-				</li>
-        	<?php endfor ?>
-		</ul>
+    <nav>
+        <ul>
+
+            <?php for ($i = 0; $i < count($plugins); ++$i): ?>
+
+            <li>
+                <?php
+                $plugin = JArrayHelper::getValue($plugins, $i);
+                $isSelected = (JArrayHelper::getValue($plugin, 'name') == JFactory::getApplication()->input->get('o')) ? true : false;
+
+                echo JHTML::_(
+                    'link',
+                    $plugins[$i]['uri'],
+                    JText::_($plugins[$i]['label']),
+                    array(
+                        'data-category'=>JArrayHelper::getValue($plugin, 'name'),
+                        'class'=> $isSelected ? 'active' : ''));
+                ?>
+            </li>
+
+            <?php endfor ?>
+
+        </ul>
     </nav>
 
-	<div class="clr"></div>
+    <div class="clr"></div>
 
-	<div class="jsolr-searchtools">
-		<?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
-			<?php echo $this->form->getInput($field->name); ?>
-		<?php endforeach;?>
-	</div>
+    <div class="jsolr-searchtools">
+        <?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
+            <?php echo $this->form->getInput($field->name); ?>
+        <?php endforeach;?>
+    </div>
 
-	<?php echo JHTML::_('form.token'); ?>
+    <input type="hidden" name="option" value="com_jsolrsearch"/>
+    <input type="hidden" name="task" value="search"/>
+    <?php echo JHTML::_('form.token'); ?>
 </form>
 
 <div id="custom-dates">
-	<form id="custom-dates-form" action="<?php echo JRoute::_(\JSolr\Search\Factory::getSearchRoute()); ?>" method="get">
-		<?php echo JHtml::_('calendar', '', "qdr_min", "qdr_min", "%Y-%m-%d"); ?>
-		<?php echo JHtml::_('calendar', '', "qdr_max", "qdr_max", "%Y-%m-%d"); ?>
+    <form
+        id="custom-dates-form"
+        action="<?php echo JRoute::_(\JSolr\Search\Factory::getSearchRoute()); ?>"
+        method="get">
 
-		<button id="custom-dates-submit"><?php echo JText::_('JSUBMIT'); ?></button>
-		<a id="custom-dates-cancel" href="#"><?php echo JText::_('JCANCEL'); ?></a>
-	</form>
+        <?php echo JHtml::_('calendar', '', "qdr_min", "qdr_min", "%Y-%m-%d"); ?>
+        <?php echo JHtml::_('calendar', '', "qdr_max", "qdr_max", "%Y-%m-%d"); ?>
+
+        <button id="custom-dates-submit"><?php echo JText::_('JSUBMIT'); ?></button>
+        <a id="custom-dates-cancel" href="#"><?php echo JText::_('JCANCEL'); ?></a>
+        
+    </form>
 </div>

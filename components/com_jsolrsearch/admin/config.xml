@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-	<fieldset
-		name="connection"
-		label="COM_JSOLRSEARCH_CONFIG_CONNECTION_LABEL"
-		description="COM_JSOLRSEARCH_CONFIG_CONNECTION_DESC">
-		<field
-			name="host"
-			type="text"
-			label="COM_JSOLRSEARCH_CONNECTION_HOST_LABEL"
-			size="45"/>
-		<field
-			name="port"
-			type="text"
-			label="COM_JSOLRSEARCH_CONNECTION_PORT_LABEL"
-			size="45"/>
-		<field
-			name="path"
-			type="text"
-			label="COM_JSOLRSEARCH_CONNECTION_PATH_LABEL"
-			size="45"/>
-		<field
-			name="username"
-			type="text"
-			label="COM_JSOLRSEARCH_CONNECTION_USERNAME_LABEL"
-			size="45"/>
-		<field
-			name="password"
-			type="text"
-			label="COM_JSOLRSEARCH_CONNECTION_PASSWORD_LABEL"
-			size="45"/>
-	</fieldset>
+    <fieldset
+        name="connection"
+        label="COM_JSOLRSEARCH_CONFIG_CONNECTION_LABEL"
+        description="COM_JSOLRSEARCH_CONFIG_CONNECTION_DESC">
+        <field
+            name="host"
+            type="text"
+            label="COM_JSOLRSEARCH_CONNECTION_HOST_LABEL"
+            size="45"/>
+        <field
+            name="port"
+            type="text"
+            label="COM_JSOLRSEARCH_CONNECTION_PORT_LABEL"
+            size="45"/>
+        <field
+            name="path"
+            type="text"
+            label="COM_JSOLRSEARCH_CONNECTION_PATH_LABEL"
+            size="45"/>
+        <field
+            name="username"
+            type="text"
+            label="COM_JSOLRSEARCH_CONNECTION_USERNAME_LABEL"
+            size="45"/>
+        <field
+            name="password"
+            type="text"
+            label="COM_JSOLRSEARCH_CONNECTION_PASSWORD_LABEL"
+            size="45"/>
+    </fieldset>
 
-	<fieldset
-		name="filters"
-		label="COM_JSOLRSEARCH_FILTERS_LABEL"
-		description="">
-		<field
-			name="facets_embed"
-			type="checkbox"
-			label="COM_JSOLRSEARCH_FACETS_EMBED_LABEL"
-			value="1"
+    <fieldset
+        name="filters"
+        label="COM_JSOLRSEARCH_FILTERS_LABEL"
+        description="">
+        <field
+            name="facets_embed"
+            type="checkbox"
+            label="COM_JSOLRSEARCH_FACETS_EMBED_LABEL"
+            value="1"
             description="COM_JSOLRSEARCH_FACETS_EMBED_DESC" />
-	</fieldset>
+    </fieldset>
 
-	<fieldset
-		name="advanced"
-		label="COM_JSOLRSEARCH_ADVANCED_LABEL"
-		description="COM_JSOLRSEARCH_ADVANCED_DESCRIPTION">
-		<field
-			name="mm"
-			type="text"
-			label="COM_JSOLRSEARCH_ADVANCED_MM_LABEL"
-			description="COM_JSOLRSEARCH_ADVANCED_MM_DESCRIPTION"
-			default="1"/>
+    <fieldset
+        name="advanced"
+        label="COM_JSOLRSEARCH_ADVANCED_LABEL"
+        description="COM_JSOLRSEARCH_ADVANCED_DESCRIPTION">
+        <field
+            name="mm"
+            type="text"
+            label="COM_JSOLRSEARCH_ADVANCED_MM_LABEL"
+            description="COM_JSOLRSEARCH_ADVANCED_MM_DESCRIPTION"
+            default="1"/>
         <field
             name="override_schema"
             type="radio"
@@ -63,6 +63,5 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
-
-	</fieldset>
+    </fieldset>
 </config>

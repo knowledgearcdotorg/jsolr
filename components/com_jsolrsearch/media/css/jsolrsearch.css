@@ -1,19 +1,19 @@
 #jsolrSearchResults > ol {
-	margin-left: 0;	
+    margin-left: 0;
 }
 
 #jsolrSearchResults > ol > li {
-	list-style: none;	
+    list-style: none;
 }
 
 #jsolrSearchResults .active {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 #custom-dates {
-	display: none;
+    display: none;
 }
 
 #custom-dates.show {
-	display: block;
+    display: block;
 }

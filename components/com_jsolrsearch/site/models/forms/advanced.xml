@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fieldset
-		name="query"
-		label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
+    <fieldset
+        name="query"
+        label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
         addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
 
-		<!-- eventually only our FacetFields fields should be used here -->
-		<field
-			name="aq"
-			facet="title"
-			type="text"
-			label="COM_JSOLR_ADVANCED_SEARCH_AQ_LABEL"
-			size="40"
-			class="inputbox jsolrquery"
-			maxlength="50"/>
-		<field
-			name="eq"
-			facet="title"
-			type="text"
-			label="COM_JSOLR_ADVANCED_SEARCH_EQ_LABEL"
-			size="40"
-			class="inputbox jsolrquery"
-			maxlength="50"/>
-		<field
-			name="oq"
-			facet="title"
-			type="text"
-			label="COM_JSOLR_ADVANCED_SEARCH_OQ_LABEL"
-			size="40"
-			class="inputbox jsolrquery"
-			maxlength="50"/>
-		<field
-			name="nq"
-			facet="title"
-			type="text"
-			label="COM_JSOLR_ADVANCED_SEARCH_NQ_LABEL"
-			size="40"
-			class="inputbox jsolrquery"
-			maxlength="50"/>
-	</fieldset>
+        <!-- eventually only our FacetFields fields should be used here -->
+        <field
+            name="aq"
+            facet="title"
+            type="text"
+            label="COM_JSOLR_ADVANCED_SEARCH_AQ_LABEL"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+        <field
+            name="eq"
+            facet="title"
+            type="text"
+            label="COM_JSOLR_ADVANCED_SEARCH_EQ_LABEL"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+        <field
+            name="oq"
+            facet="title"
+            type="text"
+            label="COM_JSOLR_ADVANCED_SEARCH_OQ_LABEL"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+        <field
+            name="nq"
+            facet="title"
+            type="text"
+            label="COM_JSOLR_ADVANCED_SEARCH_NQ_LABEL"
+            size="40"
+            class="inputbox jsolrquery"
+            maxlength="50"/>
+    </fieldset>
 </form>

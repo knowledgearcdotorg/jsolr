@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="component" version="3.3" method="upgrade">
-	<name>com_jsolrsearch</name>
-	<creationDate>2012-07-26</creationDate>
-	<author>KnowledgeArc Ltd</author>
-	<authorEmail>development@knowledgearc.com</authorEmail>
-	<authorUrl>http://www.knowledgearc.org</authorUrl>
-	<copyright>>Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>2.1.0</version>
-	<description>COM_JSOLRSEARCH_XML_DESCRIPTION</description>
+    <name>com_jsolrsearch</name>
+    <creationDate>2012-07-26</creationDate>
+    <author>KnowledgeArc Ltd</author>
+    <authorEmail>development@knowledgearc.com</authorEmail>
+    <authorUrl>http://www.knowledgearc.org</authorUrl>
+    <copyright>>Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>2.1.0</version>
+    <description>COM_JSOLRSEARCH_XML_DESCRIPTION</description>
 
-	<scriptfile>script.php</scriptfile>
+    <scriptfile>script.php</scriptfile>
 
     <install><sql></sql></install>
     <uninstall><sql></sql></uninstall>
 
-	<files folder="site">
-    	<folder>models</folder>
-    	<folder>views</folder>
-    	<filename>controller.php</filename>
-    	<filename>jsolrsearch.php</filename>
-		<filename>router.php</filename>
-	</files>
+    <files folder="site">
+        <folder>models</folder>
+        <folder>views</folder>
+        <filename>controller.php</filename>
+        <filename>jsolrsearch.php</filename>
+        <filename>router.php</filename>
+    </files>
 
- 	<languages folder="site">
- 		<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
- 	</languages>
+     <languages folder="site">
+         <language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
+     </languages>
 
     <media folder="media" destination="com_jsolrsearch">
-    	<folder>js</folder>
-    	<folder>css</folder>
+        <folder>js</folder>
+        <folder>css</folder>
     </media>
 
-	<administration>
-	    <files folder="admin">
-	    	<folder>helpers</folder>
-	    	<folder>models</folder>
-	    	<folder>views</folder>
-	    	<filename>config.xml</filename>
-	    	<filename>controller.php</filename>
-	    	<filename>jsolrsearch.php</filename>
-	    </files>
+    <administration>
+        <files folder="admin">
+            <folder>helpers</folder>
+            <folder>models</folder>
+            <folder>views</folder>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>jsolrsearch.php</filename>
+        </files>
 
-		<languages folder="admin">
-			<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
-			<language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.sys.ini</language>
-		</languages>
+        <languages folder="admin">
+            <language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
+            <language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.sys.ini</language>
+        </languages>
 
         <menu img="class:jsolrsearch">COM_JSOLRSEARCH</menu>
-	</administration>
+    </administration>
 
-	<updateservers>
-		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=2&dummy=extension.xml]]></server>
-	</updateservers>
+    <updateservers>
+        <server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=2&dummy=extension.xml]]></server>
+    </updateservers>
 </extension>
