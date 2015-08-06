@@ -15,7 +15,7 @@ define('DS', DIRECTORY_SEPARATOR);
 $properties = parse_ini_file(dirname(dirname(dirname(__FILE__))).'/build.properties');
 
 // Load Joomla framework
-define('JPATH_BASE', $properties['dest']);
+define('JPATH_BASE', $properties['path.joomla']);
 require_once JPATH_BASE.'/includes/defines.php';
 require_once JPATH_BASE.'/includes/framework.php';
 

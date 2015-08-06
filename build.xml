@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="JSpace" default="update" basedir=".">
+<project name="JSolr" default="update" basedir=".">
     <property   file="build.properties"/>
     <property   name="path.administrator"            value="${path.joomla}/administrator"/>
     <property   name="path.administrator.components" value="${path.administrator}/components"/>
@@ -221,35 +221,31 @@
         <phpunit bootstrap="tests/unit/bootstrap.php">
             <formatter type="plain" usefile="false"/>
             <batchtest>
-                <fileset dir="tests/unit/suites/libraries/JSpace/Metadata">
+                <fileset dir="tests/unit/suites/libraries/JSolr/Index/FileSystem">
                     <include name="*Test.php"/>
                 </fileset>
-                <fileset dir="tests/unit/suites/plugins/jspace">
+                <!--fileset dir="tests/unit/suites/plugins">
                     <include name="harvest/*Test.php"/>
                     <include name="localstore/*Test.php"/>
                     <include name="weblinks/*Test.php"/>
-                    <!-- it would be good to run the individual harvesting tests but something is causing the oai tests to fail. Most probably caused by both plugins being loaded. Would be good to have better control over loading and testing plugins. -->
+                     it would be good to run the individual harvesting tests but something is causing the oai tests to fail. Most probably caused by both plugins being loaded. Would be good to have better control over loading and testing plugins.
                     <exclude name="oai/*Test.php"/>
                     <exclude name="opensearch/*Test.php"/>
-                </fileset>
+                </fileset-->
             </batchtest>
         </phpunit>
     </target>
 
     <target name="deploy_test_data">
         <delete includeemptydirs="false">
-            <fileset dir="${path.joomla}/../jspace" includes="**/*"/>
+            <fileset dir="${path.joomla}/../jsolr" includes="**/*"/>
         </delete>
 
-        <copy todir="${path.joomla}/../jspace">
+        <copy todir="${path.joomla}/../jsolr">
             <fileset dir="tests/unit/stubs">
                 <include name="**/**"/>
             </fileset>
         </copy>
-
-        <move
-            file="${path.joomla}/../jspace/opensearch/htaccess.txt"
-            tofile="${path.joomla}/../jspace/opensearch/.htaccess"/>
     </target>
 
     <target name="cpd" description="Check for copying and pasting.">

@@ -22,7 +22,7 @@ class JSolrIndexFileSystemTikaServerTest extends \PHPUnit_Framework_TestCase
             ->withContent(LargeFileContent::withKilobytes(50))
             ->at($root);*/
 
-        $server = new TikaServer("http://localhost/owncloud/core/skeleton/ownCloudUserManual.pdf");
+        $server = new TikaServer("http://localhost/jsolr/files/ownCloudUserManual.pdf");
         $server->setAppPath("http://localhost:9998");
 
         $this->assertEquals($server->getContentType(), 'application/pdf');
@@ -36,7 +36,7 @@ class JSolrIndexFileSystemTikaServerTest extends \PHPUnit_Framework_TestCase
             ->withContent(LargeFileContent::withKilobytes(50))
             ->at($root);*/
 
-        $server = new TikaServer("http://localhost/owncloud/core/skeleton/ownCloudUserManual.pdf");
+        $server = new TikaServer("http://localhost/jsolr/files/ownCloudUserManual.pdf");
         $server->setAppPath("http://localhost:9998");
 
         $metadata = $server->getMetadata();
@@ -53,7 +53,7 @@ class JSolrIndexFileSystemTikaServerTest extends \PHPUnit_Framework_TestCase
             ->withContent(LargeFileContent::withKilobytes(50))
             ->at($root);*/
 
-        $server = new TikaServer("http://localhost/owncloud/core/skeleton/ownCloudUserManual.pdf");
+        $server = new TikaServer("http://localhost/jsolr/files/ownCloudUserManual.pdf");
         $server->setAppPath("http://localhost:9998");
 
         $this->assertEquals(substr($server->getContent(), 0, 21), "\nownCloud User Manual");
