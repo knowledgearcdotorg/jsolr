@@ -295,10 +295,10 @@ EOT;
     protected function help()
     {
         echo <<<EOT
-Usage: jsolr_crawler [OPTIONS] [task]
-   jsolr_crawler [OPTIONS] [u|update] <last-index-date>
-   jsolr_crawler [q|v] [a|add] <plugin> <id>
-   jsolr_crawler [q|v] [d|delete] <plugin> <id>
+Usage: jsolrcrawler [OPTIONS] [task]
+   jsolrcrawler [OPTIONS] [u|update] <last-index-date>
+   jsolrcrawler [q|v] [a|add] <plugin> <id>
+   jsolrcrawler [q|v] [d|delete] <plugin> <id>
 
 Provides tools for managing a Joomla-centric Solr index.
 
