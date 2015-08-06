@@ -37,13 +37,13 @@ namespace JSolr\Apache\Solr;
 
 class ParserException extends \Exception
 {
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision: 54 $';
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision: 54 $';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id: ParserException.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id: ParserException.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
 }

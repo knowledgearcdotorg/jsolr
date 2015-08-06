@@ -3,40 +3,39 @@
  * @copyright   Copyright (C) 2013-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 namespace JSolr\Form\Fields;
 
 use \JArrayHelper as JArrayHelper;
 
 class Toggle extends Facets
 {
-	public $type = 'JSolr.Toggle';
+    public $type = 'JSolr.Toggle';
 
-	protected function getOptions()
-	{
-		// Initialize variables.
-		$options = array();
+    protected function getOptions()
+    {
+        // Initialize variables.
+        $options = array();
 
-		$facets = $this->getFacets();
+        $facets = $this->getFacets();
 
-		foreach ($facets as $key=>$value) {
-			$class = '';
+        foreach ($facets as $key=>$value) {
+            $class = '';
 
-			if ($this->isSelected($key)) {
-				$class = ' class="active"';
-			}
+            if ($this->isSelected($key)) {
+                $class = ' class="active"';
+            }
 
-			$count = '';
+            $count = '';
 
-			if ((bool)$this->getAttribute('count')) {
-				$count = '<span>('.$value.')</span>';
-			}
+            if ((bool)$this->getAttribute('count')) {
+                $count = '<span>('.$value.')</span>';
+            }
 
-			$options[] = '<li'.$class.'><a href="'.$this->getFilterURI($key).'">'.JArrayHelper::getValue($this->element, 'value').'</a>'.$count.'</li>';
-		}
+            $options[] = '<li'.$class.'><a href="'.$this->getFilterURI($key).'">'.JArrayHelper::getValue($this->element, 'value').'</a>'.$count.'</li>';
+        }
 
-		reset($options);
+        reset($options);
 
-		return $options;
-	}
+        return $options;
+    }
 }
