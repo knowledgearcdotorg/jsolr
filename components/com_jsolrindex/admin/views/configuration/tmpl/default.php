@@ -15,6 +15,6 @@ foreach ($this->modules as $module) :
     $params->loadString($module->params);
 
     echo JModuleHelper::renderModule($module, array('style' => 'well'));
-endfor;
+endforeach;
 ?>
 </div>
