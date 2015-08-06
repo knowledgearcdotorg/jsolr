@@ -1,9 +1,9 @@
 #!/usr/bin/php
 <?php
 /**
- * @package JSolr
- * @subpackage Index
- * @copyright Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
+ * @package     JSolr
+ * @subpackage  Index
+ * @copyright   Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
