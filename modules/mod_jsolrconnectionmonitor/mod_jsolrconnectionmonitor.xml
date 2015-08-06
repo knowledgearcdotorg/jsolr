@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="2.5" client="administrator" method="upgrade">
-		<name>mod_jsolrconnectionmonitor</name>
-		<creationDate>2014-01-20</creationDate>
-		<author>KnowledgeARC</author>
-		<authorEmail>development@knowledgearc.com</authorEmail>
-		<authorUrl>http://www.knowledgearc.com</authorUrl>
-		<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
-		<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-		<version>1.0.1</version>
-		<description>MOD_JSOLRCONNECTIONMONITOR_XML_DESCRIPTION</description>
-		<files>
-			<filename module="mod_jsolrconnectionmonitor">mod_jsolrconnectionmonitor.php</filename>
-			<filename>helper.php</filename>
-			<folder>tmpl</folder>
-		</files>
+    <name>mod_jsolrconnectionmonitor</name>
+    <creationDate>2014-01-20</creationDate>
+    <author>KnowledgeARC</author>
+    <authorEmail>development@knowledgearc.com</authorEmail>
+    <authorUrl>http://www.knowledgearc.com</authorUrl>
+    <copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>1.0.1</version>
+    <description>MOD_JSOLRCONNECTIONMONITOR_XML_DESCRIPTION</description>
+    <files>
+        <filename module="mod_jsolrconnectionmonitor">mod_jsolrconnectionmonitor.php</filename>
+        <filename>helper.php</filename>
+        <folder>tmpl</folder>
+    </files>
 
-	 	<languages>
-	 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrconnectionmonitor.ini</language>
-	 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrconnectionmonitor.sys.ini</language>
-	 	</languages>
-    	
-    	<config>
-			<fields name="params">
-				<fieldset name="basic">
-					<field
-						name="service"
-						type="list"
-						default="0"
-						label="MOD_JSOLRCONNECTIONMONITOR_FIELD_SERVICE_LABEL"
-						description="MOD_JSOLRCONNECTIONMONITOR_FIELD_SERVICE_DESC">
-						<option value="0">MOD_JSOLRCONNECTIONMONITOR_OPTION_INDEX</option>
-						<option value="1">MOD_JSOLRCONNECTIONMONITOR_OPTION_SEARCH</option>
-					</field>
-			</fieldset>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.mod_jsolrconnectionmonitor.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.mod_jsolrconnectionmonitor.sys.ini</language>
+    </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="service"
+                    type="list"
+                    default="0"
+                    label="MOD_JSOLRCONNECTIONMONITOR_FIELD_SERVICE_LABEL"
+                    description="MOD_JSOLRCONNECTIONMONITOR_FIELD_SERVICE_DESC">
+                    <option value="0">MOD_JSOLRCONNECTIONMONITOR_OPTION_INDEX</option>
+                    <option value="1">MOD_JSOLRCONNECTIONMONITOR_OPTION_SEARCH</option>
+                </field>
+            </fieldset>
             <fieldset name="advanced">
                 <field
                     name="layout"
@@ -47,9 +47,9 @@
             </fieldset>
         </fields>
     </config>
-    
-	
-	<updateservers>
-		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=12&dummy=extension.xml]]></server>
-	</updateservers>
+
+
+    <updateservers>
+        <server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=12&dummy=extension.xml]]></server>
+    </updateservers>
 </extension>
