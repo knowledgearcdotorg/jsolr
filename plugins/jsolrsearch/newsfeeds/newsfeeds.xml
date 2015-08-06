@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="2.5" type="plugin" group="jsolrsearch" method="upgrade">
-	<name>plg_jsolrsearch_newsfeeds</name>
-	<creationDate>2012-08-07</creationDate>
-	<author>KnowledgeARC</author>
-	<authorEmail>development@knowledgearc.com</authorEmail>
-	<authorUrl>http://www.knowledgearc.org</authorUrl>
-	<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>2.0.0</version>
-	<description>PLG_JSOLRSEARCH_NEWSFEEDS_XML_DESCRIPTION</description>
-	<files>
-		<filename plugin="newsfeeds">newsfeeds.php</filename>
-	</files>
-	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_newsfeeds.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_newsfeeds.sys.ini</language>
-	</languages>
-	<config>
-		<fields name="params">
-			<fieldset name="basic">
-				<field
-					name="boosts"
-					type="textarea"
-					description="PLG_JSOLRSEARCH_NEWSFEEDS_BASIC_BOOSTS_DESC"
-					label="PLG_JSOLRSEARCH_NEWSFEEDS_BASIC_BOOSTS_LABEL"
-					cols="30"
-					rows="5"
-					filter="string"
-					default="title_*^100.0,body_*^50.0,author^50.0,metakeywords_*^25.0,metadescription_*^25.0,category_*^10.0,tags_h1_*^10.0,tags_h2_h3_*^5.0,tags_h4_h5_h6_*^2.5"/>
-			</fieldset>
-		</fields>
-	</config>
+    <name>plg_jsolrsearch_newsfeeds</name>
+    <creationDate>2012-08-07</creationDate>
+    <author>KnowledgeARC</author>
+    <authorEmail>development@knowledgearc.com</authorEmail>
+    <authorUrl>http://www.knowledgearc.org</authorUrl>
+    <copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>2.0.0</version>
+    <description>PLG_JSOLRSEARCH_NEWSFEEDS_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="newsfeeds">newsfeeds.php</filename>
+    </files>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_newsfeeds.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrsearch_newsfeeds.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="boosts"
+                    type="textarea"
+                    description="PLG_JSOLRSEARCH_NEWSFEEDS_BASIC_BOOSTS_DESC"
+                    label="PLG_JSOLRSEARCH_NEWSFEEDS_BASIC_BOOSTS_LABEL"
+                    cols="30"
+                    rows="5"
+                    filter="string"
+                    default="title_*^100.0,body_*^50.0,author^50.0,metakeywords_*^25.0,metadescription_*^25.0,category_*^10.0,tags_h1_*^10.0,tags_h2_h3_*^5.0,tags_h4_h5_h6_*^2.5"/>
+            </fieldset>
+        </fields>
+    </config>
 </extension>

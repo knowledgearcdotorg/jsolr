@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="2.5" type="plugin" group="jsolrcrawler" method="upgrade">
-	<name>plg_jsolrcrawler_newsfeeds</name>
-	<creationDate>2012-07-09</creationDate>
-	<author>KnowledgeARC</author>
-	<authorEmail>development@knowledgearc.com</authorEmail>
-	<authorUrl>http://www.knowledgearc.org</authorUrl>
-	<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>1.1.1</version>
-	<description>PLG_JSOLRCRAWLER_NEWSFEEDS_XML_DESCRIPTION</description>
-	<files>
-		<filename plugin="newsfeeds">newsfeeds.php</filename>
-	</files>
-	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_newsfeeds.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_newsfeeds.sys.ini</language>
-	</languages>
-	<config>
-		<fields name="params">
-			<fieldset name="basic">
-				<field 
-					name="categories" 
-					type="category"
-					description="PLG_JSOLRCRAWLER_NEWSFEEDS_FIELD_CATEGORIES_DESC"
-					extension="com_newsfeeds"
-					label="JCATEGORIES"
-					multiple="true"
-					size="10"
-					default="0">
-					<option value="0">JOPTION_ALL_CATEGORIES</option>
-				</field>
-			</fieldset>
-		</fields>
-	</config>
-	
-	<updateservers>
-		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=6&dummy=extension.xml]]></server>
-	</updateservers>
+    <name>plg_jsolrcrawler_newsfeeds</name>
+    <creationDate>2012-07-09</creationDate>
+    <author>KnowledgeARC</author>
+    <authorEmail>development@knowledgearc.com</authorEmail>
+    <authorUrl>http://www.knowledgearc.org</authorUrl>
+    <copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>1.1.1</version>
+    <description>PLG_JSOLRCRAWLER_NEWSFEEDS_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="newsfeeds">newsfeeds.php</filename>
+    </files>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_newsfeeds.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_newsfeeds.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="categories"
+                    type="category"
+                    description="PLG_JSOLRCRAWLER_NEWSFEEDS_FIELD_CATEGORIES_DESC"
+                    extension="com_newsfeeds"
+                    label="JCATEGORIES"
+                    multiple="true"
+                    size="10"
+                    default="0">
+                    <option value="0">JOPTION_ALL_CATEGORIES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+
+    <updateservers>
+        <server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=6&dummy=extension.xml]]></server>
+    </updateservers>
 </extension>

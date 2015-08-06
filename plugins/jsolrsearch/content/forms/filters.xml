@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
     <fieldset name="facets">
-        <field 
+        <field
             name="author"
             facet="author_fc"
             filter="author"
@@ -10,37 +10,37 @@
             class="inputbox jsolrquery"
             count="true"/>
     </fieldset>
-    
-    <fieldset 
+
+    <fieldset
         name="tools"
         label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
         addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
-        
+
         <!-- only JSolrFormFields should be used here -->
-        <field 
+        <field
             name="qdr"
             filter="modified"
             filter_quoted="false"
             type="jsolr.calendartool"
             label="Date"
             class="jsolr-dropdown">
-        	<option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
-        	<option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
-        	<option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
-        	<option value="w" filter="[NOW-7DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
-        	<option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
-        	<option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
-		</field>
+            <option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
+            <option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
+            <option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
+            <option value="w" filter="[NOW-7DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
+            <option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
+            <option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
+        </field>
 
-        <field 
+        <field
             name="sbd"
             type="jsolr.sort"
             class="inputbox jsolrquery">
-			<option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
-			<option value="1" field="modified" direction="desc">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
-		</field>
-		
-		<field type="jsolr.queryfilter" name="in"/>
-    	<field type="jsolr.languagefilter" name="lr" filter="lang"/>
+            <option value="">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_RELEVANCE</option>
+            <option value="1" field="modified" direction="desc">PLG_JSOLRSEARCH_COM_CONTENT_SORT_BY_DATE</option>
+        </field>
+
+        <field type="jsolr.queryfilter" name="in"/>
+        <field type="jsolr.languagefilter" name="lr" filter="lang"/>
     </fieldset>
 </form>

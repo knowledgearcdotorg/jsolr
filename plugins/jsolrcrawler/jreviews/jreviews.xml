@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="2.5" type="plugin" group="jsolrcrawler" method="upgrade">
-	<name>plg_jsolrcrawler_jreviews</name>
-	<creationDate>2013-01-08</creationDate>
-	<author>KnowledgeARC</author>
-	<authorEmail>development@knowledgearc.com</authorEmail>
-	<authorUrl>http://www.knowledgearc.org</authorUrl>
-	<copyright>>Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>2.0.0</version>
-	<description>PLG_JSOLRCRAWLER_JREVIEWS_XML_DESCRIPTION</description>
-	<files>
-		<filename plugin="jreviews">jreviews.php</filename>
-	</files>
-	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jreviews.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jreviews.sys.ini</language>
-	</languages>
-	<config>
-		<fields name="params">
-			<fieldset name="basic">
-				<field name="index_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_INDEX_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true">
-					<option value="jsolr_all">PLG_JSOLRCRAWLER_ALL_FIELDS</option>
-				</field>
-				<field name="facet_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_FACET_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true">
-					<option value="jsolr_all">PLG_JSOLRCRAWLER_ALL_FIELDS</option>
-				</field>
-			</fieldset>
-		</fields>
-	</config>
+    <name>plg_jsolrcrawler_jreviews</name>
+    <creationDate>2013-01-08</creationDate>
+    <author>KnowledgeARC</author>
+    <authorEmail>development@knowledgearc.com</authorEmail>
+    <authorUrl>http://www.knowledgearc.org</authorUrl>
+    <copyright>>Copyright (C) 2013 KnowledgeARC Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>2.0.0</version>
+    <description>PLG_JSOLRCRAWLER_JREVIEWS_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="jreviews">jreviews.php</filename>
+    </files>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jreviews.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_jreviews.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="index_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_INDEX_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true">
+                    <option value="jsolr_all">PLG_JSOLRCRAWLER_ALL_FIELDS</option>
+                </field>
+                <field name="facet_fields" type="sql" label="PLG_JSOLRCRAWLER_JREVIEWS_FIELD_FACET_FIELDS" query="SELECT name, title FROM #__jreviews_fields WHERE location='content'" key_field="name" value_field="title" multiple="true">
+                    <option value="jsolr_all">PLG_JSOLRCRAWLER_ALL_FIELDS</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
 </extension>

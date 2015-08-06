@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
     <fieldset name="facets">
-		<field 
+        <field
             name="subject"
             facet="dc.subject.other_fc"
             filter="dc.subject.other_sm"
@@ -10,7 +10,7 @@
             class="inputbox"
             count="true"
             exactmatch="true"/>
-		<field 
+        <field
             name="accessioned"
             facet="dc.date.accessioned_tdt"
             filter="dc.date.accessioned_tdt"
@@ -19,27 +19,27 @@
             class="inputbox"
             count="true"/>
     </fieldset>
-    
+
     <fieldset name="tools">
-        <field 
+        <field
             name="sbd"
             type="jsolr.sort"
             class="inputbox jsolrquery">
-			<option value="">PLG_JSOLRSEARCH_DSPACE_SORT_BY_RELEVANCE</option>
-			<option value="1" field="dc.date.issued_s" direction="desc">PLG_JSOLRSEARCH_DSPACE_SORT_BY_DATE</option>
-		</field>
+            <option value="">PLG_JSOLRSEARCH_DSPACE_SORT_BY_RELEVANCE</option>
+            <option value="1" field="dc.date.issued_s" direction="desc">PLG_JSOLRSEARCH_DSPACE_SORT_BY_DATE</option>
+        </field>
     </fieldset>
-    
+
     <fields name="as">
-    	<fieldset name="advanced">
-	        <field 
-	            name="sbd"
-	            type="list"
-	            label="Date"
-	            class="jsolr-dropdown">
-				<option value="">PLG_JSOLRSEARCH_DSPACE_SORT_BY_RELEVANCE</option>
-				<option value="1">PLG_JSOLRSEARCH_DSPACE_SORT_BY_DATE</option>
-			</field>
-    	</fieldset>
+        <fieldset name="advanced">
+            <field
+                name="sbd"
+                type="list"
+                label="Date"
+                class="jsolr-dropdown">
+                <option value="">PLG_JSOLRSEARCH_DSPACE_SORT_BY_RELEVANCE</option>
+                <option value="1">PLG_JSOLRSEARCH_DSPACE_SORT_BY_DATE</option>
+            </field>
+        </fieldset>
     </fields>
 </form>

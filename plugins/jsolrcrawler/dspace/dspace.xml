@@ -1,101 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="3.3" type="plugin" group="jsolrcrawler" method="upgrade">
-	<name>plg_jsolrcrawler_dspace</name>
-	<creationDate>2012-08-15</creationDate>
-	<author>KnowledgeArc Ltd</author>
-	<authorEmail>development@knowledgearc.com</authorEmail>
-	<authorUrl>http://www.knowledgearc.org</authorUrl>
-	<copyright>>Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.</copyright>
-	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-	<version>1.1.0</version>
-	<description>PLG_JSOLRCRAWLER_DSPACE_XML_DESCRIPTION</description>
-	<files>
-		<filename plugin="dspace">dspace.php</filename>
-		<folder>fields</folder>
-	</files>
-	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_dspace.ini</language>
-		<language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_dspace.sys.ini</language>
-	</languages>
-	<config>
-		<fields name="params">
-			<fieldset name="basic">
-				<field
-					name="base_url"
-					type="text"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_BASEURL_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_BASEURL_DESC"
-					size="45"/>
-				<field
-					name="rest_url"
-					type="text"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_URL_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_URL_DESC"
-					size="45"/>
-				<field
-					name="username"
-					type="text"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_USERNAME_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_USERNAME_DESC"
-					size="45"/>
-				<field
-					name="password"
-					type="text"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_PASSWORD_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_PASSWORD_DESC"
-					size="45"/>
-			</fieldset>
+    <name>plg_jsolrcrawler_dspace</name>
+    <creationDate>2012-08-15</creationDate>
+    <author>KnowledgeArc Ltd</author>
+    <authorEmail>development@knowledgearc.com</authorEmail>
+    <authorUrl>http://www.knowledgearc.org</authorUrl>
+    <copyright>>Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>1.1.0</version>
+    <description>PLG_JSOLRCRAWLER_DSPACE_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="dspace">dspace.php</filename>
+        <folder>fields</folder>
+    </files>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_dspace.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_dspace.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field
+                    name="base_url"
+                    type="text"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_BASEURL_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_BASEURL_DESC"
+                    size="45"/>
+                <field
+                    name="rest_url"
+                    type="text"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_URL_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_URL_DESC"
+                    size="45"/>
+                <field
+                    name="username"
+                    type="text"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_USERNAME_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_USERNAME_DESC"
+                    size="45"/>
+                <field
+                    name="password"
+                    type="text"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_PASSWORD_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_PASSWORD_DESC"
+                    size="45"/>
+            </fieldset>
 
-			<fieldset
-				name="indexing"
-				label="PLG_JSOLRCRAWLER_DSPACE_INDEXING_LABEL"
-				description="PLG_JSOLRCRAWLER_DSPACE_INDEXING_DESC"
-				addfieldpath="/plugins/jsolrcrawler/dspace/fields">
-				<field
-					name="facets"
-					type="jsolr.metadatafieldlist"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_FACETS_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_FACETS_DESC"
-					multiple="true"
-					size="5"
-					class="inputbox"
-					 />
-				<field
-					name="exclude_bundles_from_index"
-					type="text"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_DESC"
-					size="40"
-					class="inputbox"/>
-				<field
-					name="exclude_bundle_content_from_index"
-					type="text"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLE_CONTENT_FROM_INDEX_LABEL"
-					description="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLE_CONTENT_FROM_INDEX_DESC"
-					size="40"
-					class="inputbox"/>
-			</fieldset>
+            <fieldset
+                name="indexing"
+                label="PLG_JSOLRCRAWLER_DSPACE_INDEXING_LABEL"
+                description="PLG_JSOLRCRAWLER_DSPACE_INDEXING_DESC"
+                addfieldpath="/plugins/jsolrcrawler/dspace/fields">
+                <field
+                    name="facets"
+                    type="jsolr.metadatafieldlist"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_FACETS_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_FACETS_DESC"
+                    multiple="true"
+                    size="5"
+                    class="inputbox"
+                     />
+                <field
+                    name="exclude_bundles_from_index"
+                    type="text"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLES_FROM_INDEX_DESC"
+                    size="40"
+                    class="inputbox"/>
+                <field
+                    name="exclude_bundle_content_from_index"
+                    type="text"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLE_CONTENT_FROM_INDEX_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_EXCLUDE_BUNDLE_CONTENT_FROM_INDEX_DESC"
+                    size="40"
+                    class="inputbox"/>
+            </fieldset>
 
-			<fieldset
-				name="access_mappings"
-				label="PLG_JSOLRCRAWLER_DSPACE_ACCESS_MAPPINGS_LABEL"
-				description="PLG_JSOLRCRAWLER_DSPACE_ACCESS_MAPPINGS_DESC">
-				<field
-					name="anonymous_access"
-					type="accesslevel"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_ANONYMOUS_ACCESS_LABEL"
-        			description="PLG_JSOLRCRAWLER_DSPACE_FIELD_ANONYMOUS_ACCESS_DESC"
-        			default="1"
-        			class="inputbox"/>
+            <fieldset
+                name="access_mappings"
+                label="PLG_JSOLRCRAWLER_DSPACE_ACCESS_MAPPINGS_LABEL"
+                description="PLG_JSOLRCRAWLER_DSPACE_ACCESS_MAPPINGS_DESC">
+                <field
+                    name="anonymous_access"
+                    type="accesslevel"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_ANONYMOUS_ACCESS_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_ANONYMOUS_ACCESS_DESC"
+                    default="1"
+                    class="inputbox"/>
 
-				<field
-					name="private_access"
-					type="accesslevel"
-					label="PLG_JSOLRCRAWLER_DSPACE_FIELD_PRIVATE_ACCESS_LABEL"
-        			description="PLG_JSOLRCRAWLER_DSPACE_FIELD_PRIVATE_ACCESS_DESC"
-        			class="inputbox">
-        			<option value="">Skip private items</option>
-        		</field>
+                <field
+                    name="private_access"
+                    type="accesslevel"
+                    label="PLG_JSOLRCRAWLER_DSPACE_FIELD_PRIVATE_ACCESS_LABEL"
+                    description="PLG_JSOLRCRAWLER_DSPACE_FIELD_PRIVATE_ACCESS_DESC"
+                    class="inputbox">
+                    <option value="">Skip private items</option>
+                </field>
 
                 <field
                     name="ignore_language"
@@ -107,11 +107,11 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-			</fieldset>
-		</fields>
-	</config>
+            </fieldset>
+        </fields>
+    </config>
 
-	<updateservers>
-		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=7&dummy=extension.xml]]></server>
-	</updateservers>
+    <updateservers>
+        <server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=7&dummy=extension.xml]]></server>
+    </updateservers>
 </extension>
