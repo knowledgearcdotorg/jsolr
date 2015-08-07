@@ -5,6 +5,9 @@
  */
 namespace JSolr\Index\FileSystem;
 
+use \JString as JString;
+use \JFactory as JFactory;
+
 /**
  * A class for extracting metadata, content and other information from a file.
  */
@@ -38,7 +41,7 @@ class TikaApp extends Extractor
      */
     public function getLanguage()
     {
-        if (!$this->get('language')) {
+        if (!$this->language) {
             $result = $this->extract('-l');
 
             $results = explode("\n", str_replace("\r", "\n", $result));
@@ -51,7 +54,7 @@ class TikaApp extends Extractor
                         $array[] = str_replace('_', '-', $value);
                     } elseif (JString::strlen($value) == 2) { // assume iso without region
                         $found = false;
-                        $languages = JLanguageHelper::getLanguages();
+                        $languages = \JLanguageHelper::getLanguages();
 
                         while (($language = current($languages)) && !$found) {
                             $parts = explode('-', $language->lang_code);
