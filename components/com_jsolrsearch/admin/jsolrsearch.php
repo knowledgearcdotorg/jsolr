@@ -11,9 +11,9 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
-$path = 'JSolrSearchHelper', dirname(__FILE__) . '/helpers/jsolrsearch.php';
+$path = dirname(__FILE__) . '/helpers/jsolrsearch.php';
 
-JLoader::register($path);
+JLoader::register('JSolrSearchHelper', $path);
 
 JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
