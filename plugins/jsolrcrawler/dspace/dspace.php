@@ -159,6 +159,16 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 $doc->addField('author', $item->value);
             }
 
+            if ($item->element == 'description') {
+                $body = strip_tags($item->value);
+
+                if ($item->qualifier == 'abstract') {
+                    $doc->addField("body_$lang", $body);
+                } else if (!$item->qualifier && !$doc->getField('body')) {
+                    $doc->addField("body_$lang", $body);
+                }
+            }
+
             // Any iso language not matching the default will be pushed to lang_alt.
             if ($item->element == 'language' && $item->qualifier == 'iso') {
                 if ($item->value != $lang) {
@@ -499,7 +509,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 foreach ($delete as $key) {
                     $this->out('cleaning item '.$key.' and its bitstreams');
 
-                    $query = 'type:'.$this->get('assetContext').
+                    $query = 'context:'.$this->get('assetContext').
                         ' AND parent_id:'.str_replace($prefix, '', $key);
 
                     $service->deleteByQuery($query);
@@ -619,8 +629,9 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             // DSpace is incapable of exposing item permissions in a clean acl
             // manner. Query src Solr for this information.
             $temp = $this->getItems(0, 1, "search.resourceid:".$id);
+            $temp = JArrayHelper::getValue($temp, 0);
 
-            $item->access = $this->setAccess($temp);
+            $item->access = $this->getAccess($temp);
 
             $document = $this->prepare($item);
 
@@ -629,6 +640,36 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             $solr->addDocuments($document, false, true, true, $commitWithin);
         } catch (Exception $e) {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+        }
+    }
+
+    /**
+     * A convenience event for adding a record to the index.
+     *
+     * Use this event when the plugin is known but the context is not.
+     *
+     * @param int $id The id of the record being added.
+     */
+    public function onItemDelete($id)
+    {
+        $commitWithin = $this->params->get('component.commitWithin', '1000');
+
+        try {
+            $solr = \JSolr\Index\Factory::getService();
+
+            $this->out('cleaning item '.$id.' and its bitstreams');
+
+            $query = 'context:'.$this->get('assetContext').
+                ' AND parent_id:'.$id;
+
+            $solr->deleteByQuery($query);
+
+            $solr->deleteById($this->get('itemContext').'.'.$id);
+
+            $solr->commit();
+        } catch (Exception $e) {
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+            JLog::add($e->getTraceAsString(), JLog::ERROR, 'jsolrcrawler');
         }
     }
 
@@ -689,7 +730,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             foreach ($bitstreams as $bitstream) {
                 $type = strtolower($bitstream->type);
 
-                $documents[$i]->addField($type.'_bitstream_id_i_multi', $bitstream->id);
+                $documents[$i]->addField($type.'_bitstream_id_tim', $bitstream->id);
 
                 $documents[$i]->addField($type.'_bitstream_title_'.$this->getLanguage($item, false), $bitstream->name);
 

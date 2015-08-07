@@ -124,7 +124,7 @@ class JSolrCrawlerCli extends JApplicationCli
         } catch (Exception $e) {
             $this->out($e->getMessage());
 
-            if ($this->_isVerbose()) {
+            if ($this->isVerbose()) {
                 $this->out($e->getTraceAsString());
             }
         }
@@ -145,7 +145,7 @@ class JSolrCrawlerCli extends JApplicationCli
 
         $id = JArrayHelper::getValue($this->input->args, 0);
 
-        $this->_fireEvent('onItemAdd', array($id), $plugin);
+        $this->fireEvent('onItemAdd', array($id), $plugin);
     }
 
     /**
@@ -155,7 +155,7 @@ class JSolrCrawlerCli extends JApplicationCli
      */
     protected function clean()
     {
-        $this->_fireEvent('onClean', array(get_class($this), $this->_isVerbose()), $this->_getPlugin());
+        $this->fireEvent('onClean', array(get_class($this), $this->isVerbose()), $this->getPlugin());
     }
 
     protected function delete()
@@ -173,7 +173,7 @@ class JSolrCrawlerCli extends JApplicationCli
 
         $id = JArrayHelper::getValue($this->input->args, 0);
 
-        $this->_fireEvent('onItemDelete', array($id), $plugin);
+        $this->fireEvent('onItemDelete', array($id), $plugin);
     }
 
     protected function index()
@@ -214,7 +214,7 @@ class JSolrCrawlerCli extends JApplicationCli
 
         $this->out("crawl start ".$start->format("c"));
 
-        $this->_fireEvent('onIndex', array(get_class($this), $this->_isVerbose(), $indexingParams), $this->_getPlugin());
+        $this->fireEvent('onIndex', array(get_class($this), $this->isVerbose(), $indexingParams), $this->getPlugin());
 
         $end = new JDate('now');
 
@@ -236,10 +236,10 @@ class JSolrCrawlerCli extends JApplicationCli
 
     protected function purge()
     {
-        $plugin = $this->_getPlugin();
+        $plugin = $this->getPlugin();
 
         if ($plugin) {
-            $this->_fireEvent('onPurge', array(get_class($this), $this->_isVerbose()), $plugin);
+            $this->fireEvent('onPurge', array(get_class($this), $this->isVerbose()), $plugin);
         } else {
             $solr = \JSolr\Index\Factory::getService();
 
@@ -338,7 +338,7 @@ EOT;
         return $this;
     }
 
-    private function _fireEvent($name, $args = array(), $plugin = null)
+    private function fireEvent($name, $args = array(), $plugin = null)
     {
         if ($plugin) {
             if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
@@ -353,7 +353,7 @@ EOT;
         return $dispatcher->trigger($name, $args);
     }
 
-    private function _isVerbose()
+    private function isVerbose()
     {
         // Verbose can only be set if quiet is not set.
         if (!($this->input->get('q', false) || $this->input->get('quiet', false))) {
@@ -365,7 +365,7 @@ EOT;
         return false;
     }
 
-    private function _getPlugin()
+    private function getPlugin()
     {
         return $this->input->getString('plugin', $this->input->getString('P', null));
     }

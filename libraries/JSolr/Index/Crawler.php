@@ -438,8 +438,6 @@ abstract class Crawler extends \JPlugin
                     } else {
                         $text = implode('', $text);
                     }
-
-
                 }
 
                 fwrite(STDOUT, $text . ($nl ? "\n" : null));
