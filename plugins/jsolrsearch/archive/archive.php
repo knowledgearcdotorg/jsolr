@@ -19,7 +19,7 @@ class PlgJSolrSearchArchive extends Search
     {
         parent::__construct($subject, $config);
 
-        $this->set('highlighting', array("title", "body", "author"));
+        $this->set('highlighting', array("title", "body_*", "author"));
 
         $this->set('operators', array('author_fc'=>'author', 'type_fc'=>'type'));
     }
@@ -41,6 +41,11 @@ class PlgJSolrSearchArchive extends Search
                 require_once(JPATH_ROOT."/components/com_jcar/helpers/route.php");
 
                 return JCarHelperRoute::getItemRoute($document->id);
+            } else if (JComponentHelper::isInstalled("com_jspace")) {
+                // @TODO for backwards compatibility. Will be removed.
+                require_once(JPATH_ROOT."/components/com_jspace/helpers/route.php");
+
+                return JSpaceHelperRoute::getItemFullRoute($document->id);
             }
         }
 
