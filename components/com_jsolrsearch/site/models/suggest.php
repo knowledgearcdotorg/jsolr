@@ -32,7 +32,7 @@ class JSolrSearchModelSuggest extends JModelList
             ->useQueryParser("edismax")
             ->retrieveFields("*,score")
             ->limit(10) // TODO: move to config
-            ->highlight(200, "<strong>", "</strong>", 1);
+            ->highlight(80, "<strong>", "</strong>", 1);
 
         $fields = explode(',', $fields);
 
