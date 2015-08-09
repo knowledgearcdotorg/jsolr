@@ -207,7 +207,7 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
             ->useQueryParser("edismax")
             ->retrieveFields("*,score")
             ->filters($filters)
-            ->highlight(200, "<mark>", "</mark>", 3, implode(" ", $hl))
+            ->highlight(80, "<mark>", "</mark>", 2, implode(" ", $hl))
             ->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
             ->offset($this->getState("list.start", 0))
             ->mergeParams(
