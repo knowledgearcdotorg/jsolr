@@ -7,7 +7,7 @@
     <authorUrl>http://www.knowledgearc.com</authorUrl>
     <copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>1.0.1</version>
+    <version>1.0.2-dev</version>
     <description>MOD_JSOLRCONNECTIONMONITOR_XML_DESCRIPTION</description>
     <files>
         <filename module="mod_jsolrconnectionmonitor">mod_jsolrconnectionmonitor.php</filename>
