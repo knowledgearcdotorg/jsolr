@@ -312,6 +312,19 @@
             basedir="${src}/${plugin_path}"/>
     </target>
 
+    <target name="phpdoc">
+        <delete dir="${package.dest}/apidocs"/>
+        <mkdir dir="${package.dest}/apidocs"/>
+        <phpdoc2
+            title="API Documentation"
+            destdir="${package.dest}/apidocs"
+            template="responsive-twig">
+            <fileset dir="./libraries/">
+                <include name="**/*.php" />
+            </fileset>
+        </phpdoc2>
+    </target>
+
     <target name="help" description="Help documentation for this build file.">
         <echo message="JSolr for Joomla!"/>
         <echo message="Targets:"/>
@@ -328,6 +341,10 @@
 
         <echo message="package      Packages all extensions for installation"/>
         <echo message="             via the Joomla Extension Manager."/>
+
+        <echo message=""/>
+
+        <echo message="phpdoc       Builds the API documentation."/>
 
         <echo message=""/>
 
