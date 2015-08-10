@@ -6,14 +6,14 @@
 	<authorEmail>development@knowledgearc.com</authorEmail>
 	<authorUrl>http://www.knowledgearc.org</authorUrl>
 	<copyright>>Copyright (C) 2012-2014 KnowledgeARC Ltd. All rights reserved.</copyright>
-	<version>2.0.0</version>
+	<version>2.0.1-dev</version>
 	<description>MOD_JSOLRFILTER_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
 		<filename>helper.php</filename>
 		<folder>tmpl</folder>
 	</files>
-		
+
 	<media destination="mod_jsolrfilter">
 	  	<folder>js</folder>
 		<folder>css</folder>
@@ -23,7 +23,7 @@
 		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.ini</language>
 	 	<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.sys.ini</language>
 	</languages>
-    
+
 	<config>
 		<fields name="params">
 			<fieldset name="advanced">
@@ -40,7 +40,7 @@
             </fieldset>
         </fields>
     </config>
-    
+
 	<updateservers>
 		<server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=3&dummy=extension.xml]]></server>
 	</updateservers>
