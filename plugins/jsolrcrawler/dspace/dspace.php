@@ -469,6 +469,8 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
     /**
      * (non-PHPdoc)
      * @see \JSolr\Index\Crawler::clean()
+     *
+     * @TODO quick and dirty clean. This would break on very large indexes.
      */
     protected function clean()
     {
@@ -478,15 +480,19 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
         $query = \JSolr\Search\Factory::getQuery('*:*')
             ->useQueryParser("edismax")
-            ->filters(array($this->get('itemContext')))
+            ->filters(array("context:".$this->get('itemContext')))
             ->retrieveFields('id')
             ->rows(0);
+
+        JLog::add((string)$query, JLog::DEBUG, 'jsolrcrawler');
 
         $results = $query->search();
 
         if ($results->get('numFound')) {
             $query->rows($results->get('numFound'));
         }
+
+        JLog::add((string)$query, JLog::DEBUG, 'jsolrcrawler');
 
         $results = $query->search();
 
@@ -496,11 +502,23 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             $prefix = $this->get('itemContext').'.';
 
             foreach ($results as $result) {
-                $needle = new stdClass();
+                $found = false;
 
-                $needle->{'search.resourceid'} = $result->id;
+                reset($items);
 
-                if (array_search($needle, $items) === false) {
+                $i = 0;
+
+                while (($item = current($items)) && !$found) {
+                    if ($result->id == $item->{'search.resourceid'}) {
+                        $found = true;
+                    } else {
+                        $i++;
+                    }
+
+                    next($items);
+                }
+
+                if (!$found) {
                     $delete[] = $prefix.$result->id;
                 }
             }
