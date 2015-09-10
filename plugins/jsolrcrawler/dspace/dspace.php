@@ -204,10 +204,28 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
                 $doc->addField($field.'_year_tim', $year); // store year only.
 
+                if (!$doc->getField($field.'_year_sort')) {
+                    $doc->addField($field.'_year_sort', $value); // for sorting
+                } else {
+                    JLog::add(
+                        JText::sprintf(
+                            "PLG_JSOLRCRAWLER_DSPACE_WARNING_MULTIDATE_SORT",
+                            $record->id,
+                            $field),
+                        JLog::WARNING,
+                        'jsolrcrawler');
+                }
+
                 if (!$doc->getField($field.'_sort')) {
                     $doc->addField($field.'_sort', $value); // for sorting
                 } else {
-                    JLog::add(JText::sprintf('Item %s has date field %s contains multiple values and so cannot be indexed for sorting.', $record->id, $field), JLog::WARNING, 'jsolrcrawler');
+                    JLog::add(
+                        JText::sprintf(
+                            "PLG_JSOLRCRAWLER_DSPACE_WARNING_MULTIDATE_SORT",
+                            $record->id,
+                            $field),
+                        JLog::WARNING,
+                        'jsolrcrawler');
                 }
             } else {
                 if (isset($item->lang)) {
@@ -359,30 +377,43 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 foreach ($bundle->bitstreams as $bitstream) {
                     $path = $this->params->get('rest_url').'/bitstreams/'.$bitstream->id.'/download';
 
-                    $extractor = \JSolr\Index\Factory::getExtractor($path);
+                    try {
+                        $extractor = \JSolr\Index\Factory::getExtractor($path);
 
-                    if ($extractor->isAllowedContentType()) {
-                        $this->out(array($path, "[extracting]"));
+                        if ($extractor->isAllowedContentType()) {
+                            $this->out(array($path, "[extracting]"));
 
-                        $indexContent = (
-                                (in_array($bundle->name, $this->get('contentExclusions')) === false) &&
-                                $extractor->isContentIndexable());
+                            $indexContent = (
+                                    (in_array($bundle->name, $this->get('contentExclusions')) === false) &&
+                                    $extractor->isContentIndexable());
 
-                        $bitstreams[$i] = $bitstream;
+                            $bitstreams[$i] = $bitstream;
 
-                        if ($indexContent) {
-                            $bitstreams[$i]->body = $extractor->getContent();
+                            if ($indexContent) {
+                                $bitstreams[$i]->body = $extractor->getContent();
+                            }
+
+                            $bitstreams[$i]->metadata = $extractor->getMetadata();
+
+                            $bitstreams[$i]->lang = $extractor->getLanguage();
+
+                            $bitstreams[$i]->type = $bundle->name;
+
+                            $this->out(array($path, "[extracted]"));
+
+                            $i++;
                         }
-
-                        $bitstreams[$i]->metadata = $extractor->getMetadata();
-
-                        $bitstreams[$i]->lang = $extractor->getLanguage();
-
-                        $bitstreams[$i]->type = $bundle->name;
-
-                        $this->out(array($path, "[extracted]"));
-
-                        $i++;
+                    } catch (Exception $e) {
+                        if ($e->getMessage()) {
+                            $this->out($e->getMessage());
+                        } else {
+                            $code = $e->getCode();
+                            $this->out(JText::_("PLG_JSOLRCRAWLER_DSPACE_ERROR_".$code));
+                            $this->out(
+                                array(
+                                    $path,
+                                    '[status:'.$code.']'));
+                        }
                     }
                 }
             }
@@ -596,14 +627,13 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                         ->out("\tReason:".$e->getMessage());
                     // continue from this kind of error.
                 }
-
             }
 
             // index when either the number of items retrieved matches
             // the total number of items being indexed or when the
             // index chunk size has been reached.
             if ($total == count($items) || count($documents) >= static::$chunk) {
-                $response = $solr->addDocuments($documents, false, true, true, $commitWithin);
+                $response = $solr->addDocuments($documents, true, $commitWithin);
 
                 $this->out(
                     array(
@@ -655,7 +685,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
             $solr = \JSolr\Index\Factory::getService();
 
-            $solr->addDocuments($document, false, true, true, $commitWithin);
+            $solr->addDocuments($document, true, $commitWithin);
         } catch (Exception $e) {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
         }

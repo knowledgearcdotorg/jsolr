@@ -145,7 +145,7 @@ class JSolrCrawlerCli extends JApplicationCli
 
         $id = JArrayHelper::getValue($this->input->args, 0);
 
-        $this->fireEvent('onItemAdd', array($id), $plugin);
+        $this->fireEvent('onItemAdd', array($id), $this->isVerbose, $plugin);
     }
 
     /**
