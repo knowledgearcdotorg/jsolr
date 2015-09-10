@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE phpunit>
+<phpunit
+    bootstrap="tests/unit/bootstrap.php"
+    colors="true"
+    stopOnFailure="false"
+    testdox="true"
+    verbose="true"
+    backupStaticAttributes="false"
+    backupGlobals="false">
+    <testsuites>
+        <testsuite name="jsolr-lib">
+            <directory>tests/unit/suites/libraries/jsolr</directory>
+        </testsuite>
+        <testsuite name="jsolr-plugins">
+            <directory>tests/unit/suites/plugins</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
