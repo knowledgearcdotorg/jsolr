@@ -752,7 +752,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
         $documents[$i] = $this->getDocument($item);
 
-        $documents[$i]->addField('id', $item->id);
+        $documents[$i]->addField('id', $this->context.":".$item->id);
 
         $documents[$i]->addField('context', $this->get('itemContext'));
 
