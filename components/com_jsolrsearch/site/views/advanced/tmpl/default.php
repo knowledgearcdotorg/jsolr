@@ -2,7 +2,7 @@
 /**
  * @package     JSolr.Search
  * @subpackage  View
- * @copyright  Copyright (C) 2012-2015 KnowledgeArc Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license    This file is part of the JSolrSearch component for Joomla!.
  */
 defined('_JEXEC') or die('Restricted access');

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		JSolr.Module
- * @copyright	Copyright (C) 2012 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can

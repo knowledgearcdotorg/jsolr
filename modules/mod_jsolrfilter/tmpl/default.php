@@ -2,7 +2,7 @@
 /**
  * @author		$LastChangedBy$
  * @package		JSolr
- * @copyright	Copyright (C) 2011 KnowledgeARC Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2011 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can 
