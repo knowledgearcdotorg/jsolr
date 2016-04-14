@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout
+        title="COM_JSOLRSEARCH_BROWSE_VIEW_PIVOT_TITLE"
+        option="COM_JSOLRSEARCH_BROWSE_VIEW_PIVOT_OPTION">
+        <message>
+            <![CDATA[COM_JSOLRSEARCH_BROWSE_VIEW_PIVOT_DESC]]>
+        </message>
+    </layout>
+
+    <!-- Add fields to the request variables for the layout. -->
+    <fields name="request">
+        <fieldset
+            name="request"
+            addfieldpath="/libraries/jsolr/form/fields">
+
+            <field
+                name="name"
+                type="text"
+                label="COM_JSOLRSEARCH_FIELD_SELECT_LABEL_LABEL"
+                description="COM_JSOLRSEARCH_FIELD_SELECT_LABEL_DESC"
+                required="true"/>
+
+            <field
+                name="facet"
+                type="text"
+                label="COM_JSOLRSEARCH_FIELD_SELECT_FACET_LABEL"
+                description="COM_JSOLRSEARCH_FIELD_SELECT_FACET_DESC"
+                required="true"/>
+
+            <field
+                name="pivot"
+                type="text"
+                label="COM_JSOLRSEARCH_FIELD_SELECT_PIVOT_LABEL"
+                description="COM_JSOLRSEARCH_FIELD_SELECT_PIVOT_DESC"
+                required="true"/>
+
+            <field
+                name="filters"
+                type="text"
+                label="COM_JSOLRSEARCH_FIELD_SELECT_FILTERS_LABEL"
+                description="COM_JSOLRSEARCH_FIELD_SELECT_FILTERS_DESC"/>
+
+            <field
+                name="o"
+                type="plugins"
+                folder="jsolrsearch"
+                label="COM_JSOLRSEARCH_FIELD_SELECT_O_LABEL"
+                description="COM_JSOLRSEARCH_FIELD_SELECT_O_DESC">
+                <option value="">COM_JSOLRSEARCH_FIELD_SELECT_EXTENSION_OPTION_NONE</option>
+            </field>
+        </fieldset>
+    </fields>
+
+    <!-- Add fields to the parameters object for the layout. -->
+    <fields name="params">
+
+    <!-- Basic options. -->
+        <fieldset
+            name="basic"
+            label="COM_JSOLRSEARCH_ATTRIBS_BROWSE_SETTINGS_LABEL">
+
+            <field
+                name="show_count"
+                type="radio"
+                class="btn-group"
+                label="COM_JSOLRSEARCH_FIELD_SHOW_COUNT_LABEL"
+                description="COM_JSOLRSEARCH_FIELD_SHOW_COUNT_DESC"
+                default="0">
+                <option value="0">JHIDE</option>
+                <option value="1">JSHOW</option>
+            </field>
+        </fieldset>
+    </fields>
+</metadata>

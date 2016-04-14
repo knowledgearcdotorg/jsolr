@@ -42,6 +42,10 @@ class JSolrSearchModelBrowse extends JModelList
 
             $this->setState('facet.fields', $array);
 
+            $this->setState('facet.pivot', $app->input->get('pivot', null, 'string'));
+
+            $this->setState('facet.filters', $app->input->get('filters', null, 'string'));
+
             $this->setState('facet.prefix', $app->input->get('prefix', null, 'string'));
 
             $this->setState('facet.operators', $this->getOperators());
@@ -95,6 +99,14 @@ class JSolrSearchModelBrowse extends JModelList
             $facetParams['facet.prefix'] = $prefix;
         }
 
+        if ($pivot = $this->getState('facet.pivot')) {
+            $facetParams["facet.pivot"] = $pivot;
+        }
+
+        if ($this->getState('facet.filters')) {
+            $filters[] = $this->getState('facet.filters');
+        }
+
         JPluginHelper::importPlugin("jsolrsearch");
 
         $dispatcher = JDispatcher::getInstance();
@@ -121,20 +133,27 @@ class JSolrSearchModelBrowse extends JModelList
 
             $results = $query->search();
 
-            foreach ($facetFields as $field) {
-                $array[$field] = array();
+            // @FIXME Temporary solution for pivots.
+            $pivots = $results->getFacetPivot();
 
-                if (isset($results->getFacets()->{$field})) {
-                    foreach ($results->getFacets()->{$field} as $key=>$value) {
-                        $array[$field][$key] = $value;
+            if (isset($pivots)) {
+                $array = JArrayHelper::fromObject($pivots, false);
+            } else {
+                foreach ($facetFields as $field) {
+                    $array[$field] = array();
+
+                    if (isset($results->getFacets()->{$field})) {
+                        foreach ($results->getFacets()->{$field} as $key=>$value) {
+                            $array[$field][$key] = $value;
+                        }
                     }
-                }
 
-                if (isset($results->getFacetRanges()->{$field})) {
-                    $counts = (array)$results->getFacetRanges()->{$field}->counts;
+                    if (isset($results->getFacetRanges()->{$field})) {
+                        $counts = (array)$results->getFacetRanges()->{$field}->counts;
 
-                    foreach ($counts as $key=>$value) {
-                        $array[$field][$key] = $value;
+                        foreach ($counts as $key=>$value) {
+                            $array[$field][$key] = $value;
+                        }
                     }
                 }
             }
