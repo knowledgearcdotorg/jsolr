@@ -11,27 +11,15 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
+JHtml::_('bootstrap.framework');
 JHtml::_('behavior.framework');
-
 JHtml::_('behavior.calendar');
-
-$jsolrsearchJs = "jsolrsearch.js";
-
-if (version_compare(JVERSION, "3.0", "ge")) {
-    $jsolrsearchJs = "jsolrsearch.jquery.js";
-
-    JHtml::_('bootstrap.framework');
-}
 
 $document = JFactory::getDocument();
 
-$document->addScript(JURI::base().'media/jsolr/js/dropdown.js');
-
-$document->addScript(JURI::base().'media/com_jsolrsearch/js/'.$jsolrsearchJs);
+$document->addScript(JURI::base().'media/com_jsolrsearch/js/jsolrsearch.js');
 
 $document->addStyleSheet(JURI::base().'media/com_jsolrsearch/css/jsolrsearch.css');
-
-$document->addStyleSheet(JURI::base().'media/jsolr/css/dropdown.css');
 ?>
 
 <!-- This is not well styled but rather provides the functionality for

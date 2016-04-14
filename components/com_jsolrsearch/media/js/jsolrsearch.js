@@ -1,68 +1,79 @@
-window.addEvent("domready", function() {
-    var value = $("qdr").getAttribute('value');
+(function($) {
+    $(document).ready(function() {
+        var value = $("#qdr").val();
 
-    if (value != null) {
-        if (value.test("^min:[0-9]{4}-[0-9]{2}-[0-9]{2},max:[0-9]{4}-[0-9]{2}-[0-9]{2}$")) {
-            var parts = value.split(',');
+        if (value != null) {
+            var pattern = /^min:[0-9]{4}-[0-9]{2}-[0-9]{2},max:[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
-            if (parts.length == 2) {
-                var min = parts[0].split(':');
-                var max = parts[1].split(':');
+            if (pattern.test(value)) {
+                var parts = value.split(',');
 
-                if (min.length == 2) {
-                    $("custom-dates-form").getChildren("#qdr_min").setProperty("value", min[1]);
+                if (parts.length == 2) {
+                    var min = parts[0].split(':');
+                    var max = parts[1].split(':');
+
+                    if (min.length == 2) {
+                        $("#custom-dates-form").children().find("#qdr_min").val(min[1]);
+                    }
+
+                    if (max.length == 2) {
+                        $("#custom-dates-form").children().find("#qdr_max").val(max[1]);
+                    }
+
+                    $("#custom-dates").addClass("show");
                 }
+            }
+        }
 
-                if (max.length == 2) {
-                    $("custom-dates-form").getChildren("#qdr_max").setProperty("value", max[1]);
+        $("#calendar-picker").on('click', function(e) {
+            e.preventDefault();
+
+            // if custom dates form is already open don't change anything.
+            if ($("#custom-dates").hasClass("show") == false) {
+                $("#custom-dates").addClass("show");
+                $('div.jsolr-searchtool ul').removeClass('open');
+
+                if ($(this).parent("li").data("value") != $("#qdr-selected").data('original')) {
+                    $("#qdr-selected").html($(this).html());
                 }
-
-                $("custom-dates").addClass("show");
             }
-        }
-    }
+        });
 
-    $("calendar-picker").addEvent('click', function(e) {
-        e.stop();
+        $("#custom-dates-form").on('submit', function(e) {
+            e.preventDefault();
+            var href = $(this).attr('action');
+            var qs = "";
 
-        // if custom dates form is already open don't change anything.
-        if ($("custom-dates").hasClass("show") == false) {
-            $("custom-dates").addClass("show");
-            // force the closure of the menu using an existing event.
-            $$('div.jsolr-searchtool').fireEvent('click');
+            if (value = $(this).children().find("#qdr_min").val()) {
+                qs += "min:" + value;
 
-            if (this.getParent("li").getAttribute("data-value") != $("qdr-selected").getAttribute('data-original')) {
-                $("qdr-selected").set('html', this.get('html'));
+                if (value = $(this).children().find("#qdr_max").val()) {
+                    qs += ",max:" + value;
+                    console.log(qs);
+                    qs = encodeURIComponent(qs);
+
+                    if (href.indexOf("?") >= 0) {
+                        href+="&qdr="+qs;
+                    } else {
+                        href+="?qdr="+qs;
+                    }
+
+                    window.location = href.toString();
+                }
             }
-        }
-    });
+        });
 
-    $("custom-dates-form").addEvent('submit', function(e) {
-        e.stop();
-        var href = new URI(this.getAttribute('action'));
+        $("#custom-dates-cancel").on('click', function(e) {
+            e.preventDefault();
 
-        var qs = "";
+            var pattern = /^min:[0-9]{4}-[0-9]{2}-[0-9]{2},max:[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
-        if (value = this.getChildren("#qdr_min").getProperty("value").toString().stripScripts()) {
-            qs += "min:" + value;
-
-            if (value = this.getChildren("#qdr_max").getProperty("value").toString().stripScripts()) {
-                qs += ",max:" + value;
-
-                href.setData('qdr', qs);
-
-                window.location = href.toString();
+            // if custom is current selected date, don't change text.
+            if (!pattern.test($("#qdr-selected").data('original'))) {
+                $("#qdr-selected").html($('div.jsolr-searchtool ul li.active a').text());
             }
-        }
+
+            $(this).parents("#custom-dates").removeClass('show');
+        });
     });
-
-    $("custom-dates-cancel").addEvent('click', function(e) {
-        e.stop();
-
-        if (!$("qdr-selected").getAttribute('data-original').test("^min:[0-9]{4}-[0-9]{2}-[0-9]{2},max:[0-9]{4}-[0-9]{2}-[0-9]{2}$")) {
-            $("qdr-selected").set('html', $$('div.jsolr-searchtool ul li.active a').get('html'));
-        }
-
-        this.getParent("#custom-dates").removeClass('show');
-    });
-});
+})(jQuery);

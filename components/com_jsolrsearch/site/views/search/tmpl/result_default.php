@@ -43,14 +43,14 @@ defined('_JEXEC') or die('Restricted access');
             <?php if (isset($this->item->link)) : ?>
             <dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_LINK_LABEL"); ?></dt>
             <dd>
-                <a href="<?php echo $this->item->link; ?>"><?php echo $this->item->link; ?></a>
+                <a href="<?php echo JRoute::_($this->item->link); ?>"><?php echo JRoute::_($this->item->link); ?></a>
             </dd>
             <?php endif; ?>
 
             <?php if (isset($this->item->category)) : ?>
             <dt><?php echo JText::_("COM_JSOLRSEARCH_RESULT_CATEGORY_LABEL"); ?></dt>
             <dd>
-                <a href="<?php echo $this->item->link; ?>"><?php echo $this->item->category; ?></a>
+                <a href="<?php echo JRoute::_($this->item->link); ?>"><?php echo $this->item->category; ?></a>
             </dd>
             <?php endif; ?>
         </dl>

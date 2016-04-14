@@ -54,6 +54,10 @@ class ResultSet extends \JObject implements \IteratorAggregate, \Countable
             $this->handlers['facet_ranges'] = $response->facet_counts->facet_ranges;
         }
 
+        if (isset($response->facet_counts->facet_pivot)) {
+            $this->handlers['facet_pivot'] = $response->facet_counts->facet_pivot;
+        }
+
         if (isset($response->highlighting)) {
             $this->handlers['highlighting'] = $response->highlighting;
         }
@@ -95,6 +99,11 @@ class ResultSet extends \JObject implements \IteratorAggregate, \Countable
     public function getFacetRanges()
     {
         return JArrayHelper::getValue($this->handlers, 'facet_ranges');
+    }
+
+    public function getFacetPivot()
+    {
+        return JArrayHelper::getValue($this->handlers, 'facet_pivot');
     }
 
     public function getSuggestions()
