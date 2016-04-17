@@ -9,7 +9,7 @@ use \JFactory as JFactory;
 use \JArrayHelper as JArrayHelper;
 use \JText as JText;
 
-JLoader::import('joomla.form.helper');
+\JLoader::import('joomla.form.helper');
 
 class Sort extends SearchTool implements Sortable
 {

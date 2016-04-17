@@ -5,7 +5,7 @@
  */
 namespace JSolr\Form\Fields;
 
-interface JSolrSortable
+interface Sortable
 {
     public function getSort();
 }
