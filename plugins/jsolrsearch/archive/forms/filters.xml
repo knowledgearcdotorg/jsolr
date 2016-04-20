@@ -12,8 +12,8 @@
             exactmatch="true"/>
         <field
             name="accessioned"
-            facet="dc.date.accessioned_tdt"
-            filter="dc.date.accessioned_tdt"
+            facet="dc.date.accessioned_tdtm"
+            filter="dc.date.accessioned_tdtm"
             type="jsolr.datefacets"
             label="By Date"
             class="inputbox"
