@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fieldset
+        name="connection"
+        label="COM_JSOLR_CONFIG_CONNECTION_LABEL"
+        description="COM_JSOLR_CONFIG_CONNECTION_DESC">
+        <field
+            name="url"
+            type="text"
+            label="COM_JSOLR_CONNECTION_URL_LABEL"
+            size="45"/>
+        <field
+            name="username"
+            type="text"
+            label="COM_JSOLR_CONNECTION_USERNAME_LABEL"
+            size="45"/>
+        <field
+            name="password"
+            type="text"
+            label="COM_JSOLR_CONNECTION_PASSWORD_LABEL"
+            size="45"/>
+
+        <field
+            type="spacer"
+            hr="true"/>
+        
+        <field
+            name="connection2"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="0"
+            label="COM_JSOLR_CONNECTION2_ENABLE_LABEL"
+            description="COM_JSOLR_CONNECTION2_ENABLE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+
+        <field
+            name="url2"
+            type="text"
+            label="COM_JSOLR_CONNECTION2_URL_LABEL"
+            showon="connection2:1"
+            size="45"/>
+        <field
+            name="username2"
+            type="text"
+            label="COM_JSOLR_CONNECTION2_USERNAME_LABEL"
+            showon="connection2:1"
+            size="45"/>
+        <field
+            name="password2"
+            type="text"
+            label="COM_JSOLR_CONNECTION2_PASSWORD_LABEL"
+            showon="connection2:1"
+            size="45"/>
+    </fieldset>
+
+    <fieldset
+        name="index"
+        label="COM_JSOLR_CONFIG_INDEX_LABEL"
+        description="COM_JSOLR_CONFIG_INDEX_DESC">
+        <field
+            name="indexAttachments"
+            type="radio"
+            default="0"
+            label="COM_JSOLR_INDEX_ATTACHMENTS_LABEL"
+            description="COM_JSOLR_INDEX_ATTACHMENTS_DESC"
+            class="btn-group">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+            name="contentTypesAllowed"
+            type="text"
+            label="COM_JSOLR_INDEX_FILETYPES_ALLOWED_LABEL"
+            description="COM_JSOLR_INDEX_FILETYPES_ALLOWED_DESC"
+            showon="indexAttachments:1"
+            size="45"/>
+        <field
+            name="contentTypesIndexContent"
+            type="text"
+            label="COM_JSOLR_INDEX_FILETYPES_CONTENT_LABEL"
+            description="COM_JSOLR_INDEX_FILETYPES_CONTENT_DESC"
+            showon="indexAttachments:1"
+            size="45"/>
+        <field
+            name="extractor"
+            type="list"
+            label="COM_JSOLR_INDEX_EXTRACTOR_LABEL"
+            description="COM_JSOLR_INDEX_EXTRACTOR_DESC"
+            class="inputbox"
+            showon="indexAttachments:1">
+                <option>COM_JSOLR_INDEX_EXTRACTOR_NONE</option>
+                <option value="tika_app">COM_JSOLR_INDEX_EXTRACTOR_LOCAL</option>
+                <option value="tika_server">COM_JSOLR_INDEX_EXTRACTOR_TIKASERVER</option>
+        </field>
+        <field
+            name="tikaApp"
+            type="text"
+            label="COM_JSOLR_INDEX_TIKA_APP_LABEL"
+            description="COM_JSOLR_INDEX_TIKA_APP_DESC"
+            showon="extractor:tika_app"
+            class="inputbox"/>
+        <field
+            name="tikaServer"
+            type="text"
+            label="COM_JSOLR_INDEX_TIKA_SERVER_LABEL"
+            description="COM_JSOLR_INDEX_TIKA_SERVER_DESC"
+            showon="extractor:tika_server"
+            class="inputbox"/>
+        <field
+            type="spacer"
+            hr="true"/>
+        <field
+            name="autocommit"
+            type="radio"
+            label="COM_JSOLR_INDEX_AUTOCOMMIT_LABEL"
+            description="COM_JSOLR_INDEX_AUTOCOMMIT_DESC"
+            default="0"
+            class="btn-group">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+        <field
+            name="commitsWithin"
+            type="text"
+            label="COM_JSOLR_INDEX_COMMITSWITHIN_LABEL"
+            description="COM_JSOLR_INDEX_COMMITSWITHIN_DESC"
+            default="10000"
+            filter="integer"
+            showon="autocommit:0"
+            size="4"/>
+        <field
+            name="commitWithin"
+            type="text"
+            label="COM_JSOLR_INDEX_COMMITWITHIN_LABEL"
+            description="COM_JSOLR_INDEX_COMMITWITHIN_DESC"
+            default="1000"
+            filter="integer"
+            showon="autocommit:0"
+            size="4"/>
+        <field
+            type="spacer"
+            hr="true"/>
+        <field
+            name="facetSeparator"
+            type="text"
+            label="COM_JSOLR_INDEX_FACET_SEPARATOR_LABEL"
+            description="COM_JSOLR_INDEX_FACET_SEPARATOR_DESC"
+            default="||||"
+            filter="string"
+            size="4"/>
+    </fieldset>
+
+    <fieldset
+        name="search"
+        label="COM_JSOLR_CONFIG_SEARCH_LABEL"
+        description="COM_JSOLR_CONFIG_SEARCH_DESCRIPTION">
+        <field
+            name="mm"
+            type="text"
+            label="COM_JSOLR_SEARCH_MM_LABEL"
+            description="COM_JSOLR_SEARCH_MM_DESCRIPTION"
+            default="1"/>
+    </fieldset>
+</config>

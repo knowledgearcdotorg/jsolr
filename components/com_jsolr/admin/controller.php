@@ -1,8 +1,8 @@
 <?php
 /**
- * A controller for managing Solr searching.
+ * A controller for managing Solr indexing and search.
  *
- * @package     JSolr.Search
+ * @package     JSolr
  * @subpackage  Controller
  * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
-class JSolrSearchController extends JControllerLegacy
+class JSolrController extends JControllerLegacy
 {
     protected $default_view = 'configuration';
 

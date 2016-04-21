@@ -1,14 +1,14 @@
 <?php
 /**
- * @package    JSolr.Search
+ * @package    JSolr
  * @copyright  Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
 
-class JSolrSearchHelper
+class JSolrHelper
 {
-    public static $extension = 'com_jsolrsearch';
+    public static $extension = 'com_jsolr';
 
     /**
      * Configure the Linkbar.
@@ -35,7 +35,7 @@ class JSolrSearchHelper
 
         $result = new JObject();
 
-        $assetName = 'COM_JSOLRSEARCH';
+        $assetName = 'COM_JSOLR';
 
         $actions = array(
             'core.admin',

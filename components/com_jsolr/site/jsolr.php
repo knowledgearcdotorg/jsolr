@@ -8,13 +8,13 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
-JLoader::register('JSolrSearchHelper', dirname(__FILE__) . '/helpers/jsolrsearch.php');
+JLoader::register('JSolrHelper', dirname(__FILE__) . '/helpers/jsolr.php');
 
 JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
 $JControllerName = class_exists('JControllerLegacy') ? 'JControllerLegacy' : 'JController';
 
-$controller = $JControllerName::getInstance('jsolrsearch');
+$controller = $JControllerName::getInstance('jsolr');
 
 $controller->execute(JFactory::getApplication()->input->get('task'));
 

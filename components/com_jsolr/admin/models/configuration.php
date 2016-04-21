@@ -14,7 +14,7 @@ jimport('joomla.application.component.model');
 
 use \JSolr\Search\Factory;
 
-class JSolrSearchModelConfiguration extends JModelLegacy
+class JSolrModelConfiguration extends JModelLegacy
 {
     public function test()
     {

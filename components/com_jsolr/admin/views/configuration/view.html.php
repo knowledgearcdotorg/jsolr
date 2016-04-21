@@ -9,13 +9,13 @@
  */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-class JSolrSearchViewConfiguration extends JViewLegacy
+class JSolrViewConfiguration extends JViewLegacy
 {
     protected $canDo;
 
     function display($tpl = null)
     {
-        $this->canDo = JSolrSearchHelper::getActions();
+        $this->canDo = JSolrHelper::getActions();
 
         $this->modules = JModuleHelper::getModules('jsolrsearch');
 
@@ -29,7 +29,7 @@ class JSolrSearchViewConfiguration extends JViewLegacy
         JToolBarHelper::title(JText::_('Configuration'), 'config.png');
 
         if ($this->canDo->get('core.admin')) {
-            JToolBarHelper::preferences('com_jsolrsearch');
+            JToolBarHelper::preferences('com_jsolr');
 
             JToolBarHelper::divider();
         }

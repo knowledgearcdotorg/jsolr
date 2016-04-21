@@ -113,7 +113,7 @@
             type="text"
             label="COM_JSOLRINDEX_ADVANCED_COMMITSWITHIN_LABEL"
             description="COM_JSOLRINDEX_ADVANCED_COMMITSWITHIN_DESC"
-            default="0"
+            default="10000"
             filter="integer"
             size="4"/>
         <field
@@ -121,7 +121,7 @@
             type="text"
             label="COM_JSOLRINDEX_ADVANCED_COMMITWITHIN_LABEL"
             description="COM_JSOLRINDEX_ADVANCED_COMMITWITHIN_DESC"
-            default="0"
+            default="1000"
             filter="integer"
             size="4"/>
     </fieldset>

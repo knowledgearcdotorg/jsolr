@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="component" version="3.3" method="upgrade">
-    <name>com_jsolrsearch</name>
-    <creationDate>2012-07-26</creationDate>
+<extension type="component" version="3.4" method="upgrade">
+    <name>com_jsolr</name>
+    <creationDate>2016-04-21</creationDate>
     <author>KnowledgeArc Ltd</author>
     <authorEmail>development@knowledgearc.com</authorEmail>
     <authorUrl>http://www.knowledgearc.org</authorUrl>
     <copyright>>Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>2.1.0-dev</version>
-    <description>COM_JSOLRSEARCH_XML_DESCRIPTION</description>
+    <version>3.0.0-dev</version>
+    <description>COM_JSOLR_XML_DESCRIPTION</description>
 
     <scriptfile>script.php</scriptfile>
 
@@ -19,15 +19,15 @@
         <folder>models</folder>
         <folder>views</folder>
         <filename>controller.php</filename>
-        <filename>jsolrsearch.php</filename>
+        <filename>jsolr.php</filename>
         <filename>router.php</filename>
     </files>
 
      <languages folder="site">
-         <language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
+         <language tag="en-GB">language/en-GB/en-GB.com_jsolr.ini</language>
      </languages>
 
-    <media folder="media" destination="com_jsolrsearch">
+    <media folder="media" destination="com_jsolr">
         <folder>js</folder>
         <folder>css</folder>
     </media>
@@ -39,15 +39,15 @@
             <folder>views</folder>
             <filename>config.xml</filename>
             <filename>controller.php</filename>
-            <filename>jsolrsearch.php</filename>
+            <filename>jsolr.php</filename>
         </files>
 
         <languages folder="admin">
-            <language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.ini</language>
-            <language tag="en-GB">language/en-GB/en-GB.com_jsolrsearch.sys.ini</language>
+            <language tag="en-GB">language/en-GB/en-GB.com_jsolr.ini</language>
+            <language tag="en-GB">language/en-GB/en-GB.com_jsolr.sys.ini</language>
         </languages>
 
-        <menu img="class:jsolrsearch">COM_JSOLRSEARCH</menu>
+        <menu img="class:jsolr">COM_JSOLR</menu>
     </administration>
 
     <updateservers>
