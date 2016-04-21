@@ -9,15 +9,17 @@
  */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-class JSolrViewConfiguration extends JViewLegacy
+class JSolrViewCPanel extends JViewLegacy
 {
+    protected $item;
+
     protected $canDo;
 
     function display($tpl = null)
     {
-        $this->canDo = JSolrHelper::getActions();
+        $this->item = $this->get("Item");
 
-        $this->modules = JModuleHelper::getModules('jsolrsearch');
+        $this->canDo = JSolrHelper::getActions();
 
         $this->addToolbar();
 

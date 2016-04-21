@@ -1,0 +1,20 @@
+{
+    "name": "knowledgearcdotorg/jsolr",
+    "description": "JSolr provides Solr indexing and search within Joomla!.",
+    "type": "library",
+    "keywords": ["apache", "solr", "jsolr", "joomla"],
+    "homepage": "http://knowledgearc.org",
+    "time": "2016-04-21",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Hayden Young",
+            "email": "hayden@knowledgearc.com"
+        }
+    ],
+    "require": {
+        "PHP" : ">=5.4",
+        "solarium/solarium": "3.5.1",
+        "cpliakas/solarium-luke": "dev-master"
+    }
+}

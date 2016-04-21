@@ -12,10 +12,10 @@
     <description>LIB_JSOLR_XML_DESCRIPTION</description>
 
     <files folder="libraries">
-        <folder>Apache</folder>
         <folder>Form</folder>
         <folder>Index</folder>
         <folder>Search</folder>
+        <folder>vendor</folder>
         <filename>Factory.php</filename>
         <filename>Helper.php</filename>
     </files>

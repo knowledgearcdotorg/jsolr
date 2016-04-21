@@ -13,7 +13,7 @@ jimport('joomla.application.component.controller');
 
 class JSolrController extends JControllerLegacy
 {
-    protected $default_view = 'configuration';
+    protected $default_view = 'cpanel';
 
     public function test()
     {

@@ -258,6 +258,7 @@
     </target>
 
     <target name="package" description="Packages extensions ready for installation into Joomla!.">
+        <delete dir="${package.dest}"/>
         <mkdir dir="${package.dest}"/>
         <foreach list="${extensions}" param="extension" target="package_extensions"/>
     </target>
@@ -285,6 +286,36 @@
                         <depth max="0" min="0"/>
                     </fileset>
                 </foreach>
+            </case>
+
+            <case value="libraries/${directory}">
+                <foreach param="subdirectory" absparam="plugin_path" target="package_plugin">
+                    <fileset dir="plugins/${directory}">
+                        <type type="dir"/>
+                        <depth max="0" min="0"/>
+                    </fileset>
+                </foreach>
+            </case>
+
+            <case value="libraries/${directory}">
+                <mkdir dir="${package.dest}/libraries/${directory}"/>
+
+                <copy
+                    todir="${package.dest}/libraries/${directory}">
+                    <fileset dir="${src}/libraries/${directory}">
+                        <include name="**/**"/>
+                    </fileset>
+                </copy>
+
+                <composer command="install" composer="${composer.phar}">
+                    <arg value="--optimize-autoloader"/>
+                    <arg value="--working-dir"/>
+                    <arg path="${package.dest}/libraries/${directory}"/>
+                </composer>
+
+                <zip
+                    destfile="${package.dest}/${directory}.zip"
+                    basedir="${package.dest}/${extension}/${directory}"/>
             </case>
 
             <default>
