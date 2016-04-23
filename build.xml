@@ -261,6 +261,22 @@
         <delete dir="${package.dest}"/>
         <mkdir dir="${package.dest}"/>
         <foreach list="${extensions}" param="extension" target="package_extensions"/>
+
+        <move todir="${package.dest}/packages">
+            <fileset dir="${package.dest}" includes="${package.extensions}"/>
+        </move>
+
+        <zip destfile="${package.dest}/pkg_jsolr.zip">
+            <fileset dir="${package.dest}">
+                <include name="packages/**"/>
+            </fileset>
+
+            <fileset dir=".">
+                <include name="pkg_jsolr.xml"/>
+            </fileset>
+        </zip>
+
+        <delete dir="${package.dest}/packages"/>
     </target>
 
     <target name="package_extensions" hidden="true">

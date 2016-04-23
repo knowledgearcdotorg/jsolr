@@ -1,3 +1,8 @@
 src=.
 path.joomla=/path/to/your/joomla/installation
 package.dest=/where/create/packages
+solr.host=localhost
+solr.port=8983
+solr.path=/solr
+composer.phar=/path/to/composer.phar
+package.extensions=com_jsolr.zip,JSolr.zip,mod_jsolrfilter.zip

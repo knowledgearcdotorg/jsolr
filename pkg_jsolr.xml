@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="3.4" method="upgrade">
+    <name>JSolr Package</name>
+    <author>KnowledgeArc Ltd</author>
+    <creationDate>2016-04-21</creationDate>
+    <packagename>jsolr</packagename>
+    <version>3.0.0-dev</version>
+    <copyright>>Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <packager>KnowledgeArc Ltd</packager>
+    <packagerurl>http://www.knowledgearc.org</packagerurl>
+    <description>Joomla! Solr.</description>
+
+    <files folder="packages">
+        <file type="component" id="com_jsolr" >com_jsolr.zip</file>
+        <file type="library" id="JSolr">JSolr.zip</file>
+        <file type="module" id="mod_jsolrfilter" client="site">mod_jsolrfilter.zip</file>
+    </files>
+</extension>
