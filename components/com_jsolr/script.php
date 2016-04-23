@@ -1,129 +1,78 @@
 <?php
-
 /**
-
  * Installation scripts.
-
  *
-
- * @package     JSolr.Search
-
- * @subpackage  Installer
-
- * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
-
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
-
+ * @package    JSolr.Index
+ * @copyright  Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
-
-
 defined('_JEXEC') or die('Restricted access');
 
-
-
 jimport('joomla.installer.helper');
-
 jimport('joomla.filesystem.folder');
 
-jimport('joomla.filesystem.file');
-
-
-
-class com_JSolrSearchInstallerScript
-
+class Com_JSolrIndexInstallerScript
 {
+    public function install($parent)
+    {
+
+    }
 
     public function update(JAdapterInstance $adapter)
-
     {
-
-        $src = $adapter->getParent()->getPath('source');
-
-        $site = $adapter->getParent()->getPath('extension_site');
-
-        $admin = $adapter->getParent()->getPath('extension_administrator');
-
-
-
-        $attributes = $adapter->getParent()->get('manifest')->media->attributes();
-
-        $attributes = reset($attributes);
-
-
-
-        $extension = \Joomla\Utilities\ArrayHelper::getValue($attributes, 'destination');
-
-
-
-        $exclude = array();
-
-        $exclude[] = $adapter->get('manifest_script');
-
-        $exclude[] = JFile::getName($adapter->getParent()->getPath('manifest'));
-
-
-
-        $this->removeRedundantFiles($site, $src.'/site');
-
-        $this->removeRedundantFiles($admin, $src.'/admin', $exclude);
-
-
-
-        if ($extension) {
-
-            $media = JPATH_ROOT.'/media/'.$extension;
-
-            $this->removeRedundantFiles($media, $src.'/media', $exclude);
-
-        }
 
     }
 
-
-
-    /**
-
-     * Removes redundant files and directories from previous versions that no
-
-     * longer apply to the new version.
-
-     */
-
-    private function removeRedundantFiles($oldPath, $newPath, $exclude = array())
-
+    public function uninstall($parent)
     {
+        $src = JPATH_ROOT."/cli/jsolrcrawler.php";
 
-        foreach (JFolder::files($oldPath, '.', true, true, $exclude) as $file) {
-
-            if (JFile::exists($file)) {
-
-                if (!JFile::exists(str_replace($oldPath, $newPath, $file))) {
-
-                    Jfile::delete($file);
-
-                }
-
+        if (JFile::exists($src)) {
+            if (JFile::delete($src)) {
+                echo "<p>Crawler uninstalled from ".$src." successfully.</p>";
+            } else {
+                echo "<p>Could not uninstall crawler from ".$src.". You will need to manually remove it.</p>";
             }
-
         }
-
-
-
-        foreach (JFolder::folders($oldPath, '.', true, true, $exclude) as $folder) {
-
-            if (JFolder::exists($folder)) {
-
-                if (!JFolder::exists(str_replace($oldPath, $newPath, $folder))) {
-
-                    JFolder::delete($folder);
-
-                }
-
-            }
-
-        }
-
     }
 
+    public function postflight($type, $parent)
+    {
+        $crawler = $this->installCrawler($parent);
+        ?>
+
+        <table class="adminlist table table-striped" style="width: 100%;">
+            <tbody>
+                <tr>
+                    <td>JSolr Crawler</td>
+                    <td>
+                        <?php if ($crawler) : ?>
+                        <strong style="color: green">Installed</strong>
+                        <?php else : ?>
+                        <strong style="color: red">Not Installed</strong>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <?php
+    }
+
+    private function installCrawler($parent)
+    {
+        $success = false;
+
+        $src = $parent->getParent()->getPath('extension_administrator').
+            '/cli/jsolrcrawler.php';
+
+        $cli = JPATH_ROOT.'/cli/jsolrcrawler.php';
+
+        if (JFile::exists($src)) {
+            if ($success = JFile::move($src, $cli)) {
+                JFolder::delete($parent->getParent()->getPath('extension_administrator').'/cli');
+            }
+        }
+
+        return $success;
+    }
 }
