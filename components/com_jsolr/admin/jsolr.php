@@ -15,7 +15,7 @@ $path = dirname(__FILE__) . '/helpers/jsolr.php';
 
 JLoader::register('JSolrHelper', $path);
 
-require_once JPATH_ROOT.'/libraries/JSolr/vendor/autoload.php';
+JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
 if (class_exists('JControllerLegacy')) {
     $JControllerName = 'JControllerLegacy';

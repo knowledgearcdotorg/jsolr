@@ -53,4 +53,26 @@ class JSolrHelper
 
         return $result;
     }
+
+    public static function log($msg, $type = JLog::ERROR)
+    {
+        $app = \Joomla\Utilities\ArrayHelper::getValue($GLOBALS, 'application');
+
+        $verbose = (bool)($app->input->get('v') || $app->input->get('verbose'));
+        $quiet = (bool)($app->input->get('q') || $app->input->get('quiet'));
+
+        if (get_class($app) == "JSolrCli") {
+            if ($type == JLog::ERROR) {
+                if (!$quiet) {
+                    $app->out($msg);
+                }
+            } else {
+                if ($verbose) {
+                    $app->out($msg);
+                }
+            }
+        } else {
+            JLog::add($msg, $type, 'jsolr');
+        }
+    }
 }

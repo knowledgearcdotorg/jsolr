@@ -10,8 +10,6 @@ use \JString as JString;
 
 class Factory extends \JSolr\Factory
 {
-    protected static $component = 'com_jsolrindex';
-
     /**
      * Gets a file extractor for the file or url provided.
      *
@@ -23,7 +21,7 @@ class Factory extends \JSolr\Factory
      */
     public static function getExtractor($fileOrUrl)
     {
-        $params = JComponentHelper::getParams('com_jsolrindex', true);
+        $params = JComponentHelper::getParams('com_jsolr', true);
 
         $params->loadArray(array('component'=>$params->toArray()));
 

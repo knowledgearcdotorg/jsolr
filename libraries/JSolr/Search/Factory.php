@@ -12,21 +12,19 @@ use \JArrayHelper as JArrayHelper;
 
 class Factory extends \JSolr\Factory
 {
-    protected static $component = 'com_jsolrsearch';
-
     protected static $lookup;
 
-    /**
-     * Gets an instance of the Query class.
-     *
-     * @param string $query The initial query to search for.
-     * @return Query An instance of the Query class.
-     */
-    public static function getQuery($query = null)
+    public static function getClient()
     {
-        $solr = self::getService();
+        $endpoint = \JUri::getInstance()->getHost()."2";
 
-        return new Query($query, $solr);
+        $client = parent::getClient();
+
+        if ($client->getEndpoint($endpoint)) {
+            $client->setDefaultEndpoint($endpoint);
+        }
+
+        return $client;
     }
 
     /**
@@ -79,7 +77,7 @@ class Factory extends \JSolr\Factory
     {
         $uri = new JURI('index.php');
 
-        $uri->setVar('option', 'com_jsolrsearch');
+        $uri->setVar('option', self::component);
 
         $uri->setVar('view', $view);
 
@@ -118,7 +116,7 @@ class Factory extends \JSolr\Factory
 
         // Prepare the reverse lookup array.
         if (!isset(self::$lookup[$view])) {
-            $component = JComponentHelper::getComponent('com_jsolrsearch');
+            $component = JComponentHelper::getComponent(self::component);
 
             $items = $menus->getItems('component_id', $component->id);
 

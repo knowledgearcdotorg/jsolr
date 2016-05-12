@@ -56,9 +56,12 @@ $lang->load('jsolr_cli', JPATH_SITE, null, false, false)
 // Fallback to the finder_cli file in the default language
 || $lang->load('jsolr_cli', JPATH_SITE, null, true);
 
-JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
+\JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-JLoader::import('joomla.application.component.helper');
+$path = JPATH_ADMINISTRATOR.'/components/com_jsolr/helpers/jsolr.php';
+\JLoader::register('JSolrHelper', $path);
+
+\JLoader::import('joomla.application.component.helper');
 
 /**
  * Simple command line interface application class.
@@ -68,12 +71,11 @@ JLoader::import('joomla.application.component.helper');
  */
 class JSolrCli extends JApplicationCli
 {
-    public function doExecute()
+    public function __construct(\Joomla\Input\Input $input = null, \Joomla\Registry\Registry $config = null)
     {
-        if ($this->input->get('h') || $this->input->get('help')) {
-            $this->help();
-            return;
-        }
+        parent::__construct($input, $config);
+
+        $GLOBALS['application'] = $this;
 
         // fool the system into thinking we are running as JSite with JSolr as the active component
         $_SERVER['HTTP_HOST'] = 'domain.com';
@@ -83,6 +85,14 @@ class JSolrCli extends JApplicationCli
         $config = JFactory::getConfig();
         $config->set('caching', 0);
         $config->set('cache_handler', 'file');
+    }
+
+    public function doExecute()
+    {
+        if ($this->input->get('h') || $this->input->get('help')) {
+            $this->help();
+            return;
+        }
 
         try {
             if ($this->input->get('p') || $this->input->get('purge')) {
@@ -123,11 +133,8 @@ class JSolrCli extends JApplicationCli
             $this->index();
 
         } catch (Exception $e) {
-            $this->out($e->getMessage());
-
-            if ($this->isVerbose()) {
-                $this->out($e->getTraceAsString());
-            }
+            JSolrHelper::log($e->getMessage(), JLog::ERROR);
+            JSolrHelper::log($e->getTraceAsString(), JLog::DEBUG);
         }
     }
 
@@ -179,6 +186,17 @@ class JSolrCli extends JApplicationCli
 
     protected function index()
     {
+        $path = JPATH_ROOT.'/administrator/components/com_content/models/articles.php';
+        \JLoader::register('ContentModelArticles', $path);
+
+        $articles = \JModelLegacy::getInstance(
+                        'Articles',
+                        'ContentModel',
+                        array('ignore_request'=>true));
+
+        $articles->setState('list.start', 0);
+        $articles->setState('list.limit', 1);
+
         $indexingParams = array();
 
         if ($this->input->getString('u') || $this->input->getString('update')) {
@@ -201,7 +219,7 @@ class JSolrCli extends JApplicationCli
             if ($valid) {
                 $indexingParams['lastModified'] = $lastModified;
             } else {
-                $client = \JSolr\Index\Factory::getService();
+                $client = \JSolr\Index\Factory::getClient();
 
                 if ($client->ping()) {
                     $response = $client->luke();
@@ -213,25 +231,29 @@ class JSolrCli extends JApplicationCli
 
         $start = new JDate('now');
 
-        $this->out("crawl start ".$start->format("c"));
+        JSolrHelper::log("crawl start ".$start->format("c"), JLog::DEBUG);
 
         $this->fireEvent('onIndex', array(get_class($this), $this->isVerbose(), $indexingParams), $this->getPlugin());
 
         $end = new JDate('now');
 
-        $this->out("crawl end ".$end->format("c"));
+        JSolrHelper::log("crawl end ".$end->format("c"), JLog::DEBUG);
 
         $time = $start->diff($end);
 
-        $this->out("execution time: ".$time->format("%H:%I:%S"));
+        JSolrHelper::log("execution time: ".$time->format("%H:%I:%S"), JLog::DEBUG);
     }
 
     protected function optimize()
     {
-        $client = \JSolr\Index\Factory::getService();
+        $client = \JSolr\Index\Factory::getClient();
 
-        if ($client->ping()) {
-            $client->optimize();
+        if ($client->ping($client->createPing())) {
+            $update = $client->createUpdate();
+            $update->addOptimize(); // TODO: using solr defaults. Need to research further.
+            $result = $client->update($update);
+
+            JSolrHelper::log("optimization: ".$result->getStatus(), JLog::DEBUG);
         }
     }
 
@@ -242,16 +264,16 @@ class JSolrCli extends JApplicationCli
         if ($plugin) {
             $this->fireEvent('onPurge', array(get_class($this), $this->isVerbose()), $plugin);
         } else {
-            $solr = \JSolr\Index\Factory::getService();
+            $solr = \JSolr\Index\Factory::getClient();
 
             if ($solr->ping()) {
-                $this->out('purging all items from index...');
+                JSolrHelper::log('purging all items from index...', JLog::DEBUG);
 
                 // more efficient than calling each plugin's onPurge.
                 $solr->deleteByQuery("*:*");
                 $solr->commit();
 
-                $this->out('purging index completed.');
+                JSolrHelper::log('purging index completed.', JLog::DEBUG);
             }
         }
     }
@@ -330,15 +352,6 @@ Provides tools for managing Solr from Joomla.
 EOT;
     }
 
-    public function out($text = '', $nl = true)
-    {
-        if (!($this->input->get('q', false) || $this->input->get('quiet', false))) {
-            parent::out($text, $nl);
-        }
-
-        return $this;
-    }
-
     private function fireEvent($name, $args = array(), $plugin = null)
     {
         if ($plugin) {
@@ -352,18 +365,6 @@ EOT;
         JPluginHelper::importPlugin("jsolr", $plugin, true, $dispatcher);
 
         return $dispatcher->trigger($name, $args);
-    }
-
-    private function isVerbose()
-    {
-        // Verbose can only be set if quiet is not set.
-        if (!($this->input->get('q', false) || $this->input->get('quiet', false))) {
-            if ($this->input->get('v') || $this->input->get('verbose')) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function getPlugin()
