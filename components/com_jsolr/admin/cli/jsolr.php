@@ -248,13 +248,11 @@ class JSolrCli extends JApplicationCli
     {
         $client = \JSolr\Index\Factory::getClient();
 
-        if ($client->ping($client->createPing())) {
-            $update = $client->createUpdate();
-            $update->addOptimize(); // TODO: using solr defaults. Need to research further.
-            $result = $client->update($update);
+        $update = $client->createUpdate();
+        $update->addOptimize(); // TODO: using solr defaults. Need to research further.
+        $result = $client->update($update);
 
-            JSolrHelper::log("optimization: ".$result->getStatus(), JLog::DEBUG);
-        }
+        JSolrHelper::log("optimization: ".$result->getStatus(), JLog::DEBUG);
     }
 
     protected function purge()
@@ -264,17 +262,19 @@ class JSolrCli extends JApplicationCli
         if ($plugin) {
             $this->fireEvent('onPurge', array(get_class($this), $this->isVerbose()), $plugin);
         } else {
-            $solr = \JSolr\Index\Factory::getClient();
+            $client = \JSolr\Index\Factory::getClient();
 
-            if ($solr->ping()) {
-                JSolrHelper::log('purging all items from index...', JLog::DEBUG);
+            JSolrHelper::log('purging all items from index...', JLog::DEBUG);
 
-                // more efficient than calling each plugin's onPurge.
-                $solr->deleteByQuery("*:*");
-                $solr->commit();
+            // more efficient than calling each plugin's onPurge.
+            $update = $client->createUpdate();
 
-                JSolrHelper::log('purging index completed.', JLog::DEBUG);
-            }
+            $update->addDeleteQuery('*:*');
+            $update->addCommit();
+
+            $result = $client->update($update);
+
+            JSolrHelper::log('purging index completed.', JLog::DEBUG);
         }
     }
 
