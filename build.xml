@@ -127,27 +127,42 @@
                     <fileset dir="${path.libs}/${directory}" includes="**/*"/>
                 </delete>
 
+                <mkdir dir="${package.dest}/libraries/${directory}"/>
+
+                <copy
+                    todir="${package.dest}/libraries/${directory}">
+                    <fileset dir="${src}/libraries/${directory}">
+                        <include name="**/**"/>
+                    </fileset>
+                </copy>
+
+                <composer command="install" composer="${composer.phar}">
+                    <arg value="--optimize-autoloader"/>
+                    <arg value="--working-dir"/>
+                    <arg path="${package.dest}/libraries/${directory}"/>
+                </composer>
+
                 <copy todir="${path.libs}/${directory}">
-                    <fileset dir="./libraries/${directory}">
+                    <fileset dir="${package.dest}/libraries/${directory}">
                         <include name="**/**"/>
                         <exclude name="language/**"/>
                     </fileset>
                 </copy>
 
                 <copy todir="${path.languages}">
-                    <fileset dir="./libraries/${directory}/language">
+                    <fileset dir="${package.dest}/libraries/${directory}/language">
                         <include name="**/**"/>
                     </fileset>
                 </copy>
 
                 <copy todir="${path.administrator.languages}">
-                    <fileset dir="./libraries/${directory}/language">
+                    <fileset dir="${package.dest}/libraries/${directory}/language">
                         <include name="**/**"/>
                     </fileset>
                 </copy>
 
                 <copy todir="${path.administrator}/manifests">
-                    <fileset dir="libraries/${directory}">
+                    <fileset dir="${package.dest}/libraries/${directory}">
                         <include name="*.xml"/>
                     </fileset>
                 </copy>
