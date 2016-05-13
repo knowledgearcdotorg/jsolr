@@ -186,17 +186,6 @@ class JSolrCli extends JApplicationCli
 
     protected function index()
     {
-        $path = JPATH_ROOT.'/administrator/components/com_content/models/articles.php';
-        \JLoader::register('ContentModelArticles', $path);
-
-        $articles = \JModelLegacy::getInstance(
-                        'Articles',
-                        'ContentModel',
-                        array('ignore_request'=>true));
-
-        $articles->setState('list.start', 0);
-        $articles->setState('list.limit', 1);
-
         $indexingParams = array();
 
         if ($this->input->getString('u') || $this->input->getString('update')) {
@@ -246,13 +235,15 @@ class JSolrCli extends JApplicationCli
 
     protected function optimize()
     {
+        JSolrHelper::log('optimizing...', JLog::DEBUG);
+
         $client = \JSolr\Index\Factory::getClient();
 
         $update = $client->createUpdate();
         $update->addOptimize(); // TODO: using solr defaults. Need to research further.
         $result = $client->update($update);
 
-        JSolrHelper::log("optimization: ".$result->getStatus(), JLog::DEBUG);
+        JSolrHelper::log("Optimization finished: ".$result->getStatus(), JLog::DEBUG);
     }
 
     protected function purge()
@@ -260,7 +251,11 @@ class JSolrCli extends JApplicationCli
         $plugin = $this->getPlugin();
 
         if ($plugin) {
-            $this->fireEvent('onPurge', array(get_class($this), $this->isVerbose()), $plugin);
+            JSolrHelper::log('purging '.$plugin.' items...', \JLog::DEBUG);
+
+            $this->fireEvent('onPurge', array(), $plugin);
+
+            JSolrHelper::log('purging '.$plugin.' items completed', \JLog::DEBUG);
         } else {
             $client = \JSolr\Index\Factory::getClient();
 
@@ -274,7 +269,7 @@ class JSolrCli extends JApplicationCli
 
             $result = $client->update($update);
 
-            JSolrHelper::log('purging index completed.', JLog::DEBUG);
+            JSolrHelper::log('purging index completed: '.$result->getStatus(), JLog::DEBUG);
         }
     }
 
@@ -355,14 +350,14 @@ EOT;
     private function fireEvent($name, $args = array(), $plugin = null)
     {
         if ($plugin) {
-            if (!is_a(JPluginHelper::getPlugin('jsolr', $plugin), 'stdClass')) {
+            if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
                 throw new Exception('The specified plugin does not exist or is not enabled.');
             }
         }
 
         $dispatcher = JEventDispatcher::getInstance();
 
-        JPluginHelper::importPlugin("jsolr", $plugin, true, $dispatcher);
+        JPluginHelper::importPlugin("jsolrcrawler", $plugin, true, $dispatcher);
 
         return $dispatcher->trigger($name, $args);
     }

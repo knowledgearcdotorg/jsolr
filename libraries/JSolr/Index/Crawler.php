@@ -15,7 +15,7 @@ use \JArrayHelper as JArrayHelper;
  */
 abstract class Crawler extends \JPlugin
 {
-    const STDOUT_SEPARATOR_WIDTH = 90;
+    const STDOUT_SEPARATOR_WIDTH = 80;
 
     protected static $chunk;
 
@@ -199,23 +199,14 @@ abstract class Crawler extends \JPlugin
      * Derived classes should override the purge() method when implementing
      * a custom purge task.
      *
-     * @params string caller The calling class.
-     * @params bool verbose True if verbose messaging should be enabled, false
-     * otherwise. The default is false.
      * @params array indexingParams A list of options to control various aspects of
-     * the clean task.
+     * the purge task.
      */
-    public function onPurge($caller, $verbose = false, $indexingParams = array())
+    public function onPurge($indexingParams = array())
     {
-        $this->set('caller', $caller);
-        $this->set('verbose', $verbose);
         $this->set('indexingParams', $indexingParams);
 
-        $this->out(array('task;purge type;'.$this->get('context'),'[starting]'));
-
         $this->purge();
-
-        $this->out(array('task;purge type;'.$this->get('context'),'[completed]'));
     }
 
     /**
@@ -421,30 +412,22 @@ abstract class Crawler extends \JPlugin
      *
      * pass a 2 dimensional array; array('indexing', '[started]');
      *
-     * @param bool $nl True if a new line character should be appended, false
-     * otherwise. The default is true.
-     * @return \JSolr\Index\Crawler Returns $this for chaining output.
+     * @param bool $level The log level.
      */
-    protected function out($text = '', $nl = true)
+    protected function out($text, $level)
     {
-        if ($this->get('caller') == 'JSolrCrawlerCli') {
-            if ($this->get('verbose')) {
-                if (is_array($text)) {
-                    if (count($text) == 2) {
-                        $length = self::STDOUT_SEPARATOR_WIDTH - (strlen($text[0]) + strlen($text[1]));
-                        $text = implode(str_repeat(' ', ($length > 0) ? $length : 1), $text);
-                    } else if (count($text) > 2) {
-                        $text = implode(' ', $text);
-                    } else {
-                        $text = implode('', $text);
-                    }
-                }
-
-                fwrite(STDOUT, $text . ($nl ? "\n" : null));
+        if (is_array($text)) {
+            if (count($text) == 2) {
+                $length = self::STDOUT_SEPARATOR_WIDTH - (strlen($text[0]) + strlen($text[1]));
+                $text = implode(str_repeat(' ', ($length > 0) ? $length : 1), $text);
+            } else if (count($text) > 2) {
+                $text = implode(' ', $text);
+            } else {
+                $text = implode('', $text);
             }
         }
 
-        return $this;
+        \JSolrHelper::log($text, $level);
     }
 
     /**
