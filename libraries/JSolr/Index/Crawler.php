@@ -26,26 +26,6 @@ abstract class Crawler extends \JPlugin
      */
     protected $context;
 
-    /**
-     * True if verbose messaging should be output, false otherwise.
-     *
-     * @var bool
-     */
-    protected $verbose = false;
-
-    /**
-     * The class name of the calling object.
-     * @var string
-     */
-    protected $caller;
-
-    /**
-     * An array of additional params that the crawler may require to
-     * complete its tasks.
-     * @var array
-     */
-    protected $indexingParams = array();
-
     public function __construct(&$subject, $config = array())
     {
         parent::__construct($subject, $config);
@@ -149,16 +129,11 @@ abstract class Crawler extends \JPlugin
      * Derived classes should override the clean() method when implementing
      * a custom clean task.
      *
-     * @params string caller The calling class.
-     * @params bool verbose True if verbose messaging should be enabled, false
-     * otherwise. The default is false.
      * @params array indexingParams A list of options to control various aspects of
      * the clean task.
      */
-    public function onClean($caller, $verbose = false, $indexingParams = array())
+    public function onJSolrClean($indexingParams = array())
     {
-        $this->set('caller', $caller);
-        $this->set('verbose', $verbose);
         $this->set('indexingParams', $indexingParams);
 
         $this->out(array("task:clean extension:".$this->get('context'),"[starting]"));
@@ -174,21 +149,14 @@ abstract class Crawler extends \JPlugin
      * Derived classes should override the index() method when implementing
      * a custom index task.
      *
-     * @params string caller The calling class.
-     * @params bool verbose True if verbose messaging should be enabled, false
-     * otherwise. The default is false.
-     * @params array indexingParams A list of options to control various aspects of
-     * the clean task.
+     * @params  string  $lastModified  Only index items after the last modified
+     * date.
      */
-    public function onIndex($caller, $verbose = false, $indexingParams = array())
+    public function onJSolrIndex($lastModified = null)
     {
-        $this->set('caller', $caller);
-        $this->set('verbose', $verbose);
-        $this->set('indexingParams', $indexingParams);
-
         $this->out(array("task:index crawler:".$this->get('context'),"[starting]"));
 
-        $this->index();
+        $this->index($lastModified);
 
         $this->out(array("task:index crawler:".$this->get('context'),"[completed]"));
     }
@@ -198,11 +166,8 @@ abstract class Crawler extends \JPlugin
      *
      * Derived classes should override the purge() method when implementing
      * a custom purge task.
-     *
-     * @params array indexingParams A list of options to control various aspects of
-     * the purge task.
      */
-    public function onPurge($indexingParams = array())
+    public function onJSolrPurge()
     {
         $this->set('indexingParams', $indexingParams);
 
@@ -215,7 +180,7 @@ abstract class Crawler extends \JPlugin
      * @param mixed $item The item being deleted (must have an id property).
      * @param bool $isNew True if the item is new, false otherwise.
      */
-    public function onJSolrIndexAfterSave($context, $item, $isNew)
+    public function onJSolrAfterSave($context, $item, $isNew)
     {
         if ($context == $this->get('context')) {
             $query = $this->buildQuery()->where('a.id='.$item->id);
@@ -230,7 +195,7 @@ abstract class Crawler extends \JPlugin
 
                 $solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
             } catch (Exception $e) {
-                JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+                JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
             }
         }
     }
@@ -241,14 +206,14 @@ abstract class Crawler extends \JPlugin
      * @param string $context The context of the item being deleted.
      * @param mixed $item The item being deleted (must have an id property).
      */
-    public function onJSolrIndexAfterDelete($context, $item)
+    public function onJSolrAfterDelete($context, $item)
     {
         try {
             if ($context == $this->get('context')) {
                 $this->deleteItem($this->get('context').'.'.$item->id);
             }
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
         }
     }
 
@@ -259,12 +224,12 @@ abstract class Crawler extends \JPlugin
      *
      * @param int $id The id of the record being added.
      */
-    public function onItemAdd($id)
+    public function onJSolrItemAdd($id)
     {
         $item = new stdClass();
         $item->id = $id;
 
-        $this->onJSolrIndexAfterSave($this->get('context'), $item, true);
+        $this->onJSolrAfterSave($this->get('context'), $item, true);
     }
 
     /**
@@ -299,7 +264,7 @@ abstract class Crawler extends \JPlugin
      * Derived classes should override this method when implementing a custom
      * index operation.
      */
-    protected function index()
+    protected function index($lastModified = null)
     {
         $itemTotal = $this->getItemCount();
         $start = 0;
@@ -412,7 +377,7 @@ abstract class Crawler extends \JPlugin
      *
      * pass a 2 dimensional array; array('indexing', '[started]');
      *
-     * @param bool $level The log level.
+     * @param bool $level The log level. Use the JLog constants; \JLog::DEBUG, \JLog::ERROR, etc.
      */
     protected function out($text, $level)
     {

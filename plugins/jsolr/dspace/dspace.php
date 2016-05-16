@@ -13,9 +13,7 @@ JLoader::import('joomla.log.log');
 
 JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-use \JSolr\Index\Crawler as JSolrIndexCrawler;
-
-class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
+class PlgJSolrDSpace extends \JSolr\Index\Crawler
 {
     protected $context = 'dspace';
 
@@ -94,7 +92,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 $items = $response->response->docs;
             }
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
         }
 
         return $items;
@@ -209,11 +207,11 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 } else {
                     JLog::add(
                         JText::sprintf(
-                            "PLG_JSOLRCRAWLER_DSPACE_WARNING_MULTIDATE_SORT",
+                            "PLG_JSOLR_DSPACE_WARNING_MULTIDATE_SORT",
                             $record->id,
                             $field),
                         JLog::WARNING,
-                        'jsolrcrawler');
+                        'jsolr');
                 }
 
                 if (!$doc->getField($field.'_sort')) {
@@ -221,11 +219,11 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                 } else {
                     JLog::add(
                         JText::sprintf(
-                            "PLG_JSOLRCRAWLER_DSPACE_WARNING_MULTIDATE_SORT",
+                            "PLG_JSOLR_DSPACE_WARNING_MULTIDATE_SORT",
                             $record->id,
                             $field),
                         JLog::WARNING,
-                        'jsolrcrawler');
+                        'jsolr');
                 }
             } else {
                 if (isset($item->lang)) {
@@ -408,7 +406,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
                             $this->out($e->getMessage());
                         } else {
                             $code = $e->getCode();
-                            $this->out(JText::_("PLG_JSOLRCRAWLER_DSPACE_ERROR_".$code));
+                            $this->out(JText::_("PLG_JSOLR_DSPACE_ERROR_".$code));
                             $this->out(
                                 array(
                                     $path,
@@ -515,7 +513,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             ->retrieveFields('id')
             ->rows(0);
 
-        JLog::add((string)$query, JLog::DEBUG, 'jsolrcrawler');
+        JLog::add((string)$query, JLog::DEBUG, 'jsolr');
 
         $results = $query->search();
 
@@ -523,7 +521,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
             $query->rows($results->get('numFound'));
         }
 
-        JLog::add((string)$query, JLog::DEBUG, 'jsolrcrawler');
+        JLog::add((string)$query, JLog::DEBUG, 'jsolr');
 
         $results = $query->search();
 
@@ -655,7 +653,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      *
      * @param int $id The id of the record being added.
      */
-    public function onItemAdd($id)
+    public function onJSolrItemAdd($id)
     {
         $commitWithin = $this->params->get('component.commitWithin', '1000');
 
@@ -687,7 +685,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
             $solr->addDocuments($document, true, $commitWithin);
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
         }
     }
 
@@ -698,7 +696,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
      *
      * @param int $id The id of the record being added.
      */
-    public function onItemDelete($id)
+    public function onJSolrItemDelete($id)
     {
         $commitWithin = $this->params->get('component.commitWithin', '1000');
 
@@ -716,8 +714,8 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
             $solr->commit();
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
-            JLog::add($e->getTraceAsString(), JLog::ERROR, 'jsolrcrawler');
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
+            JLog::add($e->getTraceAsString(), JLog::ERROR, 'jsolr');
         }
     }
 
@@ -869,7 +867,7 @@ class PlgJSolrCrawlerDSpace extends JSolrIndexCrawler
 
                 $this->collections[$collection->id] = $collection;
             } catch (Exception $e) {
-                JLog::add($e->getMessage(), JLog::ERROR, 'jsolrcrawler');
+                JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 
                 throw $e;
             }

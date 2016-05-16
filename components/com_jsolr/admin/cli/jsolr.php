@@ -63,6 +63,11 @@ $path = JPATH_ADMINISTRATOR.'/components/com_jsolr/helpers/jsolr.php';
 
 \JLoader::import('joomla.application.component.helper');
 
+use \Joomla\Utilities\ArrayHelper;
+use \Joomla\Input\Input;
+use \Joomla\Registry\Registry;
+use Solarium\QueryType\Luke\Query as LukeQuery;
+
 /**
  * Simple command line interface application class.
  *
@@ -71,7 +76,7 @@ $path = JPATH_ADMINISTRATOR.'/components/com_jsolr/helpers/jsolr.php';
  */
 class JSolrCli extends JApplicationCli
 {
-    public function __construct(\Joomla\Input\Input $input = null, \Joomla\Registry\Registry $config = null)
+    public function __construct(Input $input = null, Registry $config = null)
     {
         parent::__construct($input, $config);
 
@@ -89,71 +94,18 @@ class JSolrCli extends JApplicationCli
 
     public function doExecute()
     {
-        if ($this->input->get('h') || $this->input->get('help')) {
-            $this->help();
-            return;
-        }
+        $command = ArrayHelper::getValue($this->input->args, 0, null, 'word');
 
         try {
-            if ($this->input->get('p') || $this->input->get('purge')) {
-                $this->purge();
-                return;
+            if ($command) {
+                $this->$command();
+            } else {
+                $this->help();
             }
-
-            if ($this->input->get('o') || $this->input->get('optimize')) {
-                $this->optimize();
-                return;
-            }
-
-            if ($this->input->get('c') || $this->input->get('clean')) {
-                $this->clean();
-                return;
-            }
-
-            if ($this->input->get('r') || $this->input->get('rebuild')) {
-                $this->rebuild();
-                return;
-            }
-
-            if ($this->input->get('d') || $this->input->get('delete')) {
-                $this->delete();
-                return;
-            }
-
-            if ($this->input->get('a') || $this->input->get('add')) {
-                $this->add();
-                return;
-            }
-
-            if ($this->input->get('i') || $this->input->get('information')) {
-                $this->information();
-                return;
-            }
-
-            $this->index();
-
         } catch (Exception $e) {
-            JSolrHelper::log($e->getMessage(), JLog::ERROR);
-            JSolrHelper::log($e->getTraceAsString(), JLog::DEBUG);
+            JSolrHelper::log($e->getMessage(), \JLog::ERROR);
+            JSolrHelper::log($e->getTraceAsString(), \JLog::DEBUG);
         }
-    }
-
-    protected function add()
-    {
-        // throw error right away if no id has been specified.
-        if (!count($this->input->args)) {
-            throw new Exception('No id specified.');
-        }
-
-        $plugin = $this->input->getString('a', $this->input->getString('add', null));
-
-        if ($plugin == 1) {
-            throw new Exception('No plugin specified.');
-        }
-
-        $id = JArrayHelper::getValue($this->input->args, 0);
-
-        $this->fireEvent('onItemAdd', array($id), $this->isVerbose(), $plugin);
     }
 
     /**
@@ -163,58 +115,57 @@ class JSolrCli extends JApplicationCli
      */
     protected function clean()
     {
-        $this->fireEvent('onClean', array(get_class($this), $this->isVerbose()), $this->getPlugin());
-    }
-
-    protected function delete()
-    {
-        // throw error right away if no id has been specified.
-        if (!count($this->input->args)) {
-            throw new Exception('No id specified.');
+        // throw error right away if correct number of args have not been specified.
+        if (count($this->input->args) !== 2) {
+            throw new Exception('Usage: jsolr clean [<plugin>] [<options>]');
         }
 
-        $plugin = $this->input->getString('d', $this->input->getString('delete', null));
+        $plugin = ArrayHelper::getValue($this->input->args, 1, null, 'word');
 
-        if ($plugin == 1) {
-            throw new Exception('No plugin specified.');
-        }
-
-        $id = JArrayHelper::getValue($this->input->args, 0);
-
-        $this->fireEvent('onItemDelete', array($id), $plugin);
+        $this->fireEvent('onJSolrClean', array(), $plugin);
     }
 
     protected function index()
     {
-        $indexingParams = array();
+        // throw error right away if correct number of args have not been specified.
+        if (count($this->input->args) < 1 && count($this->input->args) > 3) {
+            throw new Exception('Usage: jsolr index [<sub-command>] [<last-index-date>] [<options>]');
+        }
 
-        if ($this->input->getString('u') || $this->input->getString('update')) {
-            $lastModified = $this->input->getString('u', $this->input->getString('update'));
+        $subCommand = ArrayHelper::getValue($this->input->args, 1, null, 'word');
 
-            $d = JDate::createFromFormat("Y-m-d\TH:i:sP", $lastModified, new DateTimeZone(JFactory::getConfig()->get('offset')));
+        $lastModified = null;
 
-            $valid = false;
+        if ($subCommand !== null) {
+            switch ($subCommand) {
+                case "update":
+                    $format = "Y-m-d\TH:i:sP";
+                    $lastModified = ArrayHelper::getValue($this->input->args, 2, null, 'string');
+                    $tz = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
-            if ($d) {
-                if ($d->getTimezone()) {
-                    $format = "Y-m-d\TH:i:s".(($d->getTimezone()->getName() == 'Z') ? '\Z' : 'P');
+                    if ($lastModified) {
+                        $lastModified = JDate::createFromFormat($format, $lastModified, $tz);
 
-                    if ($d->format($format) == $lastModified) {
-                        $valid = true;
+                        if ($lastModified === false) {
+                            throw new Exception("Invalid last modified date.");
+                        }
+                    } else { // use lastmodified from Solr index.
+                        $client = \JSolr\Index\Factory::getClient();
+
+                        $client->registerQueryType(LukeQuery::QUERY_LUKE, 'Solarium\\QueryType\\Luke\\Query');
+                        $luke = $client->createQuery(LukeQuery::QUERY_LUKE);
+                        $response = $client->execute($luke);
+
+                        $lastModified = JFactory::getDate($response->getLastModified(), $tz);
                     }
-                }
-            }
 
-            if ($valid) {
-                $indexingParams['lastModified'] = $lastModified;
-            } else {
-                $client = \JSolr\Index\Factory::getClient();
+                    $lastModified = $lastModified->format($format);
 
-                if ($client->ping()) {
-                    $response = $client->luke();
+                    break;
 
-                    $indexingParams['lastModified'] = $response->index->lastModified;
-                }
+                default:
+                    throw new Exception('Sub command not found. Available sub commands; update');
+                    break;
             }
         }
 
@@ -222,7 +173,7 @@ class JSolrCli extends JApplicationCli
 
         JSolrHelper::log("crawl start ".$start->format("c"), JLog::DEBUG);
 
-        $this->fireEvent('onIndex', array(get_class($this), $this->isVerbose(), $indexingParams), $this->getPlugin());
+        $this->fireEvent('onJSolrIndex', array($lastModified));
 
         $end = new JDate('now');
 
@@ -243,12 +194,17 @@ class JSolrCli extends JApplicationCli
         $update->addOptimize(); // TODO: using solr defaults. Need to research further.
         $result = $client->update($update);
 
-        JSolrHelper::log("Optimization finished: ".$result->getStatus(), JLog::DEBUG);
+        JSolrHelper::log("optimization finished: ".$result->getStatus(), JLog::DEBUG);
     }
 
     protected function purge()
     {
-        $plugin = $this->getPlugin();
+        // throw error right away if correct number of args have not been specified.
+        if (count($this->input->args) !== 2) {
+            throw new Exception('Usage: jsolr purge <plugin>');
+        }
+
+        $plugin = ArrayHelper::getValue($this->input->args, 1, null, 'string');
 
         if ($plugin) {
             JSolrHelper::log('purging '.$plugin.' items...', \JLog::DEBUG);
@@ -279,7 +235,7 @@ class JSolrCli extends JApplicationCli
         $this->index();
     }
 
-    protected function information()
+    protected function config()
     {
         $config = \JSolr\Index\Factory::getConfig();
 
@@ -313,58 +269,54 @@ EOT;
     protected function help()
     {
         echo <<<EOT
-Usage: jsolr [OPTIONS] [task]
-   jsolr [OPTIONS] [u|update] <last-index-date>
-   jsolr [q|v] [a|add] <plugin> <id>
-   jsolr [q|v] [d|delete] <plugin> <id>
+Usage: jsolr [command] [<sub-command>] [<args>] [<options>]
 
 Provides tools for managing Solr from Joomla.
 
-[OPTIONS]
+COMMAND
+  clean         Clean out deleted items from the index.
+  help          Display this help and exit.
+  config        Display configuration information.
+  optimize      Run an optimization on the index.
+  purge         Purge the contents of the index.
+  rebuild       Rebuild the index, deleting then re-creating all
+                documents.
+  update        Index only those items which have been created or
+                modified since the specified ISO8601-compatible date
+                or the last index date if no date is specified.
+
+OPTIONS
   -q, --quiet         Suppress all output including errors. Overrides
                       --verbose if both options are specified.
   -v, --verbose       Display verbose information about the current action.
-  -P, --plugin=name   Specify an optional plugin name (E.g. content) to run
-                      tasks against a particular plugin.
-[task]
-  -a, --add           Add/edit a single item to/in the index, using the
-                      plugin and id to determine which crawler should perform
-                      the add action.
-  -c, --clean         Clean out deleted items from the index.
-  -d, --delete        Delete a single item from the index, using the plugin
-                      and id to determine which crawler should perform the
-                      delete action.
-  -h, --help          Display this help and exit.
-  -i, --information   Display configuration information.
-  -o, --optimize      Run an optimization on the index.
-  -p, --purge         Purge the contents of the index.
-  -r, --rebuild       Rebuild the index, deleting then re-creating all
-                      documents.
-  -u, --update        Index only those items which have been created or
-                      modified since the specified ISO8601-compatible date
-                      or the last index date if no date is specified.
 
+EOT;
+    }
+
+    private function helpPurge()
+    {
+        echo <<<EOT
+Usage: jsolr purge [<plugin>] [<options>]
+
+Purge items from the index. If <plugin> is specified, the plugin's onPurge
+event will be fired. If no <plugin> is specified, all items are deleted
+from the index.
 EOT;
     }
 
     private function fireEvent($name, $args = array(), $plugin = null)
     {
         if ($plugin) {
-            if (!is_a(JPluginHelper::getPlugin('jsolrcrawler', $plugin), 'stdClass')) {
+            if (!is_a(JPluginHelper::getPlugin('jsolr', $plugin), 'stdClass')) {
                 throw new Exception('The specified plugin does not exist or is not enabled.');
             }
         }
 
         $dispatcher = JEventDispatcher::getInstance();
 
-        JPluginHelper::importPlugin("jsolrcrawler", $plugin, true, $dispatcher);
+        JPluginHelper::importPlugin("jsolr", $plugin, true, $dispatcher);
 
         return $dispatcher->trigger($name, $args);
-    }
-
-    private function getPlugin()
-    {
-        return $this->input->getString('plugin', $this->input->getString('P', null));
     }
 }
 
