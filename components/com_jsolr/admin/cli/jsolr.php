@@ -50,11 +50,7 @@ ini_set('display_errors', 1);
 
 // Load Library language
 $lang = JFactory::getLanguage();
-
-// Try the finder_cli file in the current language (without allowing the loading of the file in the default language)
-$lang->load('jsolr_cli', JPATH_SITE, null, false, false)
-// Fallback to the finder_cli file in the default language
-|| $lang->load('jsolr_cli', JPATH_SITE, null, true);
+$lang->load('com_jsolr', JPATH_SITE);
 
 \JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
@@ -108,23 +104,6 @@ class JSolrCli extends JApplicationCli
         }
     }
 
-    /**
-     * The "clean" task target.
-     *
-     * Fires the onClean event.
-     */
-    protected function clean()
-    {
-        // throw error right away if correct number of args have not been specified.
-        if (count($this->input->args) !== 2) {
-            throw new Exception('Usage: jsolr clean [<plugin>] [<options>]');
-        }
-
-        $plugin = ArrayHelper::getValue($this->input->args, 1, null, 'word');
-
-        $this->fireEvent('onJSolrClean', array(), $plugin);
-    }
-
     protected function index()
     {
         // throw error right away if correct number of args have not been specified.
@@ -163,8 +142,14 @@ class JSolrCli extends JApplicationCli
 
                     break;
 
+                case "help":
+                    // sorry this is some bad programming.
+                    $this->help(array('index', 'update'));
+                    return;
+                    break;
+
                 default:
-                    throw new Exception('Sub command not found. Available sub commands; update');
+                    throw new Exception($this->help(array('index', 'update')));
                     break;
             }
         }
@@ -229,12 +214,6 @@ class JSolrCli extends JApplicationCli
         }
     }
 
-    protected function rebuild()
-    {
-        $this->purge();
-        $this->index();
-    }
-
     protected function config()
     {
         $config = \JSolr\Index\Factory::getConfig();
@@ -266,41 +245,25 @@ EOT;
      * @return void
      * @since 1.0
      */
-    protected function help()
+    protected function help($commands = null)
     {
+        $help = "COM_JSOLR_CLI_HELP";
+
+        if (is_string($commands)) {
+            $help = "COM_JSOLR_CLI_".$commands."_HELP";
+        } else if (is_array($commands)) {
+            $help = "COM_JSOLR_CLI";
+
+            foreach ($commands as $command) {
+                $help .= "_".$command;
+            }
+
+            $help .= "_HELP";
+        }
+
+        $out = JText::_($help);
         echo <<<EOT
-Usage: jsolr [command] [<sub-command>] [<args>] [<options>]
-
-Provides tools for managing Solr from Joomla.
-
-COMMAND
-  clean         Clean out deleted items from the index.
-  help          Display this help and exit.
-  config        Display configuration information.
-  optimize      Run an optimization on the index.
-  purge         Purge the contents of the index.
-  rebuild       Rebuild the index, deleting then re-creating all
-                documents.
-  update        Index only those items which have been created or
-                modified since the specified ISO8601-compatible date
-                or the last index date if no date is specified.
-
-OPTIONS
-  -q, --quiet         Suppress all output including errors. Overrides
-                      --verbose if both options are specified.
-  -v, --verbose       Display verbose information about the current action.
-
-EOT;
-    }
-
-    private function helpPurge()
-    {
-        echo <<<EOT
-Usage: jsolr purge [<plugin>] [<options>]
-
-Purge items from the index. If <plugin> is specified, the plugin's onPurge
-event will be fired. If no <plugin> is specified, all items are deleted
-from the index.
+{$out}
 EOT;
     }
 
