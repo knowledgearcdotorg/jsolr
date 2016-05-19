@@ -106,27 +106,38 @@ class JSolrCli extends JApplicationCli
 
     protected function index()
     {
-        // throw error right away if correct number of args have not been specified.
-        if (count($this->input->args) < 1 && count($this->input->args) > 3) {
-            throw new Exception('Usage: jsolr index [<sub-command>] [<last-index-date>] [<options>]');
+        if (count($this->input->args) > 3) {
+            throw new Exception("Unknown option: ".array_pop($this->input->args));
+            return;
         }
 
         $subCommand = ArrayHelper::getValue($this->input->args, 1, null, 'word');
 
         $lastModified = null;
 
-        if ($subCommand !== null) {
+        if ($subCommand) {
             switch ($subCommand) {
+                case "help":
+                    $this->out(JText::_("COM_JSOLR_CLI_INDEX_HELP"));
+                    return;
+
                 case "update":
+                    $subCommand = ArrayHelper::getValue($this->input->args, 2, null, 'word');
+
+                    if ($subCommand === 'help') {
+                        $this->out(JText::_("COM_JSOLR_CLI_INDEX_UPDATE_HELP"));
+                        return;
+                    }
+
                     $format = "Y-m-d\TH:i:sP";
                     $lastModified = ArrayHelper::getValue($this->input->args, 2, null, 'string');
                     $tz = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
                     if ($lastModified) {
-                        $lastModified = JDate::createFromFormat($format, $lastModified, $tz);
+                        $date = JDate::createFromFormat($format, $lastModified, $tz);
 
-                        if ($lastModified === false) {
-                            throw new Exception("Invalid last modified date.");
+                        if ($date === false) {
+                            throw new Exception("Invalid last modified date: ".$lastModified);
                         }
                     } else { // use lastmodified from Solr index.
                         $client = \JSolr\Index\Factory::getClient();
@@ -135,21 +146,15 @@ class JSolrCli extends JApplicationCli
                         $luke = $client->createQuery(LukeQuery::QUERY_LUKE);
                         $response = $client->execute($luke);
 
-                        $lastModified = JFactory::getDate($response->getLastModified(), $tz);
+                        $date = JFactory::getDate($response->getLastModified(), $tz);
                     }
 
-                    $lastModified = $lastModified->format($format);
+                    $lastModified = $date->format($format);
 
-                    break;
-
-                case "help":
-                    // sorry this is some bad programming.
-                    $this->help(array('index', 'update'));
-                    return;
                     break;
 
                 default:
-                    throw new Exception($this->help(array('index', 'update')));
+                    throw new Exception("Unknown command: ".$subCommand);
                     break;
             }
         }
@@ -171,6 +176,15 @@ class JSolrCli extends JApplicationCli
 
     protected function optimize()
     {
+        $argsCount = count($this->input->args);
+
+        if (($argsCount === 2 && end($this->input->args) == 'help')) {
+            $this->out(JText::_("COM_JSOLR_CLI_OPTIMIZE_HELP"));
+            return;
+        } else if ($argsCount !== 1) {
+            throw new Exception("Invalid option: ".array_pop($this->input->args));
+        }
+
         JSolrHelper::log('optimizing...', JLog::DEBUG);
 
         $client = \JSolr\Index\Factory::getClient();
@@ -184,12 +198,16 @@ class JSolrCli extends JApplicationCli
 
     protected function purge()
     {
-        // throw error right away if correct number of args have not been specified.
-        if (count($this->input->args) !== 2) {
-            throw new Exception('Usage: jsolr purge <plugin>');
+        $argsCount = count($this->input->args);
+
+        if (($argsCount === 2 && end($this->input->args) == 'help')) {
+            $this->out(JText::_("COM_JSOLR_CLI_PURGE_HELP"));
+            return;
+        } else if ($argsCount > 2) {
+            throw new Exception("Invalid option: ".array_pop($this->input->args));
         }
 
-        $plugin = ArrayHelper::getValue($this->input->args, 1, null, 'string');
+        $plugin = ArrayHelper::getValue($this->input->args, 1, null, 'word');
 
         if ($plugin) {
             JSolrHelper::log('purging '.$plugin.' items...', \JLog::DEBUG);
@@ -216,6 +234,15 @@ class JSolrCli extends JApplicationCli
 
     protected function config()
     {
+        $argsCount = count($this->input->args);
+
+        if (($argsCount === 2 && end($this->input->args) == 'help')) {
+            $this->out(JText::_("COM_JSOLR_CLI_CONFIG_HELP"));
+            return;
+        } else if ($argsCount !== 1) {
+            throw new Exception("Invalid option: ".array_pop($this->input->args));
+        }
+
         $config = \JSolr\Index\Factory::getConfig();
 
         echo <<<EOT
@@ -241,30 +268,10 @@ EOT;
 
     /**
      * Method to build and print the help screen text to stdout.
-     *
-     * @return void
-     * @since 1.0
      */
     protected function help($commands = null)
     {
-        $help = "COM_JSOLR_CLI_HELP";
-
-        if (is_string($commands)) {
-            $help = "COM_JSOLR_CLI_".$commands."_HELP";
-        } else if (is_array($commands)) {
-            $help = "COM_JSOLR_CLI";
-
-            foreach ($commands as $command) {
-                $help .= "_".$command;
-            }
-
-            $help .= "_HELP";
-        }
-
-        $out = JText::_($help);
-        echo <<<EOT
-{$out}
-EOT;
+        $this->out(JText::_("COM_JSOLR_CLI_HELP"));
     }
 
     private function fireEvent($name, $args = array(), $plugin = null)
