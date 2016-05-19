@@ -180,7 +180,7 @@ abstract class Crawler extends \JPlugin
      * @param mixed $item The item being deleted (must have an id property).
      * @param bool $isNew True if the item is new, false otherwise.
      */
-    public function onJSolrAfterSave($context, $item, $isNew)
+    public function onJSolrIndexItemSave($context, $item, $isNew)
     {
         if ($context == $this->get('context')) {
             $query = $this->buildQuery()->where('a.id='.$item->id);
@@ -206,7 +206,7 @@ abstract class Crawler extends \JPlugin
      * @param string $context The context of the item being deleted.
      * @param mixed $item The item being deleted (must have an id property).
      */
-    public function onJSolrAfterDelete($context, $item)
+    public function onJSolrIndexItemDelete($context, $item)
     {
         try {
             if ($context == $this->get('context')) {
@@ -215,36 +215,6 @@ abstract class Crawler extends \JPlugin
         } catch (Exception $e) {
             JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
         }
-    }
-
-    /**
-     * A convenience event for adding a record to the index.
-     *
-     * Use this event when the plugin is known but the context is not.
-     *
-     * @param int $id The id of the record being added.
-     */
-    public function onJSolrItemAdd($id)
-    {
-        $item = new stdClass();
-        $item->id = $id;
-
-        $this->onJSolrAfterSave($this->get('context'), $item, true);
-    }
-
-    /**
-     * A convenience event for deleting an indexed item.
-     *
-     * Use this event when the plugin is known but the context is not.
-     *
-     * @param int $id The id of the item being deleted.
-     */
-    public function onItemDelete($id)
-    {
-        $item = new stdClass();
-        $item->id = $id;
-
-        $this->onJSolrIndexAfterDelete($this->get('context'), $item);
     }
 
     /**
