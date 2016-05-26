@@ -14,7 +14,7 @@
     ],
     "require": {
         "PHP" : ">=5.4",
-        "solarium/solarium": "3.5.1",
+        "solarium/solarium": "3.6.0",
         "cpliakas/solarium-luke": "dev-master"
     }
 }
