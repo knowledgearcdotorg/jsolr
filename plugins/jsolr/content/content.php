@@ -97,12 +97,12 @@ class PlgJSolrContent extends Crawler
      */
     protected function getItems($start = 0, $limit = 10)
     {
-        $articles = $this->getArticles();
+        $items = $this->getArticles();
 
-        $articles->setState('list.start', $start);
-        $articles->setState('list.limit', $limit);
+        $items->setState('list.start', $start);
+        $items->setState('list.limit', $limit);
 
-        return $articles->getItems();
+        return $items->getItems();
     }
 
     /**
@@ -161,17 +161,8 @@ class PlgJSolrContent extends Crawler
      */
     protected function prepare($source)
     {
-        return $this->mapData($this->getItem($source->id));
-    }
+        $source = $this->getItem($source->id);
 
-    /**
-     * Map an item into a Solarium array.
-     *
-     * @param   StdClass  $source
-     * @return  array
-     */
-    private function mapData($source)
-    {
         $lang = $this->getLanguage($source->language, false);
         $author = JFactory::getUser($source->created_by);
         $category = JCategories::getInstance('content')->get($source->catid);
