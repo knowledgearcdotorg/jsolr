@@ -5,87 +5,136 @@
  * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-
-// no direct access
 defined('_JEXEC') or die();
 
-use \JSolr\Index\Crawler;
+\JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-class plgJSolrCrawlerNewsfeeds extends JSolrIndexCrawler
+use \JSolr\Index\Crawler;
+use \JSolr\Helper;
+
+class PlgJSolrNewsfeeds extends Crawler
 {
     protected $context = 'com_newsfeeds.newsfeed';
 
     /**
-    * Prepares an article for indexing.
-    */
-    protected function getDocument(&$record)
+     * Get the total number of articles.
+     *
+     * @return  int  The total number of articles.
+     */
+    protected function getTotal()
     {
-        $doc = new JSolrApacheSolrDocument();
-
-        $created = JFactory::getDate($record->created);
-        $modified = JFactory::getDate($record->modified);
-
-        $lang = $this->getLanguage($record, false);
-
-        $doc->addField('created', $created->format('Y-m-d\TH:i:s\Z', false));
-        $doc->addField('modified', $modified->format('Y-m-d\TH:i:s\Z', false));
-        $doc->addField("title", $record->title);
-        $doc->addField("title_$lang", $record->title);
-        $doc->addField("link_$lang", $record->link);
-        $doc->addField("access", $record->access);
-
-        foreach (explode(',', $record->metakey) as $metakey) {
-            $doc->addField("metakeywords_$lang", trim($metakey));
-        }
-
-        $doc->addField("metadescription_$lang", $record->metadesc);
-        $doc->addField("author", $record->author);
-
-        if ($record->catid) {
-            $doc->addField("parent_id", $record->catid);
-            $doc->addField("category_$lang", $record->category);
-            $doc->addField("category_fc", $record->category); // facet
-        }
-
-        return $doc;
+        return (int)$this->getNewsfeeds()->getTotal();
     }
 
-    protected function buildQuery()
+    /**
+     * Get a list of items.
+     *
+     * Items are paged depending on the Joomla! pagination settings.
+     *
+     * @param   int         $start  The position of the first item in the
+     * recordset.
+     * @param   int         $limit  The page size of the recordset.
+     *
+     * @return  StdClass[]  A list of items.
+     */
+    protected function getItems($start = 0, $limit = 10)
     {
-        $db    = JFactory::getDbo();
-        $query = $db->getQuery(true);
+        $items = $this->getNewsfeeds();
 
-        $query->select('a.id, a.catid, a.name AS title, a.alias, a.link AS link');
-        $query->select('a.published AS state, a.ordering, a.created, a.params, a.access');
-        $query->select('a.publish_up AS publish_start_date, a.publish_down AS publish_end_date');
-        $query->select('a.metakey, a.metadesc, a.metadata, a.language');
-        $query->select('a.created_by, a.created_by_alias, a.modified, a.modified_by');
+        $items->setState('list.start', $start);
+        $items->setState('list.limit', $limit);
+        $items->setState('list.ordering', 'a.id');
+        $items->setState('list.direction', 'asc');
 
-        $query->from('#__newsfeeds AS a');
+        return $items->getItems();
+    }
 
-        // Join over the users for the author.
-        $query->select('ua.name AS author');
-        $query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
+    /**
+     * Gets an instance of the ContentModelNewsfeeds class.
+     *
+     * @return  JModelLegacy  An instance of the ContentModelNewsfeeds class.
+     */
+    private function getNewsfeeds()
+    {
+        $path = JPATH_ADMINISTRATOR.'/components/com_newsfeeds/models/newsfeeds.php';
+        \JLoader::register('NewsfeedsModelNewsfeeds', $path);
 
-        $query->select('c.title AS category, c.published AS cat_state, c.access AS cat_access');
-        $query->join('LEFT', '#__categories AS c ON c.id = a.catid');
+        \JModelLegacy::addTablePath(JPATH_ADMINISTRATOR.'/components/com_newsfeeds/tables');
 
-        $conditions = array();
+        $newsfeeds = \JModelLegacy::getInstance(
+                        'Newsfeeds',
+                        'NewsfeedsModel',
+                        array('ignore_request'=>true));
 
-        $categories = $this->params->get('categories');
+        return $newsfeeds;
+    }
 
-        if (is_array($categories)) {
-            if (JArrayHelper::getValue($categories, 0) != 0) {
-                JArrayHelper::toInteger($categories);
-                $categories = implode(',', $categories);
-                $conditions[] = 'a.catid IN ('.$categories.')';
-            }
+    /**
+     * Gets a newsfeed by id.
+     *
+     * @param   int           $id  The newsfeed id.
+     *
+     * @return  JModelLegacy  An instance of the NewsfeedsModelNewsfeed class.
+     */
+    protected function getItem($id)
+    {
+        $path = JPATH_ROOT.'/administrator/components/com_newsfeeds/models/newsfeed.php';
+        \JLoader::register('NewsfeedsModelNewsfeed', $path);
+
+        $newsfeed = \JModelLegacy::getInstance(
+                        'Newsfeed',
+                        'NewsfeedsModel',
+                        array('ignore_request'=>true));
+
+        return $newsfeed->getItem($id);
+    }
+
+    /**
+     * Prepare the item for indexing.
+     *
+     * @param   StdClass  $source
+     * @return  array
+     */
+    protected function prepare($source)
+    {
+        $source = $this->getItem($source->id);
+
+        $lang = $this->getLanguage($source->language, false);
+        $author = JFactory::getUser($source->created_by);
+        $category = JCategories::getInstance('newsfeeds')->get($source->catid);
+
+        $array = array();
+
+        $array['id'] = $this->buildId($source->id);
+        $array['name'] = $source->name;
+        $array["author"] = $author->name;
+        $array["author_s"] = $this->getFacet($author->name);
+        $array["author_i"] = $author->id;
+        $array["title_txt_$lang"] = $source->name;
+        $array['alias_s'] = $source->alias;
+        $array['context_s'] = $this->get('context');
+        $array['lang_s'] = $source->language;
+        $array['access_i'] = $source->access;
+        $array["link_s"] = $source->link;
+        $array["category_txt_$lang"] = $category->title;
+        $array["category_s"] = $this->getFacet($category->title); // for faceting
+        $array["category_i"] = $category->id;
+
+        $created = JFactory::getDate($source->created);
+        $modified = JFactory::getDate($source->modified);
+
+        if ($created > $modified) {
+            $modified = $created;
         }
 
-        if (count($conditions)) {
-            $query->where($conditions);
+        $array['created_tdt'] = $created->format('Y-m-d\TH:i:s\Z', false);
+        $array['modified_tdt'] = $modified->format('Y-m-d\TH:i:s\Z', false);
+        $array["parent_id_i"] = $source->catid;
+
+        foreach ($source->tags->getItemTags('com_newsfeeds.newsfeed', $source->id) as $tag) {
+            $array["tag_ss"][] = $tag->title;
         }
 
-        return $query;
+        return $array;
     }
 }

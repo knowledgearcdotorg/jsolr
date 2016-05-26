@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension version="2.5" type="plugin" group="jsolrcrawler" method="upgrade">
-    <name>plg_jsolrcrawler_newsfeeds</name>
-    <creationDate>2012-07-09</creationDate>
-    <author>KnowledgeARC</author>
+<extension version="3.4" type="plugin" group="jsolr" method="upgrade">
+    <name>plg_jsolr_newsfeeds</name>
+    <creationDate>2016-04-21</creationDate>
+    <author>KnowledgeArc</author>
     <authorEmail>development@knowledgearc.com</authorEmail>
     <authorUrl>http://www.knowledgearc.org</authorUrl>
-    <copyright>>Copyright (C) 2012-2014 KnowledgeArc Ltd. All rights reserved.</copyright>
+    <copyright>>Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>1.1.1</version>
-    <description>PLG_JSOLRCRAWLER_NEWSFEEDS_XML_DESCRIPTION</description>
+    <version>3.0.0-dev</version>
+    <description>PLG_JSOLR_NEWSFEEDS_XML_DESCRIPTION</description>
     <files>
         <filename plugin="newsfeeds">newsfeeds.php</filename>
     </files>
     <languages>
-        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_newsfeeds.ini</language>
-        <language tag="en-GB">language/en-GB/en-GB.plg_jsolrcrawler_newsfeeds.sys.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolr_newsfeeds.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.plg_jsolr_newsfeeds.sys.ini</language>
     </languages>
     <config>
         <fields name="params">
@@ -22,7 +22,7 @@
                 <field
                     name="categories"
                     type="category"
-                    description="PLG_JSOLRCRAWLER_NEWSFEEDS_FIELD_CATEGORIES_DESC"
+                    description="PLG_JSOLR_NEWSFEEDS_FIELD_CATEGORIES_DESC"
                     extension="com_newsfeeds"
                     label="JCATEGORIES"
                     multiple="true"
