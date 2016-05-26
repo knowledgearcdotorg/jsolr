@@ -114,8 +114,6 @@ abstract class Crawler extends \JPlugin
      */
     public function onJSolrPurge()
     {
-        $this->set('indexingParams', $indexingParams);
-
         $this->purge();
     }
 
@@ -178,10 +176,31 @@ abstract class Crawler extends \JPlugin
      */
     protected function purge()
     {
-        $solr = \JSolr\Index\Factory::getService();
-        $solr->deleteByQuery("context:".$this->get('context').'*');
-        $solr->commit();
+        $client = \JSolr\Index\Factory::getClient();
+        $update = $client->createUpdate();
+
+        $update->addDeleteQuery("context:".$this->get('context'));
+        $update->addCommit();
+
+        $result = $client->update($update);
     }
+
+    /**
+     * Gets the total number of items to index.
+     *
+     * @return  int  The total number of items to index.
+     */
+    protected abstract function getTotal();
+
+    /**
+     * Gets the items to be indexed.
+     *
+     * @param   int    $start
+     * @param   int    $limit
+     *
+     * @return  array  The items to index.
+     */
+    protected abstract function getItems($start = 0, $limit = 10);
 
     /**
      * Prepare the item for indexing.
