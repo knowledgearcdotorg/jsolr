@@ -120,23 +120,6 @@ abstract class Crawler extends \JPlugin
     }
 
     /**
-     * Triggers an event to delete an indexed item.
-     *
-     * @param string $context The context of the item being deleted.
-     * @param mixed $item The item being deleted (must have an id property).
-     */
-    public function onJSolrIndexItemDelete($context, $item)
-    {
-        try {
-            if ($context == $this->get('context')) {
-                $this->deleteItem($this->get('context').'.'.$item->id);
-            }
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
-        }
-    }
-
-    /**
      * Adds items to/edits existing items in the index.
      *
      * Derived classes should override this method when implementing a custom

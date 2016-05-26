@@ -41,6 +41,29 @@ class PlgJSolrContent extends Crawler
     }
 
     /**
+     * Triggers an event to delete an indexed item.
+     *
+     * @param string $context The context of the item being deleted.
+     * @param mixed $item The item being deleted (must have an id property).
+     */
+    public function onJSolrAfterDelete($context, $item)
+    {
+        try {
+            if ($context == $this->get('context')) {
+                $client = \JSolr\Index\Factory::getClient();
+                $update = $client->createUpdate();
+
+                $update->addDeleteQuery("id:".$this->get('context').'.'.$item->id);
+                $update->addCommit();
+
+                $result = $client->update($update);
+            }
+        } catch (Exception $e) {
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
+        }
+    }
+
+    /**
      * Get a list of items.
      *
      * Items are paged depending on the Joomla! pagination settings.

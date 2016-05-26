@@ -25,7 +25,7 @@ class Com_JSolrIndexInstallerScript
 
     public function uninstall($parent)
     {
-        $src = JPATH_ROOT."/cli/jsolrcrawler.php";
+        $src = JPATH_ROOT."/cli/jsolr.php";
 
         if (JFile::exists($src)) {
             if (JFile::delete($src)) {
@@ -63,9 +63,9 @@ class Com_JSolrIndexInstallerScript
         $success = false;
 
         $src = $parent->getParent()->getPath('extension_administrator').
-            '/cli/jsolrcrawler.php';
+            '/cli/jsolr.php';
 
-        $cli = JPATH_ROOT.'/cli/jsolrcrawler.php';
+        $cli = JPATH_ROOT.'/cli/jsolr.php';
 
         if (JFile::exists($src)) {
             if ($success = JFile::move($src, $cli)) {
