@@ -17,6 +17,30 @@ class PlgJSolrContent extends Crawler
     protected $context = 'com_content.article';
 
     /**
+     *
+     * @param string    $context  The context of the item being saved.
+     * @param StdClass  $item     The item being deleted (must have an id property).
+     * @param bool      $isNew    True if the item is new, false otherwise.
+     */
+    public function onJSolrAfterSave($context, $item, $isNew)
+    {
+        if ($context == $this->get('context')) {
+            $commitWithin = $this->params->get('component.commitWithin', '1000');
+
+            $client = \JSolr\Index\Factory::getClient();
+            $update = $client->createUpdate();
+
+            $array = $this->prepare($item);
+
+            $document = $update->createDocument($array);
+            $update->addDocument($document, null, $commitWithin);
+            $update->addCommit();
+
+            $result = $client->update($update);
+        }
+    }
+
+    /**
      * Get a list of items.
      *
      * Items are paged depending on the Joomla! pagination settings.

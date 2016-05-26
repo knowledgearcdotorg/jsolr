@@ -22,7 +22,7 @@ class PlgContentJSolr extends JPlugin
         $dispatcher = JDispatcher::getInstance();
         JPluginHelper::importPlugin('jsolr');
 
-        $results = $dispatcher->trigger('onJSolrIndexItemSave', array($context, $article, $isNew));
+        $results = $dispatcher->trigger('onJSolrAfterSave', array($context, $article, $isNew));
     }
 
     public function onContentAfterDelete($context, $article)

@@ -120,32 +120,6 @@ abstract class Crawler extends \JPlugin
     }
 
     /**
-     *
-     * @param string $context The context of the item being saved.
-     * @param mixed $item The item being deleted (must have an id property).
-     * @param bool $isNew True if the item is new, false otherwise.
-     */
-    public function onJSolrIndexItemSave($context, $item, $isNew)
-    {
-        if ($context == $this->get('context')) {
-            $query = $this->buildQuery()->where('a.id='.$item->id);
-
-            $database = JFactory::getDBO();
-            $database->setQuery($query);
-
-            $document = $this->prepare($database->loadObject());
-
-            try {
-                $solr = \JSolr\Index\Factory::getService();
-
-                $solr->addDocument($document, false, true, true, $this->params->get('component.commitWithin', '1000'));
-            } catch (Exception $e) {
-                JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
-            }
-        }
-    }
-
-    /**
      * Triggers an event to delete an indexed item.
      *
      * @param string $context The context of the item being deleted.
