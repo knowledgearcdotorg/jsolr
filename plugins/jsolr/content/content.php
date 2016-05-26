@@ -101,6 +101,8 @@ class PlgJSolrContent extends Crawler
 
         $items->setState('list.start', $start);
         $items->setState('list.limit', $limit);
+        $items->setState('list.ordering', 'a.id');
+        $items->setState('list.direction', 'asc');
 
         return $items->getItems();
     }
