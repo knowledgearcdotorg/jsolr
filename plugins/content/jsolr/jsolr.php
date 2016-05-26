@@ -36,6 +36,10 @@ class PlgContentJSolr extends JPlugin
 
     public function onContentChangeState($context, $pks, $value)
     {
+        $dispatcher = JDispatcher::getInstance();
 
+        JPluginHelper::importPlugin('jsolr');
+
+        $results = $dispatcher->trigger('onJSolrChangeState', array($context, $pks, $value));
     }
 }

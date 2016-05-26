@@ -30,10 +30,18 @@ class PlgJSolrContent extends Crawler
             $client = \JSolr\Index\Factory::getClient();
             $update = $client->createUpdate();
 
-            $array = $this->prepare($item);
+            if ((int)$item->state == 1) {
+                $array = $this->prepare($item);
 
-            $document = $update->createDocument($array);
-            $update->addDocument($document, null, $commitWithin);
+                $document = $update->createDocument($array);
+                $update->addDocument($document, null, $commitWithin);
+            } else {
+                $dispatcher = JDispatcher::getInstance();
+                JPluginHelper::importPlugin('jsolr');
+
+                $results = $dispatcher->trigger('onJSolrAfterDelete', array($context, $item));
+            }
+
             $update->addCommit();
 
             $result = $client->update($update);
@@ -48,18 +56,31 @@ class PlgJSolrContent extends Crawler
      */
     public function onJSolrAfterDelete($context, $item)
     {
-        try {
-            if ($context == $this->get('context')) {
-                $client = \JSolr\Index\Factory::getClient();
-                $update = $client->createUpdate();
+        if ($context == $this->get('context')) {
+            $client = \JSolr\Index\Factory::getClient();
+            $update = $client->createUpdate();
 
-                $update->addDeleteQuery("id:".$this->get('context').'.'.$item->id);
-                $update->addCommit();
+            $update->addDeleteQuery("id:".$this->get('context').'.'.$item->id);
+            $update->addCommit();
 
-                $result = $client->update($update);
+            $result = $client->update($update);
+        }
+    }
+
+    public function onJSolrChangeState($context, $pks, $value)
+    {
+        if ($context == $this->get('context')) {
+            $dispatcher = JDispatcher::getInstance();
+            JPluginHelper::importPlugin('jsolr');
+
+            foreach ($pks as $pk) {
+                // dummy item for passing to respective event.
+                $item = new StdClass();
+                $item->id = $pk;
+                $item->state = $value;
+
+                $results = $dispatcher->trigger('onJSolrAfterSave', array($context, $item, false));
             }
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
         }
     }
 
