@@ -5,10 +5,8 @@
  */
 namespace JSolr;
 
-use \JArrayHelper as JArrayHelper; // @TODO: Eventually replace with \Joomla\Utilities\ArrayHelper
-use \JTable as JTable;
+use \Joomla\Utilities\ArrayHelper;
 use \JFactory as JFactory;
-use \JString as JString;
 
 class Helper extends \JObject
 {
@@ -44,11 +42,11 @@ class Helper extends \JObject
         static $loaded;
 
         // Get the dispatcher.
-        $dispatcher = JDispatcher::getInstance();
+        $dispatcher = \JDispatcher::getInstance();
 
         // Load the content plugins if necessary.
         if (empty($loaded)) {
-            JPluginHelper::getPlugin('content');
+            \JPluginHelper::getPlugin('content');
 
             $loaded = true;
         }
@@ -63,7 +61,7 @@ class Helper extends \JObject
         }
 
         // Create a mock content object.
-        $content = JTable::getInstance('Content');
+        $content = \JTable::getInstance('Content');
 
         $content->text = $text;
 
@@ -72,27 +70,6 @@ class Helper extends \JObject
         $dispatcher->trigger('onContentPrepare', array('com_finder.indexer', &$content, &$params, 0));
 
         return $content->text;
-    }
-
-    public static function getTags(&$article, $tags)
-    {
-        $dom = new DOMDocument();
-
-        $dom->preserveWhiteSpace = false;
-
-        @$dom->loadHTML(strip_tags($article->summary . " " . $article->body, implode("", $tags)));
-
-        $text = array();
-
-        foreach ($tags as $tag) {
-            $content = $dom->getElementsByTagname(str_replace(array('<','>'), '', $tag));
-
-            foreach ($content as $item) {
-                $text[] = $item->nodeValue;
-            }
-        }
-
-        return $text;
     }
 
     /**
@@ -106,7 +83,7 @@ class Helper extends \JObject
      */
     public static function toCaseInsensitiveFacet($facet, $delimiter = self::FACET_DELIMITER)
     {
-        return JString::strtolower($facet).$delimiter.$facet;
+        return \Joomla\String\String::strtolower($facet).$delimiter.$facet;
     }
 
     /**
@@ -149,9 +126,9 @@ class Helper extends \JObject
 
         if (is_array($facet)) {
             if (count($facet) == 2) {
-                return JArrayHelper::getValue($facet, 1);
+                return ArrayHelper::getValue($facet, 1);
             } else {
-                return JArrayHelper::getValue($facet, 0);
+                return ArrayHelper::getValue($facet, 0);
             }
         } else {
             return $facet;
@@ -168,7 +145,7 @@ class Helper extends \JObject
 
         $parts = explode('-', $code);
 
-        $code = JArrayHelper::getValue($parts, 0);
+        $code = ArrayHelper::getValue($parts, 0);
 
         return str_replace("*", $code, $field);
     }

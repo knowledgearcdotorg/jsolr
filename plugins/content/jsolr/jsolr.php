@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  * @package     JSolr.Plugins
  * @subpackage  Content
  */
-class plgContentJSolr extends JPlugin
+class PlgContentJSolr extends JPlugin
 {
     protected $autoloadLanguage = true;
 

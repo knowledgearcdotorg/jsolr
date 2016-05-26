@@ -7,132 +7,145 @@
  */
 defined('_JEXEC') or die();
 
-jimport('legacy.table.category');
+\JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
 use \JSolr\Index\Crawler;
 use \JSolr\Helper;
 
-class plgJSolrCrawlerContent extends JSolrIndexCrawler
+class PlgJSolrContent extends Crawler
 {
     protected $context = 'com_content.article';
 
     /**
-    * Prepares an article for indexing.
-    */
-    protected function getDocument(&$record)
+     * Get a list of items.
+     *
+     * Items are paged depending on the Joomla! pagination settings.
+     *
+     * @param   int         $start  The position of the first item in the
+     * recordset.
+     * @param   int         $limit  The page size of the recordset.
+     *
+     * @return  StdClass[]  A list of items.
+     */
+    protected function getItems($start = 0, $limit = 10)
     {
-        $doc = new JSolrApacheSolrDocument();
+        $articles = $this->getArticles();
 
-        $created = JFactory::getDate($record->created);
-        $modified = JFactory::getDate($record->modified);
+        $articles->setState('list.start', $start);
+        $articles->setState('list.limit', $limit);
+
+        return $articles->getItems();
+    }
+
+    /**
+     * Get the total number of articles.
+     *
+     * @return  int  The total number of articles.
+     */
+    protected function getTotal()
+    {
+        return (int)$this->getArticles()->getTotal();
+    }
+
+    /**
+     * Gets an instance of the ContentModelArticles class.
+     *
+     * @return  JModelLegacy  An instance of the ContentModelArticle class.
+     */
+    private function getArticles()
+    {
+        $path = JPATH_ROOT.'/administrator/components/com_content/models/articles.php';
+        \JLoader::register('ContentModelArticles', $path);
+
+        $articles = \JModelLegacy::getInstance(
+                        'Articles',
+                        'ContentModel',
+                        array('ignore_request'=>true));
+
+        return $articles;
+    }
+
+    /**
+     * Gets an article by id.
+     *
+     * @param   int           $id  The article id.
+     *
+     * @return  JModelLegacy  An instance of the ContentModelArticle class.
+     */
+    protected function getItem($id)
+    {
+        $path = JPATH_ROOT.'/administrator/components/com_content/models/article.php';
+        \JLoader::register('ContentModelArticle', $path);
+
+        $article = \JModelLegacy::getInstance(
+                        'Article',
+                        'ContentModel',
+                        array('ignore_request'=>true));
+
+        return $article->getItem($id);
+    }
+
+    /**
+     * Prepare the item for indexing.
+     *
+     * @param   StdClass  $source
+     * @return  array
+     */
+    protected function prepare($source)
+    {
+        return $this->mapData($this->getItem($source->id));
+    }
+
+    /**
+     * Map an item into a Solarium array.
+     *
+     * @param   StdClass  $source
+     * @return  array
+     */
+    private function mapData($source)
+    {
+        $lang = $this->getLanguage($source->language, false);
+        $author = JFactory::getUser($source->created_by);
+        $category = JCategories::getInstance('content')->get($source->catid);
+
+        $array = array();
+
+        $array['id'] = $this->buildId($source->id);
+        $array['name'] = $source->title;
+        $array["author"] = $author->name;
+        $array["author_s"] = $this->getFacet($author->name);
+        $array["author_i"] = $author->id;
+        $array["title_txt_$lang"] = $source->title;
+        $array['alias_s'] = $source->alias;
+        $array['context_s'] = $this->get('context');
+        $array['lang_s'] = $source->language;
+        $array['access_i'] = $source->access;
+        $array["category_txt_$lang"] = $category->title;
+        $array["category_s"] = $this->getFacet($category->title); // for faceting
+        $array["category_i"] = $category->id;
+
+        $created = JFactory::getDate($source->created);
+        $modified = JFactory::getDate($source->modified);
 
         if ($created > $modified) {
             $modified = $created;
         }
 
-        $lang = $this->getLanguage($record, false);
+        $array['created_tdt'] = $created->format('Y-m-d\TH:i:s\Z', false);
+        $array['modified_tdt'] = $modified->format('Y-m-d\TH:i:s\Z', false);
+        $array["parent_id_i"] = $source->catid;
 
-        $doc->addField('created', $created->format('Y-m-d\TH:i:s\Z', false));
-        $doc->addField('modified', $modified->format('Y-m-d\TH:i:s\Z', false));
-        $doc->addField("title", $record->title);
-        $doc->addField("title_$lang", $record->title);
-        $doc->addField("access", $record->access);
+        $params = new \Joomla\Registry\Registry();
+        $params->loadArray($source->attribs);
 
-        $doc->addField("title_ac", $record->title); // for auto complete
+        $content = Helper::prepareContent($source->articletext, $params);
 
-        $record->summary = JSolrHelper::prepareContent($record->summary, $record->params);
-        $record->body = JSolrHelper::prepareContent($record->body, $record->params);
+        $array["content_txt_$lang"] = strip_tags($content);
 
-        $doc->addField("body_$lang", strip_tags($record->summary));
-        $doc->addField("body_$lang", strip_tags($record->body));
-
-        foreach (explode(',', $record->metakey) as $metakey) {
-            $doc->addField("metakeywords_$lang", trim($metakey));
+        foreach ($source->tags->getItemTags('com_content.article', $source->id) as $tag) {
+            $array["tag_ss"][] = $tag->title;
         }
 
-        $doc->addField("metadescription_$lang", $record->metadesc);
-        $doc->addField("author", $record->author);
-
-        $doc->addField("author_fc", $this->getFacet($record->author)); // for faceting
-        $doc->addField("author_ac", $record->author); // for auto complete
-
-        foreach (JSolrHelper::getTags($record, array("<h1>")) as $item) {
-            $doc->addField("tags_h1_$lang", $item);
-        }
-
-        foreach (JSolrHelper::getTags($record, array("<h2>", "<h3>")) as $item) {
-            $doc->addField("tags_h2_h3_$lang", $item);
-        }
-
-        foreach (JSolrHelper::getTags($record, array("<h4>", "<h5>", "<h6>")) as $item) {
-            $doc->addField("tags_h4_h5_h6_$lang", $item);
-        }
-
-        $doc->addField("hits_i", (int)$record->hits);
-
-        if ($record->catid) {
-            $doc->addField("parent_id", $record->catid);
-            $doc->addField("category_$lang", $record->category);
-            $doc->addField("category_fc", $this->getFacet($record->category)); // for faceting
-        }
-
-        return $doc;
-    }
-
-    protected function buildQuery()
-    {
-        // Create a new query object.
-        $db        = JFactory::getDbo();
-        $query    = $db->getQuery(true);
-        $user    = JFactory::getUser();
-
-        // Select the required fields from the table.
-        $query->select('a.id, a.title, a.alias, a.introtext AS summary, a.fulltext AS body');
-        $query->select('a.state, a.catid, a.created, a.created_by, a.hits');
-        $query->select('a.created_by_alias, a.modified, a.modified_by, a.attribs AS params');
-        $query->select('a.metakey, a.metadesc, a.metadata, a.language, a.access, a.version, a.ordering');
-        $query->select('a.publish_up AS publish_start_date, a.publish_down AS publish_end_date');
-
-        $query->from('#__content AS a');
-
-        // Join over the users for the checked out user.
-        $query->select('uc.name AS editor');
-        $query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
-
-        // Join over the asset groups.
-        $query->select('ag.title AS access_level');
-        $query->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-
-        // Join over the categories.
-        $query->select('c.title AS category, c.published AS cat_state, c.access AS cat_access');
-        $query->join('LEFT', '#__categories AS c ON c.id = a.catid');
-
-        // Join over the users for the author.
-        $query->select('ua.name AS author');
-        $query->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
-
-        $conditions = array();
-
-        $categories = $this->params->get('categories');
-
-        if (is_array($categories)) {
-            if (JArrayHelper::getValue($categories, 0) != 0) {
-                JArrayHelper::toInteger($categories);
-                $categories = implode(',', $categories);
-                $conditions[] = 'a.catid IN ('.$categories.')';
-            }
-        }
-
-        if ($lastModified = JArrayHelper::getValue($this->get('indexOptions'), 'lastModified', null, 'string')) {
-            $lastModified = JFactory::getDate($lastModified);
-
-            $conditions[] = "(a.created > '".$lastModified."' OR a.modified > '".$lastModified."')";
-        }
-
-        if (count($conditions)) {
-            $query->where($conditions);
-        }
-
-        return $query;
+        return $array;
     }
 }

@@ -8,7 +8,7 @@ namespace JSolr\Index;
 use \JComponentHelper as JComponentHelper;
 use \JLog as JLog;
 use \JFactory as JFactory;
-use \JArrayHelper as JArrayHelper;
+use \Joomla\Utilities\ArrayHelper;
 
 /**
  * An abstract class which all other crawler classes should derive from.
@@ -35,7 +35,7 @@ abstract class Crawler extends \JPlugin
 
         // load the jsolrindex component's params into plugin params for
         // easy access.
-        $params = JComponentHelper::getParams('com_jsolrindex', true);
+        $params = JComponentHelper::getParams('com_jsolr', true);
 
         $this->params->loadArray(array('component'=>$params->toArray()));
 
@@ -43,24 +43,20 @@ abstract class Crawler extends \JPlugin
     }
 
     /**
-     * Prepares an article for indexing.
-     */
-    protected abstract function getDocument(&$record);
-
-    /**
-     * Get's the language, either from the item or from the Joomla environment.
+     * Get's the language, either from the source language or from the Joomla
+     * environment.
      *
-     * @param JObject $item The item being indexed.
-     * @param bool $includeRegion True if the region should be included, false
-     * otherwise. E.g. If true, en-AU would be returned, if false, just en
-     * would be returned.
+     * @param  string  $language       The item being indexed.
+     * @param  bool    $includeRegion  True if the region should be included,
+     * false otherwise. E.g. If true, en-AU would be returned, if false, just
+     * en would be returned.
      *
      *  @return string The language code.
      */
-    protected function getLanguage($item, $includeRegion = true)
+    protected function getLanguage($language, $includeRegion = true)
     {
-        if (isset($item->language) && $item->language != '*') {
-            $lang = $item->language;
+        if (isset($language) && $language != '*') {
+            $lang = $language;
         } else {
             $lang = JFactory::getLanguage()->getDefault();
         }
@@ -71,32 +67,8 @@ abstract class Crawler extends \JPlugin
             $parts = explode('-', $lang);
 
             // just return the xx part of the xx-XX language.
-            return JArrayHelper::getValue($parts, 0);
+            return ArrayHelper::getValue($parts, 0);
         }
-    }
-
-    /**
-     *
-     *
-     * @return JDatabaseQuery A database query.
-     */
-    abstract protected function buildQuery();
-
-    protected function getItems($start, $limit)
-    {
-        $database = JFactory::getDBO();
-        $database->setQuery($this->buildQuery(), $start, $limit);
-
-        return $database->loadObjectList();
-    }
-
-    protected function getItemCount()
-    {
-        $database = JFactory::getDBO();
-        $database->setQuery($this->buildQuery());
-        $database->getQuery()->clear('select')->clear('group')->select('COUNT(*)');
-
-        return (int)$database->loadResult();
     }
 
     /**
@@ -107,40 +79,13 @@ abstract class Crawler extends \JPlugin
      * The key can be customized by overriding this method but it is not
      * recommended.
      *
-     * @param \JSolr\Apache\Solr\Document $document The document to use to build the
-     * key.
+     * @param   int  $id  The document to use to build the key.
      *
-     * @return string The item's key.
+     * @return  string  The item's id.
      */
-    protected function buildKey($document)
+    protected function buildId($id)
     {
-        $type = $document->getField('context');
-        $type = JArrayHelper::getValue($type, 'value');
-        $type = JArrayHelper::getValue($type, 0);
-        $id = $document->getField('id');
-        $id = JArrayHelper::getValue($id, 'value');
-        $id = JArrayHelper::getValue($id, 0);
-        return $type.'.'.$id;
-    }
-
-    /**
-     * Fires the cleaning event.
-     *
-     * Derived classes should override the clean() method when implementing
-     * a custom clean task.
-     *
-     * @params array indexingParams A list of options to control various aspects of
-     * the clean task.
-     */
-    public function onJSolrClean($indexingParams = array())
-    {
-        $this->set('indexingParams', $indexingParams);
-
-        $this->out(array("task:clean extension:".$this->get('context'),"[starting]"));
-
-        $this->clean();
-
-        $this->out(array("task:clean extension:".$this->get('extension'),"[completed]"));
+        return $this->get('context').'.'.$id;
     }
 
     /**
@@ -154,11 +99,11 @@ abstract class Crawler extends \JPlugin
      */
     public function onJSolrIndex($lastModified = null)
     {
-        $this->out(array("task:index crawler:".$this->get('context'),"[starting]"));
+        $this->out(array("task:index crawler:".$this->get('context'),"[starting]"), \JLog::DEBUG);
 
         $this->index($lastModified);
 
-        $this->out(array("task:index crawler:".$this->get('context'),"[completed]"));
+        $this->out(array("task:index crawler:".$this->get('context'),"[completed]"), \JLog::DEBUG);
     }
 
     /**
@@ -218,17 +163,6 @@ abstract class Crawler extends \JPlugin
     }
 
     /**
-     * Cleans deleted items from the index.
-     *
-     * Derived classes should override this method when implementing a custom
-     * clean operation.
-     */
-    protected function clean()
-    {
-
-    }
-
-    /**
      * Adds items to/edits existing items in the index.
      *
      * Derived classes should override this method when implementing a custom
@@ -236,47 +170,46 @@ abstract class Crawler extends \JPlugin
      */
     protected function index($lastModified = null)
     {
-        $itemTotal = $this->getItemCount();
+        $commitWithin = $this->params->get('component.commitsWithin', '10000');
+
         $start = 0;
-        $limit = 1000;
-        $total = 0;
+        $total = $this->getTotal();
 
-        while ($start < $itemTotal)
-        {
-            $items = $this->getItems($start, $limit);
+        $client = \JSolr\Index\Factory::getClient();
+        $update = $client->createUpdate();
 
-            $solr = \JSolr\Index\Factory::getService();
+        while ($start < $total) {
+            $items = $this->getItems($start);
 
-            if (is_array($items)) {
-                $documents = array();
-                $i = 0;
+            $documents = array();
 
+            try {
                 foreach ($items as $item) {
-                    $total++;
-                    $documents[$i] = $this->prepare($item);
+                    $documents[] = $update->createDocument($this->prepare($item));
 
-                    $this->out('document '.$this->buildKey($documents[$i]).' ready for indexing');
+                    $this->out('document '.ArrayHelper::getValue(end($documents), 'id').' ready for indexing', \JLog::DEBUG);
 
-                    $i++;
-
-                    // index when either the number of items retrieved matches
-                    // the total number of items being indexed or when the
-                    // index chunk size has been reached.
-                    if ($total == count($items) || $i >= self::$chunk) {
-                        $response = $solr->addDocuments($documents, false, true, true, $this->params->get('component.commitsWithin', '10000'));
-
-                        $this->out(array($i.' documents successfully indexed', '[status:'.$response->getHttpStatus().']'));
-
-                        $documents = array();
-                        $i = 0;
-                    }
+                    $start++;
                 }
+
+                $update->addDocuments($documents, null, $commitWithin);
+                $update->addCommit();
+
+                $result = $client->update($update);
+
+                if ($result->getStatus() !== 0) {
+                    throw new Exception($result->getResponse()->getStatusMessage(), $result->getResponse()->getStatusCode());
+                }
+            } catch (Exception $e) {
+                $this->out($e->getMessage(), \JLog::ERROR);
             }
 
-            $start+=$limit;
+            $this->out(array(count($documents).' documents successfully indexed', '[status:'.$result->getResponse()->getStatusCode().']'), \JLog::DEBUG);
+
+            $documents = array();
         }
 
-        $this->out("items indexed: $total");
+        $this->out("items indexed: $total", \JLog::DEBUG);
     }
 
     /**
@@ -294,48 +227,12 @@ abstract class Crawler extends \JPlugin
     }
 
     /**
-     * Deletes a single item from the index.
-     *
-     * @param string $key The unique key of the item to delete.
-     */
-    protected function deleteItem($key)
-    {
-        $solr = \JSolr\Index\Factory::getService();
-        $solr->deleteById($key);
-        $solr->commit();
-    }
-
-    /**
      * Prepare the item for indexing.
      *
      * @param stdClass $item
      * @return \JSolr\Apache\Solr\Document
      */
-    protected function prepare($item)
-    {
-        // Initialize the item's parameters.
-        if (isset($item->params)) {
-            $registry = new \Joomla\Registry\Registry();
-            $registry->loadString($item->params);
-        }
-
-        if (isset($item->metadata)) {
-            $registry = new \Joomla\Registry\Registry();
-            $registry->loadString($item->metadata);
-            $item->metadata = $registry;
-        }
-
-        $document = $this->getDocument($item);
-        $document->addField('id', $item->id);
-        $document->addField('context', $this->get('context'));
-        $document->addField('lang', $item->language);
-
-        $key = $this->buildKey($document);
-
-        $document->addField('key', $key);
-
-        return $document;
-    }
+    protected abstract function prepare($item);
 
     /**
      * Command line formmatted output.
