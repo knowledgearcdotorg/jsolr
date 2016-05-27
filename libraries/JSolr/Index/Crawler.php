@@ -17,8 +17,6 @@ abstract class Crawler extends \JPlugin
 {
     const STDOUT_SEPARATOR_WIDTH = 80;
 
-    protected static $chunk;
-
     /**
      * The context of the document being indexed.
      *
@@ -30,8 +28,6 @@ abstract class Crawler extends \JPlugin
     {
         parent::__construct($subject, $config);
         $this->loadLanguage();
-
-        self::$chunk = 1000;
 
         // load the jsolrindex component's params into plugin params for
         // easy access.
@@ -205,7 +201,7 @@ abstract class Crawler extends \JPlugin
     /**
      * Prepare the item for indexing.
      *
-     * @param stdClass $item
+     * @param StdClass $item
      * @return \JSolr\Apache\Solr\Document
      */
     protected abstract function prepare($item);
@@ -213,14 +209,14 @@ abstract class Crawler extends \JPlugin
     /**
      * Command line formmatted output.
      *
-     * @param mixed $text String or array.
+     * @param  mixed  $text String or array.
      * To provide a description with a message, E.g.
      *
      * indexing                [started]
      *
      * pass a 2 dimensional array; array('indexing', '[started]');
      *
-     * @param bool $level The log level. Use the JLog constants; \JLog::DEBUG, \JLog::ERROR, etc.
+     * @param  bool   $level The log level. Use the JLog constants; \JLog::DEBUG, \JLog::ERROR, etc.
      */
     protected function out($text, $level)
     {
@@ -241,9 +237,9 @@ abstract class Crawler extends \JPlugin
     /**
      * Gets a formatted facet based on the JSolrIndex configuration.
      *
-     * @param string $facet
+     * @param   string  $facet
      *
-     * @return string A formatted facet based on the JSolrIndex configuration.
+     * @return  string  A formatted facet based on the JSolrIndex configuration.
      */
     protected function getFacet($facet)
     {
@@ -259,6 +255,86 @@ abstract class Crawler extends \JPlugin
             default:
                 return $facet;
                 break;
+        }
+    }
+
+    /**
+     *
+     * @param string    $context  The context of the item being saved.
+     * @param StdClass  $item     The item being deleted (must have an id property).
+     * @param bool      $isNew    True if the item is new, false otherwise.
+     */
+    public function onJSolrAfterSave($context, $item, $isNew)
+    {
+        if ($context == $this->get('context')) {
+            $commitWithin = $this->params->get('component.commitWithin', '1000');
+
+            $client = \JSolr\Index\Factory::getClient();
+            $update = $client->createUpdate();
+
+            // some Joomla items have published instead of state.
+            if (!isset($item->state)) {
+                $item->state = $item->published;
+            }
+
+            if ((int)$item->state == 1) {
+                $array = $this->prepare($item);
+
+                $document = $update->createDocument($array);
+                $update->addDocument($document, null, $commitWithin);
+            } else {
+                $dispatcher = \JDispatcher::getInstance();
+                \JPluginHelper::importPlugin('jsolr');
+
+                $results = $dispatcher->trigger('onJSolrAfterDelete', array($context, $item));
+            }
+
+            $update->addCommit();
+
+            $result = $client->update($update);
+        }
+    }
+
+    /**
+     * Triggers an event to delete an indexed item.
+     *
+     * @param  string  $context  The context of the item being deleted.
+     * @param  mixed   $item     The item being deleted (must have an id property).
+     */
+    public function onJSolrAfterDelete($context, $item)
+    {
+        if ($context == $this->get('context')) {
+            $client = \JSolr\Index\Factory::getClient();
+            $update = $client->createUpdate();
+
+            $update->addDeleteQuery("id:".$this->get('context').'.'.$item->id);
+            $update->addCommit();
+
+            $result = $client->update($update);
+        }
+    }
+
+    /**
+     * Triggers an event manage an indexed item when there is a state change.
+     *
+     * @param  string  $context  The context of the changed items.
+     * @param  array   $pks      An array of ids of the chnaged items.
+     * @param  int     $value    The new state.
+     */
+    public function onJSolrChangeState($context, $pks, $value)
+    {
+        if ($context == $this->get('context')) {
+            $dispatcher = \JDispatcher::getInstance();
+            \JPluginHelper::importPlugin('jsolr');
+
+            foreach ($pks as $pk) {
+                // dummy item for passing to respective event.
+                $item = new \StdClass();
+                $item->id = $pk;
+                $item->state = $value;
+
+                $results = $dispatcher->trigger('onJSolrAfterSave', array($context, $item, false));
+            }
         }
     }
 }
