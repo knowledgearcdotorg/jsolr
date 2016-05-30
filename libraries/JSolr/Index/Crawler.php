@@ -17,6 +17,8 @@ abstract class Crawler extends \JPlugin
 {
     const STDOUT_SEPARATOR_WIDTH = 80;
 
+    protected $autoloadLanguage = true;
+
     /**
      * The context of the document being indexed.
      *
@@ -27,7 +29,6 @@ abstract class Crawler extends \JPlugin
     public function __construct(&$subject, $config = array())
     {
         parent::__construct($subject, $config);
-        $this->loadLanguage();
 
         // load the jsolrindex component's params into plugin params for
         // easy access.

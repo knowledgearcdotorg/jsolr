@@ -36,7 +36,9 @@ class PlgJSolrContent extends Crawler
         $items->setState('list.ordering', 'a.id');
         $items->setState('list.direction', 'asc');
 
-        return $items->getItems();
+        // The getStoreId throws an error if catid array is used.
+        // Therefore, block the error.
+        return @$items->getItems();
     }
 
     /**
@@ -46,7 +48,9 @@ class PlgJSolrContent extends Crawler
      */
     protected function getTotal()
     {
-        return (int)$this->getArticles()->getTotal();
+        // The getStoreId throws an error if catid array is used.
+        // Therefore, block the error.
+        return @(int)$this->getArticles()->getTotal();
     }
 
     /**
@@ -63,6 +67,17 @@ class PlgJSolrContent extends Crawler
                         'Articles',
                         'ContentModel',
                         array('ignore_request'=>true));
+
+
+        $catids = $this->params->get('categories', array());
+
+        if (($pos = array_search(0, $catids)) !== false) {
+            unset($catids[$pos]);
+        }
+
+        if (count($catids)) {
+            $articles->setState("filter.category_id", $catids);
+        }
 
         return $articles;
     }

@@ -23,7 +23,9 @@ class PlgJSolrNewsfeeds extends Crawler
      */
     protected function getTotal()
     {
-        return (int)$this->getNewsfeeds()->getTotal();
+        // The getStoreId throws an error if catid array is used.
+        // Therefore, block the error.
+        return @(int)$this->getNewsfeeds()->getTotal();
     }
 
     /**
@@ -46,7 +48,9 @@ class PlgJSolrNewsfeeds extends Crawler
         $items->setState('list.ordering', 'a.id');
         $items->setState('list.direction', 'asc');
 
-        return $items->getItems();
+        // The getStoreId throws an error if catid array is used.
+        // Therefore, block the error.
+        return @$items->getItems();
     }
 
     /**
@@ -65,6 +69,16 @@ class PlgJSolrNewsfeeds extends Crawler
                         'Newsfeeds',
                         'NewsfeedsModel',
                         array('ignore_request'=>true));
+
+        $catids = $this->params->get('categories', array());
+
+        if (($pos = array_search(0, $catids)) !== false) {
+            unset($catids[$pos]);
+        }
+
+        if (count($catids)) {
+            $newsfeeds->setState("filter.category_id", $catids);
+        }
 
         return $newsfeeds;
     }
