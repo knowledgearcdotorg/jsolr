@@ -281,8 +281,12 @@ abstract class Crawler extends \JPlugin
             if ((int)$item->state == 1) {
                 $array = $this->prepare($item);
 
-                $document = $update->createDocument($array);
-                $update->addDocument($document, null, $commitWithin);
+                $catid = ArrayHelper::getValue($array, 'parent_id_i');
+
+                if ($this->isCategoryIndexable($catid)) {
+                    $document = $update->createDocument($array);
+                    $update->addDocument($document, null, $commitWithin);
+                }
             } else {
                 $dispatcher = \JDispatcher::getInstance();
                 \JPluginHelper::importPlugin('jsolr');
@@ -337,5 +341,29 @@ abstract class Crawler extends \JPlugin
                 $results = $dispatcher->trigger('onJSolrAfterSave', array($context, $item, false));
             }
         }
+    }
+
+    /**
+     * Check whether a category has been configured for indexing.
+     *
+     * If no categories have been set, all items will be indexed.
+     *
+     * @param   int   $catid  The category to check.
+     *
+     * @return  bool  True if the category is found, false otherwise.
+     */
+    protected function isCategoryIndexable($catid)
+    {
+        $catids = $this->params->get('categories', array());
+
+        if (($pos = array_search(0, $catids)) !== false) {
+            unset($catids[$pos]);
+        }
+
+        if (count($catids)) {
+            return in_array($catid, $catids, true);
+        }
+
+        return true;
     }
 }
