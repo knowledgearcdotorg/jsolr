@@ -77,7 +77,7 @@ class Factory extends \JSolr\Factory
     {
         $uri = new JURI('index.php');
 
-        $uri->setVar('option', self::component);
+        $uri->setVar('option', self::$component);
 
         $uri->setVar('view', $view);
 
@@ -116,7 +116,7 @@ class Factory extends \JSolr\Factory
 
         // Prepare the reverse lookup array.
         if (!isset(self::$lookup[$view])) {
-            $component = JComponentHelper::getComponent(self::component);
+            $component = JComponentHelper::getComponent(self::$component);
 
             $items = $menus->getItems('component_id', $component->id);
 

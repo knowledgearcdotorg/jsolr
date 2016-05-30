@@ -21,7 +21,7 @@ class Factory extends \JSolr\Factory
      */
     public static function getExtractor($fileOrUrl)
     {
-        $params = JComponentHelper::getParams('com_jsolr', true);
+        $params = JComponentHelper::getParams(self::$component, true);
 
         $params->loadArray(array('component'=>$params->toArray()));
 
