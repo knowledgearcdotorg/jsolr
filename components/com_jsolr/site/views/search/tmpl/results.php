@@ -17,9 +17,9 @@ JHtml::_('behavior.calendar');
 
 $document = JFactory::getDocument();
 
-$document->addScript(JURI::base().'media/com_jsolrsearch/js/jsolrsearch.js');
+$document->addScript(JURI::base().'media/com_jsolr/js/jsolr.js');
 
-$document->addStyleSheet(JURI::base().'media/com_jsolrsearch/css/jsolrsearch.css');
+$document->addStyleSheet(JURI::base().'media/com_jsolr/css/jsolr.css');
 ?>
 
 <!-- This is not well styled but rather provides the functionality for
@@ -55,7 +55,7 @@ integrating faceting within the component. Use template overrides to improve. --
     </header>
 
     <?php if (!is_null($this->items)): ?>
-        <?php echo $this->loadResultsTemplate(); ?>
+        <?php echo $this->loadTemplate('default'); ?>
 
     <footer>
         <div class="pagination">

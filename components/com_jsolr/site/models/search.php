@@ -16,7 +16,7 @@ jimport('joomla.html.pagination');
 jimport('joomla.application.component.modelform');
 jimport('joomla.filesystem.file');
 
-class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
+class JSolrModelSearch extends \JSolr\Search\Model\Form
 {
     const MM_DEFAULT = '1';
 
@@ -30,21 +30,21 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
     {
         parent::__construct($config);
 
-        $this->set('option', 'com_jsolrsearch');
+        $this->set('option', 'com_jsolr');
 
         $this->set('context', $this->get('option').'.search');
 
-        JFactory::getApplication()->setUserState('com_jsolrsearch.facets', null);
+        JFactory::getApplication()->setUserState('com_jsolr.facets', null);
 
         Jlog::addLogger(array());
     }
 
-   /**
-    * (non-PHPdoc)
-    * @see JModelList::populateState()
-    */
-   public function populateState($ordering = null, $direction = null)
-   {
+    /**
+        * (non-PHPdoc)
+        * @see JModelList::populateState()
+        */
+    public function populateState($ordering = null, $direction = null)
+    {
         $application = JFactory::getApplication('site');
 
         $this->setState('query.q', $application->input->get("q", null, "html"));
@@ -64,46 +64,155 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
         $this->setState('params', $params);
 
         parent::populateState($ordering, $direction);
-   }
+    }
 
-   public function getItems()
-   {
-        try {
-            $query = $this->_getListQuery();
+    /**
+     * Builds the query and returns the result.
+     *
+     * @return  \Solarium\QueryType\Select\Result  The query result.
+     */
+    public function getQuery()
+    {
+        //$filters = $this->getForm()->getFilters();
 
-            if (is_null($query)) {
-                return $query;
+        /*
+            $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
+
+            if ($access) {
+                $access = 'access:'.'('.$access.') OR null';
+                $filters[] = $access;
             }
+        */
 
-            $bq = array();
-
-            JPluginHelper::importPlugin("jsolrsearch");
-
-            $dispatcher = JEventDispatcher::getInstance();
-
-            // get query filter params and boosts from plugin.
-            foreach ($dispatcher->trigger('onJSolrSearchPrepareBoostQueries') as $result) {
-                $bq = array_merge($bq, $result);
+        /*if (!$this->getState('query.q')) {
+            if (!$this->getAppliedFacetFilters()) {
+                return null; // nothing passed. Get out of here.
             }
+        }*/
 
-            $query->boostQueries($bq);
+        $store = $this->getStoreId();
 
-            $results = $query->search();
+        if (!isset($this->cache[$store])) {
+            try {
+                if (is_null($this->getState('query.q'))) {
+                    return null;
+                }
 
-            JFactory::getApplication()->setUserState('com_jsolrsearch.facets', $results->getFacets());
+                $client = \JSolr\Factory::getClient();
 
-            JFactory::getApplication()->setUserState('com_jsolrsearch.facets.ranges', $results->getFacetRanges());
+                $query = $client->createSelect();
+                $query->setQuery($this->getState('query.q', "*:*"));
 
-            $this->pagination = new JPagination($results->get('numFound'), $this->getState('list.start'), $this->getState('list.limit'));
+                $query->setStart($this->getState("list.start", 0));
 
-            return $results;
-        } catch (Exception $e) {
-            JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolrsearch');
-            JLog::add((string)$e, JLog::ERROR, 'jsolrsearch');
-            $this->pagination = new JPagination($this->get('total', 0), 0, 0);
+                $limit = $this->getState(
+                            "list.limit",
+                            JFactory::getApplication()->getCfg('list.limit', 10));
 
+                $query->setRows($limit);
+
+                /*
+                $query->getSpellcheck()
+                    ->setQuery("latest submision")
+                    ->setCount(10)
+                    ->setBuild(true)
+                    ->setCollate(true)
+                    ->setExtendedResults(true)
+                    ->setCollateExtendedResults(true)
+                    ->setCollateParam("maxResultsForSuggest", 1);
+                */
+
+                $query->getEDisMax()->setQueryFields("title_txt_en^100");
+
+                $query->getHighlighting()
+                    ->setFields('title_txt_en, content_txt_en')
+                    ->setSimplePrefix('<b>')
+                    ->setSimplePostfix('</b>');
+
+                $response = $client->select($query);
+
+                //JFactory::getApplication()->setUserState('com_jsolr.facets', $results->getFacets());
+
+                //JFactory::getApplication()->setUserState('com_jsolr.facets.ranges', $results->getFacetRanges());
+
+                $this->cache[$store] = $response;
+            } catch (Exception $e) {
+                JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolr');
+                JLog::add((string)$e, JLog::ERROR, 'jsolr');
+
+                throw $e;
+            }
+        }
+
+        return $this->cache[$store];
+    }
+
+    public function getItems()
+    {
+        return $this->getQuery()->getDocuments();
+    }
+
+    /**
+     * A convenience method for getting the Did You Mean text and a url for
+     * changing the search query to the Did You Mean text.
+     */
+    public function getDidYouMean()
+    {
+        $spellcheck = $this->getQuery()->getSpellcheck();
+
+        if ($spellcheck->getCorrectlySpelled()) {
+            $collation = array_shift($spellcheck->getCollations());
+
+            $correction = array_shift($collation->getCorrections());
+
+            if ($correction) {
+                return $correction;
+            }
+        } else {
             return null;
         }
+    }
+
+    public function getTotal()
+    {
+        return $this->getQuery()->getNumFound();
+    }
+
+    public function getStart()
+    {
+        return $this->getState("list.start", 0);
+    }
+
+    public function getPagination()
+    {
+        $limit = (int)$this->getState('list.limit') - (int)$this->getState('list.links');
+        $page = new JPagination($this->getTotal(), $this->getStart(), $limit);
+
+        return $page;
+    }
+
+    /**
+     * Method to get a store id based on the model configuration state.
+     *
+     * This is necessary because the model is used by the component and
+     * different modules that might need different sets of data or different
+     * ordering requirements.
+     *
+     * @param   string  $id  An identifier string to generate the store id.
+     *
+     * @return  string  A store id.
+     *
+     * @since   12.2
+     */
+    protected function getStoreId($id = '')
+    {
+        // Add the list state to the store id.
+        $id .= ':' . $this->getState('list.start');
+        $id .= ':' . $this->getState('list.limit');
+        $id .= ':' . $this->getState('list.ordering');
+        $id .= ':' . $this->getState('list.direction');
+
+        return md5($this->context . ':' . $id);
     }
 
     /**
@@ -112,10 +221,10 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
      */
     public function getFeaturedItems()
     {
-        try {
+/*        try {
             $filters = array('context:com_content.article');
 
-            $query = $this->_getListQuery();
+            //$query = $this->_getListQuery();
 
             $query
                 ->filters($filters)
@@ -128,114 +237,12 @@ class JSolrSearchModelSearch extends \JSolr\Search\Model\Form
 
             return $query->search();
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
 
             return null;
         }
-    }
-
-    /**
-     * Gets the Solr query for the list.
-     *
-     * @return  JSolrSearchQuery  An instance of the JSolrSearchQuery class.
-     */
-    protected function _getListQuery()
-    {
-        $hl = array();
-
-        $filters = array();
-
-        $facets = array();
-
-        $qf = array();
-
-        $sort = array();
-
-        $filters = $this->getForm()->getFilters();
-
-        if (!$this->getState('params')->get('override_schema', 0)) {
-            $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
-
-            if ($access) {
-                $access = 'access:'.'('.$access.') OR null';
-                $filters[] = $access;
-            }
-        }
-
-        if (!$this->getState('query.q')) {
-            if (!$this->getAppliedFacetFilters()) {
-                return null; // nothing passed. Get out of here.
-            }
-        }
-
-        $sort = $this->getForm()->getSorts();
-
-        $facets = $this->getForm()->getFacets();
-
-        JPluginHelper::importPlugin("jsolrsearch");
-
-        $dispatcher = JEventDispatcher::getInstance();
-
-        // Get any additional filters which may be needed as part of the search query.
-        foreach ($dispatcher->trigger("onJSolrSearchFQAdd") as $result) {
-            $filters = array_merge($filters, $result);
-        }
-
-        // Get Highlight fields for results.
-        foreach ($dispatcher->trigger('onJSolrSearchHLAdd') as $result) {
-            $hl = array_merge($hl, $result);
-        }
-
-        // get query filter params and boosts from plugin.
-        foreach ($dispatcher->trigger('onJSolrSearchQFAdd') as $result) {
-            $qf = array_merge($qf, $result);
-        }
-
-        // get context.
-        if ($this->getState('query.o', null)) {
-            foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {
-                if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
-                    $filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
-                }
-            }
-        }
-
-        $q = $this->getState('query.q', "*:*");
-
-        $query = \JSolr\Search\Factory::getQuery($q)
-            ->spellcheck(true)
-            ->useQueryParser("edismax")
-            ->retrieveFields("*,score")
-            ->filters($filters)
-            ->highlight(80, "<mark>", "</mark>", 2, implode(" ", $hl))
-            ->limit($this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10)))
-            ->offset($this->getState("list.start", 0))
-            ->mergeParams(
-                array(
-                    'mm'=>$this->getState('params')->get('mm', self::MM_DEFAULT)));
-
-        if (count($sort)) {
-            $query->sort(implode(', ', $sort));
-        }
-
-        if (count($qf)) {
-            $query->queryFields($qf);
-        }
-
-        if (count($facets)) {
-            foreach ($facets as $facet) {
-                $query->mergeParams($facet);
-            }
-
-            $query->facet(1, true, 10);
-        }
-
-        return $query;
-    }
-
-    public function getPagination()
-    {
-        return $this->pagination;
+*/
+        return array();
     }
 
     public function getSuggestionQueryURIs()

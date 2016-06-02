@@ -16,12 +16,8 @@ class Helper extends \JObject
     {
         $array = array();
 
-        if (isset($highlighting->$field)) {
-            foreach ($highlighting->$field as $item) {
-                $array[] = $item;
-            }
-
-            return implode("...", $array);
+        if ($highlighting->getField($field)) {
+            return implode("...", $highlighting->getField($field));
         }
 
         return $default;

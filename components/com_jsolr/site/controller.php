@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 use JSolr\Search\Factory;
 
-class JSolrSearchController extends JControllerLegacy
+class JSolrController extends JControllerLegacy
 {
     function advanced()
     {
@@ -35,7 +35,7 @@ class JSolrSearchController extends JControllerLegacy
 
         // Add more views for custom layouts; xlsx, xml, etc.
         $this->addViewPath(JPATH_THEMES.'/'.
-            JFactory::getApplication()->getTemplate().'/html/com_jsolrsearch');
+            JFactory::getApplication()->getTemplate().'/html/com_jsolr');
 
         $view = $this->getView(
             $viewName,

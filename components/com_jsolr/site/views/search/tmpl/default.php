@@ -2,7 +2,7 @@
 /**
  * Default search page.
  *
- * Override to edit the JSolrSearch home page.
+ * Override to edit the JSolr Search home page.
  *
  * @package     JSolr
  * @subpackage  View
@@ -20,7 +20,7 @@ defined('_JEXEC') or die('Restricted access');
 
 $document = JFactory::getDocument();
 
-$document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.css');
+$document->addStyleSheet(JURI::base().'/media/com_jsolr/css/jsolr.css');
 ?>
 <section id="jsolrSearch">
     <form action="<?php echo JRoute::_("index.php"); ?>" method="get" name="adminForm" class="form-validate jsolr-search-result-form" id="jsolr-search-result-form">
@@ -29,10 +29,10 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolrsearch/css/jsolrsearch.cs
             <span><?php echo $form->getInput($field->fieldname); ?></span>
             <?php endforeach;?>
 
-            <input type="hidden" name="option" value="com_jsolrsearch"/>
+            <input type="hidden" name="option" value="com_jsolr"/>
             <input type="hidden" name="task" value="search"/>
 
-            <button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
+            <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_SEARCH_BUTTON_SUBMIT"); ?></button>
         </fieldset>
 
         <div class="jsolr-clear"></div>

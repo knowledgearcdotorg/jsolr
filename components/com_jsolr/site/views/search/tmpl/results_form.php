@@ -43,7 +43,7 @@ JHTML::_('behavior.formvalidation');
         endforeach;
         ?>
 
-        <button type="submit" class="button"><?php echo JText::_("COM_JSOLRSEARCH_BUTTON_SUBMIT"); ?></button>
+        <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_BUTTON_SUBMIT"); ?></button>
     </fieldset>
 
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
@@ -101,6 +101,6 @@ JHTML::_('behavior.formvalidation');
 
         <button id="custom-dates-submit"><?php echo JText::_('JSUBMIT'); ?></button>
         <a id="custom-dates-cancel" href="#"><?php echo JText::_('JCANCEL'); ?></a>
-        
+
     </form>
 </div>

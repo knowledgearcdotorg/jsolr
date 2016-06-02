@@ -23,40 +23,79 @@ $featuredItems = $this->get('FeaturedItems');
 
     <?php
     if ($this->get("Pagination")->get('pages.current') > 1) :
-        echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS_CURRENTPAGE', $this->get("Pagination")->get('pages.current'), $this->items->get('numFound'), $this->items->get('qTimeFormatted'));
+        echo JText::sprintf('COM_JSOLR_TOTAL_RESULTS_CURRENTPAGE', $this->get("Pagination")->get('pages.current'), $this->items->get('numFound'));
     else :
-        echo JText::sprintf('COM_JSOLRSEARCH_TOTAL_RESULTS', $this->items->get('numFound'), $this->items->get('qTimeFormatted'));
+        echo JText::plural('COM_JSOLR_TOTAL_N_RESULTS', $this->get('Total'));
     endif;
     ?>
 
 </div>
 
 <?php
-if ($this->items->getSuggestions()) :
-    foreach ($this->get("SuggestionQueryURIs") as $item) :
+/*
+if ($didYouMean = $this->get('DidYouMean')) :
 ?>
-<div>Did you mean <a href="<?php echo JArrayHelper::getValue($item, 'uri'); ?>"><?php echo JArrayHelper::getValue($item, 'title'); ?></a></div>
+<div>Did you mean <a href="<?php echo JArrayHelper::getValue($didYouMean, 'uri'); ?>"><?php echo JArrayHelper::getValue($didYouMean, 'text'); ?></a></div>
 <?php
-    endforeach;
 endif;
+*/
 ?>
 
 <?php if (!count($this->items)) : ?>
 
-<span><?php JText::_("COM_JSOLRSEARCH_NO_RESULTS"); ?></span>
+<span><?php JText::_("COM_JSOLR_NO_RESULTS"); ?></span>
 
 <?php endif; ?>
 
-<?php if ($this->get("Pagination")->get('pages.current') == 1 && $featuredItems->get("numFound")) : ?>
-    <?php echo $this->loadResultTemplate($featuredItems->getIterator()->current(), $featuredItems->getHighlighting()->{$featuredItems->getIterator()->current()->key}); ?>
-<?php endif; ?>
+<?php /*
+if ($this->get("Pagination")->get('pages.current') == 1 && $featuredItems->get("numFound")) :
+    $current = $featuredItems->getIterator()->current();
+    $highlighting = $featuredItems->getHighlighting()->{$featuredItems->getIterator()->current()->key};
+
+    $this->setLayout("result");
+    echo $this->loadTemplate('default');
+endif; */
+?>
 
 <ol>
-
     <?php foreach ($this->items as $item) : ?>
 
     <li>
-        <?php echo $this->loadResultTemplate($item, $this->items->getHighlighting()->{$item->key}); ?>
+        <?php
+        $hl = $this->get('Query')->getHighlighting()->getResult($item->id);
+        ?>
+        <article class="jsolrsearch-result">
+            <header>
+                <h4>
+                    <a href="<?php echo  $item->link; ?>"><?php echo \JSolr\Helper::highlight($hl, 'title_txt_en', $item->title_txt_en); ?></a>
+                </h4>
+            </header>
+            <p><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('content_txt_*'), $item->{\JSolr\Helper::localize('content_txt_*')}); ?></p>
+            <footer>
+                <dl>
+                    <?php if ($item->created_tdt) : ?>
+                    <dt><?php echo JText::_("COM_JSOLR_RESULT_CREATED_LABEL"); ?></dt>
+                    <dd>
+                        <time datetime="<?php echo JFactory::getDate($item->created_tdt)->toISO8601(); ?>"><?php echo JFactory::getDate($item->created_tdt)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
+                    </dd>
+                    <?php endif; ?>
+
+                    <?php if ($item->modified_tdt) : ?>
+                    <dt><?php echo JText::_("COM_JSOLR_RESULT_MODIFIED_LABEL"); ?></dt>
+                    <dd>
+                        <time datetime="<?php echo JFactory::getDate($item->modified_tdt)->toISO8601(); ?>"><?php echo JFactory::getDate($item->modified_tdt)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
+                    </dd>
+                    <?php endif; ?>
+
+                    <?php if (isset($item->category_s)) : ?>
+                    <dt><?php echo JText::_("COM_JSOLR_RESULT_CATEGORY_LABEL"); ?></dt>
+                    <dd>
+                        <a href="<?php echo JRoute::_($item->link); ?>"><?php echo $item->category_s; ?></a>
+                    </dd>
+                    <?php endif; ?>
+                </dl>
+            </footer>
+        </article>
     </li>
 
     <?php endforeach; ?>
