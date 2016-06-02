@@ -131,7 +131,7 @@ class Helper extends \JObject
         }
     }
 
-    public static function localize($field)
+    public static function localize($fields)
     {
         $code = JFactory::getApplication()->input->getString('lr', null);
 
@@ -143,6 +143,14 @@ class Helper extends \JObject
 
         $code = ArrayHelper::getValue($parts, 0);
 
-        return str_replace("*", $code, $field);
+        if (is_array($fields)) {
+            foreach ($fields as $key=>$value) {
+                $fields[$key] = str_replace("*", $code, $value);
+            }
+
+            return $fields;
+        } else {
+            return str_replace("*", $code, $fields);
+        }
     }
 }

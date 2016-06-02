@@ -9,6 +9,8 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
+use \Joomla\Registry\Registry;
+
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.filesystem.path');
@@ -60,8 +62,16 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $this->setState('list.start', $value);
 
         $params = $application->getParams();
+        $menuParams = new Registry;
 
-        $this->setState('params', $params);
+        if ($menu = $application->getMenu()->getActive()) {
+            $menuParams->loadString($menu->params);
+        }
+
+        $mergedParams = clone $menuParams;
+        $mergedParams->merge($params);
+
+        $this->setState('params', $mergedParams);
 
         parent::populateState($ordering, $direction);
     }
@@ -111,6 +121,16 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->setRows($limit);
 
+                $qf = '_text_ title_txt_*';
+
+                $qf = $this->getState('params')->get('qf', $qf);
+
+                if ($this->getState('params')->get('menu-qf')) {
+                    $qf = $this->getState('params')->get('menu-qf');
+                }
+
+                $query->getEDisMax()->setQueryFields(\JSolr\Helper::localize($qf));
+
                 /*
                 $query->getSpellcheck()
                     ->setQuery("latest submision")
@@ -122,10 +142,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     ->setCollateParam("maxResultsForSuggest", 1);
                 */
 
-                $query->getEDisMax()->setQueryFields("title_txt_en^100");
-
+                // set up highlighting.
                 $query->getHighlighting()
-                    ->setFields('title_txt_en, content_txt_en')
                     ->setSimplePrefix('<b>')
                     ->setSimplePostfix('</b>');
 

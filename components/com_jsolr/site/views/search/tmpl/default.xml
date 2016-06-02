@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
     <layout
-        title="COM_JSOLRSEARCH_SEARCH_VIEW_DEFAULT_TITLE"
-        option="com_jsolrsearch_search_view_default_option">
+        title="COM_JSOLR_SEARCH_VIEW_DEFAULT_TITLE"
+        option="com_jsolr_search_view_default_option">
         <message>
-            <![CDATA[COM_JSOLRSEARCH_SEARCH_VIEW_DEFAULT_DESC]]>
+            <![CDATA[COM_JSOLR_SEARCH_VIEW_DEFAULT_DESC]]>
         </message>
     </layout>
 
-    <!-- Add fields to the request variables for the layout. -->
-    <fields name="request">
+    <fields name="params">
         <fieldset
-            name="request"
+            name="basic"
             addfieldpath="/libraries/jsolr/form/fields">
 
             <field
-                name="o"
-                type="plugins"
-                folder="jsolrsearch"
-                label="COM_JSOLRSEARCH_SEARCH_FIELD_SELECT_O_LABEL"
-                description="COM_JSOLRSEARCH_SEARCH_FIELD_SELECT_O_DESC">
-                <option value="">COM_JSOLRSEARCH_SEARCH_FIELD_SELECT_O_SEARCHALL</option>
-            </field>
+                name="menu-qf"
+                type="text"
+                label="COM_JSOLR_SEARCH_QF_LABEL"
+                description="COM_JSOLR_SEARCH_QF_DESCRIPTION"/>
         </fieldset>
     </fields>
 </metadata>

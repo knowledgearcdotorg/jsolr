@@ -23,7 +23,7 @@
         <field
             type="spacer"
             hr="true"/>
-        
+
         <field
             name="connection2"
             type="radio"
@@ -162,5 +162,12 @@
             label="COM_JSOLR_SEARCH_MM_LABEL"
             description="COM_JSOLR_SEARCH_MM_DESCRIPTION"
             default="1"/>
+
+        <field
+            name="qf"
+            type="text"
+            label="COM_JSOLR_SEARCH_QF_LABEL"
+            description="COM_JSOLR_SEARCH_QF_DESCRIPTION"
+            default="_text_ title_txt_en^100 author^75 content_txt_en^50"/>
     </fieldset>
 </config>
