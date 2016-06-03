@@ -121,7 +121,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->setRows($limit);
 
-                $qf = '_text_ title_txt_*';
+                // set query fields.
+                $qf = '_text_ title_txt_* content_txt_*';
 
                 $qf = $this->getState('params')->get('qf', $qf);
 

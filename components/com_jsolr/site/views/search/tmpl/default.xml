@@ -16,8 +16,8 @@
             <field
                 name="menu-qf"
                 type="text"
-                label="COM_JSOLR_SEARCH_QF_LABEL"
-                description="COM_JSOLR_SEARCH_QF_DESCRIPTION"/>
+                label="COM_JSOLR_SEARCH_MENU-QF_LABEL"
+                description="COM_JSOLR_SEARCH_MENU-QF_DESC"/>
         </fieldset>
     </fields>
 </metadata>
