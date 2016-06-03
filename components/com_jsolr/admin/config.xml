@@ -169,5 +169,16 @@
             label="COM_JSOLR_SEARCH_QF_LABEL"
             description="COM_JSOLR_SEARCH_QF_DESC"
             default="_text_ title_txt_en^100 author^75 content_txt_en^50"/>
+
+        <field
+            name="fq_access"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_JSOLR_SEARCH_FQ_ACCESS_LABEL"
+            description="COM_JSOLR_SEARCH_FQ_ACCESS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
     </fieldset>
 </config>

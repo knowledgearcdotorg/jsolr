@@ -85,15 +85,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         //$filters = $this->getForm()->getFilters();
 
-        /*
-            $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
-
-            if ($access) {
-                $access = 'access:'.'('.$access.') OR null';
-                $filters[] = $access;
-            }
-        */
-
         /*if (!$this->getState('query.q')) {
             if (!$this->getAppliedFacetFilters()) {
                 return null; // nothing passed. Get out of here.
@@ -147,6 +138,17 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $query->getHighlighting()
                     ->setSimplePrefix('<b>')
                     ->setSimplePostfix('</b>');
+
+                // set access.
+                if ($this->getState('params')->get('fq_access', 1)) {
+                    $viewLevels = JFactory::getUser()->getAuthorisedViewLevels();
+                    $access = implode(' OR ', array_unique($viewLevels));
+
+                    if ($access) {
+                        $access = 'access_i:'.'('.$access.') OR null';
+                        $query->createFilterQuery('access')->setQuery($access);
+                    }
+                }
 
                 $response = $client->select($query);
 
