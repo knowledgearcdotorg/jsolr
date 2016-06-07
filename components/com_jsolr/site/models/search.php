@@ -10,6 +10,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 use \Joomla\Registry\Registry;
+use \Joomla\Utilities\ArrayHelper;
 
 jimport('joomla.error.log');
 jimport('joomla.language.helper');
@@ -32,9 +33,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         parent::__construct($config);
 
-        $this->set('option', 'com_jsolr');
-
-        $this->set('context', $this->get('option').'.search');
+        $this->context = $this->option.'.'.$this->name;
 
         JFactory::getApplication()->setUserState('com_jsolr.facets', null);
 
@@ -121,7 +120,15 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $qf = $this->getState('params')->get('menu-qf');
                 }
 
-                $query->getEDisMax()->setQueryFields(\JSolr\Helper::localize($qf));
+                // set contexts filter.
+                $active = JFactory::getApplication()->getMenu()->getActive();
+
+                if ($contexts = ArrayHelper::getValue($active->query, 'contexts')) {
+                    $query
+                        ->createFilterQuery('contexts')
+                            ->setQuery(
+                                "context_s:(".implode(' OR ', $contexts).")");
+                }
 
                 /*
                 $query->getSpellcheck()
@@ -222,8 +229,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      * @param   string  $id  An identifier string to generate the store id.
      *
      * @return  string  A store id.
-     *
-     * @since   12.2
      */
     protected function getStoreId($id = '')
     {
@@ -266,29 +271,15 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         return array();
     }
 
-    public function getSuggestionQueryURIs()
-    {
-        $uris = array();
-
-        $i = 0;
-
-        $uri = \JSolr\Search\Factory::getQueryRouteWithPlugin();
-
-        $uri->setVar('q', $this->getItems()->getSuggestions());
-
-        $uris[$i]['uri'] = $uri;
-
-        $uris[$i]['title'] = $this->getItems()->getSuggestions();
-
-        return $uris;
-    }
-
     /**
      * Method to get the search form.
      *
-     * @param   array $data    An optional array of data for the form to interrogate.
-     * @param   boolean  $loadData   True if the form is to load its own data (default case), false if not.
-     * @return  JForm          A JForm object on success, false on failure.
+     * @param   array  $data      An optional array of data for the form to
+     * interrogate.
+     * @param   bool   $loadData  True if the form is to load its own data
+     * (default case), false if not.
+     *
+     * @return  JForm  A JForm object on success, false on failure.
      */
     public function getForm($data = array(), $loadData = true)
     {
@@ -307,6 +298,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         return $this->form;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see JModelForm::preprocessForm()
+     */
     protected function preprocessForm(JForm $form, $data, $group = 'plugin')
     {
         // load additional filters.

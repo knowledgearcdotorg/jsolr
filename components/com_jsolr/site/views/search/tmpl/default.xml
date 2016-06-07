@@ -8,11 +8,21 @@
         </message>
     </layout>
 
-    <fields name="params">
+    <fields name="request">
         <fieldset
-            name="basic"
-            addfieldpath="/libraries/jsolr/form/fields">
+            name="request"
+            addfieldpath="administrator/components/com_jsolr/models/fields">
+            <field
+                name="contexts"
+                type="jsolr.contextlist"
+                multiple="true"
+                label="COM_JSOLR_SEARCH_CONTEXTS_LABEL"
+                description="COM_JSOLR_SEARCH_CONTEXTS_DESC"/>
+        </fieldset>
+    </fields>
 
+    <fields name="params">
+        <fieldset name="basic">
             <field
                 name="menu-qf"
                 type="text"

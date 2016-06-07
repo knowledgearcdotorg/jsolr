@@ -48,36 +48,71 @@ JHTML::_('behavior.formvalidation');
 
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
 
-    <div class="clr"></div>
-
-    <?php $plugins = $this->get('Plugins'); ?>
-
     <nav>
         <ul>
 
-            <?php for ($i = 0; $i < count($plugins); ++$i): ?>
+            <?php foreach ($this->get('Menus') as $menu) : ?>
 
             <li>
                 <?php
-                $plugin = JArrayHelper::getValue($plugins, $i);
-                $isSelected = (JArrayHelper::getValue($plugin, 'name') == JFactory::getApplication()->input->get('o')) ? true : false;
+                $isSelected = (JArrayHelper::getValue($menu, 'Itemid') == JFactory::getApplication()->input->get('Itemid')) ? true : false;
 
                 echo JHTML::_(
                     'link',
-                    $plugins[$i]['uri'],
-                    JText::_($plugins[$i]['label']),
+                    $menu['uri'],
+                    JText::_($menu['label']),
                     array(
                         'data-category'=>JArrayHelper::getValue($plugin, 'name'),
                         'class'=> $isSelected ? 'active' : ''));
                 ?>
             </li>
 
-            <?php endfor ?>
+            <?php endforeach; ?>
 
         </ul>
     </nav>
 
-    <div class="clr"></div>
+    <div id="jsolrFacetfilters">
+        <?php if (!is_null($this->get('Form'))): ?>
+        <ul>
+
+            <?php
+            foreach ($this->get('AppliedFacetFilters') as $field) :
+                $uri = clone JURI::getInstance();
+                $uri->delVar($field->name);
+            ?>
+
+            <li>
+                <span class="jsolr-label"><?php echo $field->label; ?></span>
+                <span class="jsolr-value"><?php echo str_replace('|', ' | ', $field->value); ?></span>
+
+                <?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
+            </li>
+
+            <?php
+            endforeach;
+            ?>
+
+            <?php
+            foreach ($this->get('AppliedAdvancedFilters') as $field) :
+                $uri = clone JURI::getInstance();
+                $uri->delVar($field->name);
+            ?>
+
+            <li>
+                <span class="jsolr-label"><?php echo $field->label; ?></span>
+
+                <?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
+            </li>
+
+            <?php
+            endforeach;
+            ?>
+
+        </ul>
+
+        <?php endif ?>
+    </div>
 
     <div class="jsolr-searchtools">
         <?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
@@ -85,22 +120,7 @@ JHTML::_('behavior.formvalidation');
         <?php endforeach;?>
     </div>
 
-    <input type="hidden" name="option" value="com_jsolrsearch"/>
+    <input type="hidden" name="option" value="com_jsolr"/>
     <input type="hidden" name="task" value="search"/>
     <?php echo JHTML::_('form.token'); ?>
 </form>
-
-<div id="custom-dates">
-    <form
-        id="custom-dates-form"
-        action="<?php echo JRoute::_(\JSolr\Search\Factory::getSearchRoute()); ?>"
-        method="get">
-
-        <?php echo JHtml::_('calendar', '', "qdr_min", "qdr_min", "%Y-%m-%d"); ?>
-        <?php echo JHtml::_('calendar', '', "qdr_max", "qdr_max", "%Y-%m-%d"); ?>
-
-        <button id="custom-dates-submit"><?php echo JText::_('JSUBMIT'); ?></button>
-        <a id="custom-dates-cancel" href="#"><?php echo JText::_('JCANCEL'); ?></a>
-
-    </form>
-</div>

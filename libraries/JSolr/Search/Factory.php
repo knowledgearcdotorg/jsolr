@@ -62,17 +62,6 @@ class Factory extends \JSolr\Factory
         return $uri;
     }
 
-    public static function getQueryRouteWithPlugin($additionalFilters = array())
-    {
-        $uri = self::getQueryRoute($additionalFilters, true);
-
-        if ($o = JURI::getInstance()->getVar('o')) {
-            $uri->setVar('o', $o);
-        }
-
-        return $uri;
-    }
-
     protected static function getRoute($view = 'search', $additionalFilters = array(), $queryOnly = false)
     {
         $uri = new JURI('index.php');

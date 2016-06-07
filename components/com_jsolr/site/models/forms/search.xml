@@ -13,6 +13,41 @@
             size="20"
             class="inputbox jsolrquery"
             maxlength="50"
-            query="title_ac"/>
+            query="title_s"/>
+    </fieldset>
+
+    <fieldset
+        name="facets"
+        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+        <field
+            name="author"
+            facet="author"
+            filter="author"
+            type="jsolr.facets"
+            label="By Author"
+            class="inputbox jsolrquery"
+            count="true"/>
+    </fieldset>
+
+    <fieldset
+        name="tools"
+        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+        <field
+            name="qdr"
+            filter="modified"
+            filter_quoted="false"
+            show_custom="true"
+            type="jsolr.calendartool"
+            label="Date"
+            class="jsolr-dropdown">
+           <option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
+           <option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
+           <option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
+           <option value="w" filter="[NOW-7DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
+           <option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
+           <option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
+        </field>
+        <field type="jsolr.queryfilter" name="in"/>
+       <field type="jsolr.languagefilter" name="lr"/>
     </fieldset>
 </form>
