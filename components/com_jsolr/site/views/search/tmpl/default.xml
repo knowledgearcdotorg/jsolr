@@ -9,20 +9,19 @@
     </layout>
 
     <fields name="request">
-        <fieldset
-            name="request"
-            addfieldpath="administrator/components/com_jsolr/models/fields">
-            <field
-                name="contexts"
-                type="jsolr.contextlist"
-                multiple="true"
-                label="COM_JSOLR_SEARCH_CONTEXTS_LABEL"
-                description="COM_JSOLR_SEARCH_CONTEXTS_DESC"/>
+        <fieldset name="request">
         </fieldset>
     </fields>
 
     <fields name="params">
-        <fieldset name="basic">
+        <fieldset
+            name="basic"
+            addfieldpath="administrator/components/com_jsolr/models/fields">
+            <field
+                name="context"
+                type="jsolr.contextlist"
+                label="COM_JSOLR_SEARCH_CONTEXTS_LABEL"
+                description="COM_JSOLR_SEARCH_CONTEXTS_DESC"/>
             <field
                 name="menu-qf"
                 type="text"

@@ -5,9 +5,9 @@
  */
 JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-\JFormHelper::loadFieldClass('list');
+\JFormHelper::loadFieldClass('checkboxes');
 
-class JSolrFormFieldContextList extends JFormFieldList
+class JSolrFormFieldContextList extends JFormFieldCheckboxes
 {
     protected $type = 'JSolr.ContextList';
 
@@ -28,12 +28,10 @@ class JSolrFormFieldContextList extends JFormFieldList
 
         $facet = $result->getFacetSet()->getFacet('contexts');
 
-        $options = parent::getOptions();
-
         foreach ($facet as $value=>$count) {
-            $options[] = JHtml::_('select.option', $value, $value);
+            $this->element->addChild("option", $value)->addAttribute("value", $value);
         }
 
-        return $options;
+        return parent::getOptions();
     }
 }

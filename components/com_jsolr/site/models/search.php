@@ -120,10 +120,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $qf = $this->getState('params')->get('menu-qf');
                 }
 
-                // set contexts filter.
-                $active = JFactory::getApplication()->getMenu()->getActive();
-
-                if ($contexts = ArrayHelper::getValue($active->query, 'contexts')) {
+                if ($contexts = $this->getState('params')->get('context')) {
                     $query
                         ->createFilterQuery('contexts')
                             ->setQuery(
