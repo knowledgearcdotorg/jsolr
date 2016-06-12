@@ -16,7 +16,7 @@
     <fields name="params">
         <fieldset
             name="basic"
-            addfieldpath="administrator/components/com_jsolr/models/fields">
+            addfieldpath="libraries/JSolr/Form/Fields/Legacy">
             <field
                 name="context"
                 type="jsolr.contextlist"

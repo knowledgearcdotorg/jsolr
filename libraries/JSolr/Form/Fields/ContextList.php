@@ -3,11 +3,14 @@
  * @copyright   Copyright (C) 2015-2016 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
+namespace JSolr\Form\Fields;
 
 \JFormHelper::loadFieldClass('checkboxes');
 
-class JSolrFormFieldContextList extends JFormFieldCheckboxes
+/**
+ * The ContextList form field provides a list of contexts.
+ */
+class ContextList extends \JFormFieldCheckboxes
 {
     protected $type = 'JSolr.ContextList';
 
