@@ -57,7 +57,7 @@ function JSolrSearchParseRoute($segments)
 {
     $vars = array();
 
-    $vars['option'] = 'com_jsolrsearch';
+    $vars['option'] = 'com_jsolr';
 
     if ($item = array_shift($segments)) {
         $vars['view'] = $item;

@@ -36,7 +36,7 @@ $params = $this->state->get('params');
                   <input id="jsolr-submit-advanced" class="button validate" type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?>" />
             </div>
 
-            <input type="hidden" name="option" value="com_jsolrsearch"/>
+            <input type="hidden" name="option" value="com_jsolr"/>
             <input type="hidden" name="task" value="advanced" />
             <input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get("o", null, 'cmd'); ?>" />
             <input type="hidden" name="Itemid" value="<?php echo JFactory::getApplication()->input->get("Itemid", 0, 'int'); ?>" />

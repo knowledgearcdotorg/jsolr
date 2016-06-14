@@ -24,23 +24,23 @@ abstract class Form extends \JModelForm
      *
      * This method will attempt to load the form in the following order:
      *
-     * 1. /path/to/joomla/templates/current/html/com_jsolrsearch/forms/ using a
+     * 1. /path/to/joomla/templates/current/html/com_jsolr/forms/ using a
      * plugin-specific override. The plugin override takes the form [type].[plugin_name].xml.
      *
-     * 2. /path/to/joomla/templates/current/html/com_jsolrsearch/forms/ for a generic
+     * 2. /path/to/joomla/templates/current/html/com_jsolr/forms/ for a generic
      * override. The override is named [type].xml.
      *
      * 3. The plugin override, I.e.
      * /path/to/joomla/plugins/jsolrsearch/[plugin]/forms/[type].xml).
      *
      * 4. The JSolr Search component's [type].xml, I.e.
-     * /path/to/joomla/component/com_jsolrsearch/models/forms.
+     * /path/to/joomla/component/com_jsolr/models/forms.
      */
     protected function getCustomFormPath($type)
     {
         $paths = array();
         $template = JFactory::getApplication()->getTemplate();
-        $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolrsearch/forms/';
+        $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/';
         $loaded = null;
 
         // load plugin filter override.
@@ -92,7 +92,7 @@ abstract class Form extends \JModelForm
         // if no override exists, just return default.
         if (!$found)
         {
-            $found = JPATH_ROOT.'/components/com_jsolrsearch/models/forms/'.$type.'.xml';
+            $found = JPATH_ROOT.'/components/com_jsolr/models/forms/'.$type.'.xml';
         }
 
         return $found;

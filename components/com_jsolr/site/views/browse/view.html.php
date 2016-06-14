@@ -32,11 +32,11 @@ class JSolrSearchViewBrowse extends JViewLegacy
 
     /**
      * Gets the default template, searching for it in the
-     * html/com_jsolrsearch/browse/ first, then loading the default.php
+     * html/com_jsolr/browse/ first, then loading the default.php
      * template from the extension's views/browse/tmpl folder.
      *
      * To override the default browse page, place a file called
-     * <override>_<extension>.php in the html/com_jsolrsearch/browse/ directory,
+     * <override>_<extension>.php in the html/com_jsolr/browse/ directory,
      * where <override> is the name of the base layout you are overriding (in
      * most cases this will be "default"), and <extension> is the name of the
      * component whose data you are trying to browse.

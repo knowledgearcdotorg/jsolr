@@ -18,8 +18,8 @@ class AutoSuggest extends \JFormField
 
         $document = JFactory::getDocument();
         //$document->addScript(JURI::base().'/media/com_finder/js/autocompleter.js');
-        //$document->addScript(JURI::base().'/media/com_jsolrsearch/js/typeahead.js');
-        //$document->addScript(JURI::base().'/media/com_jsolrsearch/js/textsuggest.js');
+        //$document->addScript(JURI::base().'/media/com_jsolr/js/typeahead.js');
+        //$document->addScript(JURI::base().'/media/com_jsolr/js/textsuggest.js');
 
         $document->addStyleSheet(JURI::base().'/media/com_finder/css/finder.css');
 
@@ -33,7 +33,7 @@ class AutoSuggest extends \JFormField
         // Initialize JavaScript field attributes.
         $onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 
-        $url = JRoute::_("index.php?option=com_jsolrsearch&view=suggest&fields=" . $this->getFields() . "&suggest=" . JArrayHelper::getValue($this->element, 'query') . "&Itemid=0");
+        $url = JRoute::_("index.php?option=com_jsolr&view=suggest&fields=" . $this->getFields() . "&suggest=" . JArrayHelper::getValue($this->element, 'query') . "&Itemid=0");
         $suggest = ' data-autocompleteurl="' . $url . '" ';
 
         return '<input type="text" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'

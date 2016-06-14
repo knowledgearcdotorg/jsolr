@@ -2,7 +2,7 @@
 <metadata>
     <layout
         title="COM_JSOLRSEARCH_ADVANCED_VIEW_DEFAULT_TITLE"
-        option="com_jsolrsearch_advanced_view_default_option">
+        option="com_jsolr_advanced_view_default_option">
         <message>
             <![CDATA[COM_JSOLRSEARCH_ADVANCED_VIEW_DEFAULT_DESC]]>
         </message>

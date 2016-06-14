@@ -60,7 +60,7 @@ class DateFacets extends Facets
         if ($facet = $this->facet) {
             $app = JFactory::getApplication('site');
 
-            $facets = $app->getUserState('com_jsolrsearch.facets.ranges', null);
+            $facets = $app->getUserState('com_jsolr.facets.ranges', null);
 
             if (isset($facets->{$facet}->counts)) {
                 foreach ($facets->{$facet}->counts as $key=>$value) {

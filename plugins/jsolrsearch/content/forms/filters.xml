@@ -14,7 +14,7 @@
     <fieldset
         name="tools"
         label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
-        addfieldpath="/administrator/components/com_jsolrsearch/models/fields">
+        addfieldpath="/administrator/components/com_jsolr/models/fields">
 
         <!-- only JSolrFormFields should be used here -->
         <field

@@ -150,7 +150,7 @@ class JSolrSearchModelAdvanced extends JSolrSearchModelForm
     {
         $uri = new JURI("index.php");
 
-        $uri->setVar("option", "com_jsolrsearch");
+        $uri->setVar("option", "com_jsolr");
 
         $uri->setVar("view", "search");
 

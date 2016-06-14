@@ -154,9 +154,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     }
                 }
 
+                $query->getFacetSet()->createFacetField('author')->setField('author_s');
+
                 $response = $client->select($query);
 
-                //JFactory::getApplication()->setUserState('com_jsolr.facets', $results->getFacets());
+                //JFactory::getApplication()->setUserState('com_jsolr.facets', $response->getFacetSet());
 
                 //JFactory::getApplication()->setUserState('com_jsolr.facets.ranges', $results->getFacetRanges());
 
