@@ -2,8 +2,8 @@
 <form>
     <fieldset
         name="query"
-        label="COM_JSOLRSEARCH_ADVANCED_SEARCH_TITLE"
-        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+        label="COM_JSOLR_ADVANCED_SEARCH_TITLE"
+        addfieldpath="components/com_jsolr/model/fields">
 
         <!-- only JSolrFormFields should be used here -->
         <field
@@ -18,7 +18,7 @@
 
     <fieldset
         name="facets"
-        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+        addfieldpath="components/com_jsolr/model/fields">
         <field
             name="author"
             facet="author"
@@ -31,21 +31,22 @@
 
     <fieldset
         name="tools"
-        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+        addfieldpath="components/com_jsolr/model/fields">
         <field
-            name="qdr"
-            filter="modified"
+            type="jsolr.calendartool"
+            name="date"
+            filter="modified_tdt"
             filter_quoted="false"
             show_custom="true"
-            type="jsolr.calendartool"
             label="Date"
-            class="jsolr-dropdown">
-           <option value="">COM_JSOLRSEARCH_CALENDAR_ANYTIME</option>
-           <option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLRSEARCH_CALENDAR_HOUR</option>
-           <option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_DAY</option>
-           <option value="w" filter="[NOW-7DAY TO NOW]">COM_JSOLRSEARCH_CALENDAR_WEEK</option>
-           <option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLRSEARCH_CALENDAR_MONTH</option>
-           <option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLRSEARCH_CALENDAR_YEAR</option>
+            class="jsolr-dropdown"
+            default="">
+           <option value="">COM_JSOLR_CALENDAR_ANYTIME</option>
+           <option value="h" filter="[NOW-1HOUR TO NOW]">COM_JSOLR_CALENDAR_HOUR</option>
+           <option value="d" filter="[NOW-1DAY TO NOW]">COM_JSOLR_CALENDAR_DAY</option>
+           <option value="w" filter="[NOW-7DAY TO NOW]">COM_JSOLR_CALENDAR_WEEK</option>
+           <option value="m" filter="[NOW-1MONTH TO NOW]">COM_JSOLR_CALENDAR_MONTH</option>
+           <option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLR_CALENDAR_YEAR</option>
         </field>
         <field type="jsolr.queryfilter" name="in"/>
        <field type="jsolr.languagefilter" name="lr"/>

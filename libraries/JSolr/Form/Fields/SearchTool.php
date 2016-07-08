@@ -57,15 +57,14 @@ HTML;
 
     protected function getSelectedLabel() {
         $ret = "";
-        foreach ($this->element->children() as $option)
-        {
+        foreach ($this->element->children() as $option) {
             // Only add <option /> elements.
-            if ($option->getName() != 'option')
-            {
+            if ($option->getName() != 'option') {
                 continue;
             }
 
             $selected = ((string) $option['value']) == $this->value;
+
             if( $selected ) {
                 return trim((string) $option);
             }
@@ -87,16 +86,14 @@ HTML;
         // Initialize variables.
         $options = array();
 
-        foreach ($this->element->children() as $option)
-        {
+        foreach ($this->element->children() as $option) {
 
             // Only add <option /> elements.
-            if ($option->getName() != 'option')
-            {
+            if ($option->getName() != 'option') {
                 continue;
             }
 
-            $selected = ((string) $option['value']) == $this->value;
+            $selected = ((string)$option['value']) == $this->value;
 
             // Create a new option object based on the <option /> element.
             $tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';

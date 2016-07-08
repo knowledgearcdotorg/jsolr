@@ -114,7 +114,7 @@ JHTML::_('behavior.formvalidation');
         <?php endif ?>
     </div>
 
-    <div class="jsolr-searchtools">
+    <div class="jsolr-searchtools btn-group">
         <?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
             <?php echo $this->form->getInput($field->name); ?>
         <?php endforeach;?>

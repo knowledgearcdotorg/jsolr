@@ -82,7 +82,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     public function getQuery()
     {
-        //$filters = $this->getForm()->getFilters();
+        $filters = $this->getForm()->getFilters();
 
         /*if (!$this->getState('query.q')) {
             if (!$this->getAppliedFacetFilters()) {

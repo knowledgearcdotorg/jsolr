@@ -38,7 +38,7 @@ class CalendarTool extends SearchTool implements Filterable
                 continue;
             }
 
-            $value = JArrayHelper::getValue($option, 'value', null, 'string');
+            $value = (string)$option->attributes()->value;
 
             $selected = $value == $this->value;
 
@@ -63,7 +63,7 @@ class CalendarTool extends SearchTool implements Filterable
 
             $cssClass = '';
 
-            if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {
+            if (($min = $this->getMinInput()) && ($max = $this->getMaxInput())) {
                 $selected = true;
 
                 $dataValue = "min:$min,max:$max";
@@ -95,7 +95,7 @@ HTML;
     }
 
     protected function getSelectedLabel() {
-        if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {
+        if (($min = $this->getMinInput()) && ($max = $this->getMaxInput())) {
             return $min." - ".$max;
         } else {
             foreach ($this->element->children() as $option) {
@@ -127,7 +127,7 @@ HTML;
     {
         $filters = array();
 
-        if (($min = $this->_getMinInput()) && ($max = $this->_getMaxInput())) {
+        if (($min = $this->getMinInput()) && ($max = $this->getMaxInput())) {
             $filters[] = $this->filter.":[".$min."T00:00:00Z TO ".$max."T11:59:59Z]";
         } else {
             foreach ($this->element->children() as $option) {
@@ -181,7 +181,7 @@ HTML;
      * @return string The min range input or null if custom date is not used
      * or min date is not specified.
      */
-    private function _getMinInput()
+    private function getMinInput()
     {
         $dateParts = explode(",", JFactory::getApplication()->input->getString('qdr'));
 
@@ -204,7 +204,7 @@ HTML;
      * @return string The max range input or null if custom date is not used
      * or max date is not specified.
      */
-    private function _getMaxInput()
+    private function getMaxInput()
     {
         $dateParts = explode(",", JFactory::getApplication()->input->getString('qdr'));
 
