@@ -27,6 +27,11 @@
                 type="text"
                 label="COM_JSOLR_SEARCH_MENU-QF_LABEL"
                 description="COM_JSOLR_SEARCH_MENU-QF_DESC"/>
+            <field
+                name="menu-hl"
+                type="text"
+                label="COM_JSOLR_SEARCH_MENU-HL_LABEL"
+                description="COM_JSOLR_SEARCH_MENU-HL_DESC"/>
         </fieldset>
     </fields>
 </metadata>

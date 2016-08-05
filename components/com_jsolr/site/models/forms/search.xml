@@ -37,7 +37,6 @@
             name="date"
             filter="modified_tdt"
             filter_quoted="false"
-            show_custom="true"
             label="Date"
             class="jsolr-dropdown"
             default="">

@@ -62,12 +62,12 @@ endif; */
 
     <li>
         <?php
-        $hl = $this->get('Query')->getHighlighting()->getResult($item->id);
+        $hl = $this->get('Highlighting')->getResult($item->id);
         ?>
         <article class="jsolrsearch-result">
             <header>
                 <h4>
-                    <a href="<?php echo  $item->link; ?>"><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('content_txt_*'), $item->{\JSolr\Helper::localize('title_txt_*')}); ?></a>
+                    <a href="<?php echo  $item->link; ?>"><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('title_txt_*'), $item->{\JSolr\Helper::localize('title_txt_*')}); ?></a>
                 </h4>
             </header>
             <p><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('content_txt_*'), $item->{\JSolr\Helper::localize('content_txt_*')}); ?></p>

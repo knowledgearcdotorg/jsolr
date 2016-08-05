@@ -23,6 +23,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 {
     const MM_DEFAULT = '1';
 
+    const QF_DEFAULT = '_text_ title_txt_*^100 content_txt_*';
+
+    const HL_DEFAULT = '_text_ title_txt_* content_txt_*';
+
     protected $form;
 
     protected $lang;
@@ -84,20 +88,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         $filters = $this->getForm()->getFilters();
 
-        /*if (!$this->getState('query.q')) {
-            if (!$this->getAppliedFacetFilters()) {
-                return null; // nothing passed. Get out of here.
-            }
-        }*/
+        if (!($this->getState('query.q') || $filters)) {
+            return null; // nothing passed. Get out of here.
+        }
 
         $store = $this->getStoreId();
 
         if (!isset($this->cache[$store])) {
             try {
-                if (is_null($this->getState('query.q'))) {
-                    return null;
-                }
-
                 $client = \JSolr\Factory::getClient();
 
                 $query = $client->createSelect();
@@ -105,20 +103,9 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->setStart($this->getState("list.start", 0));
 
-                $limit = $this->getState(
-                            "list.limit",
-                            JFactory::getApplication()->getCfg('list.limit', 10));
+                $limit = $this->getLimit();
 
                 $query->setRows($limit);
-
-                // set query fields.
-                $qf = '_text_ title_txt_* content_txt_*';
-
-                $qf = $this->getState('params')->get('qf', $qf);
-
-                if ($this->getState('params')->get('menu-qf')) {
-                    $qf = $this->getState('params')->get('menu-qf');
-                }
 
                 if ($contexts = $this->getState('params')->get('context')) {
                     $query
@@ -127,9 +114,27 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                                 "context_s:(".implode(' OR ', $contexts).")");
                 }
 
+                // set query fields.
+                $qf = $this->getState('params')->get('qf', self::QF_DEFAULT);
+
+                if ($this->getState('params')->get('menu-qf')) {
+                    $qf = $this->getState('params')->get('menu-qf');
+                }
+
+                $qf = \JSolr\Helper::localize($qf);
+
+                // set minimum match.
+                $mm = $this->getState('params')->get('mm', self::MM_DEFAULT);
+
+                // set up edismax
+                $query->getEDisMax()
+                    ->setQueryFields($qf)
+                    ->getMinimumMatch($mm);
+
                 /*
+                // set up spellcheck
                 $query->getSpellcheck()
-                    ->setQuery("latest submision")
+                    ->setQuery($this->getState('query.q'))
                     ->setCount(10)
                     ->setBuild(true)
                     ->setCollate(true)
@@ -138,8 +143,18 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     ->setCollateParam("maxResultsForSuggest", 1);
                 */
 
+                // set highlighting fields.
+                $hl = $this->getState('params')->get('hl', self::HL_DEFAULT);
+
+                if ($this->getState('params')->get('menu-hl')) {
+                    $hl = $this->getState('params')->get('menu-hl');
+                }
+
+                $hl = \JSolr\Helper::localize($hl);
+
                 // set up highlighting.
                 $query->getHighlighting()
+                    ->setFields($hl)
                     ->setSimplePrefix('<b>')
                     ->setSimplePostfix('</b>');
 
@@ -158,10 +173,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $response = $client->select($query);
 
-                //JFactory::getApplication()->setUserState('com_jsolr.facets', $response->getFacetSet());
-
-                //JFactory::getApplication()->setUserState('com_jsolr.facets.ranges', $results->getFacetRanges());
-
                 $this->cache[$store] = $response;
             } catch (Exception $e) {
                 JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolr');
@@ -176,7 +187,24 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
     public function getItems()
     {
-        return $this->getQuery()->getDocuments();
+        $result = $this->getQuery();
+
+        if (!is_null($result)) {
+            return $result->getDocuments();
+        }
+
+        return $result;
+    }
+
+    public function getHighlighting()
+    {
+        $result = $this->getQuery();
+
+        if (!is_null($result)) {
+            return $result->getHighlighting();
+        }
+
+        return $result;
     }
 
     /**
@@ -208,6 +236,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     public function getStart()
     {
         return $this->getState("list.start", 0);
+    }
+
+    public function getLimit()
+    {
+        return $this->getState("list.limit", JFactory::getApplication()->getCfg('list.limit', 10));
     }
 
     public function getPagination()
@@ -464,5 +497,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         }
 
         return $fields;
+    }
+
+    public function getContextItems()
+    {
+        $menu = JFactory::getApplication()->getMenu();
+
+        $items = $menu->getItems(array('link'), array('index.php?option=com_jsolr&view=search'));
+
+        return $items;
     }
 }

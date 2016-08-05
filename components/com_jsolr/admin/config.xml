@@ -168,7 +168,14 @@
             type="text"
             label="COM_JSOLR_SEARCH_QF_LABEL"
             description="COM_JSOLR_SEARCH_QF_DESC"
-            default="_text_ title_txt_en^100 author^75 content_txt_en^50"/>
+            default="_text_ title_txt_*^100 author^75 content_txt_*^50"/>
+
+        <field
+            name="hl"
+            type="text"
+            label="COM_JSOLR_SEARCH_HL_LABEL"
+            description="COM_JSOLR_SEARCH_HL_DESC"
+            default="_text_ title_txt_* author content_txt_*"/>
 
         <field
             name="fq_access"

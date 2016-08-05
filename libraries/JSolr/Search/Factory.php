@@ -68,8 +68,6 @@ class Factory extends \JSolr\Factory
 
         $uri->setVar('option', self::$component);
 
-        $uri->setVar('view', $view);
-
         if ($queryOnly) {
             if (JURI::getInstance()->getVar('q')) {
                 $uri->setVar('q', urlencode(JURI::getInstance()->getVar('q')));
@@ -81,6 +79,8 @@ class Factory extends \JSolr\Factory
                 }
             }
         }
+
+        $uri->setVar('view', $view);
 
         foreach ($additionalFilters as $key=>$value) {
             $uri->setVar($key, urlencode($value));

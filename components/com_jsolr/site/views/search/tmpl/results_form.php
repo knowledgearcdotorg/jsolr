@@ -49,21 +49,23 @@ JHTML::_('behavior.formvalidation');
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
 
     <nav>
-        <ul>
-
-            <?php foreach ($this->get('Menus') as $menu) : ?>
-
-            <li>
+        <ul class="nav nav-pills">
+            <?php foreach ($this->get('ContextItems') as $item) : ?>
                 <?php
-                $isSelected = (JArrayHelper::getValue($menu, 'Itemid') == JFactory::getApplication()->input->get('Itemid')) ? true : false;
+                $isSelected = ($item->id == JFactory::getApplication()->input->get('Itemid')) ? true : false;
+                ?>
+            <li
+                role="presentation"
+                <?php if ($isSelected) : ?>
+                 class="active"
+                <?php endif; ?>>
 
-                echo JHTML::_(
+                <?php
+                echo JHtml::_(
                     'link',
-                    $menu['uri'],
-                    JText::_($menu['label']),
-                    array(
-                        'data-category'=>JArrayHelper::getValue($plugin, 'name'),
-                        'class'=> $isSelected ? 'active' : ''));
+                    $item->link."&Itemid=".$item->id,
+                    JText::_($item->title),
+                    array('data-category'=>$item->title));
                 ?>
             </li>
 
