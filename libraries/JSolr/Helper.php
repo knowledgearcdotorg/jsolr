@@ -153,4 +153,20 @@ class Helper extends \JObject
             return str_replace("*", $code, $fields);
         }
     }
+
+    /**
+     * Get the url of the search result document which points to the Joomla
+     * content item.
+     *
+     * @param   Document  $document
+     * @return  mixed
+     */
+    public static function getUri($document)
+    {
+        \JPluginHelper::importPlugin("jsolr");
+        $dispatcher = \JEventDispatcher::getInstance();
+        $array = $dispatcher->trigger('onJSolrUriGet', array($document));
+
+        return array_pop($array);
+    }
 }

@@ -185,12 +185,31 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         return $this->cache[$store];
     }
 
+    /**
+     * A convenience method for getting a list of search results.
+     *
+     * A link to the item is added to each search result document.
+     *
+     * @return  \Solarium\QueryType\Select\Result\Document[]  A list of search
+     * results.
+     */
     public function getItems()
     {
         $result = $this->getQuery();
 
         if (!is_null($result)) {
-            return $result->getDocuments();
+            $documents = $result->getDocuments();
+            $linkedDocuments = array();
+
+            foreach ($documents as $document) {
+                // Get item url.
+                $fields = $document->getFields();
+                $fields['link'] = \JSolr\Helper::getUri($document);
+
+                $linkedDocuments[] = new \Solarium\QueryType\Select\Result\Document($fields);
+            }
+
+            return $linkedDocuments;
         }
 
         return $result;

@@ -120,6 +120,7 @@ class PlgJSolrNewsfeeds extends Crawler
         $array = array();
 
         $array['id'] = $this->buildId($source->id);
+        $array['id_i'] = $source->id;
         $array['name'] = $source->name;
         $array["author"] = $author->name;
         $array["author_s"] = $this->getFacet($author->name);

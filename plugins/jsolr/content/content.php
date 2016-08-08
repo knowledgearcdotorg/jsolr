@@ -119,6 +119,7 @@ class PlgJSolrContent extends Crawler
         $array = array();
 
         $array['id'] = $this->buildId($source->id);
+        $array['id_i'] = $source->id;
         $array['name'] = $source->title;
         $array["author"] = $author->name;
         $array["author_s"] = $this->getFacet($author->name);
@@ -155,5 +156,16 @@ class PlgJSolrContent extends Crawler
         }
 
         return $array;
+    }
+
+    public function onJSolrUriGet($document)
+    {
+        if ($this->get('context') == $document->context_s) {
+            require_once(JPATH_ROOT."/components/com_content/helpers/route.php");
+
+            return ContentHelperRoute::getArticleRoute($document->id_i, $document->parent_id_i);
+        }
+
+        return null;
     }
 }
