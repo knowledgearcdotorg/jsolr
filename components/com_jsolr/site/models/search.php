@@ -524,6 +524,23 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $items = $menu->getItems(array('link'), array('index.php?option=com_jsolr&view=search'));
 
+        $i = 0;
+
+        // add search query data to url.
+        foreach ($items as $item) {
+            $url = JUri::getInstance();
+            $query = $item->query;
+
+            foreach ($query as $key=>$value) {
+                $url->setVar($key, $value);
+            }
+
+            $url->setVar('Itemid', $item->id);
+
+            $items[$i]->link = (string)$url;
+            $i++;
+        }
+
         return $items;
     }
 }

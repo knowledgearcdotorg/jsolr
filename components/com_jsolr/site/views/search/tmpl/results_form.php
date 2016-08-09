@@ -63,7 +63,7 @@ JHTML::_('behavior.formvalidation');
                 <?php
                 echo JHtml::_(
                     'link',
-                    $item->link."&Itemid=".$item->id,
+                    $item->link,
                     JText::_($item->title),
                     array('data-category'=>$item->title));
                 ?>
