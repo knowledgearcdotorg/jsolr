@@ -518,7 +518,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         return $fields;
     }
 
-    public function getContextItems()
+    public function getContexts()
     {
         $menu = JFactory::getApplication()->getMenu();
 

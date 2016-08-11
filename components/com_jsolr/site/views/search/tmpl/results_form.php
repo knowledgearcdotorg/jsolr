@@ -50,7 +50,7 @@ JHTML::_('behavior.formvalidation');
 
     <nav>
         <ul class="nav nav-pills">
-            <?php foreach ($this->get('ContextItems') as $item) : ?>
+            <?php foreach ($this->get('Contexts') as $item) : ?>
                 <?php
                 $isSelected = ($item->id == JFactory::getApplication()->input->get('Itemid')) ? true : false;
                 ?>
