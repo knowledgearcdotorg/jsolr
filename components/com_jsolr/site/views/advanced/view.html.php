@@ -3,13 +3,13 @@
  * @package     JSolr.Search
  * @subpackage  View
  * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
- * @license     This file is part of the JSolrSearch component for Joomla!.
+ * @license     This file is part of the JSolr component for Joomla!.
  */
 defined('_JEXEC') or die('Restricted access');
 
 jimport( 'joomla.application.component.view');
 
-class JSolrSearchViewAdvanced extends JViewLegacy
+class JSolrViewAdvanced extends JViewLegacy
 {
     protected $form;
 

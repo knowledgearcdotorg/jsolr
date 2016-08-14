@@ -22,7 +22,7 @@ $document = JFactory::getDocument();
 
 $document->addStyleSheet(JURI::base().'/media/com_jsolr/css/jsolr.css');
 ?>
-<section id="jsolrSearch">
+<section id="jsolr">
     <form
         action="<?php echo JRoute::_("index.php"); ?>"
         method="get"

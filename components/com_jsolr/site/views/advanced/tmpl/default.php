@@ -3,7 +3,7 @@
  * @package     JSolr.Search
  * @subpackage  View
  * @copyright  Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
- * @license    This file is part of the JSolrSearch component for Joomla!.
+ * @license    This file is part of the JSolr component for Joomla!.
  */
 defined('_JEXEC') or die('Restricted access');
 
@@ -33,7 +33,7 @@ $params = $this->state->get('params');
             <?php endforeach;?>
 
             <div class="field">
-                  <input id="jsolr-submit-advanced" class="button validate" type="submit" value="<?php echo JText::_("COM_JSOLRSEARCH_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?>" />
+                  <input id="jsolr-submit-advanced" class="button validate" type="submit" value="<?php echo JText::_("COM_JSOLR_ADVANCED_SEARCH_BUTTON_SUBMIT"); ?>" />
             </div>
 
             <input type="hidden" name="option" value="com_jsolr"/>

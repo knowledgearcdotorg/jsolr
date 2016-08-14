@@ -42,7 +42,7 @@ integrating faceting within the component. Use template overrides to improve. --
 
 <?php endif; ?>
 
-<section id="jsolrSearchResults">
+<section id="jsolrResults">
 
     <header>
         <?php echo $this->loadTemplate('form'); ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * A view for configuring the JSolrSearch component's settings.
+ * A view for configuring the JSolr component's settings.
  *
  * @package     JSolr.Search
  * @subpackage  View

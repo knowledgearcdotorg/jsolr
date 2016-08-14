@@ -11,7 +11,7 @@ jimport('joomla.application.component.view');
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
 
-class JSolrSearchViewBrowse extends JViewLegacy
+class JSolrViewBrowse extends JViewLegacy
 {
     protected $state;
 
@@ -55,7 +55,7 @@ class JSolrSearchViewBrowse extends JViewLegacy
 
         $themeOverridePath =
             JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-            '/html/com_jsolrsearch/browse';
+            '/html/com_jsolr/browse';
 
         if (JPath::find($themeOverridePath, $override)) {
             return $extension;

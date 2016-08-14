@@ -13,7 +13,7 @@ jimport('joomla.error.log');
 jimport('joomla.language.helper');
 jimport('joomla.application.component.modellist');
 
-class JSolrSearchModelBrowse extends JModelList
+class JSolrModelBrowse extends JModelList
 {
     public function populateState($ordering = null, $direction = null)
     {
@@ -88,7 +88,7 @@ class JSolrSearchModelBrowse extends JModelList
 
         // get context.
         if ($this->getState('query.o', null)) {
-            foreach ($dispatcher->trigger('onJSolrSearchRegisterPlugin') as $result) {
+            foreach ($dispatcher->trigger('onJSolrRegisterPlugin') as $result) {
                 if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
                     $filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
                 }
@@ -107,7 +107,7 @@ class JSolrSearchModelBrowse extends JModelList
             $filters[] = $this->getState('facet.filters');
         }
 
-        JPluginHelper::importPlugin("jsolrsearch");
+        JPluginHelper::importPlugin("jsolr");
 
         $dispatcher = JDispatcher::getInstance();
 
@@ -158,7 +158,7 @@ class JSolrSearchModelBrowse extends JModelList
                 }
             }
         } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolrsearch');
+            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
         }
 
         return $array;
@@ -168,11 +168,11 @@ class JSolrSearchModelBrowse extends JModelList
     {
         $operators = array();
 
-        JPluginHelper::importPlugin("jsolrsearch");
+        JPluginHelper::importPlugin("jsolr");
 
         $dispatcher = JDispatcher::getInstance();
 
-        foreach ($dispatcher->trigger("onJSolrSearchOperatorsGet") as $result) {
+        foreach ($dispatcher->trigger("onJSolrOperatorsGet") as $result) {
             $operators = array_merge($operators, $result);
         }
 
@@ -188,6 +188,6 @@ class JSolrSearchModelBrowse extends JModelList
             $lang = JFactory::getLanguage()->getDefault();
         }
 
-        return "(lang:$lang OR lang:\*)";
+        return "(lang_s:$lang OR lang_s:\*)";
     }
 }

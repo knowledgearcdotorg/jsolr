@@ -169,6 +169,12 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     }
                 }
 
+                // set applied user filters.
+                foreach ($filters as $filter) {
+                var_dump($filter);
+                    $query->createFilterQuery($filter)->setQuery($filter);
+                }
+
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
                 $response = $client->select($query);

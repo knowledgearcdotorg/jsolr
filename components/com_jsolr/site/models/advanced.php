@@ -18,7 +18,7 @@ use \JSolr\Search\Factory;
 use \JSolr\Search\Model\Form;
 use \JSolr\Form\Form;
 
-class JSolrSearchModelAdvanced extends JSolrSearchModelForm
+class JSolrModelAdvanced extends JSolrModelForm
 {
     public function __construct($config = array())
     {

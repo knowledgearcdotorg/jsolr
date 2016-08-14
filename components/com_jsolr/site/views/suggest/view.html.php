@@ -11,12 +11,12 @@ jimport( 'joomla.application.component.view');
 jimport('joomla.filesystem.path');
 jimport('joomla.utilities.arrayhelper');
 
-class JSolrSearchViewSuggest extends JViewLegacy
+class JSolrViewSuggest extends JViewLegacy
 {
     public function display($tpl = null)
     {
         echo json_encode($this->get('Items'));
-        
+
         jexit();
     }
 }

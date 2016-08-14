@@ -1,6 +1,6 @@
 <?php
 /**
- * A model that provides configuration options for JSolrSearch.
+ * A model that provides configuration options for JSolr.
  *
  * @package     JSolr
  * @subpackage  Model

@@ -41,6 +41,6 @@
         </field>
 
         <field type="jsolr.queryfilter" name="in"/>
-        <field type="jsolr.languagefilter" name="lr" filter="lang"/>
+        <field type="jsolr.languagefilter" name="lang" filter="lang_s"/>
     </fieldset>
 </form>

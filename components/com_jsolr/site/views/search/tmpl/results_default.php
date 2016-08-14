@@ -64,7 +64,7 @@ endif; */
         <?php
         $hl = $this->get('Highlighting')->getResult($item->id);
         ?>
-        <article class="jsolrsearch-result">
+        <article class="jsolr-result">
             <header>
                 <h4>
                     <a href="<?php echo $item->link; ?>"><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('title_txt_*'), $item->{\JSolr\Helper::localize('title_txt_*')}); ?></a>

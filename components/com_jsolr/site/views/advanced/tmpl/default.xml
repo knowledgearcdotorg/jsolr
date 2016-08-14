@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
     <layout
-        title="COM_JSOLRSEARCH_ADVANCED_VIEW_DEFAULT_TITLE"
+        title="COM_JSOLR_ADVANCED_VIEW_DEFAULT_TITLE"
         option="com_jsolr_advanced_view_default_option">
         <message>
-            <![CDATA[COM_JSOLRSEARCH_ADVANCED_VIEW_DEFAULT_DESC]]>
+            <![CDATA[COM_JSOLR_ADVANCED_VIEW_DEFAULT_DESC]]>
         </message>
     </layout>
 </metadata>

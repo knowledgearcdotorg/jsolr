@@ -62,12 +62,12 @@ class LanguageFilter extends HiddenFilter
                 return JText::sprintf('COM_JSOLRSEARCH_FILTER_'.JString::strtoupper($this->name), $language->getName());
 
             case 'filter':
-                return 'lang';
+                return 'lang_s';
 
                 break;
 
             case 'filter_alt':
-                return 'lang_alt';
+                return 'lang_alt_s';
 
                 break;
 

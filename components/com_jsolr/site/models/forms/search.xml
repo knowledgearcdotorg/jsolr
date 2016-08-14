@@ -48,6 +48,6 @@
            <option value="y" filter="[NOW-1YEAR TO NOW]">COM_JSOLR_CALENDAR_YEAR</option>
         </field>
         <field type="jsolr.queryfilter" name="in"/>
-       <field type="jsolr.languagefilter" name="lr"/>
+        <field type="jsolr.languagefilter" name="lang"/>
     </fieldset>
 </form>

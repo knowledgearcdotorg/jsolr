@@ -14,7 +14,7 @@ use \JSolr\Helper;
 
 $operators = $this->state->get('facet.operators');
 
-JFactory::getDocument()->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolrsearch.css");
+JFactory::getDocument()->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolr.css");
 ?>
 <div class="item-page<?php echo $this->params->get('pageclass_sfx'); ?>">
     <?php if ($this->params->get('show_page_heading')) : ?>

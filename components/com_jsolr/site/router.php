@@ -10,7 +10,7 @@
  *
  * @return  array
  */
-function JSolrSearchBuildRoute(&$query)
+function JSolrBuildRoute(&$query)
 {
     static $menu;
 
@@ -53,7 +53,7 @@ function JSolrSearchBuildRoute(&$query)
  *
  * @return  array
  */
-function JSolrSearchParseRoute($segments)
+function JSolrParseRoute($segments)
 {
     $vars = array();
 
