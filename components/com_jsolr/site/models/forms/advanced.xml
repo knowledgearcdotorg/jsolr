@@ -3,7 +3,7 @@
     <fieldset
         name="query"
         label="COM_JSOLR_ADVANCED_SEARCH_TITLE"
-        addfieldpath="/libraries/JSolr/Form/Fields/Legacy">
+        addfieldpath="components/com_jsolr/model/fields">
 
         <!-- eventually only our FacetFields fields should be used here -->
         <field

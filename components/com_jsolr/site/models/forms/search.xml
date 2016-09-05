@@ -3,7 +3,7 @@
     <fieldset
         name="query"
         label="COM_JSOLR_ADVANCED_SEARCH_TITLE"
-        addfieldpath="components/com_jsolr/model/fields">
+        addfieldpath="components/com_jsolr/models/fields">
 
         <!-- only JSolrFormFields should be used here -->
         <field
@@ -18,7 +18,7 @@
 
     <fieldset
         name="facets"
-        addfieldpath="components/com_jsolr/model/fields">
+        addfieldpath="components/com_jsolr/models/fields">
         <field
             name="author"
             facet="author"
@@ -31,7 +31,7 @@
 
     <fieldset
         name="tools"
-        addfieldpath="components/com_jsolr/model/fields">
+        addfieldpath="components/com_jsolr/models/fields">
         <field
             type="jsolr.calendartool"
             name="date"

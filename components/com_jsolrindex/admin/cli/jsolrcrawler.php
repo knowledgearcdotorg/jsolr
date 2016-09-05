@@ -348,7 +348,7 @@ EOT;
 
         $dispatcher = JEventDispatcher::getInstance();
 
-        JPluginHelper::importPlugin("jsolrcrawler", $plugin, true, $dispatcher);
+        JPluginHelper::importPlugin("jsolr", $plugin, true, $dispatcher);
 
         return $dispatcher->trigger($name, $args);
     }

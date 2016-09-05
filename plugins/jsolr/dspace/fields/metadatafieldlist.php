@@ -32,7 +32,7 @@ class JSolrFormFieldMetadataFieldList extends JFormFieldList
         $options = parent::getOptions();
 
         try {
-            JPluginHelper::importPlugin("jsolrcrawler");
+            JPluginHelper::importPlugin("jsolr");
 
             $dispatcher = JEventDispatcher::getInstance();
 

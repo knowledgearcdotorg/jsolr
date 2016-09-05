@@ -16,94 +16,11 @@ use \JArrayHelper as JArrayHelper;
 abstract class Form extends \JModelForm
 {
     /**
-     * Gets the custom form path for the specified form.
-     *
-     * If a plugin has been selected (using the "o" parameter) then the method will attempt to
-     * load the plugin's override. If no override is found, it will attempt to load the default
-     * filters path.
-     *
-     * This method will attempt to load the form in the following order:
-     *
-     * 1. /path/to/joomla/templates/current/html/com_jsolr/forms/ using a
-     * plugin-specific override. The plugin override takes the form [type].[plugin_name].xml.
-     *
-     * 2. /path/to/joomla/templates/current/html/com_jsolr/forms/ for a generic
-     * override. The override is named [type].xml.
-     *
-     * 3. The plugin override, I.e.
-     * /path/to/joomla/plugins/jsolrsearch/[plugin]/forms/[type].xml).
-     *
-     * 4. The JSolr Search component's [type].xml, I.e.
-     * /path/to/joomla/component/com_jsolr/models/forms.
-     */
-    protected function getCustomFormPath($type)
-    {
-        $paths = array();
-        $template = JFactory::getApplication()->getTemplate();
-        $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/';
-        $loaded = null;
-
-        // load plugin filter override.
-        if ($this->getState('query.o'))
-        {
-            $plugins = $this->getPlugins();
-
-            while (($plugin = current($plugins)) && !$loaded)
-            {
-                if (JArrayHelper::getValue($plugin, 'name') == $this->getState('query.o'))
-                {
-                    $loaded = JArrayHelper::getValue($plugin, 'name');
-                }
-
-                next($plugins);
-            }
-        }
-
-        if ($loaded)
-        {
-            $paths[] = $overridePath.$type.'.'.$loaded.'.xml';
-
-            $paths[] = JPATH_ROOT.'/plugins/jsolrsearch/'.$loaded.'/forms/'.$type.'.xml';
-        }
-
-        // if the plugin is loaded, make sure the generic filters.xml sits above the plugin's
-        // filters.xml.
-        if (count($paths) > 0)
-        {
-            array_splice($paths, 1, 0, $overridePath.$type.'.xml');
-        }
-        else
-        {
-            $paths[] = $overridePath.$type.'.xml';
-        }
-
-        $found = null;
-
-        while (($path = current($paths)) && !$found)
-        {
-            if (JFile::exists($path))
-            {
-                $found = $path;
-            }
-
-            next($paths);
-        }
-
-        // if no override exists, just return default.
-        if (!$found)
-        {
-            $found = JPATH_ROOT.'/components/com_jsolr/models/forms/'.$type.'.xml';
-        }
-
-        return $found;
-    }
-
-    /**
      * Get the list of enabled plugins for search results.
      */
     public function getPlugins()
     {
-        JPluginHelper::importPlugin("jsolrsearch");
+        JPluginHelper::importPlugin("jsolr");
 
         $class = "JEventDispatcher";
         if (version_compare(JVERSION, "3.0", "l"))
@@ -134,5 +51,67 @@ abstract class Form extends \JModelForm
         }
 
         return $array;
+    }
+
+
+    /**
+     * Override to use JSorlForm.
+     * Method to get a form object.
+     *
+     * @param   string   $name     The name of the form.
+     * @param   string   $source   The form source. Can be XML string if file flag is set to false.
+     * @param   array    $options  Optional array of options for the form creation.
+     * @param   boolean  $clear    Optional argument to force load a new form.
+     * @param   string   $xpath    An optional xpath to search for the fields.
+     *
+     * @return  mixed  JForm object on success, False on error.
+     *
+     * @see     JForm
+     */
+    protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+    {
+        // Handle the optional arguments.
+        $options['control'] = JArrayHelper::getValue($options, 'control', false);
+
+        // Create a signature hash.
+        $hash = md5($source . serialize($options));
+
+        // Check if we can use a previously loaded form.
+        if (isset($this->_forms[$hash]) && !$clear) {
+            return $this->_forms[$hash];
+        }
+
+        \JSolr\Form\Form::addFormPath(JPATH_COMPONENT.'/models/forms');
+
+        // also try loading form overrides from template.
+        $template = JFactory::getApplication()->getTemplate();
+        \JSolr\Form\Form::addFormPath(JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms');
+
+        try {
+            $form = \JSolr\Form\Form::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
+
+            if (isset($options['load_data']) && $options['load_data']) {
+                // Get the data for the form.
+                $data = $this->loadFormData();
+            } else {
+                $data = array();
+            }
+
+            // Allow for additional modification of the form, and events to be triggered.
+            // We pass the data because plugins may require it.
+            $this->preprocessForm($form, $data);
+
+            // Load the data into the form after the plugins have operated.
+            $form->bind($data);
+        } catch (Exception $e) {
+            $this->setError($e->getMessage());
+
+            return false;
+        }
+
+        // Store the form for later.
+        $this->_forms[$hash] = $form;
+
+        return $form;
     }
 }

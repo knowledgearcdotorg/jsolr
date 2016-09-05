@@ -17,7 +17,7 @@ class JSolrFormFieldListings extends Facets
 
     protected function getOptions()
     {
-        JPluginHelper::importPlugin("jsolrsearch");
+        JPluginHelper::importPlugin("jsolr");
         $dispatcher =& JDispatcher::getInstance();
 
         // Initialize variables.

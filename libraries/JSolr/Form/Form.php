@@ -106,28 +106,25 @@ class Form extends \JForm
         $forms = &self::$forms;
 
         // Only instantiate the form if it does not already exist.
-        if (!isset($forms[$name])) {
+        if (!isset($forms[$name]))
+        {
             $data = trim($data);
 
             if (empty($data)) {
-                throw new \Exception(\JText::_('JLIB_FORM_ERROR_NO_DATA'));
+                throw new \InvalidArgumentException(sprintf('Form::getInstance(name, *%s*)', gettype($data)));
             }
 
             // Instantiate the form.
             $forms[$name] = new Form($name, $options);
 
             // Load the data.
-            if (substr(trim($data), 0, 1) == '<') {
+            if (substr($data, 0, 1) == '<') {
                 if ($forms[$name]->load($data, $replace, $xpath) == false) {
-                    throw new \Exception(\JText::_('JLIB_FORM_ERROR_XML_FILE_DID_NOT_LOAD'));
-
-                    return false;
+                    throw new \RuntimeException('Form::getInstance could not load form');
                 }
             } else {
                 if ($forms[$name]->loadFile($data, $replace, $xpath) == false) {
-                    throw new \Exception(\JText::_('JLIB_FORM_ERROR_XML_FILE_DID_NOT_LOAD'));
-
-                    return false;
+                    throw new \RuntimeException('Form::getInstance could not load file');
                 }
             }
         }
