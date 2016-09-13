@@ -36,7 +36,7 @@ $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
 // Don't show the filter module contents unless the user has specified
 // something to search for.
-if (modJSolrFilterHelper::showFilter()) {
-	$form = modJSolrFilterHelper::getForm();
+if (ModJSolrFilterHelper::showFilter()) {
+	$form = ModJSolrFilterHelper::getForm();
 	require JModuleHelper::getLayoutPath('mod_jsolrfilter', $params->get('layout', 'default'));
 }

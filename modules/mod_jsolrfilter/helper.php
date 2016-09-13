@@ -12,24 +12,22 @@ class modJSolrFilterHelper
 {
     public static function showFilter()
     {
-        $form = Form::getInstance('com_jsolr.search');
-
         $show = false;
 
-        if (count($form->getFieldset('facets'))) {
-            if ($form->isFiltered() || JFactory::getApplication()->input->get("q", null, "string")) {
-                $show = true;
+        if (JFactory::getApplication()->input->get("view", null, "string") == 'search') {
+            $form = static::getForm();
+
+            if (count($form->getFieldset('facets'))) {
+                if ($form->isFiltered() || JFactory::getApplication()->input->get("q", null, "string")) {
+                    $show = true;
+                }
             }
         }
 
         return $show;
     }
 
-    /**
-     *
-     * @return JSolrForm
-     */
-    public static function getForm()
+    public function getForm()
     {
         return Form::getInstance('com_jsolr.search');
     }

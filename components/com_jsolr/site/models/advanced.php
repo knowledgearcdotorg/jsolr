@@ -15,10 +15,9 @@ jimport('joomla.filesystem.path');
 jimport('joomla.application.component.modelform');
 
 use \JSolr\Search\Factory;
-use \JSolr\Search\Model\Form as JSolrModelForm;
 use \JSolr\Form\Form;
 
-class JSolrModelAdvanced extends JSolrModelForm
+class JSolrModelAdvanced extends \JSolr\Search\Model\Form
 {
     public function __construct($config = array())
     {
@@ -194,13 +193,19 @@ class JSolrModelAdvanced extends JSolrModelForm
      */
     public function getForm($data = array(), $loadData = true)
     {
-        $form = $this->loadForm($this->get('context'), 'advanced', array('load_data'=>$loadData));
+        if (!is_null($this->form)) {
+            return $this->form;
+        }
 
-        if (empty($form)) {
+        $context = $this->get('option').'.'.$this->getName();
+
+        $this->form = $this->loadForm($context, 'advanced', array('load_data'=>$loadData));
+
+        if (empty($this->form)) {
             return false;
         }
 
-        return $form;
+        return $this->form;
     }
 
     /**
