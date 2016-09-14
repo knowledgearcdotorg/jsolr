@@ -8,7 +8,7 @@
  */
 use \JSolr\Form\Form;
 
-class modJSolrFilterHelper
+class ModJSolrFilterHelper
 {
     public static function showFilter()
     {
