@@ -89,7 +89,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         $filters = $this->getForm()->getFilters();
 
-        if (!($this->getState('query.q') || $filters)) {
+        if (!($this->getState('query.q') || $this->getAppliedFacetFilters())) {
             return null; // nothing passed. Get out of here.
         }
 

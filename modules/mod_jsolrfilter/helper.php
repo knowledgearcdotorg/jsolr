@@ -15,10 +15,11 @@ class ModJSolrFilterHelper
         $show = false;
 
         if (JFactory::getApplication()->input->get("view", null, "string") == 'search') {
+            $model = \JModelLegacy::getInstance('Search', 'JSolrModel');
             $form = static::getForm();
 
             if (count($form->getFieldset('facets'))) {
-                if ($form->isFiltered() || JFactory::getApplication()->input->get("q", null, "string")) {
+                if ($model->getAppliedFacetFilters() || JFactory::getApplication()->input->get("q", null, "string")) {
                     $show = true;
                 }
             }

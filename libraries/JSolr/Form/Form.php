@@ -13,15 +13,6 @@ class Form extends \JForm
 {
     protected $facets = false;
 
-    public function isFiltered()
-    {
-        if (count($this->getFilters())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Gets a list of filters for narrowing the search result set.
      *
