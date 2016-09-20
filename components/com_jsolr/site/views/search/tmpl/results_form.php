@@ -43,7 +43,7 @@ JHTML::_('behavior.formvalidation');
         endforeach;
         ?>
 
-        <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_BUTTON_SUBMIT"); ?></button>
+        <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_SEARCH_BUTTON_SUBMIT"); ?></button>
     </fieldset>
 
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
