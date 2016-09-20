@@ -2,7 +2,7 @@
 /**
  * Installation scripts.
  *
- * @package    JSolr.Index
+ * @package    JSolr
  * @copyright  Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.installer.helper');
 jimport('joomla.filesystem.folder');
 
-class Com_JSolrIndexInstallerScript
+class Com_JSolrInstallerScript
 {
     public function install($parent)
     {
