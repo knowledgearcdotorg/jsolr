@@ -48,32 +48,6 @@ JHTML::_('behavior.formvalidation');
 
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
 
-    <nav>
-        <ul class="nav nav-pills">
-            <?php foreach ($this->get('Contexts') as $item) : ?>
-                <?php
-                $isSelected = ($item->id == JFactory::getApplication()->input->get('Itemid')) ? true : false;
-                ?>
-            <li
-                role="presentation"
-                <?php if ($isSelected) : ?>
-                 class="active"
-                <?php endif; ?>>
-
-                <?php
-                echo JHtml::_(
-                    'link',
-                    $item->link,
-                    JText::_($item->title),
-                    array('data-category'=>$item->title));
-                ?>
-            </li>
-
-            <?php endforeach; ?>
-
-        </ul>
-    </nav>
-
     <div id="jsolrFacetfilters">
         <?php if (!is_null($this->get('Form'))): ?>
         <ul>
