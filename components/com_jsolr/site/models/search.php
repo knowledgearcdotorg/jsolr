@@ -299,36 +299,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     }
 
     /**
-     * Gets a list of featured items.
-     * @TODO This is a proof of concept. Needs much more work.
-     */
-    public function getFeaturedItems()
-    {
-/*        try {
-            $filters = array('context:com_content.article');
-
-            //$query = $this->_getListQuery();
-
-            $query
-                ->filters($filters)
-                ->limit(5)
-                ->mergeParams(array('mm'=>'100%'));
-
-            if (is_null($query)) {
-                return $query;
-            }
-
-            return $query->search();
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
-
-            return null;
-        }
-*/
-        return array();
-    }
-
-    /**
      * Method to get the search form.
      *
      * @param   array  $data      An optional array of data for the form to
