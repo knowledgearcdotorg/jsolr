@@ -12,8 +12,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use \JSolr\Helper;
 
-$operators = $this->state->get('facet.operators');
-
 JFactory::getDocument()->addStyleSheet(JURI::base()."media/".$this->getModel()->get('option')."/css/jsolr.css");
 ?>
 <div class="item-page<?php echo $this->params->get('pageclass_sfx'); ?>">
@@ -24,21 +22,20 @@ JFactory::getDocument()->addStyleSheet(JURI::base()."media/".$this->getModel()->
     <?php endif; ?>
 
     <ul>
-    <?php foreach ($this->items as $keyi=>$valuei) : ?>
-        <?php $field = JArrayHelper::getValue($operators, $keyi); ?>
-        <?php foreach ($valuei as $keyj=>$valuej) : ?>
+    <?php foreach ($this->items->getFacets() as $key=>$facet) : ?>
+        <?php foreach($facet as $value=>$count) : ?>
             <?php
             $vars = array(
-                    JFactory::getApplication()->input->get('name')=>Helper::getOriginalFacet($keyj));
+                        JFactory::getApplication()->input->get('name')=>Helper::getOriginalFacet($value));
 
             if (JFactory::getApplication()->input->get('o')) {
                 $vars['o'] = JFactory::getApplication()->input->get('o');
             }
 
             if ($this->params->get('show_count')) {
-                $facet = JText::sprintf('%s [%s]', Helper::getOriginalFacet($keyj), $valuej);
+                $facet = JText::sprintf('%s [%s]', Helper::getOriginalFacet($value), $count);
             } else {
-                $facet = JText::sprintf('%s', Helper::getOriginalFacet($keyj));
+                $facet = JText::sprintf('%s', Helper::getOriginalFacet($value));
             }
             ?>
 

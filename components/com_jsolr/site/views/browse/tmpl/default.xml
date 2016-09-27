@@ -27,15 +27,6 @@
                 label="COM_JSOLR_FIELD_SELECT_FACET_LABEL"
                 description="COM_JSOLR_FIELD_SELECT_FACET_DESC"
                 required="true"/>
-
-            <field
-                name="o"
-                type="plugins"
-                folder="jsolr"
-                label="COM_JSOLR_FIELD_SELECT_O_LABEL"
-                description="COM_JSOLR_FIELD_SELECT_O_DESC">
-                <option value="">COM_JSOLR_FIELD_SELECT_EXTENSION_OPTION_NONE</option>
-            </field>
         </fieldset>
     </fields>
 
@@ -46,7 +37,6 @@
         <fieldset
             name="basic"
             label="COM_JSOLR_ATTRIBS_BROWSE_SETTINGS_LABEL">
-
             <field
                 name="show_count"
                 type="radio"
@@ -57,6 +47,12 @@
                 <option value="0">JHIDE</option>
                 <option value="1">JSHOW</option>
             </field>
+
+            <field
+                name="fq"
+                type="text"
+                label="COM_JSOLR_ATTRIBS_BROWSE_FQ_LABEL"
+                description="COM_JSOLR_ATTRIBS_BROWSE_FQ_DESC"/>
         </fieldset>
     </fields>
 </metadata>

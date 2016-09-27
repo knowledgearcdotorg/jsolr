@@ -17,166 +17,91 @@ class JSolrModelBrowse extends JModelList
 {
     public function populateState($ordering = null, $direction = null)
     {
-        // If the context is set, assume that stateful lists are used.
-        if ($this->context) {
-            $app = JFactory::getApplication('site');
+        $app = JFactory::getApplication('site');
 
-            // Load the parameters.
-            $params = $app->getParams();
+        // Load the parameters.
+        $params = $app->getParams();
 
-            $this->setState('params', $params);
+        $this->setState('params', $params);
 
-            $this->setState('facet.range', $app->input->get('range', null, 'string'));
+        $array = explode(',', $app->input->get('facet', null, 'string'));
 
-            $this->setState('facet.start', $app->input->get('start', null, 'string'));
+        $this->setState('facet.fields', $array);
 
-            $this->setState('facet.end', $app->input->get('end', null, 'string'));
+        $this->setState('facet.prefix', $app->input->get('prefix', null, 'string'));
 
-            $this->setState('facet.gap', $app->input->get('gap', null, 'string'));
+        $this->setState('list.limit', $app->input->get('limit', $params->get('list_limit'), 'uint'));
 
-            $array = $app->input->get('facet', null, 'string');
+        $this->setState('list.start', $app->input->get('start', 0, 'uint'));
+    }
 
-            if ($array) {
-                $array = explode(',', $array);
+    /**
+     * Builds the query and returns the result.
+     *
+     * @return  \Solarium\QueryType\Select\Result  The query result.
+     */
+    public function getQuery()
+    {
+        $store = $this->getStoreId();
+
+        if (!isset($this->cache[$store])) {
+            $filters = array();
+
+            $filters['lang'] = $this->getLanguageFilter();
+
+            if ($fq = $this->getState('params')->get('fq')) {
+                $filters['fq'] = $fq;
             }
 
-            $this->setState('facet.fields', $array);
+            // set access.
+            if ($this->getState('params')->get('fq_access', 1)) {
+                $viewLevels = JFactory::getUser()->getAuthorisedViewLevels();
+                $access = implode(' OR ', array_unique($viewLevels));
 
-            $this->setState('facet.pivot', $app->input->get('pivot', null, 'string'));
+                if ($access) {
+                    $filters['access'] = 'access_i:'.'('.$access.') OR null';
+                }
+            }
 
-            $this->setState('facet.filters', $app->input->get('filters', null, 'string'));
+            try {
+                $client = \JSolr\Factory::getClient();
 
-            $this->setState('facet.prefix', $app->input->get('prefix', null, 'string'));
+                $query = $client->createSelect();
 
-            $this->setState('facet.operators', $this->getOperators());
+                $query
+                    ->setQuery("*:*")
+                    ->getFacetSet()
+                        ->setMinCount(1);
 
-            $this->setState('list.limit', $app->input->get('limit', $params->get('list_limit'), 'uint'));
+                // set applied user filters.
+                foreach ($filters as $key=>$value) {
+                    $query->createFilterQuery($key)->setQuery($value);
+                }
 
-            $this->setState('list.start', $app->input->get('start', 0, 'uint'));
+                foreach ($this->getState('facet.fields') as $field) {
+                    $query->getFacetSet()->createFacetField($field)->setField($field);
+                }
+
+                if ($prefix = $this->getState('facet.prefix')) {
+                    $query->getFacetSet()->setPrefix($prefix);
+                }
+
+                $response = $client->select($query);
+
+                $this->cache[$store] = $response;
+            } catch (Exception $e) {
+                JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
+            }
         }
+
+        return $this->cache[$store];
     }
 
     public function getItems()
     {
-        $params = JComponentHelper::getParams($this->get('option'), true);
+        $result = $this->getQuery();
 
-        $list = array();
-
-        $facetParams = array();
-
-        $filters = array();
-
-        $array = array();
-
-        $facetFields = $this->getState('facet.fields');
-
-        if ($this->getState('facet.range')) {
-            $facetFields[] = $this->getState('facet.range');
-        }
-
-        if (!$this->getState('params')->get('override_schema', 0)) {
-            $access = implode(' OR ', JFactory::getUser()->getAuthorisedViewLevels());
-
-            if ($access) {
-                $access = 'access:'.'('.$access.') OR null';
-
-                $filters[] = $access;
-            }
-
-            $filters[] = $this->getLanguageFilter();
-        }
-
-        // get context.
-        if ($this->getState('query.o', null)) {
-            foreach ($dispatcher->trigger('onJSolrRegisterPlugin') as $result) {
-                if (JArrayHelper::getValue($result, 'name') == $this->getState('query.o', null)) {
-                    $filters = array_merge($filters, array('context:'.JArrayHelper::getValue($result, 'context')));
-                }
-            }
-        }
-
-        if ($prefix = $this->getState('facet.prefix')) {
-            $facetParams['facet.prefix'] = $prefix;
-        }
-
-        if ($pivot = $this->getState('facet.pivot')) {
-            $facetParams["facet.pivot"] = $pivot;
-        }
-
-        if ($this->getState('facet.filters')) {
-            $filters[] = $this->getState('facet.filters');
-        }
-
-        JPluginHelper::importPlugin("jsolr");
-
-        $dispatcher = JDispatcher::getInstance();
-
-        try {
-            $query = \JSolr\Search\Factory::getQuery("*:*")
-                ->useQueryParser('edismax')
-                ->mergeParams($facetParams)
-                ->filters($filters)
-                ->facet(0, 'index', -1)
-                ->rows(0);
-
-            if ($this->getState('facet.fields')) {
-                $query->facetFields($this->getState('facet.fields'));
-            }
-
-            if ($this->getState('facet.range')) {
-                $query->facetRange(
-                    $this->getState('facet.range'),
-                    $this->getState('facet.start'),
-                    $this->getState('facet.end'),
-                    $this->getState('facet.gap'));
-            }
-
-            $results = $query->search();
-
-            // @FIXME Temporary solution for pivots.
-            $pivots = $results->getFacetPivot();
-
-            if (isset($pivots)) {
-                $array = JArrayHelper::fromObject($pivots, false);
-            } else {
-                foreach ($facetFields as $field) {
-                    $array[$field] = array();
-
-                    if (isset($results->getFacets()->{$field})) {
-                        foreach ($results->getFacets()->{$field} as $key=>$value) {
-                            $array[$field][$key] = $value;
-                        }
-                    }
-
-                    if (isset($results->getFacetRanges()->{$field})) {
-                        $counts = (array)$results->getFacetRanges()->{$field}->counts;
-
-                        foreach ($counts as $key=>$value) {
-                            $array[$field][$key] = $value;
-                        }
-                    }
-                }
-            }
-        } catch (Exception $e) {
-            JLog::add($e->getMessage(), JLog::ERROR, 'jsolr');
-        }
-
-        return $array;
-    }
-
-    private function getOperators()
-    {
-        $operators = array();
-
-        JPluginHelper::importPlugin("jsolr");
-
-        $dispatcher = JDispatcher::getInstance();
-
-        foreach ($dispatcher->trigger("onJSolrOperatorsGet") as $result) {
-            $operators = array_merge($operators, $result);
-        }
-
-        return $operators;
+        return $result->getFacetSet();
     }
 
     private function getLanguageFilter()
