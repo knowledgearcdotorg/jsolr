@@ -190,6 +190,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getEDisMax()->setQueryPhraseSlop($qs);
                 }
 
+                if ($tie = $this->getState('params')->get('tie')) {
+                    $query->getEDisMax()->setTie($tie);
+                }
+
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
                 $response = $client->select($query);

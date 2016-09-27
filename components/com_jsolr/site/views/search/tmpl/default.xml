@@ -56,6 +56,7 @@
             <field
                 name="ps"
                 type="number"
+                default="0"
                 min="0"
                 max="1000"
                 label="COM_JSOLR_SEARCH_PS_LABEL"
@@ -64,10 +65,21 @@
             <field
                 name="qs"
                 type="number"
+                default="0"
                 min="0"
                 max="1000"
                 label="COM_JSOLR_SEARCH_QS_LABEL"
                 description="COM_JSOLR_SEARCH_QS_DESC"/>
+
+            <field
+                name="tie"
+                type="number"
+                default="0.0"
+                min="0.0"
+                max="1.0"
+                step="0.01"
+                label="COM_JSOLR_SEARCH_TIE_LABEL"
+                description="COM_JSOLR_SEARCH_TIE_DESC"/>
         </fieldset>
     </fields>
 </metadata>
