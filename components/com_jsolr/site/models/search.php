@@ -22,8 +22,6 @@ jimport('joomla.filesystem.file');
 
 class JSolrModelSearch extends \JSolr\Search\Model\Form
 {
-    const MM_DEFAULT = '1';
-
     const QF_DEFAULT = '_text_ title_txt_*^100 content_txt_*';
 
     const HL_DEFAULT = '_text_ title_txt_* content_txt_*';
@@ -125,12 +123,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $qf = \JSolr\Helper::localize($qf);
 
                 // set minimum match.
-                $mm = $this->getState('params')->get('mm', self::MM_DEFAULT);
+                $mm = $this->getState('params')->get('mm', null);
+                $mm = $this->getState('params')->get('menu-mm', $mm);
 
-                // set up edismax
-                $query->getEDisMax()
-                    ->setQueryFields($qf)
-                    ->getMinimumMatch($mm);
+                if ($mm) {
+                    $query->getEDisMax()->setMinimumMatch($mm);
+                }
+
+                $query->getEDisMax()->setQueryFields($qf);
 
                 /*
                 // set up spellcheck
