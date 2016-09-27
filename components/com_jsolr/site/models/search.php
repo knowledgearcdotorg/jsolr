@@ -94,6 +94,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $store = $this->getStoreId();
 
         if (!isset($this->cache[$store])) {
+            if ($fq = $this->getState('params')->get('fq')) {
+                $filters['fq'] = $fq;
+            }
+
             try {
                 $client = \JSolr\Factory::getClient();
 
@@ -165,14 +169,13 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $access = implode(' OR ', array_unique($viewLevels));
 
                     if ($access) {
-                        $access = 'access_i:'.'('.$access.') OR null';
-                        $query->createFilterQuery('access')->setQuery($access);
+                        $filters['access'] = 'access_i:'.'('.$access.') OR null';
                     }
                 }
 
                 // set applied user filters.
-                foreach ($filters as $filter) {
-                    $query->createFilterQuery($filter)->setQuery($filter);
+                foreach ($filters as $key=>$value) {
+                    $query->createFilterQuery($key)->setQuery($value);
                 }
 
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');

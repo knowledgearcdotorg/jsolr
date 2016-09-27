@@ -25,8 +25,8 @@ class Form extends \JForm
         foreach ($this->getFieldsets() as $fieldset) {
             foreach ($this->getFieldset($fieldset->name) as $field) {
                 if (in_array('JSolr\Form\Fields\Filterable', class_implements($field)) == true) {
-                    if (count($field->getFilters())) {
-                        $filters = array_merge($filters, $field->getFilters());
+                    foreach ($field->getFilters() as $filter) {
+                        $filters[$field->fieldname] = $filter;
                     }
                 }
             }

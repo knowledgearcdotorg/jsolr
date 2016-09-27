@@ -40,6 +40,13 @@
                 type="text"
                 label="COM_JSOLR_SEARCH_MENU-MM_LABEL"
                 description="COM_JSOLR_SEARCH_MENU-MM_DESC"/>
+
+
+            <field
+                name="fq"
+                type="text"
+                label="COM_JSOLR_SEARCH_FQ_LABEL"
+                description="COM_JSOLR_SEARCH_FQ_DESC"/>
         </fieldset>
     </fields>
 </metadata>
