@@ -178,6 +178,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->createFilterQuery($key)->setQuery($value);
                 }
 
+                if ($pf = $this->getState('params')->get('pf')) {
+                    $query->getEDisMax()->setPhraseFields($pf);
+                }
+
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
                 $response = $client->select($query);
