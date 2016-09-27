@@ -52,6 +52,14 @@
                 type="text"
                 label="COM_JSOLR_SEARCH_PF_LABEL"
                 description="COM_JSOLR_SEARCH_PF_DESC"/>
+
+            <field
+                name="ps"
+                type="number"
+                min="0"
+                max="1000"
+                label="COM_JSOLR_SEARCH_PS_LABEL"
+                description="COM_JSOLR_SEARCH_PS_DESC"/>
         </fieldset>
     </fields>
 </metadata>
