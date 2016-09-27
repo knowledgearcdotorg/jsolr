@@ -186,6 +186,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getEDisMax()->setPhraseSlop($ps);
                 }
 
+                if ($qs = $this->getState('params')->get('qs')) {
+                    $query->getEDisMax()->setQueryPhraseSlop($qs);
+                }
+
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
                 $response = $client->select($query);

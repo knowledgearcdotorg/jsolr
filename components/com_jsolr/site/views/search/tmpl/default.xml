@@ -60,6 +60,14 @@
                 max="1000"
                 label="COM_JSOLR_SEARCH_PS_LABEL"
                 description="COM_JSOLR_SEARCH_PS_DESC"/>
+
+            <field
+                name="qs"
+                type="number"
+                min="0"
+                max="1000"
+                label="COM_JSOLR_SEARCH_QS_LABEL"
+                description="COM_JSOLR_SEARCH_QS_DESC"/>
         </fieldset>
     </fields>
 </metadata>
