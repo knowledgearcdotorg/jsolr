@@ -222,6 +222,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     }
                 }
 
+                if ($boost = $this->getState('params')->get('boost')) {
+                    $query->getEDisMax()->setBoostFunctionsMult($boost);
+                }
+
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
                 $response = $client->select($query);

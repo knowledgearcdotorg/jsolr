@@ -128,6 +128,12 @@
                 max="1000"
                 label="COM_JSOLR_SEARCH_PS3_LABEL"
                 description="COM_JSOLR_SEARCH_PS3_DESC"/>
+
+            <field
+                name="boost"
+                type="text"
+                label="COM_JSOLR_SEARCH_BOOST_LABEL"
+                description="COM_JSOLR_SEARCH_BOOST_DESC"/>
         </fieldset>
     </fields>
 </metadata>
