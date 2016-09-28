@@ -180,10 +180,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 if ($pf = $this->getState('params')->get('pf')) {
                     $query->getEDisMax()->setPhraseFields($pf);
-                }
 
-                if ($ps = $this->getState('params')->get('ps')) {
-                    $query->getEDisMax()->setPhraseSlop($ps);
+                    if ($ps = $this->getState('params')->get('ps')) {
+                        $query->getEDisMax()->setPhraseSlop($ps);
+                    }
                 }
 
                 if ($qs = $this->getState('params')->get('qs')) {
@@ -208,10 +208,18 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 if ($pf2 = $this->getState('params')->get('pf2')) {
                     $query->getEDisMax()->setPhraseBigramFields($pf2);
+
+                    if ($ps2 = $this->getState('params')->get('ps2')) {
+                        $query->getEDisMax()->setPhraseBigramSlop($ps2);
+                    }
                 }
 
                 if ($pf3 = $this->getState('params')->get('pf3')) {
                     $query->getEDisMax()->setPhraseTrigramFields($pf3);
+
+                    if ($ps3 = $this->getState('params')->get('ps3')) {
+                        $query->getEDisMax()->setPhraseTrigramSlop($ps3);
+                    }
                 }
 
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
