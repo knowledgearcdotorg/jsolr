@@ -92,6 +92,12 @@
                 type="text"
                 label="COM_JSOLR_SEARCH_BF_LABEL"
                 description="COM_JSOLR_SEARCH_BF_DESC"/>
+
+            <field
+                name="uf"
+                type="text"
+                label="COM_JSOLR_SEARCH_UF_LABEL"
+                description="COM_JSOLR_SEARCH_UF_DESC"/>
         </fieldset>
     </fields>
 </metadata>
