@@ -86,6 +86,12 @@
                 type="text"
                 label="COM_JSOLR_SEARCH_BQ_LABEL"
                 description="COM_JSOLR_SEARCH_BQ_DESC"/>
+
+            <field
+                name="bf"
+                type="text"
+                label="COM_JSOLR_SEARCH_BF_LABEL"
+                description="COM_JSOLR_SEARCH_BF_DESC"/>
         </fieldset>
     </fields>
 </metadata>
