@@ -206,6 +206,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getEDisMax()->setUserFields($uf);
                 }
 
+                if ($pf2 = $this->getState('params')->get('pf2')) {
+                    $query->getEDisMax()->setPhraseBigramFields($pf2);
+                }
+
+                if ($pf3 = $this->getState('params')->get('pf3')) {
+                    $query->getEDisMax()->setPhraseTrigramFields($pf3);
+                }
+
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
                 $response = $client->select($query);
