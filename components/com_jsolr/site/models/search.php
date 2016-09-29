@@ -110,13 +110,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->setRows($limit);
 
-                if ($contexts = $this->getState('params')->get('context')) {
-                    $query
-                        ->createFilterQuery('contexts')
-                            ->setQuery(
-                                "context_s:(".implode(' OR ', $contexts).")");
-                }
-
                 // set query fields.
                 $qf = $this->getState('params')->get('qf', self::QF_DEFAULT);
 

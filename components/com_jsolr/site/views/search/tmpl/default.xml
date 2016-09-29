@@ -18,12 +18,6 @@
             name="basic"
             addfieldpath="libraries/JSolr/Form/Fields/Legacy">
             <field
-                name="context"
-                type="jsolr.contextlist"
-                label="COM_JSOLR_SEARCH_CONTEXTS_LABEL"
-                description="COM_JSOLR_SEARCH_CONTEXTS_DESC"/>
-
-            <field
                 name="menu-qf"
                 type="text"
                 label="COM_JSOLR_SEARCH_MENU-QF_LABEL"
