@@ -17,18 +17,21 @@ class JSolrViewCPanel extends JViewLegacy
 
     function display($tpl = null)
     {
+        JSolrHelper::addSubmenu('dimensions');
+
         $this->item = $this->get("Item");
 
         $this->canDo = JSolrHelper::getActions();
 
         $this->addToolbar();
+        $this->sidebar = JHtmlSidebar::render();
 
         parent::display($tpl);
     }
 
     protected function addToolbar()
     {
-        JToolBarHelper::title(JText::_('Configuration'), 'config.png');
+        JToolBarHelper::title(JText::_('COM_JSOLR_CPANEL_HEADING'), 'config.png');
 
         if ($this->canDo->get('core.admin')) {
             JToolBarHelper::preferences('com_jsolr');

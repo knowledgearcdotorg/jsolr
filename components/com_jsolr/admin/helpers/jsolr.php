@@ -19,7 +19,11 @@ class JSolrHelper
      */
     public static function addSubmenu($vName)
     {
-
+        JHtmlSidebar::addEntry(
+            JText::_('COM_JSOLR_SUBMENU_DIMENSIONS'),
+            'index.php?option=com_jsolr&view=dimensions',
+            $vName == 'dimensions'
+        );
     }
 
     /**

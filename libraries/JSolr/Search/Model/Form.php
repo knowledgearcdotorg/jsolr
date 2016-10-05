@@ -16,45 +16,6 @@ use \JArrayHelper as JArrayHelper;
 abstract class Form extends \JModelForm
 {
     /**
-     * Get the list of enabled plugins for search results.
-     */
-    public function getPlugins()
-    {
-        JPluginHelper::importPlugin("jsolr");
-
-        $class = "JEventDispatcher";
-        if (version_compare(JVERSION, "3.0", "l"))
-        {
-            $class = "JDispatcher";
-        }
-
-        $dispatcher = $class::getInstance();
-
-        $array = $dispatcher->trigger('onJSolrSearchRegisterPlugin');
-
-        $array = array_merge(array(array('plugin'=>'', 'label'=>JText::_('Everything'))), $array);
-
-        for ($i = 0; $i < count($array); $i++)
-        {
-            $uri = clone \JSolr\Search\Factory::getQueryRoute();
-
-            if (JArrayHelper::getValue($array[$i], 'name'))
-            {
-                $uri->setVar('o', $array[$i]['name']);
-            }
-            else
-            {
-                $uri->delVar('o');
-            }
-
-            $array[$i]['uri'] = htmlentities((string)$uri, ENT_QUOTES, 'UTF-8');
-        }
-
-        return $array;
-    }
-
-
-    /**
      * Override to use JSorlForm.
      * Method to get a form object.
      *

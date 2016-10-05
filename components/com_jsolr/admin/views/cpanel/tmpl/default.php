@@ -61,120 +61,130 @@ JS;
 
 JFactory::getDocument()->addScriptDeclaration($js);
 ?>
-<div class="row-striped">
+<?php if (!empty($this->sidebar)) : ?>
+<div id="j-sidebar-container" class="span2">
+    <?php echo $this->sidebar; ?>
+</div>
+<div id="j-main-container" class="span10">
+<?php else : ?>
+<div id="j-main-container">
+<?php endif;?>
 
-    <div class="row-fluid">
+    <div class="row-striped">
 
-        <div class="span6">
+        <div class="row-fluid">
 
-            <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_STATUS');?></strong>
+            <div class="span6">
 
-        </div>
+                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_STATUS');?></strong>
+
+            </div>
 
 
-        <div id="jsolrStatus" class="span6">
-        <?php
-        if ($this->item->get('status') == "OK") :
-            echo JText::_("COM_JSOLR_CPANEL_CONNECTED");
-        else :
-            echo JText::_("COM_JSOLR_CPANEL_NOT_CONNECTED");
-        endif;
-        ?>
-
-        </div>
-
-    </div>
-
-    <div class="row-fluid">
-        <div class="span6">
-            <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_URL');?></strong>
-        </div>
-
-        <div class="span6">
-            <?php echo $this->item->get('settings.url'); ?>
-        </div>
-    </div>
-
-    <?php if ($this->item->get('settings.url2')) : ?>
-    <div class="row-fluid">
-        <div class="span6">
-            <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_URL2');?></strong>
-        </div>
-
-        <div class="span6">
-            <?php echo $this->item->get('settings.url2'); ?>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <div class="row-fluid">
-        <div class="span6">
-            <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_NUMDOCS'); ?></strong>
-        </div>
-
-        <div id="jsolrNumDocs" class="span6">
-            <?php echo $this->item->get('statistics.index.numDocs'); ?>
-        </div>
-    </div>
-
-    <div class="row-fluid">
-        <div class="span6">
-            <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_LASTINDEXED'); ?></strong>
-        </div>
-
-        <div class="span6" id="jsolrLastModified">
+            <div id="jsolrStatus" class="span6">
             <?php
-            if ($this->item->get('statistics.index.lastModified')) :
-                echo JHtml::_('date', $this->item->get('statistics.index.lastModified'), JText::_('DATE_FORMAT_LC2'));
+            if ($this->item->get('status') == "OK") :
+                echo JText::_("COM_JSOLR_CPANEL_CONNECTED");
             else :
-                echo JText::_('COM_JSOLR_CPANEL_NOVALUE');
+                echo JText::_("COM_JSOLR_CPANEL_NOT_CONNECTED");
             endif;
             ?>
-        </div>
-    </div>
 
-    <?php if (!$this->item->get('libraries.curl')) : ?>
-    <div class="row-fluid">
-        <div class="span6">
-            <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_CURL_NOT_INSTALLED'); ?></strong>
-        </div>
-    </div>
-    <?php endif; ?>
+            </div>
 
-    <?php if ($this->item->get('settings.indexAttachments')) : ?>
+        </div>
+
         <div class="row-fluid">
             <div class="span6">
-                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR'); ?></strong>
+                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_URL');?></strong>
             </div>
 
             <div class="span6">
-                <?php echo $this->item->get('settings.extractor'); ?>
+                <?php echo $this->item->get('settings.url'); ?>
             </div>
         </div>
 
-        <?php if ($this->item->get('settings.extractor') == 'tika_app') : ?>
+        <?php if ($this->item->get('settings.url2')) : ?>
         <div class="row-fluid">
             <div class="span6">
-                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR_TIKA_APP'); ?></strong>
+                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_URL2');?></strong>
             </div>
 
             <div class="span6">
-                <?php echo $this->item->get('settings.tikaApp'); ?>
+                <?php echo $this->item->get('settings.url2'); ?>
             </div>
         </div>
         <?php endif; ?>
 
-        <?php if ($this->item->get('settings.extractor') == 'tika_server') : ?>
         <div class="row-fluid">
             <div class="span6">
-                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR_TIKA_SERVER'); ?></strong>
+                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_NUMDOCS'); ?></strong>
             </div>
 
+            <div id="jsolrNumDocs" class="span6">
+                <?php echo $this->item->get('statistics.index.numDocs'); ?>
+            </div>
+        </div>
+
+        <div class="row-fluid">
             <div class="span6">
-                <?php echo $this->item->get('settings.tikaServer'); ?>
+                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_LASTINDEXED'); ?></strong>
+            </div>
+
+            <div class="span6" id="jsolrLastModified">
+                <?php
+                if ($this->item->get('statistics.index.lastModified')) :
+                    echo JHtml::_('date', $this->item->get('statistics.index.lastModified'), JText::_('DATE_FORMAT_LC2'));
+                else :
+                    echo JText::_('COM_JSOLR_CPANEL_NOVALUE');
+                endif;
+                ?>
+            </div>
+        </div>
+
+        <?php if (!$this->item->get('libraries.curl')) : ?>
+        <div class="row-fluid">
+            <div class="span6">
+                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_CURL_NOT_INSTALLED'); ?></strong>
             </div>
         </div>
         <?php endif; ?>
-    <?php endif; ?>
 
+        <?php if ($this->item->get('settings.indexAttachments')) : ?>
+            <div class="row-fluid">
+                <div class="span6">
+                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR'); ?></strong>
+                </div>
+
+                <div class="span6">
+                    <?php echo $this->item->get('settings.extractor'); ?>
+                </div>
+            </div>
+
+            <?php if ($this->item->get('settings.extractor') == 'tika_app') : ?>
+            <div class="row-fluid">
+                <div class="span6">
+                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR_TIKA_APP'); ?></strong>
+                </div>
+
+                <div class="span6">
+                    <?php echo $this->item->get('settings.tikaApp'); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if ($this->item->get('settings.extractor') == 'tika_server') : ?>
+            <div class="row-fluid">
+                <div class="span6">
+                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR_TIKA_SERVER'); ?></strong>
+                </div>
+
+                <div class="span6">
+                    <?php echo $this->item->get('settings.tikaServer'); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        <?php endif; ?>
+
+    </div>
 </div>

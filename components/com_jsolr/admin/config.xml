@@ -155,12 +155,23 @@
     <fieldset
         name="search"
         label="COM_JSOLR_CONFIG_SEARCH_LABEL"
-        description="COM_JSOLR_CONFIG_SEARCH_DESCRIPTION">
+        description="COM_JSOLR_CONFIG_SEARCH_DESC">
+        <field
+            name="fq_access"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_JSOLR_SEARCH_FQ_ACCESS_LABEL"
+            description="COM_JSOLR_SEARCH_FQ_ACCESS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+
         <field
             name="mm"
             type="text"
             label="COM_JSOLR_SEARCH_MM_LABEL"
-            description="COM_JSOLR_SEARCH_MM_DESCRIPTION"
+            description="COM_JSOLR_SEARCH_MM_DESC"
             default="1"/>
 
         <field
@@ -178,14 +189,97 @@
             default="_text_ title_txt_* author content_txt_*"/>
 
         <field
-            name="fq_access"
-            type="radio"
-            class="btn-group btn-group-yesno"
-            default="1"
-            label="COM_JSOLR_SEARCH_FQ_ACCESS_LABEL"
-            description="COM_JSOLR_SEARCH_FQ_ACCESS_DESC">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </field>
+            name="fq"
+            type="text"
+            label="COM_JSOLR_SEARCH_FQ_LABEL"
+            description="COM_JSOLR_SEARCH_FQ_DESC"/>
+
+        <field
+            name="pf"
+            type="text"
+            label="COM_JSOLR_SEARCH_PF_LABEL"
+            description="COM_JSOLR_SEARCH_PF_DESC"/>
+
+        <field
+            name="ps"
+            type="number"
+            default="0"
+            min="0"
+            max="1000"
+            label="COM_JSOLR_SEARCH_PS_LABEL"
+            description="COM_JSOLR_SEARCH_PS_DESC"/>
+
+        <field
+            name="qs"
+            type="number"
+            default="0"
+            min="0"
+            max="1000"
+            label="COM_JSOLR_SEARCH_QS_LABEL"
+            description="COM_JSOLR_SEARCH_QS_DESC"/>
+
+        <field
+            name="tie"
+            type="number"
+            default="0.0"
+            min="0.0"
+            max="1.0"
+            step="0.01"
+            label="COM_JSOLR_SEARCH_TIE_LABEL"
+            description="COM_JSOLR_SEARCH_TIE_DESC"/>
+
+        <field
+            name="bq"
+            type="text"
+            label="COM_JSOLR_SEARCH_BQ_LABEL"
+            description="COM_JSOLR_SEARCH_BQ_DESC"/>
+
+        <field
+            name="bf"
+            type="text"
+            label="COM_JSOLR_SEARCH_BF_LABEL"
+            description="COM_JSOLR_SEARCH_BF_DESC"/>
+
+        <field
+            name="uf"
+            type="text"
+            label="COM_JSOLR_SEARCH_UF_LABEL"
+            description="COM_JSOLR_SEARCH_UF_DESC"/>
+
+        <field
+            name="pf2"
+            type="text"
+            label="COM_JSOLR_SEARCH_PF2_LABEL"
+            description="COM_JSOLR_SEARCH_PF2_DESC"/>
+
+        <field
+            name="pf3"
+            type="text"
+            label="COM_JSOLR_SEARCH_PF3_LABEL"
+            description="COM_JSOLR_SEARCH_PF3_DESC"/>
+
+        <field
+            name="ps2"
+            type="number"
+            default="0"
+            min="0"
+            max="1000"
+            label="COM_JSOLR_SEARCH_PS2_LABEL"
+            description="COM_JSOLR_SEARCH_PS2_DESC"/>
+
+        <field
+            name="ps3"
+            type="number"
+            default="0"
+            min="0"
+            max="1000"
+            label="COM_JSOLR_SEARCH_PS3_LABEL"
+            description="COM_JSOLR_SEARCH_PS3_DESC"/>
+
+        <field
+            name="boost"
+            type="text"
+            label="COM_JSOLR_SEARCH_BOOST_LABEL"
+            description="COM_JSOLR_SEARCH_BOOST_DESC"/>
     </fieldset>
 </config>

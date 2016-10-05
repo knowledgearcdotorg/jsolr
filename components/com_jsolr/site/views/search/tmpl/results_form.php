@@ -27,15 +27,15 @@ JHTML::_('behavior.formvalidation');
 
     <fieldset class="query">
 
-        <!-- Output search fields (in almost all cases will be a single query field). -->
         <?php
+        // Output search fields (in almost all cases will be a single query field).
         foreach ($this->get('Form')->getFieldset('query') as $field):
             echo $this->form->getInput($field->fieldname);
         endforeach;
         ?>
 
-        <!-- Output the hidden form fields for the various selected facet filters. -->
         <?php
+        // Output the hidden form fields for the various selected facet filters.
         foreach ($this->get('Form')->getFieldset('facets') as $field):
             if (trim($field->value)) :
                 echo $this->form->getInput($field->fieldname);
@@ -47,6 +47,14 @@ JHTML::_('behavior.formvalidation');
     </fieldset>
 
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
+
+    <ul id="jsolrDimensions" class="nav nav-tabs">
+        <?php
+        foreach ($this->get('Dimensions') as $dimension) :
+            echo "<li".($dimension->active ? " class=\"active\"" : "").">".JHTML::link($dimension->url, $dimension->name)."</li>";
+        endforeach;
+        ?>
+    </ul>
 
     <div id="jsolrFacetfilters">
         <?php if (!is_null($this->get('Form'))): ?>

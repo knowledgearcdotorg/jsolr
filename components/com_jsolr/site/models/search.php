@@ -53,8 +53,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $this->setState('query.q', $application->input->get("q", null, "html"));
 
-        $this->setState('query.o', $application->input->getString("o", null, "string"));
-
         $value = $application->input->get('limit', $application->getCfg('list_limit', 0));
 
         $this->setState('list.limit', $value);
@@ -63,17 +61,16 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $this->setState('list.start', $value);
 
-        $params = $application->getParams();
-        $menuParams = new Registry;
-
-        if ($menu = $application->getMenu()->getActive()) {
-            $menuParams->loadString($menu->params);
+        if ($dimension = $application->input->getString("dim", null, "string")) {
+            $this->setState('query.dimension', $dimension);
+            $table = JTable::getInstance('Dimension', 'JSolrTable');
+            $table->load(array('alias'=>$dimension));
+            $params = new JRegistry($table->get('params'));
+        } else {
+            $params = $application->getParams();
         }
 
-        $mergedParams = clone $menuParams;
-        $mergedParams->merge($params);
-
-        $this->setState('params', $mergedParams);
+        $this->setState('params', $params);
 
         parent::populateState($ordering, $direction);
     }
@@ -85,16 +82,16 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     public function getQuery()
     {
-        $filters = $this->getForm()->getFilters();
-
         if (!($this->getState('query.q') || $this->getAppliedFacetFilters())) {
             return null; // nothing passed. Get out of here.
         }
 
+        $filters = $this->getForm()->getFilters();
         $store = $this->getStoreId();
+        $params = $this->getState('params');
 
         if (!isset($this->cache[$store])) {
-            if ($fq = $this->getState('params')->get('fq')) {
+            if ($fq = $params->get('fq')) {
                 $filters['fq'] = $fq;
             }
 
@@ -111,17 +108,17 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $query->setRows($limit);
 
                 // set query fields.
-                $qf = $this->getState('params')->get('qf', self::QF_DEFAULT);
+                $qf = $params->get('qf', self::QF_DEFAULT);
 
-                if ($this->getState('params')->get('menu-qf')) {
-                    $qf = $this->getState('params')->get('menu-qf');
+                if ($params->get('menu-qf')) {
+                    $qf = $params->get('menu-qf');
                 }
 
                 $qf = \JSolr\Helper::localize($qf);
 
                 // set minimum match.
-                $mm = $this->getState('params')->get('mm', null);
-                $mm = $this->getState('params')->get('menu-mm', $mm);
+                $mm = $params->get('mm', null);
+                $mm = $params->get('menu-mm', $mm);
 
                 if ($mm) {
                     $query->getEDisMax()->setMinimumMatch($mm);
@@ -142,10 +139,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 */
 
                 // set highlighting fields.
-                $hl = $this->getState('params')->get('hl', self::HL_DEFAULT);
+                $hl = $params->get('hl', self::HL_DEFAULT);
 
-                if ($this->getState('params')->get('menu-hl')) {
-                    $hl = $this->getState('params')->get('menu-hl');
+                if ($params->get('menu-hl')) {
+                    $hl = $params->get('menu-hl');
                 }
 
                 $hl = \JSolr\Helper::localize($hl);
@@ -157,7 +154,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     ->setSimplePostfix('</b>');
 
                 // set access.
-                if ($this->getState('params')->get('fq_access', 1)) {
+                if ($params->get('fq_access', 1)) {
                     $viewLevels = JFactory::getUser()->getAuthorisedViewLevels();
                     $access = implode(' OR ', array_unique($viewLevels));
 
@@ -171,51 +168,51 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->createFilterQuery($key)->setQuery($value);
                 }
 
-                if ($pf = $this->getState('params')->get('pf')) {
+                if ($pf = $params->get('pf')) {
                     $query->getEDisMax()->setPhraseFields($pf);
 
-                    if ($ps = $this->getState('params')->get('ps')) {
+                    if ($ps = $params->get('ps')) {
                         $query->getEDisMax()->setPhraseSlop($ps);
                     }
                 }
 
-                if ($qs = $this->getState('params')->get('qs')) {
+                if ($qs = $params->get('qs')) {
                     $query->getEDisMax()->setQueryPhraseSlop($qs);
                 }
 
-                if ($tie = $this->getState('params')->get('tie')) {
+                if ($tie = $params->get('tie')) {
                     $query->getEDisMax()->setTie($tie);
                 }
 
-                if ($bq = $this->getState('params')->get('bq')) {
+                if ($bq = $params->get('bq')) {
                     $query->getEDisMax()->setBoostQuery($bq);
                 }
 
-                if ($bf = $this->getState('params')->get('bf')) {
+                if ($bf = $params->get('bf')) {
                     $query->getEDisMax()->setBoostFunctions($bf);
                 }
 
-                if ($uf = $this->getState('params')->get('uf')) {
+                if ($uf = $params->get('uf')) {
                     $query->getEDisMax()->setUserFields($uf);
                 }
 
-                if ($pf2 = $this->getState('params')->get('pf2')) {
+                if ($pf2 = $params->get('pf2')) {
                     $query->getEDisMax()->setPhraseBigramFields($pf2);
 
-                    if ($ps2 = $this->getState('params')->get('ps2')) {
+                    if ($ps2 = $params->get('ps2')) {
                         $query->getEDisMax()->setPhraseBigramSlop($ps2);
                     }
                 }
 
-                if ($pf3 = $this->getState('params')->get('pf3')) {
+                if ($pf3 = $params->get('pf3')) {
                     $query->getEDisMax()->setPhraseTrigramFields($pf3);
 
-                    if ($ps3 = $this->getState('params')->get('ps3')) {
+                    if ($ps3 = $params->get('ps3')) {
                         $query->getEDisMax()->setPhraseTrigramSlop($ps3);
                     }
                 }
 
-                if ($boost = $this->getState('params')->get('boost')) {
+                if ($boost = $params->get('boost')) {
                     $query->getEDisMax()->setBoostFunctionsMult($boost);
                 }
 
@@ -360,7 +357,19 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $context = $this->get('option').'.'.$this->getName();
 
-        $this->form = $this->loadForm($context, 'search', array('load_data'=>$loadData));
+        // load a custom form xml based on the menu alias.
+        $source = 'search';
+
+        if ($menu = JFactory::getApplication('site')->getMenu()->getActive()) {
+            $template = JFactory::getApplication()->getTemplate();
+            $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/'.$menu->alias.'.xml';
+
+            if ($menu->alias != $source && JFile::exists($overridePath)) {
+                $source = $menu->alias;
+            }
+        }
+
+        $this->form = $this->loadForm($context, $source, array('load_data'=>$loadData));
 
         if (empty($this->form)) {
             return false;
@@ -466,5 +475,52 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         }
 
         return $fields;
+    }
+
+    public function getDimensions()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+        $user = JFactory::getUser();
+
+        // Select the required fields from the table.
+        $query->select(
+            $db->quoteName(explode(', ', 'a.id, a.name, a.alias, a.access')));
+
+        $query->from($db->quoteName('#__jsolr_dimensions', 'a'));
+
+        $db->setQuery($query);
+
+        $results = $db->loadObjectList();
+
+        $url = JUri::getInstance();
+        $url->delVar('dim', null);
+
+        $dimensions = array();
+
+        $search = new stdClass();
+        $search->name = JText::_('COM_JSOLR_SEARCH_DIMENSIONS_ALL');
+        $search->alias = null;
+        $search->url = (string)$url;
+
+        if (!$this->getState('query.dimension')) {
+            $search->active = true;
+        }
+
+        $dimensions[] = $search;
+
+        foreach ($results as $result) {
+            $url->setVar('dim', $result->alias);
+
+            $result->url = (string)$url;
+
+            if ($this->getState('query.dimension') == $result->alias) {
+                $result->active = true;
+            }
+
+            $dimensions[] = $result;
+        }
+
+        return $dimensions;
     }
 }
