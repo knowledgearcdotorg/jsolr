@@ -93,6 +93,9 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             return null; // nothing passed. Get out of here.
         }
 
+        JPluginHelper::importPlugin("jsolr");
+        $dispatcher = JEventDispatcher::getInstance();
+
         $filters = $this->getForm()->getFilters();
         $store = $this->getStoreId();
         $params = $this->getState('params');
@@ -212,7 +215,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->getFacetSet()->createFacetField('author')->setField('author_s');
 
+                $dispatcher->trigger('onJSolrSearchBeforeQuery', array($query, $this->getState()));
+
                 $response = $client->select($query);
+
+                $dispatcher->trigger('onJSolrSearchAfterQuery', array($response, $this->getState()));
 
                 $this->cache[$store] = $response;
             } catch (Exception $e) {
