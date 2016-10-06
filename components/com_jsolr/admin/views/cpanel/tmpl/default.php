@@ -83,10 +83,10 @@ JFactory::getDocument()->addScriptDeclaration($js);
 
             <div id="jsolrStatus" class="span6">
             <?php
-            if ($this->item->get('status') == "OK") :
+            if (($status = $this->item->get('status')) == "OK") :
                 echo JText::_("COM_JSOLR_CPANEL_CONNECTED");
             else :
-                echo JText::_("COM_JSOLR_CPANEL_NOT_CONNECTED");
+                echo JText::_("COM_JSOLR_CPANEL_".strtoupper($status));
             endif;
             ?>
 

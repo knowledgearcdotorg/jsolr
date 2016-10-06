@@ -12,8 +12,24 @@
 
     <scriptfile>script.php</scriptfile>
 
-    <install><sql></sql></install>
-    <uninstall><sql></sql></uninstall>
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+
+    <update>
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+
 
     <files folder="site">
         <folder>models</folder>
@@ -37,6 +53,7 @@
             <folder>cli</folder>
             <folder>helpers</folder>
             <folder>models</folder>
+            <folder>sql</folder>
             <folder>views</folder>
             <filename>config.xml</filename>
             <filename>controller.php</filename>

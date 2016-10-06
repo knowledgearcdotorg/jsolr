@@ -30,20 +30,21 @@ class JSolrModelCPanel extends JModelLegacy
         $item = new \Joomla\Registry\Registry();
         $temp = new stdClass();
 
+        $config = \JSolr\Index\Factory::getConfig();
+
         // No connection configured. Just return a basic item.
-        if (is_null($this->client)) {
+        if (!$config->get('url')) {
             $item->set('status', 'NO_CONFIGURATION');
         } else {
             $ping = $this->client->createPing();
 
             try {
                 $result = $this->client->ping($ping);
-
                 $temp->statistics = $this->getLuke()->getData();
 
                 $item->loadArray($result->getData());
-            } catch (Solarium\Exception $e) {
-                $this->setError(JText::_("COM_JSOLR_PING_FAILED"));
+            } catch (Exception $e) {
+                $item->set('status', "PING_FAILED");
             }
         }
 
