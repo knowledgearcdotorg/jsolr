@@ -42,6 +42,9 @@ class JSolrModelBrowse extends JModelList
      */
     public function getQuery()
     {
+        JPluginHelper::importPlugin("jsolr");
+        $dispatcher = JEventDispatcher::getInstance();
+
         $store = $this->getStoreId();
 
         if (!isset($this->cache[$store])) {
@@ -86,7 +89,11 @@ class JSolrModelBrowse extends JModelList
                     $query->getFacetSet()->setPrefix($prefix);
                 }
 
+                $dispatcher->trigger('onJSolrBrowseBeforeQuery', array($query, $this->getState()));
+
                 $response = $client->select($query);
+
+                $dispatcher->trigger('onJSolrBrowseAfterQuery', array($response, $this->getState()));
 
                 $this->cache[$store] = $response;
             } catch (Exception $e) {
