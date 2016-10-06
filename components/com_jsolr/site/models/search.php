@@ -243,21 +243,24 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     public function getItems()
     {
+        JPluginHelper::importPlugin("jsolr");
+        $dispatcher = JEventDispatcher::getInstance();
+
         $result = $this->getQuery();
 
         if (!is_null($result)) {
             $documents = $result->getDocuments();
-            $linkedDocuments = array();
 
-            foreach ($documents as $document) {
-                // Get item url.
-                $fields = $document->getFields();
-                $fields['link'] = \JSolr\Helper::getUri($document);
+            for ($i = 0; $i < count($documents); $i++) {
+                // Jump some hoops to allow plugins to modify document data.
+                $tmp = new \Solarium\QueryType\Update\Query\Document\Document($documents[$i]->getFields());
 
-                $linkedDocuments[] = new \Solarium\QueryType\Select\Result\Document($fields);
+                $dispatcher->trigger('onJSolrSearchPrepareData', array($tmp));
+
+                $documents[$i] = $tmp;
             }
 
-            return $linkedDocuments;
+            return $documents;
         }
 
         return $result;
