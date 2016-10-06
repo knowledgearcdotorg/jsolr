@@ -63,8 +63,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         if ($dimension = $application->input->getString("dim", null, "string")) {
             $this->setState('query.dimension', $dimension);
+
             $table = JTable::getInstance('Dimension', 'JSolrTable');
             $table->load(array('alias'=>$dimension));
+
             $params = new JRegistry($table->get('params'));
         } else {
             $params = $application->getParams();
@@ -110,17 +112,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 // set query fields.
                 $qf = $params->get('qf', self::QF_DEFAULT);
 
-                if ($params->get('menu-qf')) {
-                    $qf = $params->get('menu-qf');
-                }
-
                 $qf = \JSolr\Helper::localize($qf);
 
                 // set minimum match.
-                $mm = $params->get('mm', null);
-                $mm = $params->get('menu-mm', $mm);
-
-                if ($mm) {
+                if ($mm = $params->get('mm', null)) {
                     $query->getEDisMax()->setMinimumMatch($mm);
                 }
 
@@ -140,10 +135,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 // set highlighting fields.
                 $hl = $params->get('hl', self::HL_DEFAULT);
-
-                if ($params->get('menu-hl')) {
-                    $hl = $params->get('menu-hl');
-                }
 
                 $hl = \JSolr\Helper::localize($hl);
 
@@ -360,12 +351,12 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         // load a custom form xml based on the menu alias.
         $source = 'search';
 
-        if ($menu = JFactory::getApplication('site')->getMenu()->getActive()) {
+        if ($dimension = $this->getState('query.dimension')) {
             $template = JFactory::getApplication()->getTemplate();
-            $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/'.$menu->alias.'.xml';
+            $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/'.$dimension.'.xml';
 
-            if ($menu->alias != $source && JFile::exists($overridePath)) {
-                $source = $menu->alias;
+            if (JFile::exists($overridePath)) {
+                $source = $dimension;
             }
         }
 
