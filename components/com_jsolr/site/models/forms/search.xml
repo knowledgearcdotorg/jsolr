@@ -8,7 +8,7 @@
         <!-- only JSolrFormFields should be used here -->
         <field
             name="q"
-            type="jsolr.textsuggest"
+            type="jsolr.autosuggest"
             label=""
             size="20"
             class="inputbox jsolrquery"

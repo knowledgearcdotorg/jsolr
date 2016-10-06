@@ -29,7 +29,7 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolr/css/jsolr.css');
         name="adminForm"
         class="form-validate jsolr-search-result-form"
         id="jsolr-search-result-form">
-        <fieldset class="word">
+        <div class="input-append">
             <?php foreach ($this->get('Form')->getFieldset('query') as $field): ?>
             <span><?php echo $form->getInput($field->fieldname); ?></span>
             <?php endforeach;?>
@@ -37,8 +37,8 @@ $document->addStyleSheet(JURI::base().'/media/com_jsolr/css/jsolr.css');
             <input type="hidden" name="option" value="com_jsolr"/>
             <input type="hidden" name="task" value="search"/>
 
-            <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_SEARCH_BUTTON_SUBMIT"); ?></button>
-        </fieldset>
+            <button type="submit" class="btn"><i class="icon-search"></i></button>
+        </div>
 
         <div class="jsolr-clear"></div>
     </form>

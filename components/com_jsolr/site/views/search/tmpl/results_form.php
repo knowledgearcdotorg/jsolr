@@ -21,12 +21,7 @@ JHTML::_('behavior.formvalidation');
     class="form-validate jsolr-search-result-form"
     id="jsolr-search-result-form">
 
-    <?php if (JFactory::getApplication()->input->get('o', null)) : ?>
-    <input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get('o'); ?>"/>
-    <?php endif; ?>
-
-    <fieldset class="query">
-
+    <div class="input-append">
         <?php
         // Output search fields (in almost all cases will be a single query field).
         foreach ($this->get('Form')->getFieldset('query') as $field):
@@ -43,8 +38,8 @@ JHTML::_('behavior.formvalidation');
         endforeach;
         ?>
 
-        <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_SEARCH_BUTTON_SUBMIT"); ?></button>
-    </fieldset>
+        <button type="submit" class="btn"><i class="icon-search"></i></button>
+    </div>
 
     <?php if ((int)$this->state->get('params')->get('advanced_link') == 1) : ?>
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
@@ -100,11 +95,13 @@ JHTML::_('behavior.formvalidation');
         <?php endif ?>
     </div>
 
-    <div class="jsolr-searchtools btn-group">
+    <ul class="nav nav-pills">
         <?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
+        <li class="dropdown">
             <?php echo $this->form->getInput($field->name); ?>
+        </li>
         <?php endforeach;?>
-    </div>
+    </ul>
 
     <input type="hidden" name="option" value="com_jsolr"/>
     <input type="hidden" name="task" value="search"/>

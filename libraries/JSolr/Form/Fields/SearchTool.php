@@ -34,22 +34,21 @@ class SearchTool extends \JFormFieldList
     name="$this->name"
     id="$this->id"
     value="$encoded"/>
-<div class="jsolr-searchtool">
-    <a
-        class="dropdown-toggle"
-        id="$this->name-selected"
-        role="button"
-        data-toggle="dropdown"
-        data-target="#"
-        data-original="$this->value">
-        $label
-        <b class="caret"></b>
 
-        <ul
-            class="dropdown-menu"
-            role="menu"
-            aria-labelledby="$this->name">$options</ul>
-</div>
+<a
+    class="dropdown-toggle"
+    id="$this->name-selected"
+    role="button"
+    data-toggle="dropdown"
+    data-target="#"
+    data-original="$this->value">
+    $label
+    <b class="caret"></b>
+
+    <ul
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="$this->name">$options</ul>
 HTML;
 
         return $html;
