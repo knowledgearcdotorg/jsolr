@@ -61,15 +61,21 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $this->setState('list.start', $value);
 
+        // Need to convert registry to array so that blank values are included
+        // in the merge.
         $params = $application->getParams();
+        $array = $params->toArray();
 
         if ($dimension = $application->input->getString("dim", null, "string")) {
             $this->setState('query.dimension', $dimension);
 
             if ($table = $this->fetchDimension($dimension)) {
-                $params = new JRegistry($table->get('params'));
+                $tmp = new \Joomla\Registry\Registry($table->get('params'));
+                $array = array_merge($array, $tmp->toArray());
             }
         }
+
+        $params = new \Joomla\Registry\Registry($array);
 
         $this->setState('params', $params);
 
@@ -484,12 +490,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $query->from($db->quoteName('#__jsolr_dimensions', 'a'));
 
+        $query->order('a.ordering ASC');
+
         $db->setQuery($query);
 
         $results = $db->loadObjectList();
 
         $url = JUri::getInstance();
-        $url->delVar('dim', null);
+        $url->delVar('dim');
 
         $dimensions = array();
 
@@ -514,6 +522,18 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             }
 
             $dimensions[] = $result;
+        }
+
+        if ((int)$this->getState('params')->get('advanced_link') == 2) {
+            $url->delVar('dim');
+            $url->setVar('view', 'advanced');
+
+            $advanced = new stdClass();
+            $advanced->name = JText::_('COM_JSOLR_SEARCH_DIMENSIONS_ADVANCED');
+            $advanced->alias = null;
+            $advanced->url = (string)$url;
+
+            $dimensions[] = $advanced;
         }
 
         return $dimensions;

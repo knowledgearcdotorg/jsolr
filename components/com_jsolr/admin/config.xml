@@ -282,4 +282,21 @@
             label="COM_JSOLR_SEARCH_BOOST_LABEL"
             description="COM_JSOLR_SEARCH_BOOST_DESC"/>
     </fieldset>
+
+    <fieldset
+        name="searchlayout"
+        label="COM_JSOLR_CONFIG_SEARCHLAYOUT_LABEL"
+        description="COM_JSOLR_CONFIG_SEARCHLAYOUT_DESC">
+        <field
+            name="advanced_link"
+            type="list"
+            label="COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_LABEL"
+            description="COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_DESC"
+            class="inputbox"
+            default="1">
+            <option value="0">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_NEVER</option>
+            <option value="1">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_AS_A_LINK</option>
+            <option value="2">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_AS_A_DIMENSION</option>
+        </field>
+    </fieldset>
 </config>

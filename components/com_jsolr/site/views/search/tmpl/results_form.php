@@ -46,7 +46,9 @@ JHTML::_('behavior.formvalidation');
         <button type="submit" class="button"><?php echo JText::_("COM_JSOLR_SEARCH_BUTTON_SUBMIT"); ?></button>
     </fieldset>
 
+    <?php if ((int)$this->state->get('params')->get('advanced_link') == 1) : ?>
     <a href="<?php echo JRoute::_(\JSolr\Search\Factory::getAdvancedSearchRoute()); ?>">Advanced search</a>
+    <?php endif; ?>
 
     <ul id="jsolrDimensions" class="nav nav-tabs">
         <?php
