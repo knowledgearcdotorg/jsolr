@@ -49,7 +49,7 @@ integrating faceting within the component. Use template overrides to improve. --
     </header>
 
     <?php if (!is_null($this->items)): ?>
-        <?php echo $this->loadTemplate('default'); ?>
+        <?php echo $this->loadTemplate($this->get("DimensionTemplate")); ?>
 
     <footer>
         <div class="pagination">

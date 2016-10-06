@@ -5,9 +5,9 @@
  * Includes total number of records, spelling suggestions and the list of
  * search results.
  *
- *  Override this template to customize the results display (does not affect
- *  the display of an individual result (use results_result or
- *  results_<plugin>).
+ * Override this template to customize the results display (does not affect
+ * the display of an individual result (use results_result or
+ * results_[dimension]).
  *
  * @package     JSolr.Search
  * @subpackage  View
@@ -15,8 +15,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die('Restricted access');
-
-$featuredItems = $this->get('FeaturedItems');
 ?>
 
 <div id="jsolr-total">
@@ -32,30 +30,16 @@ $featuredItems = $this->get('FeaturedItems');
 </div>
 
 <?php
-/*
 if ($didYouMean = $this->get('DidYouMean')) :
 ?>
 <div>Did you mean <a href="<?php echo JArrayHelper::getValue($didYouMean, 'uri'); ?>"><?php echo JArrayHelper::getValue($didYouMean, 'text'); ?></a></div>
 <?php
 endif;
-*/
 ?>
 
 <?php if (!count($this->items)) : ?>
-
 <span><?php JText::_("COM_JSOLR_NO_RESULTS"); ?></span>
-
 <?php endif; ?>
-
-<?php /*
-if ($this->get("Pagination")->get('pages.current') == 1 && $featuredItems->get("numFound")) :
-    $current = $featuredItems->getIterator()->current();
-    $highlighting = $featuredItems->getHighlighting()->{$featuredItems->getIterator()->current()->key};
-
-    $this->setLayout("result");
-    echo $this->loadTemplate('default');
-endif; */
-?>
 
 <ol>
     <?php foreach ($this->items as $item) : ?>

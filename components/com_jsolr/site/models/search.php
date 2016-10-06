@@ -61,15 +61,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $this->setState('list.start', $value);
 
+        $params = $application->getParams();
+
         if ($dimension = $application->input->getString("dim", null, "string")) {
             $this->setState('query.dimension', $dimension);
 
-            $table = JTable::getInstance('Dimension', 'JSolrTable');
-            $table->load(array('alias'=>$dimension));
-
-            $params = new JRegistry($table->get('params'));
-        } else {
-            $params = $application->getParams();
+            if ($table = $this->fetchDimension($dimension)) {
+                $params = new JRegistry($table->get('params'));
+            }
         }
 
         $this->setState('params', $params);
@@ -121,7 +120,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->getEDisMax()->setQueryFields($qf);
 
-                /*
                 // set up spellcheck
                 $query->getSpellcheck()
                     ->setQuery($this->getState('query.q'))
@@ -131,7 +129,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     ->setExtendedResults(true)
                     ->setCollateExtendedResults(true)
                     ->setCollateParam("maxResultsForSuggest", 1);
-                */
 
                 // set highlighting fields.
                 $hl = $params->get('hl', self::HL_DEFAULT);
@@ -270,19 +267,19 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     public function getDidYouMean()
     {
-        $spellcheck = $this->getQuery()->getSpellcheck();
+        if ($spellcheck = $this->getQuery()->getSpellcheck()) {
+            if ($spellcheck->getCorrectlySpelled()) {
+                $collation = array_shift($spellcheck->getCollations());
 
-        if ($spellcheck->getCorrectlySpelled()) {
-            $collation = array_shift($spellcheck->getCollations());
+                $correction = array_shift($collation->getCorrections());
 
-            $correction = array_shift($collation->getCorrections());
-
-            if ($correction) {
-                return $correction;
+                if ($correction) {
+                    return $correction;
+                }
             }
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public function getTotal()
@@ -348,15 +345,17 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $context = $this->get('option').'.'.$this->getName();
 
-        // load a custom form xml based on the menu alias.
+        // load a custom form xml based on the dimension alias.
         $source = 'search';
 
-        if ($dimension = $this->getState('query.dimension')) {
-            $template = JFactory::getApplication()->getTemplate();
-            $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/'.$dimension.'.xml';
+        if ($alias = $this->getState('query.dimension')) {
+            if ($table = $this->fetchDimension($alias)) {
+                $template = JFactory::getApplication()->getTemplate();
+                $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/'.$table->alias.'.xml';
 
-            if (JFile::exists($overridePath)) {
-                $source = $dimension;
+                if (JFile::exists($overridePath)) {
+                    $source = $table->alias;
+                }
             }
         }
 
@@ -395,11 +394,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     /**
      * Get's the language, either from the item or from the Joomla environment.
      *
-     * @param bool $includeRegion True if the region should be included, false
+     * @param   bool  $includeRegion  True if the region should be included, false
      * otherwise. E.g. If true, en-AU would be returned, if false, just en
      * would be returned.
      *
-     * @return string The language code.
+     * @return  string  The language code.
      */
     protected function getLanguage($includeRegion = true)
     {
@@ -431,7 +430,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     /**
      * Gets a list of applied filters based on any currently selected facets.
      *
-     * @return array A list of applied filters based on any currently selected facets.
+     * @return  array  A list of applied filters based on any currently selected facets.
      */
     public function getAppliedFacetFilters()
     {
@@ -450,7 +449,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      * Gets a list of applied filters based on any specified advanced search
      * parameters.
      *
-     * @return array a list of applied filters based on any specified advanced
+     * @return  array  A list of applied filters based on any specified advanced
      * search parameters.
      */
     public function getAppliedAdvancedFilters()
@@ -468,6 +467,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         return $fields;
     }
 
+    /**
+     * Gets a list of dimensions.
+     *
+     * @return  array  A list of dimensions.
+     */
     public function getDimensions()
     {
         $db = $this->getDbo();
@@ -513,5 +517,55 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         }
 
         return $dimensions;
+    }
+
+    /**
+     * Fetch the dimension based on the alias.
+     *
+     * @param   string               $alias  The dimension alias.
+     *
+     * @return  JSolrTableDimension  The dimension record or null if no record
+     * is found.
+     */
+    private function fetchDimension($alias)
+    {
+        $table = $this->getTable('Dimension', 'JSolrTable');
+
+        if ($table->load(array('alias'=>$alias))) {
+            return $table;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the template name associated with the dimension or "default" if no
+     * template is found.
+     *
+     * The dimension's alias is used to load a unique results template for the
+     * dimension.
+     *
+     * This method will search the current template's com_jsolr html overrides,
+     * looking for a file called results_[dimension_alias].
+     *
+     * @return  string  The template name assoicated with the dimension or
+     * "default" if no template is found.
+     */
+    public function getDimensionTemplate()
+    {
+        $template = 'default';
+
+        if ($alias = $this->getState('query.dimension')) {
+            if ($table = $this->fetchDimension($alias)) {
+                $template = JFactory::getApplication()->getTemplate();
+                $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/search/results_'.$table->alias.'.php';
+
+                if (JFile::exists($overridePath)) {
+                    $template = $table->alias;
+                }
+            }
+        }
+
+        return $template;
     }
 }

@@ -35,10 +35,6 @@ class JSolrViewSearch extends JViewLegacy
 
         $this->params = $this->state->get('params');
 
-        $this->plugins = $this->get('ComponentsList');
-
-        $this->params->set('o', JFactory::getApplication()->input->get('o', null, 'cmd'));
-
         parent::display($tpl);
     }
 }
