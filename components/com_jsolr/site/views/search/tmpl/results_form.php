@@ -64,10 +64,9 @@ JHTML::_('behavior.formvalidation');
             ?>
 
             <li>
-                <span class="jsolr-label"><?php echo $field->label; ?></span>
-                <span class="jsolr-value"><?php echo str_replace('|', ' | ', $field->value); ?></span>
-
-                <?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
+                <span class="label">
+                    <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
+                </span>
             </li>
 
             <?php

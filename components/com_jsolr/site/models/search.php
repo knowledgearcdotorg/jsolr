@@ -506,7 +506,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $results = $db->loadObjectList();
 
-        $url = JUri::getInstance();
+        $url = clone JUri::getInstance();
         $url->delVar('dim');
 
         $dimensions = array();
