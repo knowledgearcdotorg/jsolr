@@ -67,7 +67,7 @@ class JSolrModelBrowse extends JModelList
             }
 
             try {
-                $client = \JSolr\Factory::getClient();
+                $client = \JSolr\Search\Factory::getClient();
 
                 $query = $client->createSelect();
 

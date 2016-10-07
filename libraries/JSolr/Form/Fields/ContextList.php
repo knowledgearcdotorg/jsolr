@@ -16,7 +16,7 @@ class ContextList extends \JFormFieldCheckboxes
 
     protected function getOptions()
     {
-        $client = \JSolr\Factory::getClient();
+        $client = \JSolr\Search\Factory::getClient();
 
         $query = $client->createSelect();
 

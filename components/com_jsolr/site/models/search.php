@@ -106,7 +106,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             }
 
             try {
-                $client = \JSolr\Factory::getClient();
+                $client = \JSolr\Search\Factory::getClient();
 
                 $query = $client->createSelect();
                 $query->setQuery($this->getState('query.q', "*:*"));

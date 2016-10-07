@@ -104,16 +104,18 @@ JFactory::getDocument()->addScriptDeclaration($js);
             </div>
         </div>
 
-        <?php if ($this->item->get('settings.url2')) : ?>
-        <div class="row-fluid">
-            <div class="span6">
-                <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_URL2');?></strong>
-            </div>
+        <?php if ((bool)$this->item->get('settings.connection2')) : ?>
+            <?php if ($this->item->get('settings.url2')) : ?>
+            <div class="row-fluid">
+                <div class="span6">
+                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_URL2');?></strong>
+                </div>
 
-            <div class="span6">
-                <?php echo $this->item->get('settings.url2'); ?>
+                <div class="span6">
+                    <?php echo $this->item->get('settings.url2'); ?>
+                </div>
             </div>
-        </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <div class="row-fluid">
