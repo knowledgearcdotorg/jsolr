@@ -59,19 +59,23 @@ abstract class Factory
             }
         }
 
-        $endpoint = $endpoint."2";
+        if ($params->get('connection2')) {
+            if ($params->get('url2')) {
+                $endpoint = $endpoint."2";
 
-        $client->addEndpoint($client->createEndpoint($endpoint));
+                $client->addEndpoint($client->createEndpoint($endpoint));
 
-        if ($params->get('url2')) {
-            $client->getEndpoint($endpoint)->setHost($url->getHost());
-            $client->getEndpoint($endpoint)->setPort($url->getPort());
-            $client->getEndpoint($endpoint)->setPath($url->getPath());
+                $url = new \JUri($params->get('url2'));
 
-            if ($params->get('username2') && $params->get('password2')) {
-                $client->getEndpoint($endpoint)->setAuthentication(
-                    $params->get('username2'),
-                    $params->get('password2'));
+                $client->getEndpoint($endpoint)->setHost($url->getHost());
+                $client->getEndpoint($endpoint)->setPort($url->getPort());
+                $client->getEndpoint($endpoint)->setPath($url->getPath());
+
+                if ($params->get('username2') && $params->get('password2')) {
+                    $client->getEndpoint($endpoint)->setAuthentication(
+                        $params->get('username2'),
+                        $params->get('password2'));
+                }
             }
         }
 

@@ -16,9 +16,13 @@ class Factory extends \JSolr\Factory
 
     public static function getClient()
     {
-        $endpoint = \JUri::getInstance()->getHost()."2";
+        $endpoint = \JUri::getInstance()->getHost();
 
         $client = parent::getClient();
+
+        if (count($client->getEndpoints()) == 2) {
+            $endpoint.="2";
+        }
 
         if ($client->getEndpoint($endpoint)) {
             $client->setDefaultEndpoint($endpoint);

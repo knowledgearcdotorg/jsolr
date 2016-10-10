@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS `#__jsolr_dimensions` (
     `created` DATETIME NOT NULL default '0001-01-01 00:00:00',
     `created_by` INT(10) UNSIGNED NOT NULL default '0',
     `modified` DATETIME NOT NULL default '0001-01-01 00:00:00',
-    `modified_by` INT(10) UNSIGNED NOT NULL default '0'
+    `modified_by` INT(10) UNSIGNED NOT NULL default '0',
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
