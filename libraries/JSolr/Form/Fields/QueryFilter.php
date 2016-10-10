@@ -39,9 +39,7 @@ class QueryFilter extends HiddenFilter
     {
         switch ($name) {
             case 'filter':
-                $application = JFactory::getApplication();
-
-                return $application->input->getString($this->name, null);
+                return $this->getAttribute($name, null);;
 
                 break;
 

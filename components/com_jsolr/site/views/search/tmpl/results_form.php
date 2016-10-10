@@ -19,7 +19,7 @@ JHTML::_('behavior.formvalidation');
     method="get"
     name="adminForm"
     class="form-validate jsolr-search-result-form"
-    id="jsolr-search-result-form">
+    id="jsolrSearchResultForm">
 
     <div class="input-append">
         <?php
@@ -53,22 +53,24 @@ JHTML::_('behavior.formvalidation');
         ?>
     </ul>
 
+    <ul class="nav nav-pills">
+        <?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
+        <li class="dropdown">
+            <?php echo $this->form->getInput($field->name); ?>
+        </li>
+        <?php endforeach;?>
+    </ul>
+
     <div id="jsolrFacetfilters">
         <?php if (!is_null($this->get('Form'))): ?>
-        <ul>
-
             <?php
             foreach ($this->get('AppliedFacetFilters') as $field) :
                 $uri = clone JURI::getInstance();
                 $uri->delVar($field->name);
             ?>
-
-            <li>
-                <span class="label">
-                    <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
-                </span>
-            </li>
-
+            <span class="label">
+                <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
+            </span>
             <?php
             endforeach;
             ?>
@@ -78,29 +80,14 @@ JHTML::_('behavior.formvalidation');
                 $uri = clone JURI::getInstance();
                 $uri->delVar($field->name);
             ?>
-
-            <li>
-                <span class="jsolr-label"><?php echo $field->label; ?></span>
-
-                <?php echo JHTML::link((string)htmlentities($uri), '(clear)'); ?>
-            </li>
-
+            <span class="label">
+                <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
+            </span>
             <?php
             endforeach;
             ?>
-
-        </ul>
-
         <?php endif ?>
     </div>
-
-    <ul class="nav nav-pills">
-        <?php foreach ($this->get('Form')->getFieldset('tools') as $field) : ?>
-        <li class="dropdown">
-            <?php echo $this->form->getInput($field->name); ?>
-        </li>
-        <?php endforeach;?>
-    </ul>
 
     <input type="hidden" name="option" value="com_jsolr"/>
     <input type="hidden" name="task" value="search"/>
