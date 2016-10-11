@@ -13,7 +13,7 @@ JLoader::import('joomla.log.log');
 
 JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-class PlgJSolrDSpace extends \JSolr\Index\Crawler
+class PlgJSolrDSpace extends \JSolr\Plugin
 {
     protected $context = 'dspace';
 
@@ -497,7 +497,7 @@ class PlgJSolrDSpace extends \JSolr\Index\Crawler
 
     /**
      * (non-PHPdoc)
-     * @see \JSolr\Index\Crawler::clean()
+     * @see \JSolr\Plugin::clean()
      *
      * @TODO quick and dirty clean. This would break on very large indexes.
      */
@@ -571,7 +571,7 @@ class PlgJSolrDSpace extends \JSolr\Index\Crawler
 
     /**
      * (non-PHPdoc)
-     * @see \JSolr\Index\Crawler::index()
+     * @see \JSolr\Plugin::index()
      */
     protected function index()
     {
@@ -831,6 +831,7 @@ class PlgJSolrDSpace extends \JSolr\Index\Crawler
 
     /**
      * Clean metadata key so that it is index friendly.
+     *
      * @param string $key The key to clean.
      * @return string The cleaned metadata key.
      */
@@ -939,5 +940,16 @@ class PlgJSolrDSpace extends \JSolr\Index\Crawler
         reset($metadata);
 
         return $lang;
+    }
+
+    public function onJSolrSearchPrepareData($document)
+    {
+        if ($this->itemContext == $document->context_s) {
+            require_once(JPATH_ROOT."/components/com_jcar/helpers/route.php");
+
+            if (class_exists("JCarHelperRoute")) {
+                $document->link = JCarHelperRoute::getItemRoute($document->id);
+            }
+        }
     }
 }

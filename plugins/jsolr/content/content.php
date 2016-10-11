@@ -9,10 +9,9 @@ defined('_JEXEC') or die();
 
 \JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-use \JSolr\Index\Crawler;
 use \JSolr\Helper;
 
-class PlgJSolrContent extends Crawler
+class PlgJSolrContent extends \JSolr\Plugin
 {
     protected $context = 'com_content.article';
 

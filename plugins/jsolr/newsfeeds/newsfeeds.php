@@ -9,10 +9,9 @@ defined('_JEXEC') or die();
 
 \JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-use \JSolr\Index\Crawler;
 use \JSolr\Helper;
 
-class PlgJSolrNewsfeeds extends Crawler
+class PlgJSolrNewsfeeds extends \JSolr\Plugin
 {
     protected $context = 'com_newsfeeds.newsfeed';
 
@@ -151,5 +150,15 @@ class PlgJSolrNewsfeeds extends Crawler
         }
 
         return $array;
+    }
+
+    public function onJSolrSearchPrepareData($document)
+    {
+        if ($this->get('context') == $document->context_s) {
+            require_once(JPATH_ROOT."/components/com_newsfeeds/helpers/route.php");
+
+            $document->link = NewsfeedsHelperRoute::getNewsfeedRoute($document->id, $document->parent_id);
+
+        }
     }
 }

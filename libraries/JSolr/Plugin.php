@@ -1,9 +1,11 @@
 <?php
 /**
+ * An abstract class which all other classes should drive from.
+ *
  * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-namespace JSolr\Index;
+namespace JSolr;
 
 use \JComponentHelper as JComponentHelper;
 use \JLog as JLog;
@@ -11,9 +13,9 @@ use \JFactory as JFactory;
 use \Joomla\Utilities\ArrayHelper;
 
 /**
- * An abstract class which all other crawler classes should derive from.
+ * An abstract class which all other classes should derive from.
  */
-abstract class Crawler extends \JPlugin
+abstract class Plugin extends \JPlugin
 {
     const STDOUT_SEPARATOR_WIDTH = 80;
 
@@ -30,7 +32,7 @@ abstract class Crawler extends \JPlugin
     {
         parent::__construct($subject, $config);
 
-        // load the jsolrindex component's params into plugin params for
+        // load the jsolr component's params into plugin params for
         // easy access.
         $params = JComponentHelper::getParams('com_jsolr', true);
 
