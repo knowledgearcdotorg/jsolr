@@ -239,14 +239,6 @@
                 <fileset dir="tests/unit/suites/libraries/JSolr/Index/FileSystem">
                     <include name="*Test.php"/>
                 </fileset>
-                <!--fileset dir="tests/unit/suites/plugins">
-                    <include name="harvest/*Test.php"/>
-                    <include name="localstore/*Test.php"/>
-                    <include name="weblinks/*Test.php"/>
-                     it would be good to run the individual harvesting tests but something is causing the oai tests to fail. Most probably caused by both plugins being loaded. Would be good to have better control over loading and testing plugins.
-                    <exclude name="oai/*Test.php"/>
-                    <exclude name="opensearch/*Test.php"/>
-                </fileset-->
             </batchtest>
         </phpunit>
     </target>
