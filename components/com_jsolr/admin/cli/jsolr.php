@@ -93,10 +93,21 @@ class JSolrCli extends JApplicationCli
         $command = ArrayHelper::getValue($this->input->args, 0, null, 'word');
 
         try {
-            if ($command) {
-                $this->$command();
-            } else {
-                $this->help();
+            switch ($command) {
+                case 'config':
+                case 'index':
+                case 'optimize':
+                case 'purge':
+                    $this->$command();
+                    break;
+
+                case 'help':
+                    $this->help();
+                    break;
+
+                default:
+                    $this->out(JText::sprintf("COM_JSOLR_CLI_COMMAND_NOT_FOUND", $command));
+                    break;
             }
         } catch (Exception $e) {
             JSolrHelper::log($e->getMessage(), \JLog::ERROR);
