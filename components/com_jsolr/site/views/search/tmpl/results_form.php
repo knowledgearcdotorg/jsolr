@@ -81,7 +81,7 @@ JHTML::_('behavior.formvalidation');
                 $uri->delVar($field->name);
             ?>
             <span class="label">
-                <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
+                <?php echo JText::sprintf($field->label, $field->value); ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
             </span>
             <?php
             endforeach;

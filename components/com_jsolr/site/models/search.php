@@ -473,7 +473,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $fields = array();
 
         foreach ($this->getForm()->getFieldset('tools') as $field) {
-            if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolrFormFieldHiddenFilter')) {
+            if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolr\Form\Fields\QueryFilter')) {
                 if ($field->value) {
                     $fields[] = $field;
                 }

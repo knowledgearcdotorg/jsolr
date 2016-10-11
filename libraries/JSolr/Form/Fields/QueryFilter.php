@@ -28,10 +28,12 @@ class QueryFilter extends HiddenFilter
 
         $filters = array();
 
-        if ($this->filter && $application->input->getString('q', null)) {
-            $filters[] = $this->filter.":".$application->input->getString('q', null);
+        if ($application->input->getString($this->name)) {
+            if ($this->filter && $application->input->getString('q', null)) {
+                $filters[] = $this->filter.":".$application->input->getString('q', null);
+            }
         }
-
+        
         return (count($filters)) ? $filters : array();
     }
 
