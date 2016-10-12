@@ -91,5 +91,4 @@ JHTML::_('behavior.formvalidation');
 
     <input type="hidden" name="option" value="com_jsolr"/>
     <input type="hidden" name="task" value="search"/>
-    <?php echo JHTML::_('form.token'); ?>
 </form>

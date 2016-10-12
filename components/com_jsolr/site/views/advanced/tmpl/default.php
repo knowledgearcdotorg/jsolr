@@ -40,7 +40,6 @@ $params = $this->state->get('params');
             <input type="hidden" name="task" value="advanced" />
             <input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get("o", null, 'cmd'); ?>" />
             <input type="hidden" name="Itemid" value="<?php echo JFactory::getApplication()->input->get("Itemid", 0, 'int'); ?>" />
-            <?php echo JHTML::_( 'form.token' ); ?>
         </fieldset>
     </form>
 </div>
