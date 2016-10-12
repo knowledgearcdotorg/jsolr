@@ -70,12 +70,14 @@ class PlgJSolrContent extends \JSolr\Plugin
 
         $catids = $this->params->get('categories', array());
 
-        if (($pos = array_search(0, $catids)) !== false) {
-            unset($catids[$pos]);
-        }
+        if (is_array($catids)) {
+            if (($pos = array_search(0, $catids)) !== false) {
+                unset($catids[$pos]);
+            }
 
-        if (count($catids)) {
-            $articles->setState("filter.category_id", $catids);
+            if (count($catids)) {
+                $articles->setState("filter.category_id", $catids);
+            }
         }
 
         return $articles;
