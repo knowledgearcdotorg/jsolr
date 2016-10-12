@@ -122,8 +122,8 @@ class PlgJSolrContent extends \JSolr\Plugin
         $array['id'] = $this->buildId($source->id);
         $array['id_i'] = $source->id;
         $array['name'] = $source->title;
-        $array["author"] = $author->name;
-        $array["author_s"] = $this->getFacet($author->name);
+        $array["author"] = array($author->name);
+        $array["author_ss"] = array($this->getFacet($author->name));
         $array["author_i"] = $author->id;
         $array["title_txt_$lang"] = $source->title;
         $array['alias_s'] = $source->alias;
