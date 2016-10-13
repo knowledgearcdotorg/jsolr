@@ -61,7 +61,7 @@ JHTML::_('behavior.formvalidation');
         <?php endforeach;?>
     </ul>
 
-    <div id="jsolrFacetfilters">
+    <div id="jsolrAppliedFilters">
         <?php if (!is_null($this->get('Form'))): ?>
             <?php
             foreach ($this->get('AppliedFacetFilters') as $field) :
