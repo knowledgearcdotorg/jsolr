@@ -17,8 +17,6 @@ JHtml::_('behavior.calendar');
 
 $document = JFactory::getDocument();
 
-$document->addScript(JURI::base().'media/com_jsolr/js/jsolr.js');
-
 $document->addStyleSheet(JURI::base().'media/com_jsolr/css/jsolr.css');
 ?>
 
