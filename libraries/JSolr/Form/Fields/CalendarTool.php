@@ -63,7 +63,8 @@ class CalendarTool extends SearchTool implements Filterable
         return $options;
     }
 
-    protected function getSelectedLabel() {
+    protected function getSelectedLabel()
+    {
         foreach ($this->element->children() as $option) {
             // Only add <option /> elements.
             if ($option->getName() != 'option') {
@@ -112,17 +113,17 @@ class CalendarTool extends SearchTool implements Filterable
         switch ($name) {
             case 'filter':
                 return $this->getAttribute($name, null);
-
                 break;
 
             case 'filter_quoted':
             case 'show_custom':
-                if ($this->getAttribute($name, null) === 'true')
+                if ($this->getAttribute($name, null) === 'true') {
                     return true;
-                else
+                } else {
                     return false;
+                }
 
-                    break;
+                break;
 
             default:
                 return parent::__get($name);

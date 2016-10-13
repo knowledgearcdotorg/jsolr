@@ -23,39 +23,17 @@ class SearchTool extends \JFormFieldList
 
     protected function getInput()
     {
-        $encoded = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-        $label = JText::_($this->getSelectedLabel());
-        $options = implode($this->getOptions());
-
-        $html =
-<<<HTML
-<input
-    type="hidden"
-    name="$this->name"
-    id="$this->id"
-    value="$encoded"/>
-
-<a
-    class="dropdown-toggle"
-    id="$this->name-selected"
-    role="button"
-    data-toggle="dropdown"
-    data-target="#"
-    data-original="$this->value">
-    $label
-    <b class="caret"></b>
-
-    <ul
-        class="dropdown-menu"
-        role="menu"
-        aria-labelledby="$this->name">$options</ul>
-HTML;
-
-        return $html;
+        $layout = new \JLayoutFile('jsolr.form.fields.searchtool');
+        return $layout->render($this);
     }
 
-    protected function getSelectedLabel() {
-        $ret = "";
+    /**
+     * Gets the currently selected label.
+     *
+     * @return  string  The currently selected label.
+     */
+    protected function getSelectedLabel()
+    {
         foreach ($this->element->children() as $option) {
             // Only add <option /> elements.
             if ($option->getName() != 'option') {
@@ -70,15 +48,13 @@ HTML;
 
         }
 
-        return $ret;
+        return "";
     }
 
     /**
      * Method to get the field options.
      *
      * @return  array  The field option objects.
-     *
-     * @since   11.1
      */
     protected function getOptions()
     {
@@ -95,7 +71,7 @@ HTML;
             $selected = ((string)$option['value']) == $this->value;
 
             // Create a new option object based on the <option /> element.
-            $tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
+            $tmp = '<li role="presentation" class="' . ($selected ? 'active' : '') . '" data-value="' . ((string) $key) . '">' . $link . '</li>';
 
 
             // Add the option object to the result set.
@@ -112,7 +88,24 @@ HTML;
      * @param unknown_type $element
      * @return string
      */
-    protected function getOption( $option ) {
+    protected function getOption($option)
+    {
         return trim((string) $option);
+    }
+
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'options':
+                return $this->getOptions();
+                break;
+
+            case 'label':
+                return $this->getSelectedLabel();
+                break;
+
+            default:
+                return parent::__get($name);
+        }
     }
 }
