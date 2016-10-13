@@ -12,17 +12,15 @@ $encoded = htmlspecialchars($displayData->value, ENT_COMPAT, 'UTF-8');
     value="<?php echo $encoded; ?>"/>
 
 <a
-    class="btn dropdown-toggle"
-    id="<?php echo $displayData->fieldName; ?>"
-    role="button"
+    class="dropdown-toggle"
+    id="<?php echo $displayData->fieldname; ?>"
     data-toggle="dropdown"
-    data-target="#"
-    data-original="<?php echo $displayData->value; ?>">
+    href="#">
     <?php echo JText::_($displayData->label); ?>
     <b class="caret"></b>
-
-    <ul
-        class="dropdown-menu"
-        role="menu"
-        aria-labelledby="<?php echo $displayData->name; ?>"><?php echo implode($displayData->options); ?></ul>
 </a>
+
+<ul
+    class="dropdown-menu"
+    role="menu"
+    aria-labelledby="<?php echo $displayData->name; ?>"><?php echo implode($displayData->options); ?></ul>
