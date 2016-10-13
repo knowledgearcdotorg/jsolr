@@ -298,5 +298,16 @@
             <option value="1">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_AS_A_LINK</option>
             <option value="2">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_AS_A_DIMENSION</option>
         </field>
+
+        <field
+            name="embedfacets"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_JSOLR_SEARCHLAYOUT_EMBEDFACETS_LABEL"
+            description="COM_JSOLR_SEARCHLAYOUT_EMBEDFACETS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
     </fieldset>
 </config>

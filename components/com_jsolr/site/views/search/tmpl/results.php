@@ -24,7 +24,7 @@ $document->addStyleSheet(JURI::base().'media/com_jsolr/css/jsolr.css');
 
 integrating faceting within the component. Use template overrides to improve. -->
 
-<?php if ($this->params->get('facets_embed')) : ?>
+<?php if ((bool)$this->params->get('embedfacets', true)) : ?>
 
 <section id="jsolrFacetFilters">
 
