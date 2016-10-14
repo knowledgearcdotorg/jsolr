@@ -13,18 +13,18 @@ use \JFactory as JFactory;
  */
 class TikaApp extends Extractor
 {
+    private $metadata;
+
+    private $content;
+
     public function getContentType()
     {
-        if (!$this->contentType) {
-            $result = $this->extract('-d');
+        $result = $this->extract('-d');
 
-            $map = array_map('trim', explode(';', trim($result)));
+        $map = array_map('trim', explode(';', trim($result)));
 
-            // sometimes the charset is appended to the file type.
-            $this->contentType = \JArrayHelper::getValue($map, 0);
-        }
-
-        return $this->contentType;
+        // sometimes the charset is appended to the file type.
+        return \JArrayHelper::getValue($map, 0);
     }
 
     /**
@@ -41,49 +41,45 @@ class TikaApp extends Extractor
      */
     public function getLanguage()
     {
-        if (!$this->language) {
-            $result = $this->extract('-l');
+        $result = $this->extract('-l');
 
-            $results = explode("\n", str_replace("\r", "\n", $result));
+        $results = explode("\n", str_replace("\r", "\n", $result));
 
-            $array = array();
+        $array = array();
 
-            foreach ($results as $value) {
-                if ($value) {
-                    if (JString::strlen($value) == 5) { // assume iso with region
-                        $array[] = str_replace('_', '-', $value);
-                    } elseif (JString::strlen($value) == 2) { // assume iso without region
-                        $found = false;
-                        $languages = \JLanguageHelper::getLanguages();
+        foreach ($results as $value) {
+            if ($value) {
+                if (JString::strlen($value) == 5) { // assume iso with region
+                    $array[] = str_replace('_', '-', $value);
+                } elseif (JString::strlen($value) == 2) { // assume iso without region
+                    $found = false;
+                    $languages = \JLanguageHelper::getLanguages();
 
-                        while (($language = current($languages)) && !$found) {
-                            $parts = explode('-', $language->lang_code);
+                    while (($language = current($languages)) && !$found) {
+                        $parts = explode('-', $language->lang_code);
 
-                            if ($value == \JArrayHelper::getValue($parts, 0)) {
-                                if (array_search($language->lang_code, $array) === false) {
-                                    $array[] = $language->lang_code;
-                                }
-
-                                $found = true;
+                        if ($value == \JArrayHelper::getValue($parts, 0)) {
+                            if (array_search($language->lang_code, $array) === false) {
+                                $array[] = $language->lang_code;
                             }
 
-                            next($languages);
+                            $found = true;
                         }
 
-                        reset($languages);
+                        next($languages);
                     }
+
+                    reset($languages);
                 }
             }
-
-            // if no languages could be detected, use the system lang.
-            if (!count($array)) {
-                $array[] = JFactory::getLanguage()->getTag();
-            }
-
-            $this->language = $array;
         }
 
-        return $this->language;
+        // if no languages could be detected, use the system lang.
+        if (!count($array)) {
+            $array[] = JFactory::getLanguage()->getTag();
+        }
+
+        return $array;
     }
 
     public function getContent()
@@ -117,7 +113,7 @@ class TikaApp extends Extractor
         ob_start();
 
         $cmd = "java -Xmx128M -jar ".
-            $this->getAppPath()." ".$flags." ".$this->pathOrUrl." 2> /dev/null";
+            $this->getAppPath()." ".$flags." ".$this->getPathOrUrl()." 2> /dev/null";
 
         \JLog::add('tika app: '.$cmd, \JLog::DEBUG, 'tikaserver');
 

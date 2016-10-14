@@ -17,12 +17,7 @@ class TikaServer extends Extractor
 {
     public function getContentType()
     {
-        if (!$this->contentType) {
-            // sometimes the charset is appended to the file type.
-            $this->contentType = $this->getMetadata()->get('Content-Type');
-        }
-
-        return $this->contentType;
+        return $this->getMetadata()->get('Content-Type');
     }
 
     /**
@@ -39,77 +34,60 @@ class TikaServer extends Extractor
      */
     public function getLanguage()
     {
-        if (!$this->language) {
-            $result = $this->getMetadata()->get('language');
+        $result = $this->getMetadata()->get('language');
 
-            $results = explode("\n", str_replace("\r", "\n", $result));
+        $results = explode("\n", str_replace("\r", "\n", $result));
 
-            $array = array();
+        $array = array();
 
-            foreach ($results as $value) {
-                if ($value) {
-                    if (JString::strlen($value) == 5) { // assume iso with region
-                        $array[] = str_replace('_', '-', $value);
-                    } elseif (JString::strlen($value) == 2) { // assume iso without region
-                        $found = false;
-                        $languages = JLanguageHelper::getLanguages();
+        foreach ($results as $value) {
+            if ($value) {
+                if (JString::strlen($value) == 5) { // assume iso with region
+                    $array[] = str_replace('_', '-', $value);
+                } elseif (JString::strlen($value) == 2) { // assume iso without region
+                    $found = false;
+                    $languages = JLanguageHelper::getLanguages();
 
-                        while (($language = current($languages)) && !$found) {
-                            $parts = explode('-', $language->lang_code);
-                            if ($value == JArrayHelper::getValue($parts, 0)) {
-                                if (array_search($language->lang_code, $array) === false) {
-                                    $array[] = $language->lang_code;
-                                }
-
-                                $found = true;
+                    while (($language = current($languages)) && !$found) {
+                        $parts = explode('-', $language->lang_code);
+                        if ($value == JArrayHelper::getValue($parts, 0)) {
+                            if (array_search($language->lang_code, $array) === false) {
+                                $array[] = $language->lang_code;
                             }
 
-                            next($languages);
+                            $found = true;
                         }
 
-                        reset($languages);
+                        next($languages);
                     }
+
+                    reset($languages);
                 }
             }
-
-            // if no languages could be detected, use the system lang.
-            if (!count($array)) {
-                $array[] = JFactory::getLanguage()->getTag();
-            }
-
-            $this->language = $array;
         }
 
-        return $this->language;
+        // if no languages could be detected, use the system lang.
+        if (!count($array)) {
+            $array[] = JFactory::getLanguage()->getTag();
+        }
+
+        return $array;
     }
 
     public function getContent()
     {
-        if (!$this->content) {
-            $result = $this->extract('tika');
-
-            $this->content = $result;
-        }
-
-        return $this->content;
+        return $this->extract('tika');
     }
 
     public function getMetadata()
     {
-        if (!$this->metadata) {
-            $result = $this->extract('meta', array("Accept"=>"application/json"));
-
-            $metadata = new \Joomla\Registry\Registry($result);
-
-            $this->metadata = $metadata;
-        }
-
-        return $this->metadata;
+        $result = $this->extract('meta', array("Accept"=>"application/json"));
+        return new \Joomla\Registry\Registry($result);
     }
 
     public function getAppPath()
     {
-        $appPath = $this->appPath;
+        $appPath = parent::getAppPath();
 
         if ($appPath) {
             if (substr_compare($appPath, '/', strlen($appPath)- 1) !== 0) {
@@ -128,7 +106,7 @@ class TikaServer extends Extractor
 
         \JLog::add('server url: '.$url, \JLog::DEBUG, 'tikaserver');
 
-        $headers = array_merge(array('fileUrl'=>$this->pathOrUrl), $headers);
+        $headers = array_merge(array('fileUrl'=>$this->getPathOrUrl()), $headers);
 
         \JLog::add('server headers: '.print_r($headers, true), \JLog::DEBUG, 'tikaserver');
 

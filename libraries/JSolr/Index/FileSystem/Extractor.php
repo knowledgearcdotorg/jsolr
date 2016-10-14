@@ -19,23 +19,22 @@ abstract class Extractor
 
     private $params;
 
-    private $contentType;
-
     private $language;
-
-    private $metadata;
-
-    private $content;
 
     public function __construct($pathOrUrl)
     {
         $this->pathOrUrl = $pathOrUrl;
 
-        $params = \JComponentHelper::getParams('com_jsolrindex', true);
+        $params = \JComponentHelper::getParams('com_jsolr', true);
 
         $this->params = $params;
 
         $this->setAppPath($params->get('component.app_path'));
+    }
+
+    public function getPathOrUrl()
+    {
+        return $this->pathOrUrl;
     }
 
     /**
@@ -62,16 +61,6 @@ abstract class Extractor
     public function getAppPath()
     {
         return $this->appPath;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->$name = $value;
-    }
-
-    public function __get($name)
-    {
-        return $this->$name;
     }
 
     abstract public function getContentType();
