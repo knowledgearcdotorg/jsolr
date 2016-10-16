@@ -122,7 +122,7 @@ class PlgJSolrNewsfeeds extends \JSolr\Plugin
         $array['id_i'] = $source->id;
         $array['name'] = $source->name;
         $array["author"] = $author->name;
-        $array["author_ss"] = $this->getFacet($author->name);
+        $array["author_ss"] = array($this->getFacet($author->name));
         $array["author_i"] = $author->id;
         $array["title_txt_$lang"] = $source->name;
         $array['alias_s'] = $source->alias;
