@@ -98,9 +98,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $dispatcher = JEventDispatcher::getInstance();
 
         $filters = array();
+        $facets = array();
 
         if ($this->getForm()) {
             $filters = $this->getForm()->getFilters();
+            $facets = $this->getForm()->getFacets();
         }
 
         $store = $this->getStoreId();
@@ -230,7 +232,9 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getEDisMax()->setBoostFunctionsMult($boost);
                 }
 
-                $query->getFacetSet()->createFacetField('author')->setField('author_s');
+                foreach ($facets as $facet) {
+                    $query->getFacetSet()->createFacetField($facet)->setField($facet);
+                }
 
                 $dispatcher->trigger('onJSolrSearchBeforeQuery', array($query, $this->getState()));
 

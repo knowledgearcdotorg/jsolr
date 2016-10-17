@@ -46,12 +46,10 @@ class Form extends \JForm
         $facets = array();
 
         foreach ($this->getFieldset('facets') as $field) {
-            foreach ($field->getFacetParams() as $item) {
-                $facets = array_merge_recursive($facets, $item);
-            }
+            $facets = array_merge_recursive($facets, $field->getFacetParams());
         }
 
-        return array($facets);
+        return $facets;
     }
 
     /**
