@@ -71,7 +71,7 @@ class PlgJSolrNewsfeeds extends \JSolr\Plugin
 
         $catids = $this->params->get('categories', array());
 
-        if (($pos = array_search(0, $catids)) !== false) {
+        if (($pos = array_search(1, $catids)) !== false) {
             unset($catids[$pos]);
         }
 

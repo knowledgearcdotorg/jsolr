@@ -21,7 +21,7 @@ class PlgContentJSolr extends JPlugin
     {
         $dispatcher = JDispatcher::getInstance();
         JPluginHelper::importPlugin('jsolr');
-
+        
         $results = $dispatcher->trigger('onJSolrAfterSave', array($context, $article, $isNew));
     }
 
