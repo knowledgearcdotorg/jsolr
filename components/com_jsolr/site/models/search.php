@@ -97,9 +97,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         JPluginHelper::importPlugin("jsolr");
         $dispatcher = JEventDispatcher::getInstance();
 
-        $filters = $this->getForm()->getFilters();
+        $filters = array();
+
+        if ($this->getForm()) {
+            $filters = $this->getForm()->getFilters();
+        }
+
         $store = $this->getStoreId();
-        $params = $this->getState('params');
+        $params = $this->getState('params', new \Joomla\Registry\Registry);
 
         if (!isset($this->cache[$store])) {
             if ($fq = $params->get('fq')) {
@@ -348,7 +353,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         // Add some of the querying params to the store id.
         $id .= ':'.$this->getState('query.q');
-        $id .= ':'.$this->getState('params')->get('fq');
+
+        if ($params = $this->getState('params')) {
+            $id .= ':'.$params->get('fq');
+        }
 
         if ($dimension = $this->getState('query.dimension')) {
             $id .= ':'.$dimension;
@@ -425,6 +433,13 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         }
 
         return $data;
+    }
+
+    protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+    {
+        \JSolr\Form\Form::addFormPath(dirname(dirname(__file__)).'/models/forms');
+
+        return parent::loadForm($name, $source, $options, $clear, $xpath);
     }
 
     /**
