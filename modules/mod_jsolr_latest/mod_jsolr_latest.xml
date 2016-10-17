@@ -7,7 +7,7 @@
     <authorUrl>http://www.knowledgearc.org</authorUrl>
     <copyright>>Copyright (C) 2014-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>2.0.0</version>
+    <version>3.0.0-dev</version>
     <description>MOD_JSOLR_LATEST_XML_DESCRIPTION</description>
     <files>
         <filename module="mod_jsolr_latest">mod_jsolr_latest.php</filename>
@@ -32,19 +32,11 @@
                 <field
                     name="ordering"
                     type="list"
-                    default="modified"
+                    default="modified_tdt"
                     label="MOD_JSOLR_LATEST_FIELD_ORDERING_LABEL"
                     description="MOD_JSOLR_LATEST_FIELD_ORDERING_DESC">
-                    <option value="created">MOD_JSOLR_LATEST_VALUE_ADDED</option>
-                    <option value="modified">MOD_JSOLR_LATEST_VALUE_MODIFIED</option>
-                </field>
-                <field
-                    name="o"
-                    type="plugins"
-                    folder="jsolrsearch"
-                    label="MOD_JSOLR_LATEST_FIELD_O_LABEL"
-                    description="MOD_JSOLR_LATEST_FIELD_O_DESC">
-                    <option value="">MOD_JSOLR_LATEST_VALUE_NONE</option>
+                    <option value="created_tdt">MOD_JSOLR_LATEST_VALUE_ADDED</option>
+                    <option value="modified_tdt">MOD_JSOLR_LATEST_VALUE_MODIFIED</option>
                 </field>
                 <field
                     name="fq"
