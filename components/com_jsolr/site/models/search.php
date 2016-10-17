@@ -44,22 +44,25 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     }
 
     /**
-        * (non-PHPdoc)
-        * @see JModelList::populateState()
-        */
-    public function populateState($ordering = null, $direction = null)
+     * (non-PHPdoc)
+     * @see JModelLegacy::populateState()
+     */
+    public function populateState()
     {
         $application = JFactory::getApplication('site');
 
         $this->setState('query.q', $application->input->get("q", null, "html"));
 
-        $value = $application->input->get('limit', $application->getCfg('list_limit', 0));
+        $limit = $application->input->get('limit', $application->getCfg('list_limit', 0));
 
-        $this->setState('list.limit', $value);
+        $this->setState('list.limit', $limit);
 
-        $value = $application->input->get('limitstart', 0);
+        $start = $application->input->get('limitstart', 0);
 
-        $this->setState('list.start', $value);
+        $this->setState('list.start', $start);
+
+        $this->setState('list.ordering', $application->input->get('ordering'));
+        $this->setState('list.direction', $application->input->get('direction'));
 
         // Need to convert registry to array so that blank values are included
         // in the merge.
@@ -78,8 +81,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $params = new \Joomla\Registry\Registry($array);
 
         $this->setState('params', $params);
-
-        parent::populateState($ordering, $direction);
     }
 
     /**
@@ -116,6 +117,17 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $limit = $this->getLimit();
 
                 $query->setRows($limit);
+
+                // set ordering and direction.
+                if ($ordering = $this->getState('list.ordering')) {
+                    if ($this->getState('list.direction') == $query::SORT_DESC) {
+                        $direction = $query::SORT_DESC;
+                    } else {
+                        $direction = $query::SORT_ASC;
+                    }
+
+                    $query->addSort($ordering, $direction);
+                }
 
                 // set query fields.
                 $qf = $params->get('qf', self::QF_DEFAULT);
@@ -334,13 +346,21 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     protected function getStoreId($id = '')
     {
-        // Add the list state to the store id.
-        $id .= ':' . $this->getState('list.start');
-        $id .= ':' . $this->getState('list.limit');
-        $id .= ':' . $this->getState('list.ordering');
-        $id .= ':' . $this->getState('list.direction');
+        // Add some of the querying params to the store id.
+        $id .= ':'.$this->getState('query.q');
+        $id .= ':'.$this->getState('params')->get('fq');
 
-        return md5($this->context . ':' . $id);
+        if ($dimension = $this->getState('query.dimension')) {
+            $id .= ':'.$dimension;
+        }
+
+        // Add the list state to the store id.
+        $id .= ':'.$this->getState('list.start');
+        $id .= ':'.$this->getState('list.limit');
+        $id .= ':'.$this->getState('list.ordering');
+        $id .= ':'.$this->getState('list.direction');
+
+        return md5($this->context.':'.$id);
     }
 
     /**

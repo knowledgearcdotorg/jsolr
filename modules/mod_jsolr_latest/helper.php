@@ -17,7 +17,7 @@ class ModJSolrLatestHelper
 		$results = array();
 
         try {
-            $client = \JSolr\Search\Factory::getClient();
+            /*$client = \JSolr\Search\Factory::getClient();
 
             $query = $client->createSelect();
             $query
@@ -28,9 +28,19 @@ class ModJSolrLatestHelper
 
             if ($fq = $params->get('fq', null)) {
                 $query->createFilterQuery('fq', $fq);
-            }
+            }*/
+            \JModelLegacy::addIncludePath(JPATH_ROOT.'/components/com_jsolr/models');
 
-            return $client->select($query)->getDocuments();
+            $model = \JModelLegacy::getInstance('Search', 'JSolrModel');
+            $model->setState('list.ordering', 'modified_tdt');
+            $model->setState('list.direction', 'desc');
+            $model->setState('list.limit', 5);
+
+            $params = $model->getState('params');
+            $params->set('fq', $fq);
+            $model->setState($params);
+
+            return $model->getItems();
         } catch (Exception $e) {
 
         }
