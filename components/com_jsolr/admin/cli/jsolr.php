@@ -155,6 +155,10 @@ class JSolrCli extends JApplicationCli
 
                         $client->registerQueryType(LukeQuery::QUERY_LUKE, 'Solarium\\QueryType\\Luke\\Query');
                         $luke = $client->createQuery(LukeQuery::QUERY_LUKE);
+
+                        // solves the topTerms missing error.
+                        $luke->addParam('fl', '*');
+
                         $response = $client->execute($luke);
 
                         $date = JFactory::getDate($response->getLastModified(), $tz);
