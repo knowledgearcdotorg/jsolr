@@ -92,15 +92,12 @@ abstract class Plugin extends \JPlugin
      *
      * Derived classes should override the index() method when implementing
      * a custom index task.
-     *
-     * @params  string  $lastModified  Only index items after the last modified
-     * date.
      */
-    public function onJSolrIndex($lastModified = null)
+    public function onJSolrIndex()
     {
         $this->out(array("task:index crawler:".$this->get('context'),"[starting]"), \JLog::DEBUG);
 
-        $this->index($lastModified);
+        $this->index();
 
         $this->out(array("task:index crawler:".$this->get('context'),"[completed]"), \JLog::DEBUG);
     }
@@ -122,7 +119,7 @@ abstract class Plugin extends \JPlugin
      * Derived classes should override this method when implementing a custom
      * index operation.
      */
-    protected function index($lastModified = null)
+    protected function index()
     {
         $commitWithin = $this->params->get('component.commitsWithin', '10000');
 

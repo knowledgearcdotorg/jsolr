@@ -124,6 +124,8 @@ class JSolrCli extends JApplicationCli
 
         $subCommand = ArrayHelper::getValue($this->input->args, 1, null, 'word');
 
+        $event = 'onJSolrIndex';
+
         $lastModified = null;
 
         if ($subCommand) {
@@ -140,31 +142,7 @@ class JSolrCli extends JApplicationCli
                         return;
                     }
 
-                    $format = "Y-m-d\TH:i:sP";
-                    $lastModified = ArrayHelper::getValue($this->input->args, 2, null, 'string');
-                    $tz = new DateTimeZone(JFactory::getConfig()->get('offset'));
-
-                    if ($lastModified) {
-                        $date = JDate::createFromFormat($format, $lastModified, $tz);
-
-                        if ($date === false) {
-                            throw new Exception("Invalid last modified date: ".$lastModified);
-                        }
-                    } else { // use lastmodified from Solr index.
-                        $client = \JSolr\Index\Factory::getClient();
-
-                        $client->registerQueryType(LukeQuery::QUERY_LUKE, 'Solarium\\QueryType\\Luke\\Query');
-                        $luke = $client->createQuery(LukeQuery::QUERY_LUKE);
-
-                        // solves the topTerms missing error.
-                        $luke->addParam('fl', '*');
-
-                        $response = $client->execute($luke);
-
-                        $date = JFactory::getDate($response->getLastModified(), $tz);
-                    }
-
-                    $lastModified = $date->format($format);
+                    $event = 'onJSolrIndexUpdate';
 
                     break;
 
@@ -178,7 +156,7 @@ class JSolrCli extends JApplicationCli
 
         JSolrHelper::log("crawl start ".$start->format("c"), JLog::DEBUG);
 
-        $this->fireEvent('onJSolrIndex', array($lastModified));
+        $this->fireEvent($event);
 
         $end = new JDate('now');
 
