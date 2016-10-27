@@ -7,7 +7,7 @@
     <authorUrl>http://www.knowledgearc.org</authorUrl>
     <copyright>>Copyright (C) 2014-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>3.0.0-dev</version>
+    <version>3.0.0-alpha</version>
     <description>MOD_JSOLR_LATEST_XML_DESCRIPTION</description>
     <files>
         <filename module="mod_jsolr_latest">mod_jsolr_latest.php</filename>
