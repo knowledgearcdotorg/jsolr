@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="2.5" client="site" method="upgrade">
+<extension type="module" version="3.4" client="site" method="upgrade">
     <name>mod_jsolr_latest</name>
-    <creationDate>2014-02-21</creationDate>
+    <creationDate>2016-04-21</creationDate>
     <author>KnowledgeARC</author>
     <authorEmail>development@knowledgearc.com</authorEmail>
     <authorUrl>http://www.knowledgearc.org</authorUrl>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="library" method="upgrade" version="3.3">
+<extension type="library" method="upgrade" version="3.4">
     <name>JSolr library</name>
-    <creationDate>2012-07-09</creationDate>
+    <creationDate>2016-04-21</creationDate>
     <libraryname>JSolr</libraryname>
     <author>KnowledgeArc Ltd</author>
     <authorEmail>development@knowledgearc.com</authorEmail>
     <authorUrl>http://www.knowledgearc.org</authorUrl>
     <copyright>Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>2.2.0-dev</version>
+    <version>3.0.0-alpha</version>
     <description>LIB_JSOLR_XML_DESCRIPTION</description>
 
     <files folder="libraries">
@@ -24,9 +24,4 @@
         <language tag="en-GB">language/en-GB/en-GB.lib_jsolr.ini</language>
         <language tag="en-GB">language/en-GB/en-GB.lib_jsolr.sys.ini</language>
     </languages>
-
-
-    <updateservers>
-        <server type="extension" priority="1"><![CDATA[http://knowledgearc.org/index.php?option=com_ars&view=update&task=stream&format=xml&id=11&dummy=extension.xml]]></server>
-    </updateservers>
 </extension>
