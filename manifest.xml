@@ -7,9 +7,9 @@
         <type>package</type>
         <version>3.0.0-alpha</version>
         <client>0</client>
-        <infourl title="JSolr">https://github.com/knowledgearcdotorg/jsolr/releases/tag/1.0.0-alpha</infourl>
+        <infourl title="JSolr">https://github.com/knowledgearcdotorg/jsolr/releases/tag/3.0.0-alpha</infourl>
         <downloads>
-            <downloadurl type="full" format="zip">https://github.com/knowledgearcdotorg/jsolr/releases/download/1.0.0-alpha/pkg_jsolr.zip</downloadurl>
+            <downloadurl type="full" format="zip">https://github.com/knowledgearcdotorg/jsolr/releases/download/3.0.0-alpha/pkg_jsolr.zip</downloadurl>
         </downloads>
         <tags>
             <tag>alpha</tag>
