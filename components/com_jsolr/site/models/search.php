@@ -439,13 +439,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         return $data;
     }
 
-    protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
-    {
-        \JSolr\Form\Form::addFormPath(dirname(dirname(__file__)).'/models/forms');
-
-        return parent::loadForm($name, $source, $options, $clear, $xpath);
-    }
-
     /**
      * Get's the language, either from the item or from the Joomla environment.
      *

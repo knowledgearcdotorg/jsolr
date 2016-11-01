@@ -42,9 +42,14 @@ abstract class Form extends \JModelForm
             return $this->_forms[$hash];
         }
 
+        // load component forms.
+        \JSolr\Form\Form::addFormPath(dirname(
+            (new \ReflectionClass(static::class))->getFileName()).'/forms');
+
         // also try loading form overrides from template.
         $template = JFactory::getApplication()->getTemplate();
-        \JSolr\Form\Form::addFormPath(JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms');
+        \JSolr\Form\Form::addFormPath(
+            JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms');
 
         try {
             $form = \JSolr\Form\Form::getInstance($name, $source, $options, false, $xpath); //JSolrForm instead of JForm
