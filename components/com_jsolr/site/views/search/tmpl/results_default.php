@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 <?php
 if ($didYouMean = $this->get('DidYouMean')) :
 ?>
-<div>Did you mean <a href="<?php echo JArrayHelper::getValue($didYouMean, 'uri'); ?>"><?php echo JArrayHelper::getValue($didYouMean, 'text'); ?></a></div>
+<div><b><?php echo JText::_("COM_JSOLR_SEARCH_DIDYOUMEAN"); ?></b> <a href="<?php echo $didYouMean->url; ?>"><?php echo $didYouMean->value; ?></a></div>
 <?php
 endif;
 ?>

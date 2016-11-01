@@ -305,13 +305,20 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     public function getDidYouMean()
     {
         if ($spellcheck = $this->getQuery()->getSpellcheck()) {
-            if ($spellcheck->getCorrectlySpelled()) {
+            if (!$spellcheck->getCorrectlySpelled()) {
                 $collation = array_shift($spellcheck->getCollations());
 
                 $correction = array_shift($collation->getCorrections());
 
                 if ($correction) {
-                    return $correction;
+                    $url = clone JUri::getInstance();
+                    $url->setVar('q', $correction);
+
+                    $didYouMean = new StdClass();
+                    $didYouMean->value = $correction;
+                    $didYouMean->url = (string)$url;
+
+                    return $didYouMean;
                 }
             }
         }
