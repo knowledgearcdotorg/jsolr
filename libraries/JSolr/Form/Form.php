@@ -68,7 +68,7 @@ class Form extends \JForm
             foreach ($this->getFieldset($fieldset->name) as $field) {
                 if (in_array('JSolr\Form\Fields\Sortable', class_implements($field)) == true) {
                     if ($field->getSort()) {
-                        $sort[] = $field->getSort();
+                        $sort = array_merge($sort , $field->getSort());
                     }
                 }
             }

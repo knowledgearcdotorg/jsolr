@@ -32,7 +32,9 @@ class Sort extends SearchTool implements Sortable
                 continue;
             }
 
-            $value = JArrayHelper::getValue($option, 'value', null, 'string');
+            $attributes = current($option->attributes());
+
+            $value = JArrayHelper::getValue($attributes, 'value', null, 'string');
 
             $selected = $value == $this->value;
 
@@ -49,7 +51,7 @@ class Sort extends SearchTool implements Sortable
                 '</a>';
 
             // Create a new option object based on the <option /> element.
-            $tmp = '<li role="presentation" class="' . ( $selected ? 'active' : '' ) . '" data-value="'.$value.'">' . $link . '</li>';
+            $tmp = '<li role="presentation" class="'.($selected ? 'active' : '').'" data-value="'.$value.'">'.$link.'</li>';
 
 
             // Add the option object to the result set.
@@ -65,18 +67,31 @@ class Sort extends SearchTool implements Sortable
     {
         $value = JFactory::getApplication()->input->get($this->name);
 
-        $sort = null;
+        $sort = array();
 
         foreach ($this->element->children() as $option) {
-            if (JArrayHelper::getValue($option, 'value', null, 'string') == $value) {
-                $sort = JArrayHelper::getValue($option, 'field', null, 'string');
+            $attributes = current($option->attributes());
 
-                if (JArrayHelper::getValue($option, 'direction', null, 'string')) {
-                    $sort .= " ";
-                    $sort .= JArrayHelper::getValue($option, 'direction', null, 'string');
-                }
+            $value = JArrayHelper::getValue(
+                $attributes,
+                'value',
+                null,
+                'string');
 
-                continue;
+            if ($value != "" && $value == $value) {
+                $field = JArrayHelper::getValue(
+                    $attributes,
+                    'field',
+                    null,
+                    'string');
+
+                $direction = JArrayHelper::getValue(
+                    $attributes,
+                    'direction',
+                    "desc",
+                    'string');
+
+                $sort[$field] = $direction;
             }
         }
 

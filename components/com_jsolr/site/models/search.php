@@ -61,9 +61,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $this->setState('list.start', $start);
 
-        $this->setState('list.ordering', $application->input->get('ordering'));
-        $this->setState('list.direction', $application->input->get('direction'));
-
         // Need to convert registry to array so that blank values are included
         // in the merge.
         $params = $application->getParams();
@@ -125,15 +122,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->setRows($limit);
 
-                // set ordering and direction.
-                if ($ordering = $this->getState('list.ordering')) {
-                    if ($this->getState('list.direction') == $query::SORT_DESC) {
-                        $direction = $query::SORT_DESC;
-                    } else {
-                        $direction = $query::SORT_ASC;
-                    }
+                $sort = $this->getForm()->getSorts();
 
-                    $query->addSort($ordering, $direction);
+                if (count($sort)) {
+                    $query->addSorts($sort);
                 }
 
                 // set query fields.
