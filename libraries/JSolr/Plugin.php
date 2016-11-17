@@ -45,7 +45,7 @@ abstract class Plugin extends \JPlugin
      * Get's the language, either from the source language or from the Joomla
      * environment.
      *
-     * @param  string  $language       The source language.
+     * @param  string  $language       The source language. Must include locale.
      * @param  bool    $includeRegion  True if the region should be included,
      * false otherwise. E.g. If true, en-AU would be returned, if false, just
      * en would be returned.
@@ -54,7 +54,7 @@ abstract class Plugin extends \JPlugin
      */
     protected function getLanguage($language, $includeRegion = true)
     {
-        if ($language && $language != '*') {
+        if (\JLanguage::exists($language)) {
             $lang = $language;
         } else {
             $lang = JFactory::getLanguage()->getDefault();
