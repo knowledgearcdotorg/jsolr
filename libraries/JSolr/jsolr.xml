@@ -14,10 +14,12 @@
     <files folder="libraries">
         <folder>Form</folder>
         <folder>Index</folder>
+        <folder>Plugin</folder>
         <folder>Search</folder>
         <folder>vendor</folder>
         <filename>Factory.php</filename>
         <filename>Helper.php</filename>
+        <filename>Plugin.php</filename>
     </files>
 
     <languages>
