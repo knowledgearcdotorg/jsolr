@@ -51,6 +51,7 @@ abstract class Factory
             $client->getEndpoint($endpoint)->setHost($url->getHost());
             $client->getEndpoint($endpoint)->setPort($url->getPort());
             $client->getEndpoint($endpoint)->setPath($url->getPath());
+            $client->getEndpoint($endpoint)->setTimeout(60000);
 
             if ($params->get('username') && $params->get('password')) {
                 $client->getEndpoint($endpoint)->setAuthentication(
