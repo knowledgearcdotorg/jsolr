@@ -136,9 +136,15 @@ abstract class Plugin extends \JPlugin
 
             try {
                 foreach ($items as $item) {
-                    $documents[] = $update->createDocument($this->prepare($item));
+                    $array = $this->prepare($item);
 
-                    $this->out('document '.ArrayHelper::getValue(end($documents), 'id').' ready for indexing', \JLog::DEBUG);
+                    if (!empty($array)) {
+                        $documents[] = $update->createDocument($array);
+
+                        $this->out('document '.ArrayHelper::getValue(end($documents), 'id').' ready for indexing', \JLog::DEBUG);
+                    } else {
+                        $this->out('document '.ArrayHelper::getValue(end($documents), 'id').' is empty, ignoring...', \JLog::WARNING);
+                    }
 
                     $start++;
                 }
