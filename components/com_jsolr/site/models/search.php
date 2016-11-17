@@ -228,6 +228,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getFacetSet()->createFacetField($facet)->setField($facet);
                 }
 
+                $query->getFacetSet()->setMinCount(1);
+
                 $dispatcher->trigger('onJSolrSearchBeforeQuery', array($query, $this->getState()));
 
                 $response = $client->select($query);
