@@ -25,12 +25,7 @@ JFactory::getDocument()->addStyleSheet(JURI::base()."media/".$this->getModel()->
     <?php foreach ($this->items->getFacets() as $key=>$facet) : ?>
         <?php foreach($facet as $value=>$count) : ?>
             <?php
-            $vars = array(
-                        JFactory::getApplication()->input->get('name')=>Helper::getOriginalFacet($value));
-
-            if (JFactory::getApplication()->input->get('o')) {
-                $vars['o'] = JFactory::getApplication()->input->get('o');
-            }
+            $vars = array(JFactory::getApplication()->input->get('name')=>Helper::getOriginalFacet($value));
 
             if ($this->params->get('show_count')) {
                 $facet = JText::sprintf('%s [%s]', Helper::getOriginalFacet($value), $count);

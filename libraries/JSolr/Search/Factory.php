@@ -61,6 +61,9 @@ class Factory extends \JSolr\Factory
 
     protected static function getRoute($view = 'search', $additionalFilters = array(), $queryOnly = false)
     {
+        // an array of pre-defined query fields used by JSolr.
+        $ignore = array('limitstart', 'task', 'facet', 'name');
+
         $uri = new JURI('index.php');
 
         $uri->setVar('option', self::$component);
@@ -71,7 +74,7 @@ class Factory extends \JSolr\Factory
             }
         } else {
             foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
-                if ($value && $key != 'limitstart' && $key != 'task') {
+                if ($value && array_search($key, $ignore) === false) {
                     $uri->setVar($key, urlencode($value));
                 }
             }
