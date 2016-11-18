@@ -28,7 +28,7 @@ class ModJSolrFilterHelper
         return $show;
     }
 
-    public function getForm()
+    public static function getForm()
     {
         return Form::getInstance('com_jsolr.search');
     }
