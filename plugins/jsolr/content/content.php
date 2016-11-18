@@ -150,6 +150,36 @@ class PlgJSolrContent extends \JSolr\Plugin
         $params = new \Joomla\Registry\Registry();
         $params->loadArray($source->attribs);
 
+        switch ($this->params->get('description', array())) {
+            case 'metadesc':
+                $description = $source->metadesc;
+                break;
+
+            case 'introtext':
+                $description = Helper::prepareContent($source->introtext, $params);
+                break;
+
+            case 'introtextmetadesc':
+                $description = Helper::prepareContent($source->introtext, $params);
+
+                if (!$description) {
+                    $description = $source->metadesc;
+                }
+
+                break;
+
+            default:
+                $description = $source->metadesc;
+
+                if (!$description) {
+                    $description = Helper::prepareContent($source->introtext, $params);
+                }
+
+                break;
+        }
+
+        $array["description_txt_$lang"] = strip_tags($description);
+
         $content = Helper::prepareContent($source->articletext, $params);
 
         $array["content_txt_$lang"] = strip_tags($content);

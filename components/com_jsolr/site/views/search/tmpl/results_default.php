@@ -54,7 +54,7 @@ endif;
                     <a href="<?php echo $item->link; ?>"><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('title_txt_*'), $item->{\JSolr\Helper::localize('title_txt_*')}); ?></a>
                 </h4>
             </header>
-            <p><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('content_txt_*'), $item->{\JSolr\Helper::localize('content_txt_*')}); ?></p>
+            <p><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('content_txt_*'), $item->{\JSolr\Helper::localize('description_txt_*')}); ?></p>
             <footer>
                 <dl>
                     <?php if ($item->created_tdt) : ?>

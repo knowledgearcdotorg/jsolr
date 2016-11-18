@@ -30,6 +30,21 @@
                     default="1">
                     <option value="1">JOPTION_ALL_CATEGORIES</option>
                 </field>
+
+                <field
+                    name="description"
+                    type="list"
+                    description="PLG_JSOLR_CONTENT_FIELD_DESCRIPTION_DESC"
+                    label="PLG_JSOLR_CONTENT_FIELD_DESCRIPTION_LABEL"
+                    size="10"
+                    default="metadescintrotext">
+                    <option value="metadesc">PLG_JSOLR_CONTENT_FIELD_DESCRIPTION_METADESC</option>
+                    <option value="introtext">PLG_JSOLR_CONTENT_FIELD_DESCRIPTION_INTROTEXT</option>
+                    <option
+                        value="metadescintrotext">PLG_JSOLR_CONTENT_FIELD_DESCRIPTION_METADESCINTROTEXT</option>
+                    <option
+                        value="introtextmetadesc">PLG_JSOLR_CONTENT_FIELD_DESCRIPTION_INTROTEXTMETADESC</option>
+                </field>
             </fieldset>
         </fields>
     </config>
