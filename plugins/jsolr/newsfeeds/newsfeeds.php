@@ -71,6 +71,10 @@ class PlgJSolrNewsfeeds extends \JSolr\Plugin
 
         $catids = $this->params->get('categories', array());
 
+        if (!is_array($catids)) {
+            $catids = array($catids);
+        }
+
         if (($pos = array_search(1, $catids)) !== false) {
             unset($catids[$pos]);
         }
@@ -145,10 +149,12 @@ class PlgJSolrNewsfeeds extends \JSolr\Plugin
         $array['modified_tdt'] = $modified->format('Y-m-d\TH:i:s\Z', false);
         $array["parent_id_i"] = $source->catid;
 
+        $array["description_txt_$lang"] = strip_tags($source->description);
+
         foreach ($source->tags->getItemTags('com_newsfeeds.newsfeed', $source->id) as $tag) {
             $array["tag_ss"][] = $tag->title;
         }
-
+        
         return $array;
     }
 
