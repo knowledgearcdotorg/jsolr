@@ -70,6 +70,10 @@ class PlgJSolrContent extends \JSolr\Plugin
 
         $catids = $this->params->get('categories', array());
 
+        if (!is_array($catids)) {
+            $catids = array($catids);
+        }
+
         if (($pos = array_search(1, $catids)) !== false) {
             unset($catids[$pos]);
         }
