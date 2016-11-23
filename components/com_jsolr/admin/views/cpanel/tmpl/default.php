@@ -24,16 +24,14 @@ $js = <<<JS
                     type : 'POST',
                     data : request,
                     success: function (response) {
-                        if (response.data) {
-                            var index = response.data;
-
-                            if ('statusText' in index) {
-                                $('#jsolrStatus').html(index['statusText']);
+                        if (response) {
+                            if ('statusText' in response) {
+                                $('#jsolrStatus').html(response['status']);
                             }
 
-                            if (index['status']) {
-                                if ('statistics' in index) {
-                                    var statistics = index['statistics'];
+                            if (response['status']) {
+                                if ('statistics' in response) {
+                                    var statistics = response['statistics']['index'];
 
                                     if ('numDocs' in statistics) {
                                         $('#jsolrNumDocs').html(statistics['numDocs']);
