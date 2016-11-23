@@ -152,7 +152,7 @@ class Facets extends \JFormFieldList implements Filterable, Facetable
                     $array[$i] = '"'.$array[$i].'"';
                 }
 
-                $filters[$i] = $this->filter.":".$array[$i];
+                $filters[$i] = $this->filter.":".str_replace(":", "\:", $array[$i]);
             }
         }
 
