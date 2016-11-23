@@ -143,6 +143,14 @@
             type="spacer"
             hr="true"/>
         <field
+            name="commitLimit"
+            type="text"
+            label="COM_JSOLR_INDEX_COMMITLIMIT_LABEL"
+            description="COM_JSOLR_INDEX_COMMITLIMIT_DESC"
+            default="1000"
+            filter="integer"
+            size="9"/>
+        <field
             name="facetSeparator"
             type="text"
             label="COM_JSOLR_INDEX_FACET_SEPARATOR_LABEL"

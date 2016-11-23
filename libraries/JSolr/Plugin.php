@@ -124,13 +124,14 @@ abstract class Plugin extends \JPlugin
         $commitWithin = $this->params->get('component.commitsWithin', '10000');
 
         $start = 0;
+        $limit = $this->params->get('component.commitLimit', 1000);
         $total = $this->getTotal();
 
         $client = \JSolr\Index\Factory::getClient();
         $update = $client->createUpdate();
 
         while ($start < $total) {
-            $items = $this->getItems($start);
+            $items = $this->getItems($start, $limit);
 
             $documents = array();
 
