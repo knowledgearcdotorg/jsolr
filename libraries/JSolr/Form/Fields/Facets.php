@@ -5,6 +5,8 @@
  */
 namespace JSolr\Form\Fields;
 
+require_once JPATH_ROOT.'/libraries/JSolr/vendor/autoload.php';
+
 use \JFactory as JFactory;
 use \JArrayHelper as JArrayHelper;
 use \JString as JString;
@@ -13,14 +15,12 @@ use \JText as JText;
 \JLoader::import('joomla.form.helper');
 \JFormHelper::loadFieldClass('list');
 
-use \JFormFieldList as JFormFieldList;
-
 /**
  * The Facets form field builds a list of facets which a user
  * can then apply to the current search result set to narrow their search
  * further (I.e. filter).
  */
-class Facets extends JFormFieldList implements Filterable, Facetable
+class Facets extends \JFormFieldList implements Filterable, Facetable
 {
     const FACET_DELIMITER = '|';
 
@@ -29,20 +29,20 @@ class Facets extends JFormFieldList implements Filterable, Facetable
     protected $facetInput;
 
     /**
-     * Get the params for building this facet.
+     * Get a facet object for building this facet.
      *
-     * Maybe as simple as facet.field or may include complex ranges and
-     * queries.
+     * Maybe as simple as \Solarium\QueryType\Select\Query\Component\Facet\Field
+     * or may include complex ranges and queries.
      *
-     * @return array An array of params for building this facet.
+     * @return \Solarium\QueryType\Select\Query\Component\Facet\Field  An instance of the \Solarium\QueryType\Select\Query\Component\Facet\Field class.
      */
-    public function getFacetParams()
+    public function getFacet()
     {
-        $params = array();
+        $facet = new \Solarium\QueryType\Select\Query\Component\Facet\Field();
+        $facet->setKey($this->fieldname);
+        $facet->setField($this->facet);
 
-        $params['facet.field'] = $this->getAttribute('facet');
-
-        return $params;
+        return $facet;
     }
 
     /**
@@ -55,20 +55,18 @@ class Facets extends JFormFieldList implements Filterable, Facetable
     {
         $facet = array();
 
-        if ($facetName = $this->getAttribute('facet')) {
-            \JModelLegacy::addIncludePath(JPATH_ROOT.'/components/com_jsolr/models');
+        \JModelLegacy::addIncludePath(JPATH_ROOT.'/components/com_jsolr/models');
 
-            $model = \JModelLegacy::getInstance('Search', 'JSolrModel');
+        $model = \JModelLegacy::getInstance('Search', 'JSolrModel');
 
-            $facet = $model->getQuery()->getFacetSet()->getFacet($facetName);
-        }
+        $facet = $model->getQuery()->getFacetSet()->getFacet($this->fieldname);
 
         return $facet;
     }
 
     /**
      * (non-PHPdoc)
-     * @see JFormFieldList::getInput()
+     * @see \JFormFieldList::getInput()
      */
     protected function getInput()
     {
@@ -104,7 +102,7 @@ class Facets extends JFormFieldList implements Filterable, Facetable
 
     /**
      * (non-PHPdoc)
-     * @see JFormFieldList::getOptions()
+     * @see \JFormFieldList::getOptions()
      */
     protected function getOptions()
     {

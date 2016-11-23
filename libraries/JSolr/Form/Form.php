@@ -47,7 +47,8 @@ class Form extends \JForm
 
         foreach ($this->getFieldset('facets') as $field) {
             if (in_array('JSolr\Form\Fields\Facetable', class_implements($field)) == true) {
-                $facets = array_merge_recursive($facets, $field->getFacetParams());
+                $facet = $field->getFacet();
+                $facets[$facet->getKey()] = $facet;
             }
         }
 

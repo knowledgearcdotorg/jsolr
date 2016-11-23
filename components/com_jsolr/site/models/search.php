@@ -224,8 +224,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getEDisMax()->setBoostFunctionsMult($boost);
                 }
 
-                foreach ($facets as $facet) {
-                    $query->getFacetSet()->createFacetField($facet)->setField($facet);
+                if (!empty($facets)) {
+                    $query->getFacetSet()->addFacets($facets);
                 }
 
                 $query->getFacetSet()->setMinCount(1);
