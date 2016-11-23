@@ -42,6 +42,10 @@ class Facets extends \JFormFieldList implements Filterable, Facetable
         $facet->setKey($this->fieldname);
         $facet->setField($this->facet);
 
+        if ($this->limit) {
+            $facet->setLimit($this->limit);
+        }
+
         return $facet;
     }
 
@@ -235,6 +239,7 @@ class Facets extends \JFormFieldList implements Filterable, Facetable
         switch ($name) {
             case 'filter':
             case 'facet':
+            case 'limit':
                 return $this->getAttribute($name, null);
                 break;
 

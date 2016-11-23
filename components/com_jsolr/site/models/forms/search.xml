@@ -26,7 +26,8 @@
             type="jsolr.facets"
             label="By Author"
             class="inputbox jsolrquery"
-            count="true"/>
+            count="true"
+            limit="5"/>
     </fieldset>
 
     <fieldset
