@@ -16,7 +16,6 @@
  */
 defined('_JEXEC') or die('Restricted access');
 ?>
-
 <div id="jsolr-total">
     <?php
     if ($this->get("Pagination")->get('pages.current') > 1) :
