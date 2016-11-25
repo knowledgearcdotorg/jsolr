@@ -18,10 +18,9 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 
 <div id="jsolr-total">
-
     <?php
     if ($this->get("Pagination")->get('pages.current') > 1) :
-        echo JText::sprintf('COM_JSOLR_TOTAL_RESULTS_CURRENTPAGE', $this->get("Pagination")->get('pages.current'), $this->items->get('numFound'));
+        echo JText::sprintf('COM_JSOLR_TOTAL_RESULTS_CURRENTPAGE', $this->get("Pagination")->get('pages.current'), $this->get('Total'));
     else :
         echo JText::plural('COM_JSOLR_TOTAL_N_RESULTS', $this->get('Total'));
     endif;
