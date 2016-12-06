@@ -89,6 +89,8 @@ class JSolrModelBrowse extends JModelList
                     $query->getFacetSet()->setPrefix($prefix);
                 }
 
+                $query->getFacetSet()->setLimit('-1');
+
                 $dispatcher->trigger('onJSolrBrowseBeforeQuery', array($query, $this->getState()));
 
                 $response = $client->select($query);
