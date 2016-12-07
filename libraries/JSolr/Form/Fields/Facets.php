@@ -244,10 +244,10 @@ class Facets extends \JFormFieldList implements Filterable, Facetable
                 break;
 
             case 'exactmatch':
-                if ($this->getAttribute($name, null) === 'true')
-                    return true;
-                else
+                if ($this->getAttribute($name, null) === 'false')
                     return false;
+                else
+                    return true;
                 break;
 
             case 'facetInput':
