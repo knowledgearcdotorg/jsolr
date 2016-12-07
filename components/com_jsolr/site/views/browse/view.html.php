@@ -27,40 +27,12 @@ class JSolrViewBrowse extends JViewLegacy
 
         $this->params = $this->state->get('params');
 
-        parent::display($this->_getDefaultTemplate());
-    }
+        $active = JFactory::getApplication()->getMenu()->getActive();
 
-    /**
-     * Gets the default template, searching for it in the
-     * html/com_jsolr/browse/ first, then loading the default.php
-     * template from the extension's views/browse/tmpl folder.
-     *
-     * To override the default browse page, place a file called
-     * <override>_<extension>.php in the html/com_jsolr/browse/ directory,
-     * where <override> is the name of the base layout you are overriding (in
-     * most cases this will be "default"), and <extension> is the name of the
-     * component whose data you are trying to browse.
-     *
-     * E.g.
-     *
-     * default_content.php
-     */
-    private function _getDefaultTemplate()
-    {
-        $o = JFactory::getApplication()->input->get('o');
-
-        $extension = str_replace("com_", "", $o);
-
-        $override = $this->getLayout().'_'.$extension.'.php';
-
-        $themeOverridePath =
-            JPATH_THEMES.'/'.JFactory::getApplication()->getTemplate().
-            '/html/com_jsolr/browse';
-
-        if (JPath::find($themeOverridePath, $override)) {
-            return $extension;
-        } else {
-            return null;
+        if (isset($active->query['layout'])) {
+            $this->setLayout($active->query['layout']);
         }
+
+        parent::display($tpl);
     }
 }
