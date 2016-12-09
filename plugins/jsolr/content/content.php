@@ -145,6 +145,11 @@ class PlgJSolrContent extends \JSolr\Plugin
 
         $array['created_tdt'] = $created->format('Y-m-d\TH:i:s\Z', false);
         $array['modified_tdt'] = $modified->format('Y-m-d\TH:i:s\Z', false);
+
+        $published = JFactory::getDate($source->publish_up);
+
+        $array['date_tdt'] = $published->format('Y-m-d\TH:i:s\Z', false);
+
         $array["parent_id_i"] = $source->catid;
 
         $params = new \Joomla\Registry\Registry();
