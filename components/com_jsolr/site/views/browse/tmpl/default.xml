@@ -49,6 +49,16 @@
             </field>
 
             <field
+                name="sort"
+                type="list"
+                label="COM_JSOLR_BROWSE_FIELD_SORT_LABEL"
+                description="COM_JSOLR_BROWSE_FIELD_SORT_DESC"
+                default="count">
+                <option value="count">COM_JSOLR_BROWSE_FIELD_SORT_COUNT</option>
+                <option value="index">COM_JSOLR_BROWSE_FIELD_SORT_INDEX</option>
+            </field>
+
+            <field
                 name="fq"
                 type="text"
                 label="COM_JSOLR_ATTRIBS_BROWSE_FQ_LABEL"

@@ -89,6 +89,11 @@ class JSolrModelBrowse extends JModelList
                     $query->getFacetSet()->setPrefix($prefix);
                 }
 
+                if ($sort = $this->getState('params')->get('sort', 'count')) {
+                    $sort = "\Solarium\QueryType\Select\Query\Component\Facet\Field::SORT_".strtoupper($sort);
+                    $query->getFacetSet()->setSort(constant($sort));
+                }
+
                 $query->getFacetSet()->setLimit('-1');
 
                 $dispatcher->trigger('onJSolrBrowseBeforeQuery', array($query, $this->getState()));
