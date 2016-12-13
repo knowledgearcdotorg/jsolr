@@ -36,7 +36,7 @@ class HiddenFilter extends JFormFieldHidden implements Filterable
         $filters = array();
 
         if ($value = $application->input->getString($this->name, null)) {
-            $filters[] = $this->filter.":".$value;
+            $filters[] = \JSolr\Helper::localize($this->filter).":".$value;
         }
 
         return (count($filters)) ? $filters : array();
@@ -73,7 +73,7 @@ class HiddenFilter extends JFormFieldHidden implements Filterable
                 if ($label) {
                     return JText::sprintf($label, $this->value);
                 } else {
-                    return JText::_('COM_JSOLRSEARCH_FILTER_'.
+                    return JText::_('COM_JSOLR_FILTER_'.
                         JString::strtoupper($this->name)."_".
                         str_replace(' ', '', JString::strtoupper($this->value)));
                 }

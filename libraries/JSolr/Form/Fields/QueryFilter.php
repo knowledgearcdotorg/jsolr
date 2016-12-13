@@ -30,10 +30,10 @@ class QueryFilter extends HiddenFilter
 
         if ($application->input->getString($this->name)) {
             if ($this->filter && $application->input->getString('q', null)) {
-                $filters[] = $this->filter.":".$application->input->getString('q', null);
+                $filters[] = \JSolr\Helper::localize($this->filter).":".$application->input->getString('q', null);
             }
         }
-        
+
         return (count($filters)) ? $filters : array();
     }
 
