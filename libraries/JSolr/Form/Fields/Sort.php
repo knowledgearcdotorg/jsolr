@@ -65,7 +65,7 @@ class Sort extends SearchTool implements Sortable
 
     public function getSort()
     {
-        $value = JFactory::getApplication()->input->get($this->name);
+        $selected = JFactory::getApplication()->input->get($this->name);
 
         $sort = array();
 
@@ -78,7 +78,7 @@ class Sort extends SearchTool implements Sortable
                 null,
                 'string');
 
-            if ($value != "" && $value == $value) {
+            if ($selected != "" && $selected == $value) {
                 $field = JArrayHelper::getValue(
                     $attributes,
                     'field',
