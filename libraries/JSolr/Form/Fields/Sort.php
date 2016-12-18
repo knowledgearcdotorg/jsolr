@@ -11,7 +11,7 @@ use \JText as JText;
 
 \JLoader::import('joomla.form.helper');
 
-class Sort extends SearchTool implements Sortable
+class Sort extends SearchTool implements Queryable
 {
     /**
      * The form field type.
@@ -65,9 +65,9 @@ class Sort extends SearchTool implements Sortable
 
     /**
      * (non-PHPdoc)
-     * @see \JSolr\Form\Fields\Sortable::applySort()
+     * @see \JSolr\Form\Fields\Queryable::apply()
      */
-    public function applySort($query)
+    public function apply($query)
     {
         $selected = JFactory::getApplication()->input->get($this->name);
 
