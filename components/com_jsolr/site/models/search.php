@@ -122,12 +122,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->setRows($limit);
 
-                $sort = $this->getForm()->getSorts();
-
-                if (count($sort)) {
-                    $query->addSorts($sort);
-                }
-
                 // set query fields.
                 $qf = $params->get('qf', self::QF_DEFAULT);
 
@@ -229,6 +223,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 }
 
                 $query->getFacetSet()->setMinCount(1);
+
+                $this->applySorts($query);
 
                 $dispatcher->trigger('onJSolrSearchBeforeQuery', array($query, $this->getState()));
 
@@ -425,7 +421,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         $data = array();
 
-        $query = JURI::getInstance()->getQuery(true);
+        $query = JUri::getInstance()->getQuery(true);
 
         if (count($query)) {
             $data = $query;
@@ -630,5 +626,26 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         }
 
         return $template;
+    }
+
+    /**
+     * Gets the fields to sort the result set by.
+     *
+     * @return  Query  For chaining.
+     */
+    protected function applySorts($query)
+    {
+        $sort = array();
+
+        // get sort fields.
+        foreach ($this->getForm()->getFieldsets() as $fieldset) {
+            foreach ($this->getForm()->getFieldset($fieldset->name) as $field) {
+                if (in_array('JSolr\Form\Fields\Sortable', class_implements($field)) == true) {
+                    $field->ApplySort($query);
+                }
+            }
+        }
+
+        return $query;
     }
 }

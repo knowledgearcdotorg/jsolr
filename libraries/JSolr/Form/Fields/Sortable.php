@@ -7,5 +7,12 @@ namespace JSolr\Form\Fields;
 
 interface Sortable
 {
-    public function getSort();
+    /**
+     * Applies sort configuration directly to the Solr query.
+     *
+     * @param   \Solarium\QueryType\Select\Query\Query  $query  The query being executed.
+     *
+     * @return  \Solarium\QueryType\Select\Query\Query  The query being executed (for chaining).
+     */
+    public function applySort($query);
 }

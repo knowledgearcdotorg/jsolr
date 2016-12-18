@@ -63,11 +63,13 @@ class Sort extends SearchTool implements Sortable
         return $options;
     }
 
-    public function getSort()
+    /**
+     * (non-PHPdoc)
+     * @see \JSolr\Form\Fields\Sortable::applySort()
+     */
+    public function applySort($query)
     {
         $selected = JFactory::getApplication()->input->get($this->name);
-
-        $sort = array();
 
         foreach ($this->element->children() as $option) {
             $attributes = current($option->attributes());
@@ -79,7 +81,7 @@ class Sort extends SearchTool implements Sortable
                 'string');
 
             if ($selected != "" && $selected == $value) {
-                $field = JArrayHelper::getValue(
+                $sort = JArrayHelper::getValue(
                     $attributes,
                     'field',
                     null,
@@ -91,10 +93,10 @@ class Sort extends SearchTool implements Sortable
                     "desc",
                     'string');
 
-                $sort[$field] = $direction;
+                $query->addSort($sort, $direction);
             }
         }
 
-        return $sort;
+        return $query;
     }
 }

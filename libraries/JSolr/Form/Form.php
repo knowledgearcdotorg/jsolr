@@ -56,29 +56,6 @@ class Form extends \JForm
     }
 
     /**
-     * Gets the fields to sort the result set by.
-     *
-     * @return array The fields to sor the result set by.
-     */
-    public function getSorts()
-    {
-        $sort = array();
-
-        // get sort fields.
-        foreach ($this->getFieldsets() as $fieldset) {
-            foreach ($this->getFieldset($fieldset->name) as $field) {
-                if (in_array('JSolr\Form\Fields\Sortable', class_implements($field)) == true) {
-                    if ($field->getSort()) {
-                        $sort = array_merge($sort , $field->getSort());
-                    }
-                }
-            }
-        }
-
-        return $sort;
-    }
-
-    /**
      * Method to get an instance of a form.
      *
      * @param   string  $name     The name of the form.
