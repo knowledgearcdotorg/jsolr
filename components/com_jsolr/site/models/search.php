@@ -224,7 +224,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $query->getFacetSet()->setMinCount(1);
 
-                $this->applySorts($query);
+                $this->applyFormFieldQueries($query);
 
                 $dispatcher->trigger('onJSolrSearchBeforeQuery', array($query, $this->getState()));
 
@@ -629,19 +629,19 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     }
 
     /**
-     * Gets the fields to sort the result set by.
+     * Applies all additional form field queries to the main query object.
      *
      * @return  Query  For chaining.
      */
-    protected function applySorts($query)
+    protected function applyFormFieldQueries($query)
     {
         $sort = array();
 
         // get sort fields.
         foreach ($this->getForm()->getFieldsets() as $fieldset) {
             foreach ($this->getForm()->getFieldset($fieldset->name) as $field) {
-                if (in_array('JSolr\Form\Fields\Sortable', class_implements($field)) == true) {
-                    $field->ApplySort($query);
+                if (in_array('JSolr\Form\Fields\Queryable', class_implements($field)) == true) {
+                    $field->apply($query);
                 }
             }
         }

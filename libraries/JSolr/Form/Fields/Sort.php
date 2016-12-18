@@ -83,7 +83,7 @@ class Sort extends SearchTool implements Queryable
             if ($selected != "" && $selected == $value) {
                 $sort = JArrayHelper::getValue(
                     $attributes,
-                    'field',
+                    'sort',
                     null,
                     'string');
 
@@ -92,6 +92,10 @@ class Sort extends SearchTool implements Queryable
                     'direction',
                     "desc",
                     'string');
+
+                if (!$sort) {
+                    throw new \Exception("Sort parameter required for JSolr.Sort form field \"$this->name\".");
+                }
 
                 $query->addSort($sort, $direction);
             }

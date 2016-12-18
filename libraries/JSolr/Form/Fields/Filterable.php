@@ -14,16 +14,11 @@ namespace JSolr\Form\Fields;
 interface Filterable
 {
     /**
-     * Gets a array of currently selected filters for the field.
+     * Applies filter configuration directly to the Solr query.
      *
-     * Array must contain valid Solr fq values:
+     * @param   \Solarium\QueryType\Select\Query\Query  $query  The query being executed.
      *
-     * E.g.
-     *
-     * $filter = array();
-     * $filter[] = "title:welcome";
-     *
-     * @return array An array of currently selected filters for the field.
+     * @return  \Solarium\QueryType\Select\Query\Query  The query being executed (for chaining).
      */
-    function getFilters();
+    //public function applyFilter($query);
 }
