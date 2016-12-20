@@ -292,19 +292,19 @@
     </fieldset>
 
     <fieldset
-        name="searchlayout"
-        label="COM_JSOLR_CONFIG_SEARCHLAYOUT_LABEL"
-        description="COM_JSOLR_CONFIG_SEARCHLAYOUT_DESC">
+        name="searchdisplay"
+        label="COM_JSOLR_CONFIG_SEARCHDISPLAY_LABEL"
+        description="COM_JSOLR_CONFIG_SEARCHDISPLAY_DESC">
         <field
             name="advanced_link"
             type="list"
-            label="COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_LABEL"
-            description="COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_DESC"
+            label="COM_JSOLR_SEARCHDISPLAY_ADVANCED_LINK_LABEL"
+            description="COM_JSOLR_SEARCHDISPLAY_ADVANCED_LINK_DESC"
             class="inputbox"
             default="1">
-            <option value="0">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_NEVER</option>
-            <option value="1">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_AS_A_LINK</option>
-            <option value="2">COM_JSOLR_SEARCHLAYOUT_ADVANCED_LINK_AS_A_DIMENSION</option>
+            <option value="0">COM_JSOLR_SEARCHDISPLAY_ADVANCED_LINK_NEVER</option>
+            <option value="1">COM_JSOLR_SEARCHDISPLAY_ADVANCED_LINK_AS_A_LINK</option>
+            <option value="2">COM_JSOLR_SEARCHDISPLAY_ADVANCED_LINK_AS_A_DIMENSION</option>
         </field>
 
         <field
@@ -312,10 +312,17 @@
             type="radio"
             class="btn-group btn-group-yesno"
             default="1"
-            label="COM_JSOLR_SEARCHLAYOUT_EMBEDFACETS_LABEL"
-            description="COM_JSOLR_SEARCHLAYOUT_EMBEDFACETS_DESC">
+            label="COM_JSOLR_SEARCHDISPLAY_EMBEDFACETS_LABEL"
+            description="COM_JSOLR_SEARCHDISPLAY_EMBEDFACETS_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+
+        <field
+            name="aliases"
+            type="textarea"
+            label="COM_JSOLR_SEARCHDISPLAY_ALIASES_LABEL"
+            description="COM_JSOLR_SEARCHDISPLAY_ALIASES_DESC"
+            hint="COM_JSOLR_SEARCHDISPLAY_ALIASES_PLACEHOLDER"/>
     </fieldset>
 </config>

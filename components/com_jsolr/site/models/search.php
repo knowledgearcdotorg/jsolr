@@ -87,34 +87,35 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     public function getQuery()
     {
-        if (!($this->getState('query.q') || $this->getAppliedFacetFilters())) {
-            return null; // nothing passed. Get out of here.
-        }
-
-        JPluginHelper::importPlugin("jsolr");
-        $dispatcher = JEventDispatcher::getInstance();
-
-        $filters = array();
-        $facets = array();
-
-        if ($this->getForm()) {
-            $filters = $this->getForm()->getFilters();
-            $facets = $this->getForm()->getFacets();
-        }
-
         $store = $this->getStoreId();
-        $params = $this->getState('params', new \Joomla\Registry\Registry);
 
         if (!isset($this->cache[$store])) {
-            if ($fq = $params->get('fq')) {
-                $filters['fq'] = $fq;
+            if (!($this->getState('query.q') || $this->getAppliedFacetFilters())) {
+                return null; // nothing passed. Get out of here.
             }
+
+            JPluginHelper::importPlugin("jsolr");
+            $dispatcher = JEventDispatcher::getInstance();
+
+            $facets = array();
+
+            if ($this->getForm()) {
+                $facets = $this->getForm()->getFacets();
+            }
+
+            $params = $this->getState('params', new \Joomla\Registry\Registry);
 
             try {
                 $client = \JSolr\Search\Factory::getClient();
 
                 $query = $client->createSelect();
-                $query->setQuery($this->getState('query.q', "*:*"));
+
+                $q = str_replace(
+                    \JSolr\Utilities\AliasHelper::getAliasNames(),
+                    \JSolr\Utilities\AliasHelper::getFieldNames(),
+                    $this->getState('query.q', "*:*"));
+
+                $query->setQuery($q);
 
                 $query->setStart($this->getState("list.start", 0));
 
@@ -161,13 +162,12 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $access = implode(' OR ', array_unique($viewLevels));
 
                     if ($access) {
-                        $filters['access'] = 'access_i:'.'('.$access.') OR null';
+                        $query
+                            ->addFilterQuery(
+                                array(
+                                    'key'=>'access',
+                                    'query'=>'access_i:'.'('.$access.') OR null'));
                     }
-                }
-
-                // set applied user filters.
-                foreach ($filters as $key=>$value) {
-                    $query->createFilterQuery($key)->setQuery($value);
                 }
 
                 if ($pf = $params->get('pf')) {
@@ -231,6 +231,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $response = $client->select($query);
 
                 $dispatcher->trigger('onJSolrSearchAfterQuery', array($response, $this->getState()));
+
+                JFactory::getApplication()->setUserState('com_jsolr.facets', $response->getFacetSet());
 
                 $this->cache[$store] = $response;
             } catch (Exception $e) {
@@ -502,7 +504,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $fields = array();
 
         foreach ($this->getForm()->getFieldset('tools') as $field) {
-            if (is_a($field, 'JSolrFormFieldHiddenFilter') || is_subclass_of($field, 'JSolr\Form\Fields\QueryFilter')) {
+            if (is_a($field, 'JSolrFormFieldHiddenFilter') || class_implements($field, 'JSolr\Form\Fields\Queryable')) {
                 if ($field->value) {
                     $fields[] = $field;
                 }
