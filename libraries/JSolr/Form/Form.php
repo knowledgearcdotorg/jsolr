@@ -46,7 +46,7 @@ class Form extends \JForm
         $facets = array();
 
         foreach ($this->getFieldset('facets') as $field) {
-            if (in_array('JSolr\Form\Fields\Facetable', class_implements($field)) == true) {
+            if (is_a($field, 'JSolr\Form\Fields\Facets')) {
                 $facet = $field->getFacet();
                 $facets[$facet->getKey()] = $facet;
             }
@@ -99,26 +99,5 @@ class Form extends \JForm
         }
 
         return $forms[$name];
-    }
-
-    /**
-     * Gets the facet form field markup for the facet field input.
-     *
-     * The facet field must implement the JSolrFacetable interface.
-     *
-     * @param   string  $name   The name of the form field.
-     * @param   string  $group  The optional dot-separated form group path on which to find the field.
-     * @param   mixed   $value  The optional value to use as the default for the field.
-     *
-     * @return  string  The facet form field markup for the facet field input.
-     */
-    public function getFacetInput($name, $group = null, $value = null)
-    {
-        // Attempt to get the form field.
-        if ($field = $this->getField($name, $group, $value)) {
-            return $field->facetInput;
-        }
-
-        return '';
     }
 }

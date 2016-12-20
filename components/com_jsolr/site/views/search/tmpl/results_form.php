@@ -29,15 +29,6 @@ JHTML::_('behavior.formvalidation');
         endforeach;
         ?>
 
-        <?php
-        // Output the hidden form fields for the various selected facet filters.
-        foreach ($this->get('Form')->getFieldset('facets') as $field):
-            if (trim($field->value)) :
-                echo $this->form->getInput($field->fieldname);
-            endif;
-        endforeach;
-        ?>
-
         <button type="submit" class="btn"><i class="icon-search"></i></button>
     </div>
 
@@ -71,6 +62,7 @@ JHTML::_('behavior.formvalidation');
             <span class="label">
                 <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
             </span>
+            <input type="hidden" name="<?php echo $field->name; ?>" value="<?php echo $field->value; ?>"/>
             <?php
             endforeach;
             ?>

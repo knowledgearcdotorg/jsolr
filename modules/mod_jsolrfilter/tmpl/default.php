@@ -37,16 +37,12 @@ $document->addStyleSheet(JURI::base()."/media/mod_jsolrfilter/css/jsolrfilter.cs
 ?>
 
 <div class="jsolr-facet-filter">
-	<?php foreach($form->getFieldsets() as $fieldset) : ?>
-		<?php if ($fieldset->name == 'facets') : ?>
-			<?php foreach ($form->getFieldset($fieldset->name) as $field) : ?>
-				<div>
-					<?php if ($field->label) : ?>
-						<h4><?php echo $form->getLabel($field->name); ?></h4>
-					<?php endif; ?>
-					<div><?php echo $form->getFacetInput($field->name); ?></div>
-				</div>
-			<?php endforeach; ?>
-		<?php endif ?>
+	<?php foreach($form->getFieldset('facets') as $field) : ?>
+    <div>
+        <?php if ($field->label) : ?>
+            <h4><?php echo $form->getLabel($field->name); ?></h4>
+        <?php endif; ?>
+        <div><?php echo $form->getInput($field->name); ?></div>
+    </div>
 	<?php endforeach;?>
 </div>

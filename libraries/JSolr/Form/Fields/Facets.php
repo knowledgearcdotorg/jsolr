@@ -20,7 +20,7 @@ use \JText as JText;
  * can then apply to the current search result set to narrow their search
  * further (I.e. filter).
  */
-class Facets extends \JFormFieldList implements Filterable, Facetable
+class Facets extends \JFormFieldList implements Filterable
 {
     const FACET_DELIMITER = '|';
 
@@ -59,23 +59,11 @@ class Facets extends \JFormFieldList implements Filterable, Facetable
     {
         $facet = array();
 
-        \JModelLegacy::addIncludePath(JPATH_ROOT.'/components/com_jsolr/models');
+        $facets = JFactory::getApplication()->getUserState('com_jsolr.facets');
 
-        $model = \JModelLegacy::getInstance('Search', 'JSolrModel');
-
-        $facet = $model->getQuery()->getFacetSet()->getFacet($this->fieldname);
+        $facet = $facets->getFacet($this->fieldname);
 
         return $facet;
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see \JFormFieldList::getInput()
-     */
-    protected function getInput()
-    {
-        return '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
-            . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"/>';
     }
 
     /**
@@ -86,7 +74,7 @@ class Facets extends \JFormFieldList implements Filterable, Facetable
      *
      * @since   11.1
      */
-    public function getFacetInput()
+    protected function getInput()
     {
         // Initialize variables.
         $html = array();
