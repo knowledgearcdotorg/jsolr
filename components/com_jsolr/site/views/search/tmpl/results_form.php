@@ -38,9 +38,11 @@ JHTML::_('behavior.formvalidation');
 
     <ul id="jsolrDimensions" class="nav nav-tabs">
         <?php
-        foreach ($this->get('Dimensions') as $dimension) :
-            echo "<li".($dimension->active ? " class=\"active\"" : "").">".JHTML::link($dimension->url, $dimension->name)."</li>";
-        endforeach;
+        if (count($this->get("Dimensions")) > 1) :
+            foreach ($this->get('Dimensions') as $dimension) :
+                echo "<li".($dimension->active ? " class=\"active\"" : "").">".JHTML::link($dimension->url, $dimension->name)."</li>";
+            endforeach;
+        endif;
         ?>
     </ul>
 
