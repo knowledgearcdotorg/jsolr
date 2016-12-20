@@ -193,7 +193,9 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
 
         // add the filters.
         foreach ($this->getFilters() as $key=>$value) {
-            if (!empty($value)) {
+            // 'in' filter is handled differently to other filters and
+            // shouldn't be passed to search results in querystring.
+            if (!empty($value) && $key !== 'in') {
                 $uri->setVar($key, $value);
             }
         }
