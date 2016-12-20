@@ -26,8 +26,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
     const HL_DEFAULT = '_text_ title_txt_* content_txt_*';
 
-    protected $lang;
-
     protected $pagination;
 
     public function __construct($config = array())
@@ -50,6 +48,10 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         $application = JFactory::getApplication('site');
 
         $this->setState('query.q', $application->input->get("q", null, "html"));
+
+        if ($lang = $application->input->get("lang", null, "string")) {
+            $this->setState('query.lang', $this->getLanguage($lang, false));
+        }
 
         $limit = $application->input->get('limit', $application->getCfg('list_limit', 0));
 
@@ -166,6 +168,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                                     'key'=>'access',
                                     'query'=>'access_i:'.'('.$access.') OR null'));
                     }
+                }
+
+                if ($lang = $this->getState('query.lang')) {
+                    $query
+                        ->addFilterQuery(
+                            array(
+                                'key'=>'lang',
+                                'query'=>'lang_s:'.$lang));
                 }
 
                 if ($pf = $params->get('pf')) {
@@ -445,10 +455,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      *
      * @return  string  The language code.
      */
-    protected function getLanguage($includeRegion = true)
+    protected function getLanguage($lang, $includeRegion = true)
     {
-        $lang = $this->lang;
-
         $result = $lang;
 
         // Language code must take the form xx-XX.
