@@ -66,18 +66,6 @@ JHTML::_('behavior.formvalidation');
             <?php
             endforeach;
             ?>
-
-            <?php
-            foreach ($this->get('AppliedAdvancedFilters') as $field) :
-                $uri = clone JURI::getInstance();
-                $uri->delVar($field->name);
-            ?>
-            <span class="label">
-                <?php echo JText::sprintf($field->label, $field->value); ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
-            </span>
-            <?php
-            endforeach;
-            ?>
         <?php endif ?>
     </div>
 

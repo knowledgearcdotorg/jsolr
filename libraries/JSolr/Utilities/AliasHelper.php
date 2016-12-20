@@ -26,7 +26,7 @@ class AliasHelper extends \JObject
         $aliases = new \Joomla\Registry\Registry;
 
         foreach ($lines as $line) {
-            $parts = explode(":", $line);
+            $parts = explode(":", trim($line));
 
             if (isset($parts[0]) && isset($parts[1])) {
                 $aliases->set($parts[0], $parts[1]);

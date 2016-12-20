@@ -493,28 +493,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     }
 
     /**
-     * Gets a list of applied filters based on any specified advanced search
-     * parameters.
-     *
-     * @return  array  A list of applied filters based on any specified advanced
-     * search parameters.
-     */
-    public function getAppliedAdvancedFilters()
-    {
-        $fields = array();
-
-        foreach ($this->getForm()->getFieldset('tools') as $field) {
-            if (is_a($field, 'JSolrFormFieldHiddenFilter') || class_implements($field, 'JSolr\Form\Fields\Queryable')) {
-                if ($field->value) {
-                    $fields[] = $field;
-                }
-            }
-        }
-
-        return $fields;
-    }
-
-    /**
      * Gets a list of dimensions.
      *
      * @return  array  A list of dimensions.
