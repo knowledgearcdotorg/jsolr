@@ -13,11 +13,11 @@ use JSolr\Search\Factory;
 
 class JSolrController extends JControllerLegacy
 {
-    function advanced()
+    public function advanced()
     {
         $model = $this->getModel("advanced");
 
-        $this->setRedirect(JRoute::_((string)$model->getURI(), false));
+        $this->setRedirect(JRoute::_((string)$model->getUri(), false));
     }
 
     public function search()

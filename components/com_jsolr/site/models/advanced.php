@@ -16,6 +16,7 @@ jimport('joomla.application.component.modelform');
 
 use \JSolr\Search\Factory;
 use \JSolr\Form\Form;
+use \Joomla\Utilities\ArrayHelper;
 
 class JSolrModelAdvanced extends \JSolr\Search\Model\Form
 {
@@ -31,8 +32,6 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
         $application = JFactory::getApplication();
 
         $this->setState('query.q', $application->input->get("q", null, "html"));
-
-        $this->setState('query.o', $application->input->getString("o", null, "string"));
 
         // Load the parameters.
         $params = $application->getParams();
@@ -63,7 +62,7 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
 
             preg_match_all('/"{1}.+"{1}|\S+/', $application->input->getHtml('nq'), $matches);
 
-            foreach (JArrayHelper::getValue($matches, 0) as $match) {
+            foreach (ArrayHelper::getValue($matches, 0) as $match) {
                 $q[] = '-'.$match;
             }
         }
@@ -72,12 +71,39 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
             $q[] = $application->input->getHtml('aq');
         }
 
-        return trim(implode(" ", $q));
+        $query = trim(implode(" ", $q));
+
+        $filters = $this->getFilters();
+
+        if ($in = \Joomla\Utilities\ArrayHelper::getValue($filters, 'in')) {
+            $query = $in.":".$query;
+        }
+
+        return $query;
+    }
+
+    /**
+     * Gets the alias for the query field or qf value.
+     *
+     * The query field alias maps to an Apache Solr index field name and is
+     * terminated with a colon (:). E.g. title:
+     *
+     * @return  The first occurence of the field name alias.
+     */
+    private function getQueryFieldAlias()
+    {
+        $query = JFactory::getApplication()->input->getHtml("q");
+
+        preg_match('/(?<alias>.+):/', $query, $matches);
+
+        return ArrayHelper::getValue($matches, 'alias');
     }
 
     public function parseQuery()
     {
         $query = JFactory::getApplication()->input->getHtml("q");
+
+        $query = str_replace($this->getQueryFieldAlias().':', '', $query);
 
         $data = array();
 
@@ -87,7 +113,7 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
 
         preg_match_all('/-"{1}.+"{1}|-\S+/', $query, $matches);
 
-        foreach (JArrayHelper::getValue($matches, 0) as $match) {
+        foreach (ArrayHelper::getValue($matches, 0) as $match) {
             $nq[] = implode("", explode("-", $match, 2));
 
             $query = str_replace($match, '', $query);
@@ -98,9 +124,9 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
         preg_match('/"{1}.+?"{1}/', $query, $eq);
 
         if ($eq) {
-            $data['eq'] = str_replace("\"", "", JArrayHelper::getValue($eq, 0));
+            $data['eq'] = str_replace("\"", "", ArrayHelper::getValue($eq, 0));
 
-            $query = str_replace(JArrayHelper::getValue($eq, 0), '', $query);
+            $query = str_replace(ArrayHelper::getValue($eq, 0), '', $query);
         }
 
         $oq = array();
@@ -145,25 +171,19 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
      *
      * @return JURI The search url.
      */
-    public function getURI()
+    public function getUri()
     {
         $uri = new JURI("index.php");
 
         $uri->setVar("option", "com_jsolr");
-
         $uri->setVar("view", "search");
-
         $uri->setVar("Itemid", JRequest::getVar('Itemid'));
 
         if ($query = $this->buildQuery()) {
             $uri->setVar('q', urlencode($query));
         }
 
-        if ($this->getState('query.o', null)) {
-            $uri->setVar('o', $this->getState('query.o'));
-        }
-
-        $vars = array('task', 'nq', 'oq', 'eq', 'aq', 'as');
+        $vars = array('task', 'nq', 'oq', 'eq', 'aq', 'filters');
 
         foreach (JURI::getInstance()->getQuery(true) as $key=>$value) {
             if (array_search($key, $vars) === false && !empty($value)) {
@@ -172,7 +192,7 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
         }
 
         // add the filters.
-        foreach (JFactory::getApplication()->input->get('as', array(), 'array') as $key=>$value) {
+        foreach ($this->getFilters() as $key=>$value) {
             if (!empty($value)) {
                 $uri->setVar($key, $value);
             }
@@ -216,11 +236,11 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
     {
         parent::preprocessForm($form, $data, $group);
 
-        // Set 'as' field group fields to their respective values using the
+        // Set 'filters' field group fields to their respective values using the
         // supplied 'data'.
         foreach ($data as $key=>$value) {
-            if ($form->getField($key, 'as') !== false) {
-                $form->setValue($key, 'as', trim($value));
+            if ($form->getField($key, 'filters') !== false) {
+                $form->setValue($key, 'filters', trim($value));
             }
         }
     }
@@ -239,6 +259,10 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
             $data = $query;
         }
 
+        if ($alias = $this->getQueryFieldAlias()) {
+            $data['in'] = $alias;
+        }
+
         $context = $this->get('option').'.'.$this->getName();
 
         if (version_compare(JVERSION, "3.0", "ge")) {
@@ -246,5 +270,10 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
         }
 
         return $data;
+    }
+
+    protected function getFilters()
+    {
+        return JFactory::getApplication()->input->get('filters', array(), 'array');
     }
 }

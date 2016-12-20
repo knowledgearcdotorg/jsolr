@@ -26,8 +26,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
     const HL_DEFAULT = '_text_ title_txt_* content_txt_*';
 
-    protected $form;
-
     protected $lang;
 
     protected $pagination;

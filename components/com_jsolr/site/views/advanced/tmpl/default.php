@@ -25,10 +25,10 @@ $params = $this->state->get('params');
         </fieldset>
 
         <fieldset>
-            <?php foreach ($this->get('Form')->getGroup('as') as $field) : ?>
+            <?php foreach ($this->get('Form')->getGroup('filters') as $field) : ?>
             <div class="formelm">
-                <?php echo $this->get('Form')->getLabel($field->fieldname, 'as'); ?>
-                <?php echo $this->get('Form')->getInput($field->fieldname, 'as'); ?>
+                <?php echo $this->get('Form')->getLabel($field->fieldname, 'filters'); ?>
+                <?php echo $this->get('Form')->getInput($field->fieldname, 'filters'); ?>
             </div>
             <?php endforeach;?>
 
@@ -38,7 +38,6 @@ $params = $this->state->get('params');
 
             <input type="hidden" name="option" value="com_jsolr"/>
             <input type="hidden" name="task" value="advanced" />
-            <input type="hidden" name="o" value="<?php echo JFactory::getApplication()->input->get("o", null, 'cmd'); ?>" />
             <input type="hidden" name="Itemid" value="<?php echo JFactory::getApplication()->input->get("Itemid", 0, 'int'); ?>" />
         </fieldset>
     </form>

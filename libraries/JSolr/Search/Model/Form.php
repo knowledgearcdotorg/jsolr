@@ -15,6 +15,8 @@ use \JArrayHelper as JArrayHelper;
 
 abstract class Form extends \JModelForm
 {
+    protected $form;
+
     /**
      * Override to use JSorlForm.
      * Method to get a form object.
