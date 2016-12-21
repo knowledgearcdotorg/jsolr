@@ -54,17 +54,18 @@ JHTML::_('behavior.formvalidation');
         <?php endforeach;?>
     </ul>
 
-    <div id="jsolrAppliedFilters">
+    <div id="jsolrAppliedFacetFilters">
         <?php if (!is_null($this->get('Form'))): ?>
             <?php
-            foreach ($this->get('AppliedFacetFilters') as $field) :
-                $uri = clone JURI::getInstance();
-                $uri->delVar($field->name);
+            foreach ($facets = $this->get('AppliedFacetFilters') as $facet) :
             ?>
-            <span class="label">
-                <?php echo $field->value; ?>&nbsp;<?php echo JHTML::link((string)htmlentities($uri), '&times;'); ?>
-            </span>
-            <input type="hidden" name="<?php echo $field->name; ?>" value="<?php echo $field->value; ?>"/>
+
+            <?php echo ($facet !== reset($facets)) ? "&gt;" : ""; ?>
+
+            <span><?php echo str_replace("|", " or ", urldecode($facet->value)); ?></span>
+
+            <input type="hidden" name="<?php echo $facet->name; ?>" value="<?php echo $facet->value; ?>"/>
+
             <?php
             endforeach;
             ?>

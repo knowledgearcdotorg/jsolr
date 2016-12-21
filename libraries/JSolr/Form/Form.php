@@ -14,28 +14,6 @@ class Form extends \JForm
     protected $facets = false;
 
     /**
-     * Gets a list of filters for narrowing the search result set.
-     *
-     * @return array An array of solr-specific filters.
-     */
-    public function getFilters()
-    {
-        $filters = array();
-
-        foreach ($this->getFieldsets() as $fieldset) {
-            foreach ($this->getFieldset($fieldset->name) as $field) {
-                if (in_array('JSolr\Form\Fields\Filterable', class_implements($field)) == true) {
-                    foreach ($field->getFilters() as $filter) {
-                        $filters[$field->fieldname] = $filter;
-                    }
-                }
-            }
-        }
-
-        return $filters;
-    }
-
-    /**
      * Gets an array of facets from the currently configured list of JSolr
      * Form Fields.
      *
