@@ -7,7 +7,7 @@
 /**
  *
  */
-class JSolrFormFieldFacets extends \JSolr\Form\Fields\Facets
+class JSolrFormFieldCalendar extends \JSolr\Form\Fields\Calendar
 {
 
 }

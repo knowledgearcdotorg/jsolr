@@ -23,10 +23,11 @@
             name="author"
             facet="author"
             filter="author"
-            type="jsolr.facets"
+            type="jsolr.facet"
             label="COM_JSOLR_SEARCH_FACET_AUTHOR_LABEL"
             class="inputbox jsolrquery"
             count="true"
+            condition="and"
             limit="5"/>
     </fieldset>
 
@@ -37,7 +38,6 @@
             type="jsolr.calendartool"
             name="date"
             filter="modified_tdt"
-            filter_quoted="false"
             label="COM_JSOLR_SEARCH_TOOL_DATE_LABEL"
             class="jsolr-dropdown"
             default="">

@@ -97,12 +97,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             JPluginHelper::importPlugin("jsolr");
             $dispatcher = JEventDispatcher::getInstance();
 
-            $facets = array();
-
-            if ($this->getForm()) {
-                $facets = $this->getForm()->getFacets();
-            }
-
             $params = $this->getState('params', new \Joomla\Registry\Registry);
 
             try {
@@ -226,13 +220,13 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query->getEDisMax()->setBoostFunctionsMult($boost);
                 }
 
-                if (!empty($facets)) {
-                    $query->getFacetSet()->addFacets($facets);
-                }
-
                 $query->getFacetSet()->setMinCount(1);
 
-                $this->applyFormFieldQueries($query);
+                $query->addFilterQueries($this->getFormFieldFilters());
+
+                $query->addSorts($this->getFormFieldSorts());
+
+                $query->getFacetSet()->addFacets($this->getFormFieldFacetQueries());
 
                 $dispatcher->trigger('onJSolrSearchBeforeQuery', array($query, $this->getState()));
 
@@ -489,9 +483,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         $fields = array();
 
-        foreach ($this->getForm()->getFieldset("facets") as $field) {
-            if ($field->value) {
-                $fields[] = $field;
+        foreach ($this->getForm()->getFieldset('facets') as $facet) {
+            if (array_search("JSolr\Form\Fields\Facetable", class_implements($facet)) !== false) {
+                if ($facet->value) {
+                    $fields[] = $facet;
+                }
             }
         }
 
@@ -615,23 +611,65 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     }
 
     /**
-     * Applies all additional form field queries to the main query object.
+     * Applies additional \JSolr\Form\Fields queries to the main query object.
      *
-     * @return  Query  For chaining.
+     * @return  \Solarium\QueryType\Select\Query\FilterQuery[]  An array of
+     * filter queries.
      */
-    protected function applyFormFieldQueries($query)
+    protected function getFormFieldFilters()
     {
-        $sort = array();
+        $filters = array();
 
-        // get sort fields.
         foreach ($this->getForm()->getFieldsets() as $fieldset) {
             foreach ($this->getForm()->getFieldset($fieldset->name) as $field) {
-                if (in_array('JSolr\Form\Fields\Queryable', class_implements($field)) == true) {
-                    $field->apply($query);
+                if (array_search("JSolr\Form\Fields\Filterable", class_implements($field)) !== false) {
+                    if ($filter = $field->getFilter()) {
+                        $filters[] = $filter;
+                    }
                 }
             }
         }
 
-        return $query;
+        return $filters;
+    }
+
+    /**
+     * Applies \JSolr\Form\Fields facets configuration to the main query object.
+     *
+     * @return
+     * \Solarium\QueryType\Select\Query\Component\Facet\AbstractFacet[]  An
+     * array of facet fields.
+     */
+    protected function getFormFieldFacetQueries()
+    {
+        $facets = array();
+
+        foreach ($this->getForm()->getFieldset('facets') as $facet) {
+            if (array_search("JSolr\Form\Fields\Facetable", class_implements($facet)) !== false) {
+                $facets[] = $facet->getFacetQuery();
+            }
+        }
+
+        return $facets;
+    }
+
+    /**
+     * Applies \JSolr\Form\Fields sorts to the main query object.
+     *
+     * @return  array  An array of sorts.
+     */
+    protected function getFormFieldSorts()
+    {
+        $sorts = array();
+
+        foreach ($this->getForm()->getFieldsets() as $fieldset) {
+            foreach ($this->getForm()->getFieldset($fieldset->name) as $sort) {
+                if (array_search("JSolr\Form\Fields\Sortable", class_implements($sort)) !== false) {
+                    $sorts = array_merge($sorts, $sort->getSort());
+                }
+            }
+        }
+
+        return $sorts;
     }
 }

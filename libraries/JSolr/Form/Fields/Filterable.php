@@ -14,11 +14,9 @@ namespace JSolr\Form\Fields;
 interface Filterable
 {
     /**
-     * Applies filter configuration directly to the Solr query.
+     * Gets the filter to apply to a query.
      *
-     * @param   \Solarium\QueryType\Select\Query\Query  $query  The query being executed.
-     *
-     * @return  \Solarium\QueryType\Select\Query\Query  The query being executed (for chaining).
+     * @return  \Solarium\QueryType\Select\Query\FilterQuery  The filter to apply.
      */
-    //public function applyFilter($query);
+    public function getFilter();
 }

@@ -62,7 +62,7 @@ JHTML::_('behavior.formvalidation');
 
             <?php echo ($facet !== reset($facets)) ? "&gt;" : ""; ?>
 
-            <span><?php echo str_replace("|", " or ", urldecode($facet->value)); ?></span>
+            <span><?php echo str_replace("|", " ".$facet->condition." ", urldecode($facet->value)); ?></span>
 
             <input type="hidden" name="<?php echo $facet->name; ?>" value="<?php echo $facet->value; ?>"/>
 

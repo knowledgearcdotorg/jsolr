@@ -6,12 +6,14 @@
 namespace JSolr\Form\Fields;
 
 use \JFactory as JFactory;
-use \JArrayHelper as JArrayHelper;
+use \Joomla\Utilities\ArrayHelper;
 use \JText as JText;
 
 \JLoader::import('joomla.form.helper');
 
-class Sort extends SearchTool implements Queryable
+\JFormHelper::loadFieldClass('list');
+
+class Sort extends Dropdown implements Sortable
 {
     /**
      * The form field type.
@@ -20,74 +22,31 @@ class Sort extends SearchTool implements Queryable
      */
     protected $type = 'JSolr.Sort';
 
-    protected function getOptions()
-    {
-        // Initialize variables.
-        $options = array();
-
-        foreach ($this->element->children() as $option) {
-
-            // Only add <option /> elements.
-            if ($option->getName() != 'option') {
-                continue;
-            }
-
-            $attributes = current($option->attributes());
-
-            $value = JArrayHelper::getValue($attributes, 'value', null, 'string');
-
-            $selected = $value == $this->value;
-
-            $uri = clone \JSolr\Search\Factory::getSearchRoute();
-
-            if (!empty($value)) {
-                $uri->setVar($this->name, $value);
-            } else {
-                $uri->delVar($this->name);
-            }
-
-            $link = '<a role="menuitem" tabindex="-1" href="'.htmlentities((string)$uri, ENT_QUOTES, 'UTF-8').'">'.
-                JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)).
-                '</a>';
-
-            // Create a new option object based on the <option /> element.
-            $tmp = '<li role="presentation" class="'.($selected ? 'active' : '').'" data-value="'.$value.'">'.$link.'</li>';
-
-
-            // Add the option object to the result set.
-            $options[] = $tmp;
-        }
-
-        reset($options);
-
-        return $options;
-    }
-
     /**
      * (non-PHPdoc)
-     * @see \JSolr\Form\Fields\Queryable::apply()
+     * @see \JSolr\Form\Fields\Sortable::getSort()
      */
-    public function apply($query)
+    public function getSort()
     {
-        $selected = JFactory::getApplication()->input->get($this->name);
+        $selected = $this->value;
 
         foreach ($this->element->children() as $option) {
             $attributes = current($option->attributes());
 
-            $value = JArrayHelper::getValue(
+            $value = ArrayHelper::getValue(
                 $attributes,
                 'value',
                 null,
                 'string');
 
             if ($selected != "" && $selected == $value) {
-                $sort = JArrayHelper::getValue(
+                $sort = ArrayHelper::getValue(
                     $attributes,
                     'sort',
                     null,
                     'string');
 
-                $direction = JArrayHelper::getValue(
+                $direction = ArrayHelper::getValue(
                     $attributes,
                     'direction',
                     "desc",
@@ -97,10 +56,10 @@ class Sort extends SearchTool implements Queryable
                     throw new \Exception("Sort parameter required for JSolr.Sort form field \"$this->name\".");
                 }
 
-                $query->addSort($sort, $direction);
+                return array($sort=>$direction);
             }
         }
 
-        return $query;
+        return array();
     }
 }

@@ -7,7 +7,7 @@
 /**
  *
  */
-class JSolrFormFieldCalendarTool extends \JSolr\Form\Fields\CalendarTool
+class JSolrFormFieldFilterList extends \JSolr\Form\Fields\FilterList
 {
 
 }

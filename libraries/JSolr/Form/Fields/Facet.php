@@ -20,23 +20,17 @@ use \JText as JText;
  * can then apply to the current search result set to narrow their search
  * further (I.e. filter).
  */
-class Facets extends \JFormFieldList implements Filterable
+class Facet extends \JFormFieldList implements Filterable, Facetable
 {
     const FACET_DELIMITER = '|';
 
-    protected $type = 'JSolr.Facets';
-
-    protected $facetInput;
+    protected $type = 'JSolr.Facet';
 
     /**
-     * Get a facet object for building this facet.
-     *
-     * Maybe as simple as \Solarium\QueryType\Select\Query\Component\Facet\Field
-     * or may include complex ranges and queries.
-     *
-     * @return \Solarium\QueryType\Select\Query\Component\Facet\Field  An instance of the \Solarium\QueryType\Select\Query\Component\Facet\Field class.
+     * (non-PHPdoc)
+     * @see Facetable::getFacetQuery()
      */
-    public function getFacet()
+    public function getFacetQuery()
     {
         $facet = new \Solarium\QueryType\Select\Query\Component\Facet\Field();
         $facet->setKey($this->fieldname);
@@ -44,6 +38,14 @@ class Facets extends \JFormFieldList implements Filterable
 
         if ($this->limit) {
             $facet->setLimit($this->limit);
+        }
+
+        if (array_search(strtolower($this->sort), array('index', 'count')) !== false) {
+            $facet->setSort($this->sort);
+        }
+
+        if ($this->mincount) {
+            $facet->setMinCount($this->mincount);
         }
 
         return $facet;
@@ -55,7 +57,7 @@ class Facets extends \JFormFieldList implements Filterable
      *
      * @return array An array of facets from the current search results.
      */
-    protected function getFacets()
+    protected function getFacet()
     {
         $facet = array();
 
@@ -101,7 +103,7 @@ class Facets extends \JFormFieldList implements Filterable
         // Initialize variables.
         $options = array();
 
-        $facets = $this->getFacets();
+        $facets = $this->getFacet();
 
         foreach ($facets as $key=>$value) {
             $html = array("<li>", "%s", "</li>");
@@ -114,11 +116,11 @@ class Facets extends \JFormFieldList implements Filterable
 
             $count = '';
 
-            if ($this->getAttribute('count', 'false') === 'true') {
+            if ($this->showcount === 'true') {
                 $count = '<span>('.$value.')</span>';
             }
 
-            $facet = '<a href="'.$this->getFilterURI($key).'">'.$key.'</a>'.$count;
+            $facet = '<a href="'.$this->buildFilterUri($key).'">'.$key.'</a>'.$count;
 
             $options[] = JText::sprintf(implode($html), $facet);
         }
@@ -130,25 +132,37 @@ class Facets extends \JFormFieldList implements Filterable
 
     /**
      * (non-PHPdoc)
-     * @see JSolrFilterable::getFilters()
+     * @see Filterable::getFilter()
      */
-    public function getFilters()
+    public function getFilter()
     {
-        $cleaned = JString::trim($this->value);
-        $array = explode(self::FACET_DELIMITER, $cleaned);
-        $filters = array();
+        $value = JString::trim($this->value);
 
-        if ($cleaned) {
-            for ($i = 0; $i < count($array); $i++) {
+        if ($value) {
+            $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
+            $helper = new \Solarium\Core\Query\Helper;
+
+            $array = array();
+
+            foreach (explode(self::FACET_DELIMITER, $value) as $item) {
                 if ($this->exactmatch) {
-                    $array[$i] = '"'.$array[$i].'"';
+                    $item = $helper->escapePhrase($item);
+                } else {
+                    $item = $helper->escapeTerm($item);
                 }
 
-                $filters[$i] = $this->filter.":".str_replace(":", "\:", $array[$i]);
+                $array[] = $item;
+
+                $separator = " ".JString::strToUpper($this->condition)." ";
+
+                $filter->setKey($this->name.".".$this->filter);
+                $filter->setQuery($this->filter.":".implode($separator, $array));
+
+                return $filter;
             }
         }
 
-        return (count($filters)) ? $filters : array();
+        return null;
     }
 
     /**
@@ -159,8 +173,6 @@ class Facets extends \JFormFieldList implements Filterable
      */
     protected function isSelected($facet)
     {
-        $url = \JSolr\Search\Factory::getSearchRoute();
-
         $cleaned = JString::trim($this->value);
         $filters = explode(self::FACET_DELIMITER, $cleaned);
 
@@ -178,17 +190,17 @@ class Facets extends \JFormFieldList implements Filterable
     }
 
     /**
-     * Gets the filter uri for the current facet.
+     * Builds the filter uri for the current facet.
      *
      * @param string $facet The facet value to build into the filter uri.
      * @return string The filter uri for the current facet.
      */
-    protected function getFilterURI($facet)
+    protected function buildFilterUri($facet)
     {
         $url = clone \JSolr\Search\Factory::getSearchRoute();
 
         foreach ($url->getQuery(true) as $key=>$value) {
-            $url->setVar($key, urlencode($value));
+            $url->setVar($key, $value);
         }
 
         $filters = array();
@@ -209,14 +221,13 @@ class Facets extends \JFormFieldList implements Filterable
                     }
                 }
 
-                $url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
-
+                $url->setVar($this->name, implode(self::FACET_DELIMITER, $filters));
             } else {
                 $url->delVar($this->name);
             }
         } else {
             $filters[] = $facet;
-            $url->setVar($this->name, urlencode(implode(self::FACET_DELIMITER, $filters)));
+            $url->setVar($this->name, implode(self::FACET_DELIMITER, $filters));
         }
 
         return (string)$url;
@@ -228,23 +239,25 @@ class Facets extends \JFormFieldList implements Filterable
             case 'filter':
             case 'facet':
             case 'limit':
+            case 'showcount':
+            case 'sort':
+            case 'mincount':
                 return $this->getAttribute($name, null);
+
                 break;
 
             case 'exactmatch':
-                if ($this->getAttribute($name, null) === 'false')
+                if ($this->getAttribute($name, null) === 'false') {
                     return false;
-                else
+                } else {
                     return true;
-                break;
-
-            case 'facetInput':
-                // If the input hasn't yet been generated, generate it.
-                if (empty($this->facetInput)) {
-                    $this->facetInput = $this->getFacetInput();
                 }
 
-                return $this->facetInput;
+                break;
+
+            case "condition":
+                return $this->getAttribute($name, "or");
+
                 break;
 
             default:

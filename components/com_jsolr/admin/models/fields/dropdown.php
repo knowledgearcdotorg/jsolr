@@ -7,7 +7,7 @@
 /**
  *
  */
-class JSolrFormFieldSearchTool extends \JSolr\Form\Fields\SearchTool
+class JSolrFormFieldDropdown extends \JSolr\Form\Fields\Dropdown
 {
 
 }

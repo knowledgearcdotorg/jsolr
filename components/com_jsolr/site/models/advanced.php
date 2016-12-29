@@ -180,7 +180,7 @@ class JSolrModelAdvanced extends \JSolr\Search\Model\Form
         $uri->setVar("Itemid", JRequest::getVar('Itemid'));
 
         if ($query = $this->buildQuery()) {
-            $uri->setVar('q', urlencode($query));
+            $uri->setVar('q', $query);
         }
 
         $vars = array('task', 'nq', 'oq', 'eq', 'aq', 'filters');

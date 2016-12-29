@@ -13,14 +13,14 @@ use \JFactory as JFactory;
  * Renders a calendar search tool form field. Filters the results displayed by
  * a period of time.
  */
-class CalendarTool extends SearchTool implements Filterable
+class Calendar extends FilterList
 {
     /**
      * The form field type.
      *
      * @var  string
      */
-    protected $type = 'JSolr.CalendarTool';
+    protected $type = 'JSolr.Calendar';
 
     /**
      * Method to get the field options.
@@ -63,24 +63,6 @@ class CalendarTool extends SearchTool implements Filterable
         return $options;
     }
 
-    protected function getSelectedLabel()
-    {
-        foreach ($this->element->children() as $option) {
-            // Only add <option /> elements.
-            if ($option->getName() != 'option') {
-                continue;
-            }
-
-            $selected = ((string)$option['value']) == $this->value;
-
-            if ($selected) {
-                return trim((string)$option);
-            }
-        }
-
-        return "";
-    }
-
     /**
      * Gets the date filter based on the currently selected value.
      *
@@ -89,23 +71,24 @@ class CalendarTool extends SearchTool implements Filterable
      *
      * @see Filterable::getFilters()
      */
-    public function getFilters()
+    public function getFilter()
     {
-        $filters = array();
+        $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
 
         foreach ($this->element->xpath('option') as $option) {
             $value = (string)$option['value'];
 
             if ($this->value && $value == $this->value) {
-                $filter = (string)$option['filter'];
+                $selected = (string)$option['filter'];
 
-                $filters[] = $this->filter.":".$filter;
+                $filter->setKey($this->name.".".$this->filter);
+                $filter->setQuery($this->filter.":".$selected);
 
                 continue;
             }
         }
 
-        return (count($filters)) ? $filters : array();
+        return $filter;
     }
 
     public function __get($name)
@@ -115,7 +98,6 @@ class CalendarTool extends SearchTool implements Filterable
                 return $this->getAttribute($name, null);
                 break;
 
-            case 'filter_quoted':
             case 'show_custom':
                 if ($this->getAttribute($name, null) === 'true') {
                     return true;

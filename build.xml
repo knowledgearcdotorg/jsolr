@@ -236,8 +236,8 @@
         <phpunit bootstrap="tests/unit/bootstrap.php">
             <formatter type="plain" usefile="false"/>
             <batchtest>
-                <fileset dir="tests/unit/suites/libraries/JSolr/Index/FileSystem">
-                    <include name="*Test.php"/>
+                <fileset dir="tests/unit/suites/libraries">
+                    <include name="**/*Test.php"/>
                 </fileset>
             </batchtest>
         </phpunit>
