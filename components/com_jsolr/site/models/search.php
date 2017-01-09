@@ -237,8 +237,6 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $this->cache[$store] = $response;
 
                 JFactory::getApplication()->setUserState('com_jsolr.search.results', $this->cache[$store]);
-
-                var_dump($this->cache[$store]);
             } catch (Exception $e) {
                 JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolr');
                 JLog::add((string)$e, JLog::ERROR, 'jsolr');
