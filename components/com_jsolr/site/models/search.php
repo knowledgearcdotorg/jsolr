@@ -34,7 +34,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         $this->context = $this->option.'.'.$this->name;
 
-        JFactory::getApplication()->setUserState('com_jsolr.facets', null);
+        JFactory::getApplication()->setUserState('com_jsolr.search.results', null);
 
         Jlog::addLogger(array());
     }
@@ -234,9 +234,11 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 $dispatcher->trigger('onJSolrSearchAfterQuery', array($response, $this->getState()));
 
-                JFactory::getApplication()->setUserState('com_jsolr.facets', $response->getFacetSet());
-
                 $this->cache[$store] = $response;
+
+                JFactory::getApplication()->setUserState('com_jsolr.search.results', $this->cache[$store]);
+
+                var_dump($this->cache[$store]);
             } catch (Exception $e) {
                 JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolr');
                 JLog::add((string)$e, JLog::ERROR, 'jsolr');

@@ -61,9 +61,11 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
     {
         $facet = array();
 
-        $facets = JFactory::getApplication()->getUserState('com_jsolr.facets');
+        $results = JFactory::getApplication()->getUserState('com_jsolr.search.results');
 
-        $facet = $facets->getFacet($this->fieldname);
+        $facetSet = $results->getFacetSet();
+
+        $facet = $facetSet->getFacet($this->fieldname);
 
         return $facet;
     }
@@ -152,7 +154,9 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
                 }
 
                 $array[] = $item;
+            }
 
+            if (count($array) > 0) {
                 $separator = " ".JString::strToUpper($this->condition)." ";
 
                 $filter->setKey($this->name.".".$this->filter);

@@ -15,10 +15,12 @@ class ModJSolrFilterHelper
         $show = false;
 
         if (JFactory::getApplication()->input->get("view", null, "string") == 'search') {
-            $facets = JFactory::getApplication()->getUserState('com_jsolr.facets');
+            $results = JFactory::getApplication()->getUserState('com_jsolr.search.results');
 
-            if (isset($facets)) {
-                if (count($facets)) {
+            $facetSet = $results->getFacetSet();
+
+            if (isset($facetSet)) {
+                if (count($facetSet)) {
                     $show = true;
                 }
             }
