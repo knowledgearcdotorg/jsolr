@@ -142,17 +142,11 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
 
         if ($value) {
             $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
-            $helper = new \Solarium\Core\Query\Helper;
 
             $array = array();
 
             foreach (explode(self::FACET_DELIMITER, $value) as $item) {
-                if ($this->exactmatch) {
-                    $item = $helper->escapePhrase($item);
-                } else {
-                    $item = $helper->escapeTerm($item);
-                }
-
+                $item = \JSolr\Helper::buildMatch($item, $this->exactmatch);
                 $array[] = $item;
             }
 

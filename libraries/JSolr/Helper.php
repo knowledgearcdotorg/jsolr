@@ -153,4 +153,15 @@ class Helper extends \JObject
             return str_replace("*", $code, $fields);
         }
     }
+
+    public static function buildMatch($value, $isExactMatch)
+    {
+        $helper = new \Solarium\Core\Query\Helper;
+
+        if ($isExactMatch) {
+            return $helper->escapePhrase($value);
+        } else {
+            return $helper->escapeTerm($value);
+        }
+    }
 }

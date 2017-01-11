@@ -94,10 +94,6 @@ class Calendar extends FilterList
     public function __get($name)
     {
         switch ($name) {
-            case 'filter':
-                return $this->getAttribute($name, null);
-                break;
-
             case 'show_custom':
                 if ($this->getAttribute($name, null) === 'true') {
                     return true;

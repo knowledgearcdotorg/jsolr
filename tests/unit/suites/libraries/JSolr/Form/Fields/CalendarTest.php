@@ -19,7 +19,6 @@ class JSolrFormFieldsCalendarTest extends \PHPUnit_Framework_TestCase
         type="jsolr.calendar"
         name="date"
         filter="date_tdt"
-        filter_quoted="false"
         label="Date"
         class="jsolr-dropdown"
         default="">

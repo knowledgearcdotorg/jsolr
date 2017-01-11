@@ -39,6 +39,8 @@ class FilterList extends Dropdown implements Filterable
             if ($this->value && $value == $this->value) {
                 $selected = (string)$option['filter'];
 
+                $selected = \JSolr\Helper::buildMatch($selected, $this->exactmatch);
+
                 $filter->setKey($this->name.".".$this->filter);
                 $filter->setQuery($this->filter.":".$selected);
 
@@ -47,5 +49,26 @@ class FilterList extends Dropdown implements Filterable
         }
 
         return $filter;
+    }
+
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'exactmatch':
+                if ($this->getAttribute($name, null) === 'false') {
+                    return false;
+                } else {
+                    return true;
+                }
+
+                break;
+
+            case 'filter':
+                return $this->getAttribute($name, null);
+                break;
+
+            default:
+                return parent::__get($name);
+        }
     }
 }
