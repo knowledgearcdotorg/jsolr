@@ -142,9 +142,9 @@ abstract class Plugin extends \JPlugin
                     if (!empty($array)) {
                         $documents[] = $update->createDocument($array);
 
-                        $this->out('document '.ArrayHelper::getValue(end($documents), 'id').' ready for indexing', \JLog::DEBUG);
+                        $this->out('document '.ArrayHelper::getValue($array, 'id').' ready for indexing', \JLog::DEBUG);
                     } else {
-                        $this->out('document '.ArrayHelper::getValue(end($documents), 'id').' is empty, ignoring...', \JLog::WARNING);
+                        $this->out('document '.ArrayHelper::getValue($array, 'id').' is empty, ignoring...', \JLog::WARNING);
                     }
 
                     $start++;
