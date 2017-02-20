@@ -5,7 +5,7 @@
         <description>Integrate Apache Solr with Joomla!.</description>
         <element>pkg_jsolr</element>
         <type>package</type>
-        <version>3.0.0-alpha</version>
+        <version>3.0.0-alpha.2</version>
         <client>0</client>
         <infourl title="JSolr">https://github.com/knowledgearcdotorg/jsolr/releases/tag/3.0.0-alpha</infourl>
         <downloads>

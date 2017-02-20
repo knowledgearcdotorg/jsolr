@@ -7,7 +7,7 @@
     <authorUrl>http://www.knowledgearc.org</authorUrl>
     <copyright>>Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>3.0.0-alpha</version>
+    <version>3.0.0-alpha.2</version>
     <description>PLG_JSOLR_NEWSFEEDS_XML_DESCRIPTION</description>
     <files>
         <filename plugin="newsfeeds">newsfeeds.php</filename>
