@@ -12,7 +12,7 @@ use \JSolr\Search\Factory;
 
 class ModJSolrLatestHelper
 {
-	public function getItems($params)
+	public static function getItems($params)
 	{
         try {
             \JModelLegacy::addIncludePath(JPATH_ROOT.'/components/com_jsolr/models');
@@ -28,7 +28,11 @@ class ModJSolrLatestHelper
             $model->setState('list.limit', 5);
 
             $params = new \Joomla\Registry\Registry;
-            $params->set('fq', $fq);
+
+            if ($fq = $params->get('fq')) {
+                $params->set('fq', $fq);
+            }
+
             $model->setState($params);
 
             return $model->getItems();
