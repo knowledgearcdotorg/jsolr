@@ -17,7 +17,7 @@ class JSolrViewCPanel extends JViewLegacy
 
     function display($tpl = null)
     {
-        JSolrHelper::addSubmenu('dimensions');
+        JSolrHelper::addSubmenu('cpanel');
 
         $this->item = $this->get("Item");
 

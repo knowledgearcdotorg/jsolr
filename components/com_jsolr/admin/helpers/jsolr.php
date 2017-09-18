@@ -17,8 +17,14 @@ class JSolrHelper
      *
      * @return void
      */
-    public static function addSubmenu($vName)
+    public static function addSubmenu($vName = "cpanel")
     {
+        JHtmlSidebar::addEntry(
+            JText::_('COM_JSOLR_SUBMENU_CPANEL'),
+            'index.php?option=com_jsolr',
+            $vName == 'cpanel'
+        );
+
         JHtmlSidebar::addEntry(
             JText::_('COM_JSOLR_SUBMENU_DIMENSIONS'),
             'index.php?option=com_jsolr&view=dimensions',
