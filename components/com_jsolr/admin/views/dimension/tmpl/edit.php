@@ -33,15 +33,23 @@ JFactory::getDocument()->addScriptDeclaration('
     <?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 
     <div class="form-horizontal">
+        <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active'=>'attrib-search')); ?>
+
+        <?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+
+        <?php echo JHtml::_('bootstrap.addTab', 'myTab', 'publishing', JText::_('COM_JSOLR_FIELDSET_PUBLISHING')); ?>
+
         <div class="row-fluid form-horizontal-desktop">
             <div class="span6">
-                <?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+                <?php echo JLayoutHelper::render('joomla.edit.publishingdata', $this); ?>
             </div>
             <div class="span6">
                 <?php echo JLayoutHelper::render('joomla.edit.global', $this); ?>
-                <?php echo JLayoutHelper::render('joomla.edit.publishingdata', $this); ?>
-            </div>
+            <div>
         </div>
+        <?php echo JHtml::_('bootstrap.endTab'); ?>
+
+        <?php echo JHtml::_('bootstrap.endTabSet'); ?>
     </div>
     <input type="hidden" name="task" value="" />
     <?php echo JHtml::_('form.token'); ?>
