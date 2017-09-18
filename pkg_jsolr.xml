@@ -17,8 +17,6 @@
         <file type="module" id="mod_jsolrfilter" client="site">mod_jsolrfilter.zip</file>
         <file type="module" id="mod_jsolr_latest" client="site">mod_jsolr_latest.zip</file>
         <file type="plugin" group="content" id="jsolr">plg_content_jsolr.zip</file>
-        <file type="plugin" group="jsolr" id="content">plg_jsolr_content.zip</file>
-        <file type="plugin" group="jsolr" id="newsfeeds">plg_jsolr_newsfeeds.zip</file>
     </files>
 
     <updateservers>
