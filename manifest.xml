@@ -5,15 +5,15 @@
         <description>Integrate Apache Solr with Joomla!.</description>
         <element>pkg_jsolr</element>
         <type>package</type>
-        <version>3.0.0-alpha.2</version>
+        <version>3.0.0-beta</version>
         <client>0</client>
-        <infourl title="JSolr">https://github.com/knowledgearcdotorg/jsolr/releases/tag/3.0.0-alpha</infourl>
+        <infourl title="JSolr">https://github.com/knowledgearcdotorg/jsolr/releases/tag/3.0.0-beta</infourl>
         <downloads>
-            <downloadurl type="full" format="zip">https://github.com/knowledgearcdotorg/jsolr/releases/download/3.0.0-alpha/pkg_jsolr.zip</downloadurl>
+            <downloadurl type="full" format="zip">https://github.com/knowledgearcdotorg/jsolr/releases/download/3.0.0-beta/pkg_jsolr.zip</downloadurl>
         </downloads>
         <tags>
-            <tag>alpha</tag>
+            <tag>beta</tag>
         </tags>
-        <targetplatform name="joomla" version="3.[456789]" />
+        <targetplatform name="joomla" version="3.[789]" />
     </update>
 </updates>
