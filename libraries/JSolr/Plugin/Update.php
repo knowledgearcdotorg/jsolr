@@ -3,6 +3,9 @@
  * An abstract class which provides index updates based upon the date the
  * index was last run.
  *
+ * Ideal for indexing 3rd party content such as records retrieved using a REST
+ * API.
+ *
  * @copyright   Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */

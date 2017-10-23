@@ -97,7 +97,12 @@ abstract class Plugin extends \JPlugin
     {
         $this->out(array("task:index crawler:".$this->get('context'),"[starting]"), \JLog::DEBUG);
 
-        $this->index();
+        try {
+            $this->index();
+        } catch (\Exception $e) {
+            // catch catastrophic errors that can't be recovered from.
+            $this->out(array("HALTING:".$this->get('context')."\n".(string)$e), \JLog::CRITICAL);
+        }
 
         $this->out(array("task:index crawler:".$this->get('context'),"[completed]"), \JLog::DEBUG);
     }
