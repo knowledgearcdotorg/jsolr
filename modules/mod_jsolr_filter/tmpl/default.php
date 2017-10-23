@@ -1,7 +1,8 @@
 <?php
 /**
- * @package		JSolr.Module
- * @copyright	Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+ * @author		$LastChangedBy$
+ * @package		JSolr
+ * @copyright	Copyright (C) 2011 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolr filter module for Joomla!.
 
    The JSolr filter module for Joomla! is free software: you can
@@ -23,20 +24,25 @@
  * contributed any source code changes.
  * Name							Email
  * Hayden Young					<hayden@knowledgearc.com>
+ * Michał Kocztorz				<michalkocztorz@wijiti.com>
  *
  */
 
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
-JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
 
-require_once dirname(__FILE__).'/helper.php';
+$document = JFactory::getDocument();
 
-$moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
+$document->addStyleSheet(JURI::base()."/media/mod_jsolr_filter/css/jsolrfilter.css");
+?>
 
-// Don't show the filter module contents unless the user has specified
-// something to search for.
-if (ModJSolrFilterHelper::showFilter()) {
-	$form = ModJSolrFilterHelper::getForm();
-	require JModuleHelper::getLayoutPath('mod_jsolrfilter', $params->get('layout', 'default'));
-}
+<div class="jsolr-facet-filter">
+	<?php foreach($form->getFieldset('facets') as $field) : ?>
+    <div>
+        <?php if ($field->label) : ?>
+            <h4><?php echo $form->getLabel($field->name); ?></h4>
+        <?php endif; ?>
+        <div><?php echo $form->getInput($field->name); ?></div>
+    </div>
+	<?php endforeach;?>
+</div>

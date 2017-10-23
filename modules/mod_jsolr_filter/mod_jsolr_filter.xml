@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="3.4" client="site" method="upgrade">
-	<name>mod_jsolrfilter</name>
+	<name>mod_jsolr_filter</name>
 	<creationDate>2016-04-21</creationDate>
 	<author>KnowledgeARC</author>
 	<authorEmail>development@knowledgearc.com</authorEmail>
@@ -9,19 +9,19 @@
 	<version>3.0.0-alpha.2</version>
 	<description>MOD_JSOLRFILTER_XML_DESCRIPTION</description>
 	<files>
-		<filename module="mod_jsolrfilter">mod_jsolrfilter.php</filename>
+		<filename module="mod_jsolr_filter">mod_jsolr_filter.php</filename>
 		<filename>helper.php</filename>
 		<folder>tmpl</folder>
 	</files>
 
-	<media destination="mod_jsolrfilter">
+	<media destination="mod_jsolr_filter">
 	  	<folder>js</folder>
 		<folder>css</folder>
 	</media>
 
 	<languages>
-		<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.ini</language>
-	 	<language tag="en-GB">language/en-GB/en-GB.mod_jsolrfilter.sys.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.mod_jsolr_filter.ini</language>
+	 	<language tag="en-GB">language/en-GB/en-GB.mod_jsolr_filter.sys.ini</language>
 	</languages>
 
 	<config>
