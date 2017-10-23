@@ -3,7 +3,7 @@
  * The JSolr Latest module helper.
  *
  * @package		JSolr.Module
- * @copyright	Copyright (C) 2014-2016 KnowledgeArc Ltd. All rights reserved.
+ * @copyright	Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 JLoader::registerNamespace('JSolr', JPATH_PLATFORM);
@@ -12,8 +12,8 @@ use \JSolr\Search\Factory;
 
 class ModJSolrLatestHelper
 {
-	public static function getItems($params)
-	{
+    public static function getItems($params)
+    {
         try {
             \JModelLegacy::addIncludePath(JPATH_ROOT.'/components/com_jsolr/models');
 
