@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.4" type="plugin" group="content" method="upgrade">
+<extension version="3.7" type="plugin" group="content" method="upgrade">
     <name>plg_content_jsolr</name>
-    <creationDate>2016-04-21</creationDate>
+    <creationDate>2017-10-23</creationDate>
     <author>KnowledgeArc Ltd</author>
     <authorEmail>development@knowledgearc.com</authorEmail>
     <authorUrl>http://www.knowledgearc.org</authorUrl>

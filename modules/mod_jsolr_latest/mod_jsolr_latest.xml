@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="3.4" client="site" method="upgrade">
+<extension type="module" version="3.7" client="site" method="upgrade">
     <name>mod_jsolr_latest</name>
     <creationDate>2017-10-23</creationDate>
     <author>KnowledgeARC</author>
