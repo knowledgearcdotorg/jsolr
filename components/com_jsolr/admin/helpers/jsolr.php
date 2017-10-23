@@ -85,4 +85,22 @@ class JSolrHelper
             JLog::add($msg, $type, 'jsolr');
         }
     }
+
+    /**
+     * Gets the current version of the JSolr component.
+     *
+     * Useful for 3rd party plugins which may not be compatible with particular
+     * versions of JSolr.
+     *
+     * @return  int  The JSolr version.
+     */
+    public static function getVersion()
+    {
+        $component = \JComponentHelper::getComponent('com_jsolr');
+        $extension = \JTable::getInstance('extension');
+        $extension->load($component->id);
+        $manifest = new \Joomla\Registry\Registry($extension->manifest_cache);
+
+        return $manifest->get('version');
+    }
 }
