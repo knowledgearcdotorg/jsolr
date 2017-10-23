@@ -3,7 +3,7 @@
  * Model for managing search dimensions.
  *
  * @package    JSolr
- * @copyright  Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 

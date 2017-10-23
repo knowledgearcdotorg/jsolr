@@ -5,9 +5,9 @@
     <author>KnowledgeArc Ltd</author>
     <authorEmail>development@knowledgearc.com</authorEmail>
     <authorUrl>http://www.knowledgearc.org</authorUrl>
-    <copyright>>Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.</copyright>
+    <copyright>>Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>3.0.0-alpha.2</version>
+    <version>3.0.0-beta</version>
     <description>COM_JSOLR_XML_DESCRIPTION</description>
 
     <scriptfile>script.php</scriptfile>

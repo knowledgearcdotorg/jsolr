@@ -5,4 +5,4 @@ solr.host=localhost
 solr.port=8983
 solr.path=/solr
 composer.phar=/path/to/composer.phar
-package.extensions=com_jsolr.zip,JSolr.zip,mod_jsolrfilter.zip,mod_jsolr_latest.zip,plg_content_jsolr.zip,plg_jsolr_newsfeeds.zip
+package.extensions=com_jsolr.zip,JSolr.zip,mod_jsolr_filter.zip,mod_jsolr_latest.zip,plg_content_jsolr.zip

@@ -4,7 +4,7 @@
  *
  * @package        JSolr.Search
  * @subpackage    Model
- * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
  * @license     This file is part of the JSolr component for Joomla!.
  */
 defined('_JEXEC') or die('Restricted access');

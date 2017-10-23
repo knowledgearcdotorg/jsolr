@@ -3,7 +3,7 @@
 /**
  * @package     JSolr
  * @subpackage  Cli
- * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -240,7 +240,7 @@ class JSolrCli extends JApplicationCli
 
         echo <<<EOT
 
-Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
 GNU General Public License version 2 or later; see LICENSE.txt
 
 

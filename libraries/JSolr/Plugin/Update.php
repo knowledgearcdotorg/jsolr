@@ -3,7 +3,7 @@
  * An abstract class which provides index updates based upon the date the
  * index was last run.
  *
- * @copyright   Copyright (C) 2012-2016 KnowledgeArc Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2012-2017 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 namespace JSolr\Plugin;

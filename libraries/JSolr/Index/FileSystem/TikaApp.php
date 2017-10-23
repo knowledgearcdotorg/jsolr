@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   Copyright (C) 2014-2016 KnowledgeArc Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2014-2017 KnowledgeArc Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 namespace JSolr\Index\FileSystem;
