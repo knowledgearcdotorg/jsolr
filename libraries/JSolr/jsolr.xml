@@ -16,6 +16,7 @@
         <folder>Index</folder>
         <folder>Plugin</folder>
         <folder>Search</folder>
+        <folder>Utilities</folder>
         <folder>vendor</folder>
         <filename>Factory.php</filename>
         <filename>Helper.php</filename>
