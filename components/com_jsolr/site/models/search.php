@@ -169,7 +169,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                         ->addFilterQuery(
                             array(
                                 'key'=>'lang',
-                                'query'=>'lang_s:'.$lang));
+                                'query'=>'lang_s:('.$lang. " OR *)"));
                 }
 
                 if ($pf = $params->get('pf')) {
