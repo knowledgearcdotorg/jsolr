@@ -32,13 +32,13 @@ class Calendar extends FilterList
         // Initialize variables.
         $options = array();
 
-        foreach ($this->element->children() as $option) {
+        foreach ($this->element->children() as $element) {
             // Only add <option /> elements.
-            if ($option->getName() != 'option') {
+            if ($element->getName() != 'option') {
                 continue;
             }
 
-            $value = (string)$option->attributes()->value;
+            $value = (string)$element->attributes()->value;
 
             $selected = $value == $this->value;
 
@@ -50,12 +50,14 @@ class Calendar extends FilterList
                 $uri->delVar($this->name);
             }
 
-            $link = '<a role="menuitem" tabindex="-1" href="'.((string)$uri).'">'.JText::_(trim((string)$option)).'</a>';
-
-            $tmp = '<li role="presentation"'.($selected ? ' class="active" ' : '').' data-value="'.$value.'">'.$link.'</li>';
+            $option = array();
+            $option["uri"] = (string)$uri;
+            $option["value"] = $value;
+            $option["label"] = (string)$element;
+            $option["selected"] = $selected;
 
             // Add the option object to the result set.
-            $options[] = $tmp;
+            $options[] = $option;
         }
 
         reset($options);
@@ -69,11 +71,11 @@ class Calendar extends FilterList
      * @return array An array containing a single date filter based on the
      * currently selected value.
      *
-     * @see Filterable::getFilters()
+     * @see Filterable::getFilter()
      */
     public function getFilter()
     {
-        $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
+        $filter = null;
 
         foreach ($this->element->xpath('option') as $option) {
             $value = (string)$option['value'];
@@ -81,6 +83,7 @@ class Calendar extends FilterList
             if ($this->value && $value == $this->value) {
                 $selected = (string)$option['filter'];
 
+                $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
                 $filter->setKey($this->name.".".$this->filter);
                 $filter->setQuery($this->filter.":".$selected);
 

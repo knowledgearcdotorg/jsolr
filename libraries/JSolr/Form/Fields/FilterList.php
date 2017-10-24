@@ -27,11 +27,11 @@ class FilterList extends Dropdown implements Filterable
      * @return array An array containing a single date filter based on the
      * currently selected value.
      *
-     * @see Filterable::getFilters()
+     * @see Filterable::getFilter()
      */
     public function getFilter()
     {
-        $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
+        $filter = null;
 
         foreach ($this->element->xpath('option') as $option) {
             $value = (string)$option['value'];
@@ -41,6 +41,7 @@ class FilterList extends Dropdown implements Filterable
 
                 $selected = \JSolr\Helper::buildMatch($selected, $this->exactmatch);
 
+                $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
                 $filter->setKey($this->name.".".$this->filter);
                 $filter->setQuery($this->filter.":".$selected);
 

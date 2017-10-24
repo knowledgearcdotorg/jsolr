@@ -141,8 +141,6 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
         $value = JString::trim($this->value);
 
         if ($value) {
-            $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
-
             $array = array();
 
             foreach (explode(self::FACET_DELIMITER, $value) as $item) {
@@ -153,6 +151,7 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
             if (count($array) > 0) {
                 $separator = " ".JString::strToUpper($this->condition)." ";
 
+                $filter = new \Solarium\QueryType\Select\Query\FilterQuery();
                 $filter->setKey($this->name.".".$this->filter);
                 $filter->setQuery($this->filter.":".implode($separator, $array));
 
