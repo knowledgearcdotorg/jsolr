@@ -32,11 +32,11 @@
                 <field
                     name="ordering"
                     type="list"
-                    default="modified_tdt"
+                    default="modified_dt"
                     label="MOD_JSOLR_LATEST_FIELD_ORDERING_LABEL"
                     description="MOD_JSOLR_LATEST_FIELD_ORDERING_DESC">
-                    <option value="created_tdt">MOD_JSOLR_LATEST_VALUE_ADDED</option>
-                    <option value="modified_tdt">MOD_JSOLR_LATEST_VALUE_MODIFIED</option>
+                    <option value="created_dt">MOD_JSOLR_LATEST_VALUE_ADDED</option>
+                    <option value="modified_dt">MOD_JSOLR_LATEST_VALUE_MODIFIED</option>
                 </field>
                 <field
                     name="fq"

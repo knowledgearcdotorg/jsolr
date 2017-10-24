@@ -18,7 +18,7 @@ class JSolrFormFieldsCalendarTest extends \PHPUnit_Framework_TestCase
     <field
         type="jsolr.calendar"
         name="date"
-        filter="date_tdt"
+        filter="date_dt"
         label="Date"
         class="jsolr-dropdown"
         default="">
@@ -40,8 +40,8 @@ HTML
         $field->value = "d";
 
         $expected = new \Solarium\QueryType\Select\Query\FilterQuery;
-        $expected->setKey('date.date_tdt');
-        $expected->setQuery('date_tdt:[NOW-1DAY TO NOW]');
+        $expected->setKey('date.date_dt');
+        $expected->setQuery('date_dt:[NOW-1DAY TO NOW]');
 
         $this->assertEquals($expected, $field->getFilter());
     }

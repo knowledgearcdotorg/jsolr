@@ -23,7 +23,7 @@ class ModJSolrLatestHelper
                 array('ignore_request'=>true));
 
             $model->setState('query.q', '*:*');
-            $model->setState('list.ordering', $params->get('ordering', 'modified_tdt'));
+            $model->setState('list.ordering', $params->get('ordering', 'modified_dt'));
             $model->setState('list.direction', 'desc');
             $model->setState('list.limit', 5);
 

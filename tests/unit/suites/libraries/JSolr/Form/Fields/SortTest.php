@@ -12,7 +12,7 @@ class JSolrFormFieldsSortTest extends \PHPUnit_Framework_TestCase
         $this->form = new JForm('form1');
         $this->form->addFieldPath($path);
         $this->form->load('<form><field name="sort" type="jsolr.sort" label="sort" default=""><option value="">relevance</option>
-           <option value="date" sort="date_tdt" direction="desc">date</option></field></form>');
+           <option value="date" sort="date_dt" direction="desc">date</option></field></form>');
     }
 
     public function testDefaultSelected()
@@ -27,6 +27,6 @@ class JSolrFormFieldsSortTest extends \PHPUnit_Framework_TestCase
         $field = $this->form->getField('sort');
         $field->value = 'date';
 
-        $this->assertEquals(array("date_tdt"=>"desc"), $field->getSort());
+        $this->assertEquals(array("date_dt"=>"desc"), $field->getSort());
     }
 }

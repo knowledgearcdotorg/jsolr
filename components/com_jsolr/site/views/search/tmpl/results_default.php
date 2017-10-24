@@ -55,17 +55,17 @@ endif;
             <p><?php echo \JSolr\Helper::highlight($hl, \JSolr\Helper::localize('content_txt_*'), $item->{\JSolr\Helper::localize('description_txt_*')}); ?></p>
             <footer>
                 <dl>
-                    <?php if ($item->created_tdt) : ?>
+                    <?php if ($item->created_dt) : ?>
                     <dt><?php echo JText::_("COM_JSOLR_RESULT_CREATED_LABEL"); ?></dt>
                     <dd>
-                        <time datetime="<?php echo JFactory::getDate($item->created_tdt)->toISO8601(); ?>"><?php echo JFactory::getDate($item->created_tdt)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
+                        <time datetime="<?php echo JFactory::getDate($item->created_dt)->toISO8601(); ?>"><?php echo JFactory::getDate($item->created_dt)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
                     </dd>
                     <?php endif; ?>
 
-                    <?php if ($item->modified_tdt) : ?>
+                    <?php if ($item->modified_dt) : ?>
                     <dt><?php echo JText::_("COM_JSOLR_RESULT_MODIFIED_LABEL"); ?></dt>
                     <dd>
-                        <time datetime="<?php echo JFactory::getDate($item->modified_tdt)->toISO8601(); ?>"><?php echo JFactory::getDate($item->modified_tdt)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
+                        <time datetime="<?php echo JFactory::getDate($item->modified_dt)->toISO8601(); ?>"><?php echo JFactory::getDate($item->modified_dt)->format(JText::_('DATE_FORMAT_LC2')); ?></time>
                     </dd>
                     <?php endif; ?>
 
