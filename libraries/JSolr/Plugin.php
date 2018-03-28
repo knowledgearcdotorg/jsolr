@@ -19,6 +19,8 @@ abstract class Plugin extends \JPlugin
 {
     const STDOUT_SEPARATOR_WIDTH = 80;
 
+    const GLOBAL_QUERY_FIELD = "_text_";
+
     protected $autoloadLanguage = true;
 
     /**
@@ -145,6 +147,7 @@ abstract class Plugin extends \JPlugin
                     $array = $this->prepare($item);
 
                     if (!empty($array)) {
+                        $array = $this->prepareGlobalQueryField($array);
                         $documents[] = $update->createDocument($array);
 
                         $this->out('document '.ArrayHelper::getValue($array, 'id').' ready for indexing', \JLog::DEBUG);
@@ -376,5 +379,27 @@ abstract class Plugin extends \JPlugin
         }
 
         return true;
+    }
+
+    /**
+     * Populate the global query field _text_.
+     *
+     * Override this method in a child plugin if different/additional fields
+     * need to be specified.
+     *
+     * @param   array  $array  An array of values to be indexed.
+     *
+     * @return  array  $array  The updated array with _text_ populated.
+     */
+
+    protected function prepareGlobalQueryField($array)
+    {
+        // define a catch all field for general search querying.
+        $array[static::GLOBAL_QUERY_FIELD] = [];
+        $array[static::GLOBAL_QUERY_FIELD][] = $array['name'];
+        $array[static::GLOBAL_QUERY_FIELD] = array_merge($array[static::GLOBAL_QUERY_FIELD], $array['author']);
+        $array[static::GLOBAL_QUERY_FIELD][] = $array["category_s"];
+
+        return $array;
     }
 }
