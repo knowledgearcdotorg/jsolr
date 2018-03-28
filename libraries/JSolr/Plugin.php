@@ -149,7 +149,7 @@ abstract class Plugin extends \JPlugin
 
                         $this->out('document '.ArrayHelper::getValue($array, 'id').' ready for indexing', \JLog::DEBUG);
                     } else {
-                        $this->out('document '.ArrayHelper::getValue($array, 'id').' is empty, ignoring...', \JLog::WARNING);
+                        $this->out('document is empty, ignoring...', \JLog::WARNING);
                     }
 
                     $start++;
