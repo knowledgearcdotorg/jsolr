@@ -149,42 +149,5 @@ JFactory::getDocument()->addScriptDeclaration($js);
             </div>
         </div>
         <?php endif; ?>
-
-        <?php if ($this->item->get('settings.indexAttachments')) : ?>
-            <div class="row-fluid">
-                <div class="span6">
-                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR'); ?></strong>
-                </div>
-
-                <div class="span6">
-                    <?php echo $this->item->get('settings.extractor'); ?>
-                </div>
-            </div>
-
-            <?php if ($this->item->get('settings.extractor') == 'tika_app') : ?>
-            <div class="row-fluid">
-                <div class="span6">
-                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR_TIKA_APP'); ?></strong>
-                </div>
-
-                <div class="span6">
-                    <?php echo $this->item->get('settings.tikaApp'); ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <?php if ($this->item->get('settings.extractor') == 'tika_server') : ?>
-            <div class="row-fluid">
-                <div class="span6">
-                    <strong class="row-title"><?php echo JText::_('COM_JSOLR_CPANEL_JSOLR_EXTRACTOR_TIKA_SERVER'); ?></strong>
-                </div>
-
-                <div class="span6">
-                    <?php echo $this->item->get('settings.tikaServer'); ?>
-                </div>
-            </div>
-            <?php endif; ?>
-        <?php endif; ?>
-
     </div>
 </div>
