@@ -58,11 +58,17 @@ JHTML::_('behavior.formvalidation');
         <?php if (!is_null($this->get('Form'))): ?>
             <?php
             foreach ($facets = $this->get('AppliedFacetFilters') as $facet) :
+                $uri = clone JURI::getInstance();
+                $uri->delVar($facet->name);
             ?>
 
             <?php echo ($facet !== reset($facets)) ? "&gt;" : ""; ?>
 
-            <span><?php echo str_replace("|", " ".$facet->condition." ", urldecode($facet->value)); ?></span>
+            <?php
+            echo JHTML::link(
+                (string)htmlentities($uri),
+                '<span>'.str_replace("|", " ".$facet->condition." ", urldecode($facet->value)).'</span>');
+            ?>
 
             <input type="hidden" name="<?php echo $facet->name; ?>" value="<?php echo $facet->value; ?>"/>
 
