@@ -48,6 +48,10 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
             $facet->setMinCount($this->mincount);
         }
 
+        if ($this->multiselect) {
+            $facet->addExclude($this->fieldname);
+        }
+
         return $facet;
     }
 
@@ -155,6 +159,10 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
                 $filter->setKey($this->name.".".$this->filter);
                 $filter->setQuery($this->filter.":".implode($separator, $array));
 
+                if ($this->multiselect) {
+                    $filter->addTag($this->filter);
+                }
+
                 return $filter;
             }
         }
@@ -243,11 +251,22 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
 
                 break;
 
+            // properties that should default to true
             case 'exactmatch':
-                if ($this->getAttribute($name, null) === 'false') {
+                if ($this->getAttribute($name, true) === 'false') {
                     return false;
                 } else {
                     return true;
+                }
+
+                break;
+
+            // properties that should default to false
+            case 'multiselect':
+                if ($this->getAttribute($name, false) === 'true') {
+                    return true;
+                } else {
+                    return false;
                 }
 
                 break;
