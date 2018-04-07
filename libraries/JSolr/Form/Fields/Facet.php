@@ -48,7 +48,7 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
             $facet->setMinCount($this->mincount);
         }
 
-        if ($this->multiselect) {
+        if ($this->ignorefilter) {
             $facet->addExclude($this->fieldname);
         }
 
@@ -76,7 +76,6 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
 
     /**
      * Method to get the field input markup for a generic list.
-     * Use the multiple attribute to enable multiselect.
      *
      * @return  string  The field input markup.
      *
@@ -159,7 +158,7 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
                 $filter->setKey($this->name.".".$this->filter);
                 $filter->setQuery($this->filter.":".implode($separator, $array));
 
-                if ($this->multiselect) {
+                if ($this->ignorefilter) {
                     $filter->addTag($this->filter);
                 }
 
@@ -262,7 +261,7 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
                 break;
 
             // properties that should default to false
-            case 'multiselect':
+            case 'ignorefilter':
                 if ($this->getAttribute($name, false) === 'true') {
                     return true;
                 } else {
