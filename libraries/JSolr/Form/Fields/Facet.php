@@ -119,7 +119,7 @@ class Facet extends \JFormFieldList implements Filterable, Facetable
             $count = '';
 
             if ($this->showcount === 'true') {
-                $count = '<span>('.$value.')</span>';
+                $count = '<span class="facet-count">('.$value.')</span>';
             }
 
             $facet = '<a href="'.$this->buildFilterUri($key).'">'.$key.'</a>'.$count;

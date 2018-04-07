@@ -21,14 +21,14 @@
         addfieldpath="administrator/components/com_jsolr/models/fields">
         <field
             name="author"
-            facet="author"
+            facet="author_ss"
             filter="author"
             type="jsolr.facet"
             label="COM_JSOLR_SEARCH_FACET_AUTHOR_LABEL"
             class="inputbox jsolrquery"
-            count="true"
+            showcount="true"
             condition="and"
-            limit="5"/>
+            limit="10"/>
     </fieldset>
 
     <fieldset
