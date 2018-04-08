@@ -12,6 +12,9 @@ use \JLog as JLog;
 use \JFactory as JFactory;
 use \Joomla\Utilities\ArrayHelper;
 
+use Solarium\Plugin\BufferedAdd\Event\Events;
+use Solarium\Plugin\BufferedAdd\Event\PostCommit as PostCommitEvent;
+
 /**
  * An abstract class which all other classes should derive from.
  */
@@ -128,14 +131,37 @@ abstract class Plugin extends \JPlugin
      */
     protected function index()
     {
-        $commitWithin = $this->params->get('component.commitsWithin', '10000');
-
         $start = 0;
         $limit = $this->params->get('component.commitLimit', 1000);
         $total = $this->getTotal();
 
         $client = \JSolr\Index\Factory::getClient();
-        $update = $client->createUpdate();
+
+        $buffer = $client->getPlugin('bufferedadd');
+        $buffer->setBufferSize($limit);
+
+        // also register event hooks to display what is happening
+        $client->getEventDispatcher()->addListener(
+            Events::POST_COMMIT,
+            function (\Symfony\Component\EventDispatcher\Event $event) {
+                $total = count($event->getResult());
+                $this->out("items indexed: $total", \JLog::DEBUG);
+            }
+        );
+
+        $client->getEventDispatcher()->addListener(
+            Events::ADD_DOCUMENT,
+            function (\Symfony\Component\EventDispatcher\Event $event) {
+                $this->out('document '.$event->getDocument()->id.' ready for indexing', \JLog::DEBUG);
+            }
+        );
+
+        $client->getEventDispatcher()->addListener(
+            Events::PRE_FLUSH,
+            function (\Symfony\Component\EventDispatcher\Event $event) {
+                $this->out('flushing buffer ('.count($event->getBuffer()).' documents)', \JLog::DEBUG);
+            }
+        );
 
         while ($start < $total) {
             $items = $this->getItems($start, $limit);
@@ -148,34 +174,21 @@ abstract class Plugin extends \JPlugin
 
                     if (!empty($array)) {
                         $array = $this->prepareGlobalQueryField($array);
-                        $documents[] = $update->createDocument($array);
-
-                        $this->out('document '.ArrayHelper::getValue($array, 'id').' ready for indexing', \JLog::DEBUG);
+                        $documents[] = $buffer->createDocument($array);
                     } else {
                         $this->out('document is empty, ignoring...', \JLog::WARNING);
                     }
 
                     $start++;
                 }
-
-                $update->addDocuments($documents, null, $commitWithin);
-                $update->addCommit();
-
-                $result = $client->update($update);
-
-                if ($result->getStatus() !== 0) {
-                    throw new Exception($result->getResponse()->getStatusMessage(), $result->getResponse()->getStatusCode());
-                }
             } catch (Exception $e) {
                 $this->out($e->getMessage(), \JLog::ERROR);
             }
 
-            $this->out(array(count($documents).' documents successfully indexed', '[status:'.$result->getResponse()->getStatusCode().']'), \JLog::DEBUG);
-
             $documents = array();
         }
 
-        $this->out("items indexed: $total", \JLog::DEBUG);
+        $buffer->commit();
     }
 
     /**
