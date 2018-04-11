@@ -140,14 +140,17 @@ abstract class Plugin extends \JPlugin
         $buffer = $client->getPlugin('bufferedadd');
         $buffer->setBufferSize($limit);
 
+        /*
+        Re-implement when event object fixed.
+
         // also register event hooks to display what is happening
         $client->getEventDispatcher()->addListener(
             Events::POST_COMMIT,
             function (\Symfony\Component\EventDispatcher\Event $event) {
-                $total = count($event->getResult());
-                $this->out("items indexed: $total", \JLog::DEBUG);
+
             }
         );
+        */
 
         $client->getEventDispatcher()->addListener(
             Events::ADD_DOCUMENT,
@@ -184,11 +187,11 @@ abstract class Plugin extends \JPlugin
             } catch (Exception $e) {
                 $this->out($e->getMessage(), \JLog::ERROR);
             }
-
-            $documents = array();
         }
 
         $buffer->commit();
+
+        $this->out("items indexed: $total", \JLog::DEBUG);
     }
 
     /**
