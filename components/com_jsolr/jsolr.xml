@@ -52,10 +52,13 @@
     <administration>
         <files folder="admin">
             <folder>cli</folder>
+            <folder>controllers</folder>
             <folder>helpers</folder>
             <folder>models</folder>
             <folder>sql</folder>
+            <folder>tables</folder>
             <folder>views</folder>
+            <filename>access.xml</filename>
             <filename>config.xml</filename>
             <filename>controller.php</filename>
             <filename>jsolr.php</filename>
