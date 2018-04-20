@@ -172,6 +172,14 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                                 'query'=>'lang_s:('.$lang. " OR *)"));
                 }
 
+                if ($fq = $params->get('fq')) {
+                    $query
+                        ->addFilterQuery(
+                            array(
+                                'key'=>'param_fq',
+                                'query'=>$fq));
+                }
+
                 if ($pf = $params->get('pf')) {
                     $query->getEDisMax()->setPhraseFields($pf);
 
@@ -594,7 +602,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      */
     public function getDimensionTemplate()
     {
-        $template = 'default';
+        $tmpl = 'default';
 
         if ($alias = $this->getState('query.dimension')) {
             if ($table = $this->fetchDimension($alias)) {
@@ -602,12 +610,12 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                 $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/search/results_'.$table->alias.'.php';
 
                 if (JFile::exists($overridePath)) {
-                    $template = $table->alias;
+                    $tmpl = $table->alias;
                 }
             }
         }
 
-        return $template;
+        return $tmpl;
     }
 
     /**
