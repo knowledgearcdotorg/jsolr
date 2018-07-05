@@ -134,6 +134,11 @@
             label="COM_JSOLR_SEARCH_HL_LABEL"
             description="COM_JSOLR_SEARCH_HL_DESC"
             default="_text_ title_txt_* author content_txt_*"/>
+        <field
+                name="collection"
+                type="jsolr.hiddenfilter"
+                filter="category_i"
+                label="Collection"/>
 
         <field
             name="fq"
