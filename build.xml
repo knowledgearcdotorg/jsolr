@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JSolr" default="help" basedir=".">
-    <php expression="include('~/.composer/vendor/autoload.php')"/>
-    <property   file="build.properties"/>
+     <property   file="build.properties"/>
     <property   name="path.administrator"            value="${path.joomla}/administrator"/>
     <property   name="path.administrator.components" value="${path.administrator}/components"/>
     <property   name="path.administrator.languages"  value="${path.administrator}/language"/>
