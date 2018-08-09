@@ -493,8 +493,12 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
         foreach ($this->getForm()->getFieldset('facets') as $facet) {
             if (array_search("JSolr\Form\Fields\Facetable", class_implements($facet)) !== false) {
-                
+                if(isset($facet->value)){
                     $fields[] = $facet;
+		}else{
+			$fields[] = $facet;
+
+		}
                 
             }
         }
