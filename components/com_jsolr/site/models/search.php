@@ -32,7 +32,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         parent::__construct($config);
 
-        $this->context = $this->option.'.'.$this->name;
+        $this->context = $this->option . '.' . $this->name;
 
         JFactory::getApplication()->setUserState('com_jsolr.search.results', null);
 
@@ -159,8 +159,8 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                         $query
                             ->addFilterQuery(
                                 array(
-                                    'key'=>'access',
-                                    'query'=>'access_i:'.'('.$access.') OR null'));
+                                    'key' => 'access',
+                                    'query' => 'access_i:' . '(' . $access . ') OR null'));
                     }
                 }
 
@@ -168,16 +168,16 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $query
                         ->addFilterQuery(
                             array(
-                                'key'=>'lang',
-                                'query'=>'lang_s:('.$lang. " OR *)"));
+                                'key' => 'lang',
+                                'query' => 'lang_s:(' . $lang . " OR *)"));
                 }
 
                 if ($fq = $params->get('fq')) {
                     $query
                         ->addFilterQuery(
                             array(
-                                'key'=>'param_fq',
-                                'query'=>$fq));
+                                'key' => 'param_fq',
+                                'query' => $fq));
                 }
 
                 if ($pf = $params->get('pf')) {
@@ -246,7 +246,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
 
                 JFactory::getApplication()->setUserState('com_jsolr.search.results', $this->cache[$store]);
             } catch (Exception $e) {
-                JLog::add($e->getCode().' '.$e->getMessage(), JLog::ERROR, 'jsolr');
+                JLog::add($e->getCode() . ' ' . $e->getMessage(), JLog::ERROR, 'jsolr');
                 JLog::add((string)$e, JLog::ERROR, 'jsolr');
 
                 throw $e;
@@ -358,38 +358,38 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
      * different modules that might need different sets of data or different
      * ordering requirements.
      *
-     * @param   string  $id  An identifier string to generate the store id.
+     * @param   string $id An identifier string to generate the store id.
      *
      * @return  string  A store id.
      */
     protected function getStoreId($id = '')
     {
         // Add some of the querying params to the store id.
-        $id .= ':'.$this->getState('query.q');
+        $id .= ':' . $this->getState('query.q');
 
         if ($params = $this->getState('params')) {
-            $id .= ':'.$params->get('fq');
+            $id .= ':' . $params->get('fq');
         }
 
         if ($dimension = $this->getState('query.dimension')) {
-            $id .= ':'.$dimension;
+            $id .= ':' . $dimension;
         }
 
         // Add the list state to the store id.
-        $id .= ':'.$this->getState('list.start');
-        $id .= ':'.$this->getState('list.limit');
-        $id .= ':'.$this->getState('list.ordering');
-        $id .= ':'.$this->getState('list.direction');
+        $id .= ':' . $this->getState('list.start');
+        $id .= ':' . $this->getState('list.limit');
+        $id .= ':' . $this->getState('list.ordering');
+        $id .= ':' . $this->getState('list.direction');
 
-        return md5($this->context.':'.$id);
+        return md5($this->context . ':' . $id);
     }
 
     /**
      * Method to get the search form.
      *
-     * @param   array  $data      An optional array of data for the form to
+     * @param   array $data An optional array of data for the form to
      * interrogate.
-     * @param   bool   $loadData  True if the form is to load its own data
+     * @param   bool $loadData True if the form is to load its own data
      * (default case), false if not.
      *
      * @return  JForm  A JForm object on success, false on failure.
@@ -400,7 +400,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             return $this->form;
         }
 
-        $context = $this->get('option').'.'.$this->getName();
+        $context = $this->get('option') . '.' . $this->getName();
 
         // load a custom form xml based on the dimension alias.
         $source = 'search';
@@ -408,7 +408,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         if ($alias = $this->getState('query.dimension')) {
             if ($table = $this->fetchDimension($alias)) {
                 $template = JFactory::getApplication()->getTemplate();
-                $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/forms/'.$table->alias.'.xml';
+                $overridePath = JPATH_ROOT . '/templates/' . $template . '/html/com_jsolr/forms/' . $table->alias . '.xml';
 
                 if (JFile::exists($overridePath)) {
                     $source = $table->alias;
@@ -416,7 +416,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             }
         }
 
-        $this->form = $this->loadForm($context, $source, array('load_data'=>$loadData));
+        $this->form = $this->loadForm($context, $source, array('load_data' => $loadData));
 
         if (empty($this->form)) {
             return false;
@@ -439,7 +439,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
             $data = $query;
         }
 
-        $context = $this->get('option').'.'.$this->getName();
+        $context = $this->get('option') . '.' . $this->getName();
 
         if (version_compare(JVERSION, "3.0", "ge")) {
             $this->preprocessData($this->get('context'), $data);
@@ -451,7 +451,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     /**
      * Get's the language, either from the item or from the Joomla environment.
      *
-     * @param   bool  $includeRegion  True if the region should be included, false
+     * @param   bool $includeRegion True if the region should be included, false
      * otherwise. E.g. If true, en-AU would be returned, if false, just en
      * would be returned.
      *
@@ -467,12 +467,12 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         }
 
         if ($includeRegion) {
-            $result =  $lang;
+            $result = $lang;
         } else {
             $parts = explode('-', $lang);
 
             // just return the xx part of the xx-XX language.
-            $result =  JArrayHelper::getValue($parts, 0);
+            $result = JArrayHelper::getValue($parts, 0);
         }
 
         if (empty($result)) {
@@ -497,9 +497,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
                     $fields[] = $facet;
                 } else {
                     $fields[] = $facet;
-
                 }
-
             }
         }
 
@@ -575,7 +573,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     /**
      * Fetch the dimension based on the alias.
      *
-     * @param   string               $alias  The dimension alias.
+     * @param   string $alias The dimension alias.
      *
      * @return  JSolrTableDimension  The dimension record or null if no record
      * is found.
@@ -584,7 +582,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
     {
         $table = $this->getTable('Dimension', 'JSolrTable');
 
-        if ($table->load(array('alias'=>$alias))) {
+        if ($table->load(array('alias' => $alias))) {
             return $table;
         } else {
             return null;
@@ -611,7 +609,7 @@ class JSolrModelSearch extends \JSolr\Search\Model\Form
         if ($alias = $this->getState('query.dimension')) {
             if ($table = $this->fetchDimension($alias)) {
                 $template = JFactory::getApplication()->getTemplate();
-                $overridePath = JPATH_ROOT.'/templates/'.$template.'/html/com_jsolr/search/results_'.$table->alias.'.php';
+                $overridePath = JPATH_ROOT . '/templates/' . $template . '/html/com_jsolr/search/results_' . $table->alias . '.php';
 
                 if (JFile::exists($overridePath)) {
                     $tmpl = $table->alias;
